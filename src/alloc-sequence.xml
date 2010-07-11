@@ -1,0 +1,19 @@
+<model package="ADO" name="ado">
+
+   <table name="sequence" type="Sequence_Ref" generator="none">
+       <comment>Sequence record</comment>
+       <version name="version" type="Integer">
+           <comment>Object version</comment>
+       </version>
+       <column name="name" type="String" length="255" primary-key="true">
+           <comment>Name of the sequence</comment>
+       </column>
+       <column name="value" type="Identifier">
+           <comment>The sequence value</comment>
+       </column>
+       <column name="block_size" type="Identifier">
+           <comment>The sequence block size</comment>
+       </column>
+   </table>
+
+</model>
