@@ -1,0 +1,81 @@
+dnl Autoconf configure script for BfdAda
+dnl Copyright 2001, 2002, 2003, 2005 Free Software Foundation, Inc.
+dnl
+dnl This file is part of BfdAda.
+dnl 
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or
+dnl (at your option) any later version.
+dnl 
+dnl This program is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+dnl GNU General Public License for more details.
+dnl 
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(src/ado.ads)
+
+AC_CANONICAL_SYSTEM
+dnl AM_MAINTAINER_MODE
+AC_EXEEXT
+
+# Current release settings
+ADO_MAJOR_VERSION=0
+ADO_MINOR_VERSION=1
+ADO_MICRO_VERSION=0
+ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
+
+# checking for local tools
+AC_PROG_CC
+# AM_PATH_GNAT
+# AM_PATH_PERL
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+AC_SUBST(ADO_VERSION)
+AC_SUBST(ADO_MAJOR_VERSION)
+AC_SUBST(ADO_MINOR_VERSION)
+AC_SUBST(ADO_MICRO_VERSION)
+
+EXEC_PREFIX="$prefix"
+AC_SUBST(EXEC_PREFIX)
+
+ADO_LIBDIR="lib"
+AC_SUBST(ADO_LIBDIR)
+
+DB=""
+AC_CHECK_LIB(mysqlclient,mysql_init,[DB="$DB mysql"])
+AC_CHECK_LIB(sqlite,sqlite3_open,[DB="$DB sqlite"])
+
+ADO_TESTS_HARNESS=''
+ADO_TESTS_SRC_DIR=''
+ADO_DATABASES_SRC_DIR=''
+if test -z "$DB"; then
+  echo "configure: Warning: no database supported."
+  echo "configure: Warning: try to install mysql or sqlite development libraries"
+else
+  ADO_DATABASES_SRC_DIR=
+  for i in $DB; do
+    ADO_DATABASES_SRC_DIR="$ADO_DATABASES_SRC_DIR, \"src/$i\""
+    ADO_TESTS_SRC_DIR="$ADO_TESTS_SRC_DIR, \"regtests/$i\""
+    if test ! -z "$ADO_TESTS_HARNESS"; then
+       ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS, "
+    fi
+    ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS \"ado_${i}_harness\""
+  done
+fi
+
+AC_SUBST(ADO_DATABASES_SRC_DIR)
+AC_SUBST(ADO_TESTS_SRC_DIR)
+AC_SUBST(ADO_TESTS_HARNESS)
+
+AC_OUTPUT(
+Makefile ado.gpr tests.gpr
+)
