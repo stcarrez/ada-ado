@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Finalization;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Hashed_Maps;
 with ADO.Statements;
@@ -138,14 +139,19 @@ private
       procedure Set_Default_Generator
         (Gen : in Generator_Factory;
          Factory : access ADO.Sessions.Factory.Session_Factory'Class);
+
+      --  Clear the factory map.
+      procedure Clear;
    private
       Map              : Sequence_Maps.Map;
       Create_Generator : Generator_Factory;
       Sess_Factory     : access ADO.Sessions.Factory.Session_Factory'Class;
    end Factory_Map;
 
-   type Factory is limited record
+   type Factory is new Ada.Finalization.Limited_Controlled with record
       Map : Factory_Map;
    end record;
+
+   procedure Finalize (Manager : in out Factory);
 
 end ADO.Sequences;

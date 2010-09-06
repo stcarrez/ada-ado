@@ -19,12 +19,17 @@
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.Sessions.Factory;
+with Ada.Unchecked_Deallocation;
 package body ADO.Sequences is
 
    use Util.Log;
    use Sequence_Maps;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Sequences");
+
+   procedure Free is new
+     Ada.Unchecked_Deallocation (Object => ADO.Sequences.Sequence_Generator,
+                                 Name   => ADO.Sequences.Sequence_Generator_Access);
 
    --  ------------------------------
    --  Get the name of the sequence.
@@ -55,7 +60,7 @@ package body ADO.Sequences is
       procedure Set_Generator (Name : in Unbounded_String;
                                Gen  : in Generator_Access) is
       begin
-         Gen.Name := Name;
+         Gen.Name  := Name;
          Generator := Gen;
       end Set_Generator;
 
@@ -148,6 +153,31 @@ package body ADO.Sequences is
          Sess_Factory := Factory;
       end Set_Default_Generator;
 
+      --  ------------------------------
+      --  Clear the factory map.
+      --  ------------------------------
+      procedure Clear is
+      begin
+         Log.Info ("Clearing the sequence factory");
+
+         loop
+            declare
+               Pos  : Cursor := Map.First;
+               Node : Sequence_Generator_Access;
+            begin
+               exit when not Has_Element (Pos);
+               Node := Element (Pos);
+               Map.Delete (Pos);
+               Free (Node);
+            end;
+         end loop;
+      end Clear;
+
    end Factory_Map;
+
+   procedure Finalize (Manager : in out Factory) is
+   begin
+      Manager.Map.Clear;
+   end Finalize;
 
 end ADO.Sequences;
