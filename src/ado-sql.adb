@@ -19,9 +19,6 @@
 --  Utilities for creating SQL queries and statements.
 package body ADO.SQL is
 
-   function Escape (Str : in Unbounded_String) return String;
-   function Escape (Str : in String) return String;
-
    function Escape (Str : in Unbounded_String) return String is
    begin
       return Escape (To_String (Str));
@@ -81,6 +78,7 @@ package body ADO.SQL is
    --  Get the quote character to escape an identifier.
    --  --------------------
    function Get_Identifier_Quote (D : in Dialect) return Character is
+      pragma Unreferenced (D);
    begin
       return '`';
    end Get_Identifier_Quote;
@@ -92,37 +90,37 @@ package body ADO.SQL is
    --  --------------------
    --  Clear the SQL buffer.
    --  --------------------
-   procedure Clear (Source : in out Buffer) is
+   procedure Clear (Target : in out Buffer) is
    begin
-      Source.Buf := To_Unbounded_String ("");
+      Target.Buf := To_Unbounded_String ("");
    end Clear;
 
    --  --------------------
    --  Append an SQL extract into the buffer.
    --  --------------------
-   procedure Append (Source : in out Buffer;
+   procedure Append (Target : in out Buffer;
                      SQL    : in String) is
    begin
-      Append (Source.Buf, SQL);
+      Append (Target.Buf, SQL);
    end Append;
 
    --  --------------------
    --  Append a name in the buffer and escape that
    --  name if this is a reserved keyword.
    --  --------------------
-   procedure Append_Name (Source : in out Buffer;
+   procedure Append_Name (Target : in out Buffer;
                           Name   : in String) is
    begin
-      if Source.Dialect /= null and then Source.Dialect.Is_Reserved (Name) then
+      if Target.Dialect /= null and then Target.Dialect.Is_Reserved (Name) then
          declare
-            Quote : constant Character := Source.Dialect.Get_Identifier_Quote;
+            Quote : constant Character := Target.Dialect.Get_Identifier_Quote;
          begin
-            Append (Source.Buf, Quote);
-            Append (Source.Buf, Name);
-            Append (Source.Buf, Quote);
+            Append (Target.Buf, Quote);
+            Append (Target.Buf, Name);
+            Append (Target.Buf, Quote);
          end;
       else
-         Append (Source.Buf, Name);
+         Append (Target.Buf, Name);
       end if;
    end Append_Name;
 
@@ -130,50 +128,50 @@ package body ADO.SQL is
    --  Append a string value in the buffer and
    --  escape any special character if necessary.
    --  --------------------
-   procedure Append_Value (Source : in out Buffer;
+   procedure Append_Value (Target : in out Buffer;
                            Value  : in String) is
    begin
-      Append (Source.Buf, Value);
+      Append (Target.Buf, Value);
    end Append_Value;
 
    --  --------------------
    --  Append a string value in the buffer and
    --  escape any special character if necessary.
    --  --------------------
-   procedure Append_Value (Source : in out Buffer;
+   procedure Append_Value (Target : in out Buffer;
                            Value  : in Unbounded_String) is
    begin
-      Append (Source.Buf, Value);
+      Append (Target.Buf, Value);
    end Append_Value;
 
    --  --------------------
    --  Append the integer value in the buffer.
    --  --------------------
-   procedure Append_Value (Source : in out Buffer;
+   procedure Append_Value (Target : in out Buffer;
                            Value  : in Long_Integer) is
       S : constant String := Long_Integer'Image (Value);
    begin
-      Append (Source.Buf, S (S'First + 1 .. S'Last));
+      Append (Target.Buf, S (S'First + 1 .. S'Last));
    end Append_Value;
 
    --  --------------------
    --  Append the integer value in the buffer.
    --  --------------------
-   procedure Append_Value (Source : in out Buffer;
+   procedure Append_Value (Target : in out Buffer;
                            Value  : in Integer) is
       S : constant String := Integer'Image (Value);
    begin
-      Append (Source.Buf, S (S'First + 1 .. S'Last));
+      Append (Target.Buf, S (S'First + 1 .. S'Last));
    end Append_Value;
 
    --  --------------------
    --  Append the identifier value in the buffer.
    --  --------------------
-   procedure Append_Value (Source : in out Buffer;
+   procedure Append_Value (Target : in out Buffer;
                            Value  : in Identifier) is
       S : constant String := Identifier'Image (Value);
    begin
-      Append (Source.Buf, S (S'First + 1 .. S'Last));
+      Append (Target.Buf, S (S'First + 1 .. S'Last));
    end Append_Value;
 
    --  --------------------

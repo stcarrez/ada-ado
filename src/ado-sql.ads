@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
-with Ada.Calendar;
 
 with Util.Strings;
 with ADO.Parameters;
@@ -26,6 +25,9 @@ with ADO.Parameters;
 package ADO.SQL is
 
    use Ada.Strings.Unbounded;
+
+   function Escape (Str : in Unbounded_String) return String;
+   function Escape (Str : in String) return String;
 
    type Keyword_Array is array (Natural range <>) of Util.Strings.Name_Access;
 
@@ -61,7 +63,7 @@ package ADO.SQL is
    type Buffer_Access is access all Buffer;
 
    --  Clear the SQL buffer.
-   procedure Clear (Source : in out Buffer);
+   procedure Clear (Target : in out Buffer);
 
    --  Append an SQL extract into the buffer.
    procedure Append (Target : in out Buffer;
