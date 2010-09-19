@@ -57,10 +57,17 @@ package ADO.Databases is
 
    --  Create a query statement.  The statement is not prepared
    function Create_Statement (Database : in Connection;
-                              Query    : in String) return Query_Statement'Class;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Query_Statement;
 
-   function Prepare_Statement (Database : in Connection;
-                               Query    : in String) return Query_Statement'Class;
+   --  Create a query statement.  The statement is not prepared
+   function Create_Statement (Database : in Connection;
+                              Query    : in String)
+                              return Query_Statement;
+   --
+   --
+--     function Prepare_Statement (Database : in Connection;
+--                                 Query    : in String) return Query_Statement'Class;
 
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Connection;
@@ -94,6 +101,21 @@ package ADO.Databases is
    procedure Execute (Database : in Master_Connection;
                       SQL      : in Query_String;
                       Id       : out Identifier);
+
+   --  Create a delete statement.
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Delete_Statement;
+
+   --  Create an insert statement.
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Insert_Statement;
+
+   --  Create an update statement.
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Update_Statement;
 
    --  ------------------------------
    --  The database connection source

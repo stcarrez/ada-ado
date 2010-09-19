@@ -47,8 +47,27 @@ package ADO.Drivers is
    type Database_Connection_Access is access all Database_Connection'Class;
 
    function Create_Statement (Database : in Database_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Query_Statement_Access is abstract;
+
+   function Create_Statement (Database : in Database_Connection;
                               Query    : in String)
-                              return Query_Statement'Class is abstract;
+                              return Query_Statement_Access is abstract;
+
+   --  Create a delete statement.
+   function Create_Statement (Database : in Database_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Delete_Statement_Access is abstract;
+
+   --  Create an insert statement.
+   function Create_Statement (Database : in Database_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Insert_Statement_Access is abstract;
+
+   --  Create an update statement.
+   function Create_Statement (Database : in Database_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Update_Statement_Access is abstract;
 
    --  Start a transaction.
    procedure Begin_Transaction (Database : in out Database_Connection) is abstract;
