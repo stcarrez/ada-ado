@@ -71,7 +71,7 @@ package body ADO.Model is
 
 
    procedure Set_Value (Object : in out Sequence_Ref;
-                         Value  : in Identifier) is
+                         Value  : in ADO.Identifier) is
       Impl : Sequence_Ref_Access;
    begin
       Set_Field (Object, Impl, 3);
@@ -79,7 +79,7 @@ package body ADO.Model is
    end Set_Value;
 
    function Get_Value (Object : in Sequence_Ref)
-                  return Identifier is
+                  return ADO.Identifier is
       Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
    begin
       return Impl.Value;
@@ -87,7 +87,7 @@ package body ADO.Model is
 
 
    procedure Set_Block_Size (Object : in out Sequence_Ref;
-                              Value  : in Identifier) is
+                              Value  : in ADO.Identifier) is
       Impl : Sequence_Ref_Access;
    begin
       Set_Field (Object, Impl, 4);
@@ -95,7 +95,7 @@ package body ADO.Model is
    end Set_Block_Size;
 
    function Get_Block_Size (Object : in Sequence_Ref)
-                  return Identifier is
+                  return ADO.Identifier is
       Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
    begin
       return Impl.Block_Size;
@@ -387,12 +387,21 @@ package body ADO.Model is
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
 
-      Object.Name := Stmt.Get_Unbounded_String (0);
-      Object.Object_Version := Stmt.Get_Integer (1);
+
+
+
+
+
       Object.Value := Stmt.Get_Identifier (2);
+
+
+
       Object.Block_Size := Stmt.Get_Identifier (3);
 
+
+
       Object.Object_Version := Stmt.Get_Integer (1);
+
       Set_Created (Object);
    end Load;
 

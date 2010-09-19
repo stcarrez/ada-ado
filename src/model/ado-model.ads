@@ -63,22 +63,22 @@ package ADO.Model is
 
    --  Set the sequence value
    procedure Set_Value (Object : in out Sequence_Ref;
-                        Value  : in Identifier);
+                        Value  : in ADO.Identifier);
 
    --  Get the sequence value
    function Get_Value (Object : in Sequence_Ref)
-                 return Identifier;
+                 return ADO.Identifier;
 
 
 
 
    --  Set the sequence block size
    procedure Set_Block_Size (Object : in out Sequence_Ref;
-                             Value  : in Identifier);
+                             Value  : in ADO.Identifier);
 
    --  Get the sequence block size
    function Get_Block_Size (Object : in Sequence_Ref)
-                 return Identifier;
+                 return ADO.Identifier;
 
 
 
@@ -129,26 +129,26 @@ private
 
    SEQUENCE_REF_NAME : aliased constant String := "sequence";
    
-   NAME_NAME : aliased constant String := "name";
+   COL_0_1_NAME : aliased constant String := "name";
    
-   OBJECT_VERSION_NAME : aliased constant String := "object_version";
+   COL_1_1_NAME : aliased constant String := "object_version";
    
-   VALUE_NAME : aliased constant String := "value";
+   COL_2_1_NAME : aliased constant String := "value";
    
-   BLOCK_SIZE_NAME : aliased constant String := "block_size";
+   COL_3_1_NAME : aliased constant String := "block_size";
    
 
    SEQUENCE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 4,
       Table => SEQUENCE_REF_NAME'Access,
       Members => (
-         NAME_NAME'Access,
+         COL_0_1_NAME'Access,
       
-         OBJECT_VERSION_NAME'Access,
+         COL_1_1_NAME'Access,
       
-         VALUE_NAME'Access,
+         COL_2_1_NAME'Access,
       
-         BLOCK_SIZE_NAME'Access
+         COL_3_1_NAME'Access
       )
      );
 
@@ -158,8 +158,8 @@ private
    with record
        Name : Unbounded_String;
        Object_Version : Integer;
-       Value : Identifier;
-       Block_Size : Identifier;
+       Value : ADO.Identifier;
+       Block_Size : ADO.Identifier;
    end record;
 
    type Sequence_Ref_Access is access all Sequence_Ref_Impl;
