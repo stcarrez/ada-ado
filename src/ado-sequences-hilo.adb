@@ -21,6 +21,7 @@ with Util.Log.Loggers;
 with ADO.Sessions;
 with ADO.Model;
 with ADO.Objects;
+with ADO.SQL;
 
 package body ADO.Sequences.Hilo is
 
@@ -75,15 +76,15 @@ package body ADO.Sequences.Hilo is
       loop
          --  Allocate a new sequence within a transaction.
          declare
-            Params : Parameter_List;
-            Found  : Boolean;
+            Query : ADO.SQL.Query;
+            Found : Boolean;
          begin
             Log.Info ("Allocate sequence range for {0}", Name);
 
             DB.Begin_Transaction;
-            Params.Set_Filter ("name = ?");
-            Params.Bind_Param (Position => 1, Value => Name);
-            Seq_Block.Find (Database => DB, Parameters => Params, Found => Found);
+            Query.Set_Filter ("name = ?");
+            Query.Bind_Param (Position => 1, Value => Name);
+            Seq_Block.Find (Session => DB, Query => Query, Found => Found);
 
             begin
                if Found then
