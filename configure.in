@@ -52,7 +52,7 @@ AC_SUBST(ADO_LIBDIR)
 
 DB=""
 AC_CHECK_LIB(mysqlclient,mysql_init,[DB="$DB mysql"])
-AC_CHECK_LIB(sqlite,sqlite3_open,[DB="$DB sqlite"])
+AC_CHECK_LIB(sqlite3,sqlite3_open,[DB="$DB sqlite"])
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''

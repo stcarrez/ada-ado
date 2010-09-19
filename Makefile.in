@@ -42,6 +42,12 @@ analyze:
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
 
+GENERATOR=../ada-gen/bin/dbmapper -t ../ada-gen/templates
+
+generate:
+	$(GENERATOR) -o src/model src/alloc-sequence.xml
+	$(GENERATOR) -o regtests/model regtests/simple-model.xml
+#	$(GENERATOR) -o samples/model samples/user.xml
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
