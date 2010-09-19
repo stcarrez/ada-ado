@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  awa --
+--  ADO.Model -- ADO.Model
 --  Copyright (C) 2009, 2010 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -20,6 +20,9 @@ with ADO.Databases;
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
+with ADO.SQL;
+with ADO.Schemas;
+
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
@@ -33,78 +36,130 @@ package ADO.Model is
    use ADO.Databases;
    use ADO.Statements;
 
-
    --  --------------------
-   --  Sequence recordObject versionName of the sequenceThe sequence valueThe sequence block size
+   --  Sequence generator
    --  --------------------
    type Sequence_Ref is new ADO.Objects.Object_Ref with null record;
 
+
+   --  Set the sequence name
+   procedure Set_Name (Object : in out Sequence_Ref;
+                       Value  : in String);
+
    procedure Set_Name (Object : in out Sequence_Ref;
                        Value : in Unbounded_String);
-   procedure Set_Name (Object : in out Sequence_Ref;
-                       Value : in String);
-   function Get_Name (Object : in Sequence_Ref)
-                 return Unbounded_String;
+
+   --  Get the sequence name
    function Get_Name (Object : in Sequence_Ref)
                  return String;
 
+   function Get_Name (Object : in Sequence_Ref)
+                 return Unbounded_String;
+
+
+
+
+
+
+   --  Set the sequence value
    procedure Set_Value (Object : in out Sequence_Ref;
-                        Value : in Identifier);
+                        Value  : in Identifier);
+
+   --  Get the sequence value
    function Get_Value (Object : in Sequence_Ref)
                  return Identifier;
 
+
+
+
+   --  Set the sequence block size
    procedure Set_Block_Size (Object : in out Sequence_Ref;
-                             Value : in Identifier);
+                             Value  : in Identifier);
+
+   --  Get the sequence block size
    function Get_Block_Size (Object : in Sequence_Ref)
                  return Identifier;
 
+
+
+
+   --  Internal method to allocate the Object_Record instance
+   procedure Allocate (Object : in out Sequence_Ref);
 
    --  Copy of the object.
    function Copy (Object : Sequence_Ref) return Sequence_Ref;
 
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
-   procedure Load (Object   : in out Sequence_Ref;
-                   Database : in out ADO.Sessions.Session'Class;
-                   Id       : in String);
+   procedure Load (Object  : in out Sequence_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Id      : in Unbounded_String);
 
    --  Find and load the entity.
-   procedure Find (Object     : in out Sequence_Ref;
-                   Database   : in out ADO.Sessions.Session'Class;
-                   Parameters : in ADO.Statements.Parameter_List;
-                   Found      : out Boolean);
+   procedure Find (Object  : in out Sequence_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
 
    --  Save the entity.  If the entity does not have an identifier, an identifier is allocated
    --  and it is inserted in the table.  Otherwise, only data fields which have been changed
    --  are updated.
-   procedure Save (Object   : in out Sequence_Ref;
-                   Database : in out ADO.Sessions.Master_Session'Class);
+   procedure Save (Object  : in out Sequence_Ref;
+                   Session : in out ADO.Sessions.Master_Session'Class);
 
    --  Delete the entity.
-   procedure Delete (Object   : in out Sequence_Ref;
-                     Database : in out ADO.Sessions.Master_Session'Class);
+   procedure Delete (Object  : in out Sequence_Ref;
+                     Session : in out ADO.Sessions.Master_Session'Class);
 
    function Get_Value (Item : in Sequence_Ref;
                        Name : in String) return EL.Objects.Object;
 
-   package Sequence_Ref_Vectors is new Ada.Containers.Vectors (Index_Type => Natural,
-                                                                Element_Type => Sequence_Ref,
-                                                                "=" => "=");
+   package Sequence_Ref_Vectors is
+      new Ada.Containers.Vectors (Index_Type   => Natural,
+                                  Element_Type => Sequence_Ref,
+                                  "="          => "=");
    subtype Sequence_Ref_Vector is Sequence_Ref_Vectors.Vector;
 
-   procedure List (Object   : in out Sequence_Ref_Vector;
-                   Query    : in out ADO.Statements.Query_Statement'Class);
+   procedure List (Object  : in out Sequence_Ref_Vector;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class);
+
 
 private
 
+   SEQUENCE_REF_NAME : aliased constant String := "sequence";
+   
+   NAME_NAME : aliased constant String := "name";
+   
+   OBJECT_VERSION_NAME : aliased constant String := "object_version";
+   
+   VALUE_NAME : aliased constant String := "value";
+   
+   BLOCK_SIZE_NAME : aliased constant String := "block_size";
+   
 
-   type Sequence_Ref_Impl is new
-      ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER) with record
+   SEQUENCE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+     (Count => 4,
+      Table => SEQUENCE_REF_NAME'Access,
+      Members => (
+         NAME_NAME'Access,
+      
+         OBJECT_VERSION_NAME'Access,
+      
+         VALUE_NAME'Access,
+      
+         BLOCK_SIZE_NAME'Access
+      )
+     );
+
+   type Sequence_Ref_Impl is
+      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
+                                     Of_Class => SEQUENCE_REF_TABLE'Access)
+   with record
        Name : Unbounded_String;
+       Object_Version : Integer;
        Value : Identifier;
        Block_Size : Identifier;
-       Version : Integer;
-       Modified : ADO.Objects.Modified_Map;
    end record;
 
    type Sequence_Ref_Access is access all Sequence_Ref_Impl;
@@ -113,22 +168,24 @@ private
    procedure Destroy (Object : access Sequence_Ref_Impl);
 
    overriding
-   procedure Find (Object     : in out Sequence_Ref_Impl;
-                   Database   : in out ADO.Sessions.Session'Class;
-                   Parameters : in ADO.Statements.Parameter_List;
-                   Found      : out Boolean);
-   procedure Load (Object   : in out Sequence_Ref_Impl;
-                   Query    : in out ADO.Statements.Query_Statement'Class);
+   procedure Find (Object  : in out Sequence_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
+   
+   procedure Load (Object  : in out Sequence_Ref_Impl;
+                   Stmt   : in out ADO.Statements.Query_Statement'Class);
 
    overriding
-   procedure Save (Object   : in out Sequence_Ref_Impl;
-                   Database : in out ADO.Sessions.Master_Session'Class);
-   procedure Create (Object : in out Sequence_Ref_Impl;
-                     Database : in out ADO.Sessions.Master_Session'Class);
+   procedure Save (Object  : in out Sequence_Ref_Impl;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+   
+   procedure Create (Object  : in out Sequence_Ref_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
 
    overriding
-   procedure Delete (Object   : in out Sequence_Ref_Impl;
-                     Database : in out ADO.Sessions.Master_Session'Class);
+   procedure Delete (Object  : in out Sequence_Ref_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
 
 
    procedure Set_Field (Object : in out Sequence_Ref'Class;

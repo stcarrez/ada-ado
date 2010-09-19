@@ -1,19 +1,21 @@
-<model package="ADO" name="ado">
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping default-cascade="none">
+    <class name="ADO.Model.Sequence_Ref" table="sequence" dynamic-insert="true" dynamic-update="true">
+        <comment>Sequence generator</comment>
+        <id name="name" type="String" unsaved-value="0">
+            <comment>the sequence name</comment>
+            <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+            <generator class="none"/>
+        </id>
+        <version name="object_version" type="int" column="objectVersion"/>
+        <property name="value" type="Identifier">
+            <comment>the sequence value</comment>
+            <column name="VALUE" not-null="false" unique="false" sql-type="BIGINT"/>
+        </property>
+        <property name="block_size" type="Identifier">
+            <comment>the sequence block size</comment>
+            <column name="BLOCK_SIZE" not-null="false" unique="false" sql-type="BIGINT"/>
+        </property>
+    </class>
 
-   <table name="sequence" type="Sequence_Ref" generator="none">
-       <comment>Sequence record</comment>
-       <version name="version" type="Integer">
-           <comment>Object version</comment>
-       </version>
-       <column name="name" type="String" length="255" primary-key="true">
-           <comment>Name of the sequence</comment>
-       </column>
-       <column name="value" type="Identifier">
-           <comment>The sequence value</comment>
-       </column>
-       <column name="block_size" type="Identifier">
-           <comment>The sequence block size</comment>
-       </column>
-   </table>
-
-</model>
+</hibernate-mapping>
