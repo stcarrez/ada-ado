@@ -8,11 +8,11 @@
             <generator class="none"/>
         </id>
         <version name="object_version" type="int" column="objectVersion"/>
-        <property name="value" type="Identifier">
+        <property name="value" type="ADO.Identifier">
             <comment>the sequence value</comment>
             <column name="VALUE" not-null="false" unique="false" sql-type="BIGINT"/>
         </property>
-        <property name="block_size" type="Identifier">
+        <property name="block_size" type="ADO.Identifier">
             <comment>the sequence block size</comment>
             <column name="BLOCK_SIZE" not-null="false" unique="false" sql-type="BIGINT"/>
         </property>
