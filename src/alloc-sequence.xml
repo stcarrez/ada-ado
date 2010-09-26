@@ -7,7 +7,7 @@
             <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
             <generator class="none"/>
         </id>
-        <version name="object_version" type="int" column="objectVersion"/>
+        <version name="version" type="int" column="version"/>
         <property name="value" type="ADO.Identifier">
             <comment>the sequence value</comment>
             <column name="VALUE" not-null="false" unique="false" sql-type="BIGINT"/>

@@ -89,10 +89,10 @@ package ADO.Model is
                    Query   : in ADO.SQL.Query'Class);
 private
    SEQUENCE_REF_NAME : aliased constant String := "sequence";
-   COL_0_1_NAME : aliased constant String := "name";
-   COL_1_1_NAME : aliased constant String := "object_version";
-   COL_2_1_NAME : aliased constant String := "value";
-   COL_3_1_NAME : aliased constant String := "block_size";
+   COL_0_1_NAME : aliased constant String := "NAME";
+   COL_1_1_NAME : aliased constant String := "version";
+   COL_2_1_NAME : aliased constant String := "VALUE";
+   COL_3_1_NAME : aliased constant String := "BLOCK_SIZE";
    SEQUENCE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 4,
       Table => SEQUENCE_REF_NAME'Access,
@@ -105,7 +105,7 @@ private
    type Sequence_Ref_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => SEQUENCE_REF_TABLE'Access)
-   with record       Name : Unbounded_String;       Object_Version : Integer;       Value : ADO.Identifier;       Block_Size : ADO.Identifier;
+   with record       Name : Unbounded_String;       Version : Integer;       Value : ADO.Identifier;       Block_Size : ADO.Identifier;
    end record;
    type Sequence_Ref_Access is access all Sequence_Ref_Impl;
    overriding

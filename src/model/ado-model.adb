@@ -97,7 +97,7 @@ package body ADO.Model is
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
             Copy.Name := Impl.Name;
-            Copy.Object_Version := Impl.Object_Version;
+            Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
             Copy.Block_Size := Impl.Block_Size;
          end;
@@ -189,27 +189,27 @@ package body ADO.Model is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (SEQUENCE_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "name",
+         Stmt.Save_Field (Name  => "NAME",
                           Value => Object.Name);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "value",
+         Stmt.Save_Field (Name  => "VALUE",
                           Value => Object.Value);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => "block_size",
+         Stmt.Save_Field (Name  => "BLOCK_SIZE",
                           Value => Object.Block_Size);
          Object.Clear_Modified (4);
       end if;
       if Stmt.Has_Save_Fields then
-         Object.Object_Version := Object.Object_Version + 1;
-         Stmt.Save_Field (Name  => "object_version",
-                          Value => Object.Object_Version);
-         Stmt.Set_Filter (Filter => "name = ? and object_version = ?");
+         Object.Version := Object.Version + 1;
+         Stmt.Save_Field (Name  => "version",
+                          Value => Object.Version);
+         Stmt.Set_Filter (Filter => "name = ? and version = ?");
          Stmt.Add_Param (Value => Object.Name);
-         Stmt.Add_Param (Value => Object.Object_Version - 1);
+         Stmt.Add_Param (Value => Object.Version - 1);
          declare
             Result : Integer;
          begin
@@ -232,13 +232,13 @@ package body ADO.Model is
    begin
       Query.Save_Field (Name => "name", Value => Object.Name);
 
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
+      Query.Save_Field (Name => "version", Value => Object.Version);
 
       Query.Save_Field (Name => "value", Value => Object.Value);
 
       Query.Save_Field (Name => "block_size", Value => Object.Block_Size);
-      Object.Object_Version := 1;
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
+      Object.Version := 1;
+      Query.Save_Field (Name => "version", Value => Object.Version);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -295,10 +295,10 @@ package body ADO.Model is
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
       Object.Name := Stmt.Get_Unbounded_String (0);
-      Object.Object_Version := Stmt.Get_Integer (1);
+      Object.Version := Stmt.Get_Integer (1);
       Object.Value := Stmt.Get_Identifier (2);
       Object.Block_Size := Stmt.Get_Identifier (3);
-      Object.Object_Version := Stmt.Get_Integer (1);
+      Object.Version := Stmt.Get_Integer (1);
       Set_Created (Object);
    end Load;
 end ADO.Model;
