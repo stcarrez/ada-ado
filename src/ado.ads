@@ -19,11 +19,15 @@
 with Interfaces.C;
 package ADO is
 
-   subtype Int8 is Interfaces.C.signed_char;
+   type Identifier is new Integer;
 
-   subtype Int16 is Interfaces.C.short;
+   NO_IDENTIFIER : constant Identifier := -1;
 
-   subtype Int32 is Interfaces.C.int;
+--   subtype Int8 is Interfaces.C.signed_char;
+
+--   subtype Int16 is Interfaces.C.short;
+
+--   subtype Int32 is Interfaces.C.int;
 
    type Int64 is range -2**63 .. 2**63 - 1;
    for Int64'Size use 64;
