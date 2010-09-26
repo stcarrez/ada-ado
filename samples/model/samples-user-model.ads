@@ -119,13 +119,13 @@ package Samples.User.Model is
                    Query   : in ADO.SQL.Query'Class);
 private
    USER_REF_NAME : aliased constant String := "user";
-   COL_0_1_NAME : aliased constant String := "id";
-   COL_1_1_NAME : aliased constant String := "object_version";
-   COL_2_1_NAME : aliased constant String := "name";
-   COL_3_1_NAME : aliased constant String := "email";
-   COL_4_1_NAME : aliased constant String := "date";
-   COL_5_1_NAME : aliased constant String := "description";
-   COL_6_1_NAME : aliased constant String := "status";
+   COL_0_1_NAME : aliased constant String := "ID";
+   COL_1_1_NAME : aliased constant String := "objectVersion";
+   COL_2_1_NAME : aliased constant String := "NAME";
+   COL_3_1_NAME : aliased constant String := "EMAIL";
+   COL_4_1_NAME : aliased constant String := "DATE";
+   COL_5_1_NAME : aliased constant String := "DESCRIPTION";
+   COL_6_1_NAME : aliased constant String := "STATUS";
    USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 7,
       Table => USER_REF_NAME'Access,

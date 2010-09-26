@@ -261,32 +261,32 @@ package body Samples.User.Model is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (USER_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "id",
+         Stmt.Save_Field (Name  => "ID",
                           Value => Object.Id);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "name",
+         Stmt.Save_Field (Name  => "NAME",
                           Value => Object.Name);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => "email",
+         Stmt.Save_Field (Name  => "EMAIL",
                           Value => Object.Email);
          Object.Clear_Modified (4);
       end if;
       if Object.Is_Modified (5) then
-         Stmt.Save_Field (Name  => "date",
+         Stmt.Save_Field (Name  => "DATE",
                           Value => Object.Date);
          Object.Clear_Modified (5);
       end if;
       if Object.Is_Modified (6) then
-         Stmt.Save_Field (Name  => "description",
+         Stmt.Save_Field (Name  => "DESCRIPTION",
                           Value => Object.Description);
          Object.Clear_Modified (6);
       end if;
       if Object.Is_Modified (7) then
-         Stmt.Save_Field (Name  => "status",
+         Stmt.Save_Field (Name  => "STATUS",
                           Value => Object.Status);
          Object.Clear_Modified (7);
       end if;
