@@ -19,6 +19,8 @@
 with Util.Log;
 with Util.Log.Loggers;
 
+with ADO.SQL;
+with Ada.Unchecked_Deallocation;
 with System.Address_Image;
 package body ADO.Databases is
 
@@ -43,24 +45,36 @@ package body ADO.Databases is
    --  Create a query statement.  The statement is not prepared
    --  ------------------------------
    function Create_Statement (Database : in Connection;
-                              Query    : in String) return Query_Statement'Class is
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Query_Statement is
    begin
       if Database.Impl = null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      return Database.Impl.Create_Statement (Query);
+      declare
+         Query : Query_Statement_Access := Database.Impl.all.Create_Statement (Table);
+      begin
+         return ADO.Statements.Create_Statement (Query);
+      end;
    end Create_Statement;
 
-   function Prepare_Statement (Database : in Connection;
-                               Query    : in String) return Query_Statement'Class is
+   --  Create a query statement.  The statement is not prepared
+   function Create_Statement (Database : in Connection;
+                              Query    : in String)
+                              return Query_Statement is
    begin
       if Database.Impl = null then
-         Log.Error ("Database connection is not initialized");
+         Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      return Database.Impl.Create_Statement (Query);
-   end Prepare_Statement;
+      declare
+         Stmt : Query_Statement_Access := Database.Impl.all.Create_Statement (null);
+      begin
+         Append (Query => Stmt.all, SQL => Query);
+         return ADO.Statements.Create_Statement (Stmt);
+      end;
+   end Create_Statement;
 
    --  ------------------------------
    --  Load the database schema definition for the current database.
@@ -129,19 +143,6 @@ package body ADO.Databases is
       Database.Impl.Rollback;
    end Rollback;
 
-   procedure Delete (Database : in Master_Connection;
-                     Name     : in String;
-                     Id       : in Identifier) is
---      Sql : Query_String;
-   begin
---      Append (Source => Sql, New_Item => "DELETE from '");
---      Append_Escape (SQL => Sql, Value => Name);
---      Append (Source => Sql, New_Item => "' WHERE id = ");
---      Append (SQL => Sql, Value => Id);
---      Database.Execute (Sql);
-      null;
-   end Delete;
-
    procedure Execute (Database : in Master_Connection;
                       SQL      : in Query_String) is
    begin
@@ -158,6 +159,46 @@ package body ADO.Databases is
 
       Database.Impl.Execute (SQL, Id);
    end Execute;
+
+   --  ------------------------------
+   --  Create a delete statement.
+   --  ------------------------------
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Delete_Statement is
+   begin
+      Log.Info ("Create delete statement");
+
+      declare
+         Stmt : Delete_Statement_Access := Database.Impl.all.Create_Statement (Table);
+      begin
+         return Create_Statement (Stmt);
+      end;
+   end Create_Statement;
+
+   --  ------------------------------
+   --  Create an insert statement.
+   --  ------------------------------
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Insert_Statement is
+   begin
+      Log.Info ("Create insert statement");
+
+      return Create_Statement (Database.Impl.all.Create_Statement (Table));
+   end Create_Statement;
+
+   --  ------------------------------
+   --  Create an update statement.
+   --  ------------------------------
+   function Create_Statement (Database : in Master_Connection;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Update_Statement is
+   begin
+      Log.Info ("Create insert statement");
+
+      return Create_Statement (Database.Impl.all.Create_Statement (Table));
+   end Create_Statement;
 
    --  ------------------------------
    --  Adjust the connection reference counter
@@ -177,49 +218,21 @@ package body ADO.Databases is
    --  ------------------------------
    overriding
    procedure Finalize (Object : in out Connection) is
+
+      procedure Free is new
+        Ada.Unchecked_Deallocation (Object => Database_Connection'Class,
+                                    Name   => Database_Connection_Access);
+
    begin
       if Object.Impl /= null then
          Log.Info ("Finalize {0} : {1}", System.Address_Image (Object.Impl.all'Address),
                   Natural'Image (Object.Impl.Count));
          Object.Impl.Count := Object.Impl.Count - 1;
          if Object.Impl.Count = 0 then
-            Release (Object.Impl);
-            Object.Impl := null;
+            Free (Object.Impl);
          end if;
       end if;
    end Finalize;
-
-   --  The default data source.
-   DS : DataSource_Access := null;
-
-   --  ------------------------------
-   --  Get the default data source
-   --  ------------------------------
-   function Get_DataSource return DataSource'Class is
-   begin
-      return DS.all;
-   end Get_DataSource;
-
-   --  ------------------------------
-   --  Set the default data source
-   --  ------------------------------
-   procedure Set_DataSource (Controller : in DataSource_Access) is
-   begin
-      DS := Controller;
-   end Set_DataSource;
-
-   --  ------------------------------
-   --  Get a read-only database connection from the default data source.
-   --  ------------------------------
-   function Get_Connection return Master_Connection'Class is
-   begin
-      Log.Info ("Get master connection");
-      if DS = null then
-         raise NOT_OPEN with "No default data source";
-      end if;
-      return DS.Get_Connection;
-   end Get_Connection;
-
 
    --  ------------------------------
    --  Attempts to establish a connection with the data source

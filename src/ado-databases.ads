@@ -64,10 +64,6 @@ package ADO.Databases is
    function Create_Statement (Database : in Connection;
                               Query    : in String)
                               return Query_Statement;
-   --
-   --
---     function Prepare_Statement (Database : in Connection;
---                                 Query    : in String) return Query_Statement'Class;
 
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Connection;
@@ -87,11 +83,6 @@ package ADO.Databases is
 
    --  Rollback the current transaction.
    procedure Rollback (Database : in out Master_Connection);
-
-   --  Delete an item from the table in the database.
-   procedure Delete (Database : in Master_Connection;
-                     Name     : in String;
-                     Id       : in Identifier);
 
    --  Execute an SQL statement
    procedure Execute (Database : in Master_Connection;
@@ -165,19 +156,6 @@ package ADO.Databases is
    --  Get a slave database connection
    function Get_Slave_Connection (Controller : in Replicated_DataSource)
                                  return Connection'Class;
-
-   --  ------------------------------
-   --  Data source access
-   --  ------------------------------
-
-   --  Get the default data source
-   function Get_DataSource return DataSource'Class;
-
-   --  Set the default data source
-   procedure Set_DataSource (Controller : in DataSource_Access);
-
-   --  Get a database connection from the default data source.
-   function Get_Connection return Master_Connection'Class;
 
 private
 
