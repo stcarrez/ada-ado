@@ -64,6 +64,9 @@ package body ADO.Objects is
       end case;
    end Equivalent_Elements;
 
+   --  ------------------------------
+   --  Increment the reference counter when an object is copied
+   --  ------------------------------
    procedure Adjust (Object : in out Object_Ref) is
    begin
       if Object.Object /= null then
