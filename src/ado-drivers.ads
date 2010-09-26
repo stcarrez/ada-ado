@@ -41,7 +41,7 @@ package ADO.Drivers is
    --  Database connection implementation
    --  ------------------------------
    --
-   type Database_Connection is abstract tagged limited record
+   type Database_Connection is abstract new Ada.Finalization.Limited_Controlled with record
       Count : Natural := 0;
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
@@ -91,9 +91,6 @@ package ADO.Drivers is
 
    --  Closes the database connection
    procedure Close (Database : in out Database_Connection) is abstract;
-
-   --  Releases the connection and all resources used to maintain it.
-   procedure Release (Database : access Database_Connection) is abstract;
 
    --  ------------------------------
    --  The database configuration properties
