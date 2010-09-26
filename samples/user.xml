@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping default-cascade="none">
+    <class name="Samples.User.Model.User_Ref"
+           table="user" dynamic-insert="true" dynamic-update="true">
+        <comment>Record representing a user</comment>
+        <id name="id" type="ADO.Identifier" unsaved-value="0">
+            <comment>the user identifier</comment>
+            <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
+            <generator class="none"/>
+        </id>
+        <version name="object_version" type="int" column="objectVersion"/>
+        <property name="name" type="String">
+            <comment>the user name</comment>
+            <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="email" type="String">
+            <comment>the user email</comment>
+            <column name="EMAIL" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="date" type="String">
+            <comment>the user registration date</comment>
+            <column name="DATE" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="description" type="String">
+            <comment>the user description</comment>
+            <column name="DESCRIPTION" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="status" type="Integer">
+            <comment>the user status</comment>
+            <column name="STATUS" not-null="false" unique="false" sql-type="Integer"/>
+        </property>
+    </class>
+
+</hibernate-mapping>
