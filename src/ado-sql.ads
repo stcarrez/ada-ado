@@ -130,6 +130,11 @@ package ADO.SQL is
 
    function Get_Filter (Source : in Query) return String;
 
+   --  Set the parameters from another parameter list.
+   --  If the parameter list is a query object, also copy the filter part.
+   procedure Set_Parameters (Params : in out Query;
+                             From   : in ADO.Parameters.Abstract_List'Class);
+
    --  Expand the parameters into the query and return the expanded SQL query.
    function Expand (Source : in Query) return String;
 

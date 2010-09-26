@@ -216,9 +216,26 @@ package body ADO.SQL is
 
    function Has_Filter (Source : in Query) return Boolean is
    begin
-      return Source.Filter.Buf = Null_Unbounded_String
-        or else Length (Source.Filter.Buf) = 0;
+      return Source.Filter.Buf /= Null_Unbounded_String
+        and Length (Source.Filter.Buf) > 0;
    end Has_Filter;
+
+   --  --------------------
+   --  Set the parameters from another parameter list.
+   --  If the parameter list is a query object, also copy the filter part.
+   --  --------------------
+   procedure Set_Parameters (Params : in out Query;
+                             From   : in ADO.Parameters.Abstract_List'Class) is
+   begin
+      ADO.Parameters.List (Params).Set_Parameters (From);
+      if From in Query'Class then
+         declare
+            L : constant Query'Class := Query'Class (From);
+         begin
+            Params.Filter := L.Filter;
+         end;
+      end if;
+   end Set_Parameters;
 
    --  --------------------
    --  Expand the parameters into the query and return the expanded SQL query.
