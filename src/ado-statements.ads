@@ -191,6 +191,10 @@ package ADO.Statements is
    type Update_Statement is new Statement with private;
    type Update_Statement_Access is access all Update_Statement'Class;
 
+   --  Get the update query object associated with this update statement.
+   function Get_Update_Query (Update : in Update_Statement)
+                              return ADO.SQL.Update_Query_Access;
+
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    procedure Save_Field (Update : in out Update_Statement;
@@ -308,6 +312,7 @@ private
    type Update_Statement is new Statement with record
       Proxy  : Update_Statement_Access := null;
       Update : ADO.SQL.Update_Query_Access;
+      Ref_Counter : Natural := 0;
    end record;
 
    type Insert_Statement is new Update_Statement with record

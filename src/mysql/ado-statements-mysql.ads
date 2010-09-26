@@ -193,11 +193,13 @@ private
 
    type Mysql_Update_Statement is new Update_Statement with record
       Connection : Mysql_Access;
+      This_Query : aliased ADO.SQL.Update_Query;
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
 
    type Mysql_Insert_Statement is new Insert_Statement with record
       Connection : Mysql_Access;
+      This_Query : aliased ADO.SQL.Update_Query;
    end record;
 
 end ADO.Statements.Mysql;

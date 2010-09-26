@@ -185,6 +185,8 @@ package ADO.SQL is
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Query) return Boolean;
 
+   procedure Append_Fields (Update : in out Update_Query);
+
 private
 
    type Buffer is new ADO.Parameters.List with record

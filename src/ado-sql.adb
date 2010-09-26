@@ -249,13 +249,13 @@ package body ADO.SQL is
                         Name   : in String) is
    begin
       Update.Pos := Update.Pos + 1;
---      if Update.Pos > 1 then
---         Append (Query => Update.Set_Fields, SQL => ",");
---         Append (Query => Update.Fields, SQL =>",");
---      end if;
---      Append_Name (Query => Update.Set_Fields, Name => Name);
---      Append (Query => Update.Set_Fields, SQL => " = ?");
---      Append (Query => Update.Fields, SQL => "?");
+      if Update.Pos > 1 then
+         Append (Target => Update.Set_Fields, SQL => ",");
+         Append (Target => Update.Fields, SQL =>",");
+      end if;
+      Append_Name (Target => Update.Set_Fields, Name => Name);
+      Append (Target => Update.Set_Fields, SQL => " = ?");
+      Append (Target => Update.Fields, SQL => "?");
    end Add_Field;
 
    --  ------------------------------
@@ -337,5 +337,10 @@ package body ADO.SQL is
    begin
       return Update.Pos > 0;
    end Has_Save_Fields;
+
+   procedure Append_Fields (Update : in out Update_Query) is
+   begin
+      Append (Target => Update.SQL, SQL => To_String (Update.Set_Fields.Buf));
+   end Append_Fields;
 
 end ADO.SQL;

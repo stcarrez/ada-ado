@@ -390,6 +390,15 @@ package body ADO.Statements is
    end Execute;
 
    --  ------------------------------
+   --  Get the update query object associated with this update statement.
+   --  ------------------------------
+   function Get_Update_Query (Update : in Update_Statement)
+                              return ADO.SQL.Update_Query_Access is
+   begin
+      return Update.Update;
+   end Get_Update_Query;
+
+   --  ------------------------------
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    --  ------------------------------
@@ -500,7 +509,10 @@ package body ADO.Statements is
    procedure Execute (Query : in out Update_Statement;
                       Result : out Integer) is
    begin
-      null;
+      if Query.Proxy = null then
+         raise Invalid_Statement with "Update statement not initialized";
+      end if;
+      Query.Proxy.Execute (Result);
    end Execute;
 
    function Create_Statement (Proxy : Query_Statement_Access) return Query_Statement is
@@ -522,14 +534,20 @@ package body ADO.Statements is
    function Create_Statement (Proxy : Update_Statement_Access) return Update_Statement is
    begin
       return Result : Update_Statement do
+         Result.Update := Proxy.Get_Update_Query;
+         Result.Query := Result.Update.all'Access;
          Result.Proxy := Proxy;
+         Result.Proxy.Ref_Counter := 1;
       end return;
    end Create_Statement;
 
    function Create_Statement (Proxy : Update_Statement_Access) return Insert_Statement is
    begin
       return Result : Insert_Statement do
+         Result.Update := Proxy.Get_Update_Query;
+         Result.Query := Result.Update.all'Access;
          Result.Proxy := Proxy;
+         Result.Proxy.Ref_Counter := 1;
       end return;
    end Create_Statement;
 

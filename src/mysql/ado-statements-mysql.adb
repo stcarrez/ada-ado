@@ -105,16 +105,17 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt   : in out Mysql_Update_Statement;
                       Result : out Integer) is
    begin
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "UPDATE ");
-      ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => " SET ");
-      if Stmt.Query.Has_Filter then
-         ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => " WHERE ");
-         ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => Stmt.Query.Get_Filter);
+      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
+      ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
+      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
+      ADO.SQL.Append_Fields (Update => Stmt.This_Query);
+      if Stmt.This_Query.Has_Filter then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " WHERE ");
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Filter);
       end if;
 
       declare
-         Sql_Query : constant String := Stmt.Query.Expand;
+         Sql_Query : constant String := Stmt.This_Query.Expand;
          Res       : int;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
@@ -136,6 +137,8 @@ package body ADO.Statements.Mysql is
       Result : constant Mysql_Update_Statement_Access := new Mysql_Update_Statement;
    begin
       Result.Connection := Database;
+      Result.Table  := Table;
+      Result.Update := Result.This_Query'Access;
       return Result.all'Access;
    end Create_Statement;
 
@@ -175,6 +178,7 @@ package body ADO.Statements.Mysql is
       Result : constant Mysql_Insert_Statement_Access := new Mysql_Insert_Statement;
    begin
       Result.Connection := Database;
+      Result.Update := Result.This_Query'Access;
       return Result.all'Access;
    end Create_Statement;
 
