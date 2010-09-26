@@ -1,0 +1,61 @@
+
+with Interfaces.C; use Interfaces.C;
+with Mysql.Mysql;  use Mysql.Mysql;
+
+package Mysql.Time is
+
+
+   -- Copyright (C) 2004 MySQL AB
+   -- This program is free software; you can redistribute it and/or modify
+   -- it under the terms of the GNU General Public License as published by
+   -- the Free Software Foundation; version 2 of the License.
+   -- This program is distributed in the hope that it will be useful,
+   -- but WITHOUT ANY WARRANTY; without even the implied warranty of
+   -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   -- GNU General Public License for more details.
+   -- You should have received a copy of the GNU General Public License
+   -- along with this program; if not, write to the Free Software
+   -- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+   --  Time declarations shared between the server and client API:
+   --  you should not add anything to this header unless it's used
+   --  (and hence should be visible) in mysql.h.
+   --  If you're looking for a place to add new time-related declaration,
+   --  it's most likely my_time.h. See also "C API Handling of Date
+   --  and Time Values" chapter in documentation.
+   --
+
+   subtype enum_mysql_timestamp_type is unsigned;
+   MYSQL_TIMESTAMP_NONE : constant enum_mysql_timestamp_type := -2;
+   MYSQL_TIMESTAMP_ERROR : constant enum_mysql_timestamp_type := -1;
+   MYSQL_TIMESTAMP_DATE : constant enum_mysql_timestamp_type := 0;
+   MYSQL_TIMESTAMP_DATETIME : constant enum_mysql_timestamp_type := 1;
+   MYSQL_TIMESTAMP_TIME : constant enum_mysql_timestamp_type := 2;  -- /usr/include/mysql/mysql_time.h:29:1
+
+   --  Structure which is used to represent datetime values inside MySQL.
+   --  We assume that values in this structure are normalized, i.e. year <= 9999,
+   --  month <= 12, day <= 31, hour <= 23, hour <= 59, hour <= 59. Many functions
+   --  in server such as my_system_gmt_sec() or make_time() family of functions
+   --  rely on this (actually now usage of make_*() family relies on a bit weaker
+   --  restriction). Also functions that produce MYSQL_TIME as result ensure this.
+   --  There is one exception to this rule though if this structure holds time
+   --  value (time_type == MYSQL_TIMESTAMP_TIME) days and hour member can hold
+   --  bigger values.
+   --
+
+   type st_mysql_time is record
+      year : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:17
+      month : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:23
+      day : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:30
+      hour : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:35
+      minute : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:41
+      second : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:49
+      second_part : aliased unsigned_long;  -- /usr/include/mysql/mysql_time.h:50:17
+      neg : aliased my_bool;  -- /usr/include/mysql/mysql_time.h:51:17
+      time_type : aliased enum_mysql_timestamp_type;  -- /usr/include/mysql/mysql_time.h:52:34
+   end record;
+   pragma Convention (C, st_mysql_time);  -- /usr/include/mysql/mysql_time.h:48:1
+
+   subtype MYSQL_TIME is st_mysql_time;
+
+end Mysql.Time;
