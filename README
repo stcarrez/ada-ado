@@ -1,0 +1,35 @@
+Ada Database Objects
+
+This Ada05 library provides object relational mapping
+to access a database in Ada05.  Most of the concepts
+developped for ADO come from the Java Hibernate ORM.
+
+This library supports MySQL, Sqlite as databases.
+
+Build with the following commands:
+
+   ./configure
+   make
+
+
+The samples can be built using:
+
+   gnatmake -Psamples
+   
+   
+The unit tests are built using:
+
+   gnatmake -Ptests
+
+
+And unit tests are executed with:
+
+   bin/ado_mysql_harness
+
+
+Documentation
+
+   The Ada Database Objects sources as well as a wiki documentation is provided on:
+
+   http://code.google.com/p/ada-ado/
+
