@@ -35,6 +35,7 @@ package body ADO.Statements.Mysql is
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
 
    use Interfaces.C;
+   use type ADO.Schemas.Class_Mapping_Access;
 
    function Execute (Connection : in Mysql_Access;
                      Query      : in String) return int is
@@ -116,11 +117,15 @@ package body ADO.Statements.Mysql is
 
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
-         Res       : int;
+         Res       : Int;
+         Res2  : my_ulonglong;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
+
+         Res2 := Mysql_Affected_Rows (Stmt.Connection);
+         Log.Info ("Update: {0}", my_ulonglong'Image (Res2));
+         Result := Integer (Res2);
       end;
-      Result := Integer (mysql_affected_rows (Stmt.Connection));
    end Execute;
 
    --  Create an update statement
@@ -137,8 +142,9 @@ package body ADO.Statements.Mysql is
       Result : constant Mysql_Update_Statement_Access := new Mysql_Update_Statement;
    begin
       Result.Connection := Database;
-      Result.Table  := Table;
-      Result.Update := Result.This_Query'Access;
+      Result.Table      := Table;
+      Result.Update     := Result.This_Query'Access;
+      Result.Query      := Result.This_Query'Access;
       return Result.all'Access;
    end Create_Statement;
 
@@ -148,18 +154,24 @@ package body ADO.Statements.Mysql is
 
    --  Execute the query
    overriding
-   procedure Execute (Stmt : in out Mysql_Insert_Statement) is
+   procedure Execute (Stmt   : in out Mysql_Insert_Statement;
+                      Result : out Integer) is
    begin
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "INSERT INTO ");
---        ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => " VALUES(");
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => ")");
-
+      if Stmt.Table /= null then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "INSERT INTO ");
+         ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " (");
+         ADO.SQL.Append_Fields (Update => Stmt.This_Query, Mode => False);
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => ") VALUES(");
+         ADO.SQL.Append_Fields (Update => Stmt.This_Query, Mode => True);
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => ")");
+      end if;
       declare
-         Sql_Query : constant String := Stmt.Query.Expand;
+         Sql_Query : constant String := Stmt.This_Query.Expand;
          Res       : Int;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
+         Result := 1;
       end;
 --        Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
    end Execute;
@@ -178,7 +190,10 @@ package body ADO.Statements.Mysql is
       Result : constant Mysql_Insert_Statement_Access := new Mysql_Insert_Statement;
    begin
       Result.Connection := Database;
+      Result.Table  := Table;
       Result.Update := Result.This_Query'Access;
+--        Result.Proxy  := Result.all'Access;
+      ADO.SQL.Set_Insert_Mode (Result.This_Query);
       return Result.all'Access;
    end Create_Statement;
 

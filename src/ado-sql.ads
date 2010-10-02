@@ -185,7 +185,10 @@ package ADO.SQL is
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Query) return Boolean;
 
-   procedure Append_Fields (Update : in out Update_Query);
+   procedure Set_Insert_Mode (Update : in out Update_Query);
+
+   procedure Append_Fields (Update : in out Update_Query;
+                            Mode   : in Boolean := False);
 
 private
 
@@ -195,9 +198,10 @@ private
    end record;
 
    type Update_Query is new Query with record
-      Pos        : Natural := 0;
-      Set_Fields : Buffer;
-      Fields     : Buffer;
+      Pos            : Natural := 0;
+      Set_Fields     : Buffer;
+      Fields         : Buffer;
+      Is_Update_Stmt : Boolean := True;
    end record;
 
    type Dialect is tagged record

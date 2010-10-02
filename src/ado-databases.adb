@@ -185,7 +185,11 @@ package body ADO.Databases is
    begin
       Log.Info ("Create insert statement");
 
-      return Create_Statement (Database.Impl.all.Create_Statement (Table));
+      declare
+         Stmt : constant Insert_Statement_Access := Database.Impl.all.Create_Statement (Table);
+      begin
+         return Create_Statement (Stmt.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------

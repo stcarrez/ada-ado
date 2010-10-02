@@ -234,15 +234,11 @@ package body ADO.Model is
                   := Session.Create_Statement (SEQUENCE_REF_TABLE'Access);
       Result : Integer;
    begin
-      Query.Save_Field (Name => "name", Value => Object.Name);
-
-      Query.Save_Field (Name => "version", Value => Object.Version);
-
-      Query.Save_Field (Name => "value", Value => Object.Value);
-
-      Query.Save_Field (Name => "block_size", Value => Object.Block_Size);
       Object.Version := 1;
+      Query.Save_Field (Name => "NAME", Value => Object.Name);
       Query.Save_Field (Name => "version", Value => Object.Version);
+      Query.Save_Field (Name => "VALUE", Value => Object.Value);
+      Query.Save_Field (Name => "BLOCK_SIZE", Value => Object.Block_Size);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;

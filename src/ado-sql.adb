@@ -254,7 +254,9 @@ package body ADO.SQL is
          Append (Target => Update.Fields, SQL =>",");
       end if;
       Append_Name (Target => Update.Set_Fields, Name => Name);
-      Append (Target => Update.Set_Fields, SQL => " = ?");
+      if Update.Is_Update_Stmt then
+         Append (Target => Update.Set_Fields, SQL => " = ?");
+      end if;
       Append (Target => Update.Fields, SQL => "?");
    end Add_Field;
 
@@ -338,9 +340,19 @@ package body ADO.SQL is
       return Update.Pos > 0;
    end Has_Save_Fields;
 
-   procedure Append_Fields (Update : in out Update_Query) is
+   procedure Set_Insert_Mode (Update : in out Update_Query) is
    begin
-      Append (Target => Update.SQL, SQL => To_String (Update.Set_Fields.Buf));
+      Update.Is_Update_Stmt := False;
+   end Set_Insert_Mode;
+
+   procedure Append_Fields (Update : in out Update_Query;
+                            Mode   : in Boolean := False) is
+   begin
+      if Mode then
+         Append (Target => Update.SQL, SQL => To_String (Update.Fields.Buf));
+      else
+         Append (Target => Update.SQL, SQL => To_String (Update.Set_Fields.Buf));
+      end if;
    end Append_Fields;
 
 end ADO.SQL;

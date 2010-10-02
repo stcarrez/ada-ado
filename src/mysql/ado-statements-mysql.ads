@@ -73,7 +73,8 @@ package ADO.Statements.Mysql is
 
    --  Execute the query
    overriding
-   procedure Execute (Stmt : in out Mysql_Insert_Statement);
+   procedure Execute (Stmt   : in out Mysql_Insert_Statement;
+                      Result : out Integer);
 
    --  Create the insert statement.
    overriding
@@ -200,6 +201,7 @@ private
    type Mysql_Insert_Statement is new Insert_Statement with record
       Connection : Mysql_Access;
       This_Query : aliased ADO.SQL.Update_Query;
+      Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
 
 end ADO.Statements.Mysql;
