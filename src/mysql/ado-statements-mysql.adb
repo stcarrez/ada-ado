@@ -37,6 +37,19 @@ package body ADO.Statements.Mysql is
    use Interfaces.C;
    use type ADO.Schemas.Class_Mapping_Access;
 
+   procedure Check_Error (Connection : in Mysql_Access;
+                          Result     : in Int) is
+   begin
+      if Result /= 0 then
+         declare
+            Error : Strings.Chars_Ptr := Mysql_Error (Connection);
+            Msg   : constant String := Strings.Value (Error);
+         begin
+            Log.Error ("Error: {0}", Msg);
+         end;
+      end if;
+   end Check_Error;
+
    function Execute (Connection : in Mysql_Access;
                      Query      : in String) return int is
       Sql : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Query);
@@ -53,8 +66,8 @@ package body ADO.Statements.Mysql is
 
    --  Execute the query
    overriding
-   procedure Execute (Stmt : in out Mysql_Delete_Statement) is
-      Result    : int;
+   procedure Execute (Stmt   : in out Mysql_Delete_Statement;
+                      Result : out Natural) is
    begin
       ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
       ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
@@ -65,8 +78,12 @@ package body ADO.Statements.Mysql is
 
       declare
          Sql_Query : constant String := Stmt.Query.Expand;
+         Res : int;
       begin
-         Result := Execute (Stmt.Connection, Sql_Query);
+         Res := Execute (Stmt.Connection, Sql_Query);
+         Check_Error (Stmt.Connection, Res);
+
+         Result := Natural (Mysql_Affected_Rows (Stmt.Connection));
       end;
    end Execute;
 
@@ -121,6 +138,7 @@ package body ADO.Statements.Mysql is
          Res2  : my_ulonglong;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
+         Check_Error (Stmt.Connection, Res);
 
          Res2 := Mysql_Affected_Rows (Stmt.Connection);
          Log.Info ("Update: {0}", my_ulonglong'Image (Res2));
@@ -171,7 +189,12 @@ package body ADO.Statements.Mysql is
          Res       : Int;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
-         Result := 1;
+         Check_Error (Stmt.Connection, Res);
+         if Res = 0 then
+            Result := 1;
+         else
+            Result := 0;
+         end if;
       end;
 --        Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
    end Execute;

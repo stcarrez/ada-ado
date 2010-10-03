@@ -31,7 +31,8 @@ package ADO.Statements.Mysql is
 
    --  Execute the query
    overriding
-   procedure Execute (Stmt : in out Mysql_Delete_Statement);
+   procedure Execute (Stmt   : in out Mysql_Delete_Statement;
+                      Result : out Natural);
 
    --  Create the delete statement
    overriding

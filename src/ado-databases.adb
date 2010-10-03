@@ -211,8 +211,8 @@ package body ADO.Databases is
    procedure Adjust   (Object : in out Connection) is
    begin
       if Object.Impl /= null then
-         Log.Info ("Adjust {0} : {1}", System.Address_Image (Object.Impl.all'Address),
-                   Natural'Image (Object.Impl.Count));
+         Log.Debug ("Adjust {0} : {1}", System.Address_Image (Object.Impl.all'Address),
+                    Natural'Image (Object.Impl.Count));
          Object.Impl.Count := Object.Impl.Count + 1;
       end if;
    end Adjust;
@@ -229,8 +229,8 @@ package body ADO.Databases is
 
    begin
       if Object.Impl /= null then
-         Log.Info ("Finalize {0} : {1}", System.Address_Image (Object.Impl.all'Address),
-                  Natural'Image (Object.Impl.Count));
+         Log.Debug ("Finalize {0} : {1}", System.Address_Image (Object.Impl.all'Address),
+                    Natural'Image (Object.Impl.Count));
          Object.Impl.Count := Object.Impl.Count - 1;
          if Object.Impl.Count = 0 then
             Free (Object.Impl);

@@ -375,18 +375,32 @@ package body ADO.Statements is
       end if;
    end Finalize;
 
-   --  ------------------------------
-   --  Execute the query
-   --  ------------------------------
+   --  Execute the delete query.
    overriding
-   procedure Execute (Query : in out Delete_Statement) is
+   procedure Execute (Query  : in out Delete_Statement) is
+      Result : Natural;
    begin
       Log.Info ("Delete statement");
 
       if Query.Proxy = null then
          raise Invalid_Statement with "Delete statement not initialized";
       end if;
-      Query.Proxy.Execute;
+      Query.Proxy.Execute (Result);
+   end Execute;
+
+   --  ------------------------------
+   --  Execute the query
+   --  Returns the number of rows deleted.
+   --  ------------------------------
+   procedure Execute (Query  : in out Delete_Statement;
+                      Result : out Natural) is
+   begin
+      Log.Info ("Delete statement");
+
+      if Query.Proxy = null then
+         raise Invalid_Statement with "Delete statement not initialized";
+      end if;
+      Query.Proxy.Execute (Result);
    end Execute;
 
    --  ------------------------------
