@@ -31,6 +31,10 @@ package body ADO.Sequences is
      Ada.Unchecked_Deallocation (Object => ADO.Sequences.Sequence_Generator,
                                  Name   => ADO.Sequences.Sequence_Generator_Access);
 
+   procedure Free is new
+     Ada.Unchecked_Deallocation (Object => Generator'Class,
+                                 Name   => Generator_Access);
+
    --  ------------------------------
    --  Get the name of the sequence.
    --  ------------------------------
@@ -63,6 +67,11 @@ package body ADO.Sequences is
          Gen.Name  := Name;
          Generator := Gen;
       end Set_Generator;
+
+      procedure Clear is
+      begin
+         Free (Generator);
+      end Clear;
 
    end Sequence_Generator;
 
@@ -138,6 +147,12 @@ package body ADO.Sequences is
          if not Has_Element (Pos) then
             Insert (Map, Name, Gen);
          else
+            declare
+               Node : Sequence_Generator_Access := Element (Pos);
+            begin
+               Node.Clear;
+               Free (Node);
+            end;
             Replace_Element (Map, Pos, Gen);
          end if;
       end Set_Generator;
@@ -168,6 +183,7 @@ package body ADO.Sequences is
                exit when not Has_Element (Pos);
                Node := Element (Pos);
                Map.Delete (Pos);
+               Node.all.Clear;
                Free (Node);
             end;
          end loop;

@@ -19,7 +19,6 @@
 with Ada.Finalization;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Hashed_Maps;
-with ADO.Statements;
 with ADO.Sessions;
 limited with ADO.Sessions.Factory;
 
@@ -42,12 +41,10 @@ limited with ADO.Sessions.Factory;
 --
 package ADO.Sequences is
 
-   use ADO.Statements;
-
    --  ------------------------------
    --  Abstract sequence generator
    --  ------------------------------
-   type Generator is abstract tagged private;
+   type Generator is abstract new Ada.Finalization.Limited_Controlled with private;
    type Generator_Access is access all Generator'Class;
 
    --  Get the name of the sequence.
@@ -93,7 +90,7 @@ private
 
    use Ada.Strings.Unbounded;
 
-   type Generator is abstract tagged record
+   type Generator is abstract new Ada.Finalization.Limited_Controlled with record
       Name    : Unbounded_String;
       Factory : access ADO.Sessions.Factory.Session_Factory'Class;
    end record;
@@ -108,6 +105,9 @@ private
 
       procedure Set_Generator (Name : in Unbounded_String;
                                Gen  : in Generator_Access);
+
+      --  Free the generator
+      procedure Clear;
 
    private
       Generator : Generator_Access;
@@ -152,6 +152,7 @@ private
       Map : Factory_Map;
    end record;
 
+   overriding
    procedure Finalize (Manager : in out Factory);
 
 end ADO.Sequences;
