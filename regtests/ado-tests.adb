@@ -253,6 +253,21 @@ package body ADO.Tests is
       Util.Measures.Report (S, "Create 1000 rows");
    end Test_Perf_Create_Save;
 
+   procedure Test_Delete_All (T : in out Test) is
+
+      DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Stmt : ADO.Statements.Delete_Statement
+        := DB.Create_Statement (Regtests.Simple.Model.ALLOCATE_REF_TABLE'Access);
+      Result : Natural;
+   begin
+      DB.Begin_Transaction;
+      Stmt.Execute (Result);
+      Log.Info ("Deleted {0} rows", Natural'Image (Result));
+      DB.Commit;
+
+      Assert (T, Result > 100, "Too few rows were deleted");
+   end Test_Delete_All;
+
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
    begin
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Load", Test_Load'Access));
@@ -263,6 +278,8 @@ package body ADO.Tests is
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Save/Create/Update", Test_Create_Save'Access));
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Create (DB Insert)",
         Test_Perf_Create_Save'Access));
+      Suite.Add_Test (Caller.Create ("Test Statement.Delete_Statement (delete all)",
+        Test_Delete_All'Access));
    end Add_Tests;
 
 end ADO.Tests;

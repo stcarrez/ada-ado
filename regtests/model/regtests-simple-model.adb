@@ -234,15 +234,12 @@ package body Regtests.Simple.Model is
                   := Session.Create_Statement (USER_REF_TABLE'Access);
       Result : Integer;
    begin
-      Query.Save_Field (Name => "id", Value => Object.Id);
-
-      Query.Save_Field (Name => "version", Value => Object.Version);
-
-      Query.Save_Field (Name => "value", Value => Object.Value);
-
-      Query.Save_Field (Name => "name", Value => Object.Name);
       Object.Version := 1;
-      Query.Save_Field (Name => "version", Value => Object.Version);
+      Session.Allocate (Name => "test_user", Id => Object.Id);
+      Query.Save_Field (Name => "ID", Value => Object.Id);
+      Query.Save_Field (Name => "object_version", Value => Object.Version);
+      Query.Save_Field (Name => "VALUE", Value => Object.Value);
+      Query.Save_Field (Name => "NAME", Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -498,13 +495,11 @@ package body Regtests.Simple.Model is
                   := Session.Create_Statement (ALLOCATE_REF_TABLE'Access);
       Result : Integer;
    begin
-      Query.Save_Field (Name => "id", Value => Object.Id);
-
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
-
-      Query.Save_Field (Name => "name", Value => Object.Name);
       Object.Object_Version := 1;
+      Session.Allocate (Name => "allocate", Id => Object.Id);
+      Query.Save_Field (Name => "ID", Value => Object.Id);
       Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
+      Query.Save_Field (Name => "NAME", Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;

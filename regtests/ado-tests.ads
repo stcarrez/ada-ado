@@ -42,5 +42,6 @@ package ADO.Tests is
    procedure Test_Create_Save (T : in out Test);
 
    procedure Test_Perf_Create_Save (T : in out Test);
+   procedure Test_Delete_All (T : in out Test);
 
 end ADO.Tests;

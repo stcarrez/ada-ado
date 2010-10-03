@@ -6,7 +6,7 @@
         <id name="id" type="ADO.Identifier" unsaved-value="0">
             <comment>the user id</comment>
             <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
-            <generator class="none"/>
+            <generator class="sequence"/>
         </id>
         <version name="version" type="int" column="object_version"/>
         <property name="value" type="ADO.Identifier">
@@ -25,9 +25,9 @@
         <id name="id" type="ADO.Identifier" unsaved-value="0">
             <comment>the user id</comment>
             <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
-            <generator class="none"/>
+            <generator class="sequence"/>
         </id>
-        <version name="object_version" type="int" column="objectVersion"/>
+        <version name="object_version" type="int" column="object_version"/>
         <property name="name" type="String">
             <comment>the sequence value</comment>
             <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(255)"/>

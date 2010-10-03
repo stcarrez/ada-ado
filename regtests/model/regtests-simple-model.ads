@@ -59,6 +59,8 @@ package Regtests.Simple.Model is
                  return String;
    function Get_Name (Object : in User_Ref)
                  return Unbounded_String;
+   --  Table definition
+   USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out User_Ref);
    --  Copy of the object.
@@ -111,6 +113,8 @@ package Regtests.Simple.Model is
                  return String;
    function Get_Name (Object : in Allocate_Ref)
                  return Unbounded_String;
+   --  Table definition
+   ALLOCATE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Allocate_Ref);
    --  Copy of the object.
@@ -186,7 +190,7 @@ private
                         Field  : in Positive);
    ALLOCATE_REF_NAME : aliased constant String := "allocate";
    COL_0_2_NAME : aliased constant String := "ID";
-   COL_1_2_NAME : aliased constant String := "objectVersion";
+   COL_1_2_NAME : aliased constant String := "object_version";
    COL_2_2_NAME : aliased constant String := "NAME";
    ALLOCATE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 3,
