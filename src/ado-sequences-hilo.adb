@@ -53,14 +53,14 @@ package body ADO.Sequences.Hilo is
    --  every N allocations.
    --  ------------------------------
    procedure Allocate (Gen : in out HiLoGenerator;
-                       Id  : out Identifier) is
+                       Id  : in out Objects.Object_Record'Class) is
    begin
       --  Get a new sequence range
       if Gen.Next_Id >= Gen.Last_Id then
          Allocate_Sequence (Gen);
       end if;
 
-      Id := Gen.Next_Id;
+      Id.Set_Key_Value (Gen.Next_Id);
       Gen.Next_Id := Gen.Next_Id + 1;
    end Allocate;
 

@@ -18,6 +18,7 @@
 
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Strings;
 with ADO.Sessions.Factory;
 with Ada.Unchecked_Deallocation;
 package body ADO.Sequences is
@@ -56,7 +57,7 @@ package body ADO.Sequences is
       --  ------------------------------
       --  Allocate a unique identifier for the given sequence.
       --  ------------------------------
-      procedure Allocate (Id : out Identifier) is
+      procedure Allocate (Id : in out Objects.Object_Record'Class) is
       begin
          Generator.Allocate (Id);
       end Allocate;
@@ -79,11 +80,11 @@ package body ADO.Sequences is
    --  Allocate a unique identifier for the given table.
    --  ------------------------------
    procedure Allocate (Manager : in out Factory;
-                       Name    : in String;
-                       Id      : out Identifier) is
-      Gen : Sequence_Generator_Access;
+                       Id      : in out ADO.Objects.Object_Record'Class) is
+      Gen  : Sequence_Generator_Access;
+      Name : Util.Strings.Name_Access := Id.Get_Table_Name;
    begin
-      Manager.Map.Get_Generator (To_Unbounded_String (Name), Gen);
+      Manager.Map.Get_Generator (To_Unbounded_String (Name.all), Gen);
       Gen.Allocate (Id);
    end Allocate;
 

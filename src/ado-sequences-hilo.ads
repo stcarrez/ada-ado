@@ -41,7 +41,7 @@ package ADO.Sequences.Hilo is
    --  every N allocations.
    overriding
    procedure Allocate (Gen : in out HiLoGenerator;
-                       Id  : out Identifier);
+                       Id  : in out Objects.Object_Record'Class);
 
    --  Allocate a new sequence block.
    procedure Allocate_Sequence (Gen : in out HiLoGenerator);

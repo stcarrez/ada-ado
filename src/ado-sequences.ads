@@ -20,6 +20,7 @@ with Ada.Finalization;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Hashed_Maps;
 with ADO.Sessions;
+with ADO.Objects;
 limited with ADO.Sessions.Factory;
 
 --  The sequence generator is responsible for creating unique ID's
@@ -52,7 +53,7 @@ package ADO.Sequences is
 
    --  Allocate an identifier using the generator.
    procedure Allocate (Gen : in out Generator;
-                       Id  : out Identifier) is abstract;
+                       Id  : in out Objects.Object_Record'Class) is abstract;
 
    --  Get a session to connect to the database.
    function Get_Session (Gen : in Generator) return ADO.Sessions.Master_Session'Class;
@@ -71,8 +72,7 @@ package ADO.Sequences is
 
    --  Allocate a unique identifier for the given sequence.
    procedure Allocate (Manager : in out Factory;
-                       Name    : in String;
-                       Id      : out Identifier);
+                       Id      : in out Objects.Object_Record'Class);
 
    --  Set a generator to be used for the given sequence.
    procedure Set_Generator (Manager : in out Factory;
@@ -101,7 +101,7 @@ private
    protected type Sequence_Generator is
 
       --  Allocate a unique identifier for the given sequence.
-      procedure Allocate (Id   : out Identifier);
+      procedure Allocate (Id   : in out Objects.Object_Record'Class);
 
       procedure Set_Generator (Name : in Unbounded_String;
                                Gen  : in Generator_Access);
