@@ -23,6 +23,7 @@ with Ada.Calendar;
 with ADO.Schemas;
 with ADO.Parameters;
 with ADO.SQL;
+with ADO.Objects;
 private with Ada.Unchecked_Conversion;
 private with System;
 private with Interfaces.C;
@@ -78,6 +79,9 @@ package ADO.Statements is
    procedure Clear (Query : in out Statement);
 
    subtype Query_String is String;
+
+   procedure Add_Param (Params : in out Statement;
+                        Value : in ADO.Objects.Object_Key);
 
    --  Operations to build the SQL query
    procedure Append (Query : in out Statement; SQL : in String);
@@ -178,9 +182,14 @@ package ADO.Statements is
    type Delete_Statement is new Statement with private;
    type Delete_Statement_Access is access all Delete_Statement'Class;
 
-   --  Execute the query
+   --  Execute the delete query.
    overriding
-   procedure Execute (Query : in out Delete_Statement);
+   procedure Execute (Query  : in out Delete_Statement);
+
+   --  Execute the delete query.
+   --  Returns the number of rows deleted.
+   procedure Execute (Query  : in out Delete_Statement;
+                      Result : out Natural);
 
    --  Create the delete statement
    function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement;
@@ -230,6 +239,12 @@ package ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in Unbounded_String);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in ADO.Objects.Object_Key);
 
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Statement) return Boolean;
@@ -307,13 +322,26 @@ private
 
    type Delete_Statement is new Statement with record
       Proxy : Delete_Statement_Access := null;
+      Ref_Counter : Natural := 0;
    end record;
+
+   overriding
+   procedure Adjust (Stmt : in out Delete_Statement);
+
+   overriding
+   procedure Finalize (Stmt : in out Delete_Statement);
 
    type Update_Statement is new Statement with record
       Proxy  : Update_Statement_Access := null;
       Update : ADO.SQL.Update_Query_Access;
       Ref_Counter : Natural := 0;
    end record;
+
+   overriding
+   procedure Adjust (Stmt : in out Update_Statement);
+
+   overriding
+   procedure Finalize (Stmt : in out Update_Statement);
 
    type Insert_Statement is new Update_Statement with record
       Pos2 : Natural := 0;

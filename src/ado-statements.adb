@@ -22,6 +22,7 @@ with Util.Log.Loggers;
 with System.Storage_Elements;
 with Ada.Unchecked_Deallocation;
 with Ada.Calendar.Formatting;
+with ADO.Objects;
 package body ADO.Statements is
 
    use Util.Log;
@@ -73,6 +74,27 @@ package body ADO.Statements is
    begin
       Query.Query.Clear;
    end Clear;
+
+   procedure Add_Param (Params : in out Statement;
+                        Value : in ADO.Objects.Object_Key) is
+   begin
+      case Value.Of_Type is
+         when ADO.Objects.KEY_INTEGER =>
+            declare
+               V : constant Identifier := Objects.Get_Value (Value);
+            begin
+               Params.Query.Add_Param (V);
+            end;
+
+         when ADO.Objects.KEY_STRING =>
+            declare
+               V : constant Unbounded_String := Objects.Get_Value (Value);
+            begin
+               Params.Query.Add_Param (V);
+            end;
+
+      end case;
+   end Add_Param;
 
    procedure Append (Query : in out Statement; SQL : in String) is
    begin
@@ -479,6 +501,32 @@ package body ADO.Statements is
    end Save_Field;
 
    --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in ADO.Objects.Object_Key) is
+   begin
+      case Value.Of_Type is
+         when ADO.Objects.KEY_INTEGER =>
+            declare
+               V : constant Identifier := Objects.Get_Value (Value);
+            begin
+               Update.Update.Save_Field (Name => Name, Value => V);
+            end;
+
+         when ADO.Objects.KEY_STRING =>
+            declare
+               V : constant Unbounded_String := Objects.Get_Value (Value);
+            begin
+               Update.Update.Save_Field (Name => Name, Value => V);
+            end;
+
+      end case;
+   end Save_Field;
+
+   --  ------------------------------
    --  Check if the update/insert query has some fields to update.
    --  ------------------------------
    function Has_Save_Fields (Update : in Update_Statement) return Boolean is
@@ -542,6 +590,7 @@ package body ADO.Statements is
    begin
       return Result : Delete_Statement do
          Result.Proxy := Proxy;
+         Result.Proxy.Ref_Counter := 1;
       end return;
    end Create_Statement;
 
@@ -564,5 +613,51 @@ package body ADO.Statements is
          Result.Proxy.Ref_Counter := 1;
       end return;
    end Create_Statement;
+
+   overriding
+   procedure Adjust (Stmt : in out Delete_Statement) is
+   begin
+      if Stmt.Proxy /= null then
+         Stmt.Proxy.Ref_Counter := Stmt.Proxy.Ref_Counter + 1;
+      end if;
+   end Adjust;
+
+   overriding
+   procedure Finalize (Stmt : in out Delete_Statement) is
+
+      procedure Free is new
+        Ada.Unchecked_Deallocation (Object => Delete_Statement'Class,
+                                    Name   => Delete_Statement_Access);
+   begin
+      if Stmt.Proxy /= null then
+         Stmt.Proxy.Ref_Counter := Stmt.Proxy.Ref_Counter - 1;
+         if Stmt.Proxy.Ref_Counter = 0 then
+            Free (Stmt.Proxy);
+         end if;
+      end if;
+   end Finalize;
+
+   overriding
+   procedure Adjust (Stmt : in out Update_Statement) is
+   begin
+      if Stmt.Proxy /= null then
+         Stmt.Proxy.Ref_Counter := Stmt.Proxy.Ref_Counter + 1;
+      end if;
+   end Adjust;
+
+   overriding
+   procedure Finalize (Stmt : in out Update_Statement) is
+
+      procedure Free is new
+        Ada.Unchecked_Deallocation (Object => Update_Statement'Class,
+                                    Name   => Update_Statement_Access);
+   begin
+      if Stmt.Proxy /= null then
+         Stmt.Proxy.Ref_Counter := Stmt.Proxy.Ref_Counter - 1;
+         if Stmt.Proxy.Ref_Counter = 0 then
+            Free (Stmt.Proxy);
+         end if;
+      end if;
+   end Finalize;
 
 end ADO.Statements;
