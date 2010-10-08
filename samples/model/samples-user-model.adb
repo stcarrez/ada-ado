@@ -44,13 +44,13 @@ package body Samples.User.Model is
       Impl : User_Ref_Access;
    begin
       Set_Field (Object, Impl, 1);
-      Impl.Id := Value;
+      ADO.Objects.Set_Key_Value (Impl.all, Value);
    end Set_Id;
    function Get_Id (Object : in User_Ref)
                   return ADO.Identifier is
       Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
    begin
-      return Impl.Id;
+      return Impl.Get_Key_Value;
    end Get_Id;
    procedure Set_Name (Object : in out User_Ref;
                         Value : in String) is
@@ -169,7 +169,7 @@ package body Samples.User.Model is
               := new User_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
-            Copy.Id := Impl.Id;
+            Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Object_Version := Impl.Object_Version;
             Copy.Name := Impl.Name;
             Copy.Email := Impl.Email;
@@ -266,7 +266,7 @@ package body Samples.User.Model is
    begin
       if Object.Is_Modified (1) then
          Stmt.Save_Field (Name  => "ID",
-                          Value => Object.Id);
+                          Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
@@ -299,7 +299,7 @@ package body Samples.User.Model is
          Stmt.Save_Field (Name  => "object_version",
                           Value => Object.Object_Version);
          Stmt.Set_Filter (Filter => "id = ? and object_version = ?");
-         Stmt.Add_Param (Value => Object.Id);
+         Stmt.Add_Param (Value => Object.Get_Key);
          Stmt.Add_Param (Value => Object.Object_Version - 1);
          declare
             Result : Integer;
@@ -321,21 +321,14 @@ package body Samples.User.Model is
                   := Session.Create_Statement (USER_REF_TABLE'Access);
       Result : Integer;
    begin
-      Query.Save_Field (Name => "id", Value => Object.Id);
-
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
-
-      Query.Save_Field (Name => "name", Value => Object.Name);
-
-      Query.Save_Field (Name => "email", Value => Object.Email);
-
-      Query.Save_Field (Name => "date", Value => Object.Date);
-
-      Query.Save_Field (Name => "description", Value => Object.Description);
-
-      Query.Save_Field (Name => "status", Value => Object.Status);
       Object.Object_Version := 1;
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
+      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
+      Query.Save_Field (Name => "objectVersion", Value => Object.Object_Version);
+      Query.Save_Field (Name => "NAME", Value => Object.Name);
+      Query.Save_Field (Name => "EMAIL", Value => Object.Email);
+      Query.Save_Field (Name => "DATE", Value => Object.Date);
+      Query.Save_Field (Name => "DESCRIPTION", Value => Object.Description);
+      Query.Save_Field (Name => "STATUS", Value => Object.Status);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -347,7 +340,7 @@ package body Samples.User.Model is
       Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (USER_REF_TABLE'Access);
    begin
       Stmt.Set_Filter (Filter => "id = ?");
-      Stmt.Add_Param (Value => Object.Id);
+      Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in User_Ref;
@@ -355,7 +348,7 @@ package body Samples.User.Model is
       Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "id" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Id));
+         return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
          return EL.Objects.To_Object (Impl.Name);
@@ -400,7 +393,7 @@ package body Samples.User.Model is
    procedure Load (Object : in out User_Ref_Impl;
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
-      Object.Id := Stmt.Get_Identifier (0);
+      Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Object_Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Email := Stmt.Get_Unbounded_String (3);

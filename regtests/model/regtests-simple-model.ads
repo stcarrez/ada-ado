@@ -165,7 +165,10 @@ private
    type User_Ref_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => USER_REF_TABLE'Access)
-   with record       Id : ADO.Identifier;       Version : Integer;       Value : ADO.Identifier;       Name : Unbounded_String;
+   with record
+       Version : Integer;
+       Value : ADO.Identifier;
+       Name : Unbounded_String;
    end record;
    type User_Ref_Access is access all User_Ref_Impl;
    overriding
@@ -203,7 +206,9 @@ private
    type Allocate_Ref_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => ALLOCATE_REF_TABLE'Access)
-   with record       Id : ADO.Identifier;       Object_Version : Integer;       Name : Unbounded_String;
+   with record
+       Object_Version : Integer;
+       Name : Unbounded_String;
    end record;
    type Allocate_Ref_Access is access all Allocate_Ref_Impl;
    overriding

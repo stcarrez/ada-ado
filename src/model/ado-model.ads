@@ -59,6 +59,8 @@ package ADO.Model is
    --  Get the sequence block size
    function Get_Block_Size (Object : in Sequence_Ref)
                  return ADO.Identifier;
+   --  Table definition
+   SEQUENCE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Sequence_Ref);
    --  Copy of the object.
@@ -107,9 +109,12 @@ private
 )
      );
    type Sequence_Ref_Impl is
-      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
+      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_STRING,
                                      Of_Class => SEQUENCE_REF_TABLE'Access)
-   with record       Name : Unbounded_String;       Version : Integer;       Value : ADO.Identifier;       Block_Size : ADO.Identifier;
+   with record
+       Version : Integer;
+       Value : ADO.Identifier;
+       Block_Size : ADO.Identifier;
    end record;
    type Sequence_Ref_Access is access all Sequence_Ref_Impl;
    overriding

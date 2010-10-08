@@ -49,7 +49,7 @@ package body ADO.Model is
       Impl : Sequence_Ref_Access;
    begin
       Set_Field (Object, Impl, 1);
-      Impl.Name := Value;
+      ADO.Objects.Set_Key_Value (Impl.all, Value);
    end Set_Name;
    function Get_Name (Object : in Sequence_Ref)
                  return String is
@@ -60,7 +60,7 @@ package body ADO.Model is
                   return Unbounded_String is
       Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
    begin
-      return Impl.Name;
+      return Impl.Get_Key_Value;
    end Get_Name;
    procedure Set_Value (Object : in out Sequence_Ref;
                          Value  : in ADO.Identifier) is
@@ -100,7 +100,7 @@ package body ADO.Model is
               := new Sequence_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
-            Copy.Name := Impl.Name;
+            Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
             Copy.Block_Size := Impl.Block_Size;
@@ -194,7 +194,7 @@ package body ADO.Model is
    begin
       if Object.Is_Modified (1) then
          Stmt.Save_Field (Name  => "NAME",
-                          Value => Object.Name);
+                          Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
@@ -212,7 +212,7 @@ package body ADO.Model is
          Stmt.Save_Field (Name  => "version",
                           Value => Object.Version);
          Stmt.Set_Filter (Filter => "name = ? and version = ?");
-         Stmt.Add_Param (Value => Object.Name);
+         Stmt.Add_Param (Value => Object.Get_Key);
          Stmt.Add_Param (Value => Object.Version - 1);
          declare
             Result : Integer;
@@ -235,7 +235,7 @@ package body ADO.Model is
       Result : Integer;
    begin
       Object.Version := 1;
-      Query.Save_Field (Name => "NAME", Value => Object.Name);
+      Query.Save_Field (Name => "NAME", Value => Object.Get_Key);
       Query.Save_Field (Name => "version", Value => Object.Version);
       Query.Save_Field (Name => "VALUE", Value => Object.Value);
       Query.Save_Field (Name => "BLOCK_SIZE", Value => Object.Block_Size);
@@ -250,7 +250,7 @@ package body ADO.Model is
       Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (SEQUENCE_REF_TABLE'Access);
    begin
       Stmt.Set_Filter (Filter => "name = ?");
-      Stmt.Add_Param (Value => Object.Name);
+      Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in Sequence_Ref;
@@ -258,7 +258,7 @@ package body ADO.Model is
       Impl : constant access Sequence_Ref_Impl := Sequence_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "name" then
-         return EL.Objects.To_Object (Impl.Name);
+         return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "value" then
          return EL.Objects.To_Object (Long_Long_Integer (Impl.Value));
@@ -294,7 +294,7 @@ package body ADO.Model is
    procedure Load (Object : in out Sequence_Ref_Impl;
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
-      Object.Name := Stmt.Get_Unbounded_String (0);
+      Object.Set_Key_Value (Stmt.Get_Unbounded_String (0));
       Object.Version := Stmt.Get_Integer (1);
       Object.Value := Stmt.Get_Identifier (2);
       Object.Block_Size := Stmt.Get_Identifier (3);

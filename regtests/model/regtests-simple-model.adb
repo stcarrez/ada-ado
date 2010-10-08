@@ -44,13 +44,13 @@ package body Regtests.Simple.Model is
       Impl : User_Ref_Access;
    begin
       Set_Field (Object, Impl, 1);
-      Impl.Id := Value;
+      ADO.Objects.Set_Key_Value (Impl.all, Value);
    end Set_Id;
    function Get_Id (Object : in User_Ref)
                   return ADO.Identifier is
       Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
    begin
-      return Impl.Id;
+      return Impl.Get_Key_Value;
    end Get_Id;
    procedure Set_Value (Object : in out User_Ref;
                          Value  : in ADO.Identifier) is
@@ -100,7 +100,6 @@ package body Regtests.Simple.Model is
               := new User_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
-            Copy.Id := Impl.Id;
             Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
             Copy.Name := Impl.Name;
@@ -194,7 +193,7 @@ package body Regtests.Simple.Model is
    begin
       if Object.Is_Modified (1) then
          Stmt.Save_Field (Name  => "ID",
-                          Value => Object.Id);
+                          Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
@@ -212,7 +211,7 @@ package body Regtests.Simple.Model is
          Stmt.Save_Field (Name  => "version",
                           Value => Object.Version);
          Stmt.Set_Filter (Filter => "id = ? and version = ?");
-         Stmt.Add_Param (Value => Object.Id);
+         Stmt.Add_Param (Value => Object.Get_Key);
          Stmt.Add_Param (Value => Object.Version - 1);
          declare
             Result : Integer;
@@ -235,8 +234,8 @@ package body Regtests.Simple.Model is
       Result : Integer;
    begin
       Object.Version := 1;
-      Session.Allocate (Name => "test_user", Id => Object.Id);
-      Query.Save_Field (Name => "ID", Value => Object.Id);
+      Session.Allocate (Id => Object);
+      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
       Query.Save_Field (Name => "object_version", Value => Object.Version);
       Query.Save_Field (Name => "VALUE", Value => Object.Value);
       Query.Save_Field (Name => "NAME", Value => Object.Name);
@@ -251,7 +250,7 @@ package body Regtests.Simple.Model is
       Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (USER_REF_TABLE'Access);
    begin
       Stmt.Set_Filter (Filter => "id = ?");
-      Stmt.Add_Param (Value => Object.Id);
+      Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in User_Ref;
@@ -259,7 +258,7 @@ package body Regtests.Simple.Model is
       Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "id" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Id));
+         return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "value" then
          return EL.Objects.To_Object (Long_Long_Integer (Impl.Value));
@@ -295,7 +294,7 @@ package body Regtests.Simple.Model is
    procedure Load (Object : in out User_Ref_Impl;
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
-      Object.Id := Stmt.Get_Identifier (0);
+      Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Version := Stmt.Get_Integer (1);
       Object.Value := Stmt.Get_Identifier (2);
       Object.Name := Stmt.Get_Unbounded_String (3);
@@ -324,13 +323,13 @@ package body Regtests.Simple.Model is
       Impl : Allocate_Ref_Access;
    begin
       Set_Field (Object, Impl, 1);
-      Impl.Id := Value;
+      ADO.Objects.Set_Key_Value (Impl.all, Value);
    end Set_Id;
    function Get_Id (Object : in Allocate_Ref)
                   return ADO.Identifier is
       Impl : constant Allocate_Ref_Access := Allocate_Ref_Impl (Object.Get_Object.all)'Access;
    begin
-      return Impl.Id;
+      return Impl.Get_Key_Value;
    end Get_Id;
    procedure Set_Name (Object : in out Allocate_Ref;
                         Value : in String) is
@@ -367,7 +366,6 @@ package body Regtests.Simple.Model is
               := new Allocate_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
-            Copy.Id := Impl.Id;
             Copy.Object_Version := Impl.Object_Version;
             Copy.Name := Impl.Name;
          end;
@@ -460,7 +458,7 @@ package body Regtests.Simple.Model is
    begin
       if Object.Is_Modified (1) then
          Stmt.Save_Field (Name  => "ID",
-                          Value => Object.Id);
+                          Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
@@ -473,7 +471,7 @@ package body Regtests.Simple.Model is
          Stmt.Save_Field (Name  => "object_version",
                           Value => Object.Object_Version);
          Stmt.Set_Filter (Filter => "id = ? and object_version = ?");
-         Stmt.Add_Param (Value => Object.Id);
+         Stmt.Add_Param (Value => Object.Get_Key);
          Stmt.Add_Param (Value => Object.Object_Version - 1);
          declare
             Result : Integer;
@@ -496,8 +494,8 @@ package body Regtests.Simple.Model is
       Result : Integer;
    begin
       Object.Object_Version := 1;
-      Session.Allocate (Name => "allocate", Id => Object.Id);
-      Query.Save_Field (Name => "ID", Value => Object.Id);
+      Session.Allocate (Id => Object);
+      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
       Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
       Query.Save_Field (Name => "NAME", Value => Object.Name);
       Query.Execute (Result);
@@ -511,7 +509,7 @@ package body Regtests.Simple.Model is
       Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (ALLOCATE_REF_TABLE'Access);
    begin
       Stmt.Set_Filter (Filter => "id = ?");
-      Stmt.Add_Param (Value => Object.Id);
+      Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in Allocate_Ref;
@@ -519,7 +517,7 @@ package body Regtests.Simple.Model is
       Impl : constant access Allocate_Ref_Impl := Allocate_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "id" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Id));
+         return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
          return EL.Objects.To_Object (Impl.Name);
@@ -552,7 +550,7 @@ package body Regtests.Simple.Model is
    procedure Load (Object : in out Allocate_Ref_Impl;
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
-      Object.Id := Stmt.Get_Identifier (0);
+      Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Object_Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Object_Version := Stmt.Get_Integer (1);

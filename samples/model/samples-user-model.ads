@@ -89,6 +89,8 @@ package Samples.User.Model is
    --  Get the user status
    function Get_Status (Object : in User_Ref)
                  return Integer;
+   --  Table definition
+   USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out User_Ref);
    --  Copy of the object.
@@ -145,7 +147,13 @@ private
    type User_Ref_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => USER_REF_TABLE'Access)
-   with record       Id : ADO.Identifier;       Object_Version : Integer;       Name : Unbounded_String;       Email : Unbounded_String;       Date : Unbounded_String;       Description : Unbounded_String;       Status : Integer;
+   with record
+       Object_Version : Integer;
+       Name : Unbounded_String;
+       Email : Unbounded_String;
+       Date : Unbounded_String;
+       Description : Unbounded_String;
+       Status : Integer;
    end record;
    type User_Ref_Access is access all User_Ref_Impl;
    overriding
