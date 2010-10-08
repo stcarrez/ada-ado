@@ -23,6 +23,9 @@ with ADO.SQL;
 with ADO.Schemas;
 
 with EL.Beans;
+with EL.Objects;
+
+with Util.Strings;
 with Util.Concurrent.Counters;
 limited with ADO.Sessions;
 package ADO.Objects is
@@ -38,15 +41,22 @@ package ADO.Objects is
    --  --------------------
    --  Object Key
    --  --------------------
+   --  The <b>Object_Key</b> represents the primary key for an object.
+   --  It is composed of the key value and a class mapping identification.
+   --  The key value can be an integer or a string and is saved in the database.
+   --  The class mapping is used to know in which table the object is stored.
+   --  In comparison and hashing, the class mapping is used to distinguish
+   --  objects of different tables.
    type Object_Key_Type is (KEY_INTEGER, KEY_STRING);
    type Object_Key (Of_Type  : Object_Key_Type;
-                    Of_Class : ADO.Schemas.Class_Mapping_Access) is private;
+                    Of_Class : Schemas.Class_Mapping_Access) is private;
 
    --  Compute the hash of the object key.
    function Hash (Key : Object_Key) return Ada.Containers.Hash_Type;
 
    --  Compare whether the two objects pointed to by Left and Right have the same
-   --  object key.
+   --  object key.  The object key is identical if the object key type, the class
+   --  mapping and the key value are identical.
    function Equivalent_Elements (Left, Right : Object_Key)
                                  return Boolean;
 
@@ -55,6 +65,22 @@ package ADO.Objects is
    --  Returns true if the two objects have the same primary key.
    function "=" (Left : Object_Key; Right : Object_Key) return Boolean
      renames Equivalent_Elements;
+
+   --  Get the key value
+   function Get_Value (Key : Object_Key) return Identifier;
+
+   --  Get the key value
+   function Get_Value (Key : Object_Key) return Ada.Strings.Unbounded.Unbounded_String;
+
+   --  Return the key value in an EL object.
+   function To_Object (Key : Object_Key) return EL.Objects.Object;
+
+   --  Get the key as a string
+   function To_String (Key : Object_Key) return String;
+
+   --  Set the key value
+   procedure Set_Value (Key   : in out Object_Key;
+                        Value : in Identifier);
 
    --  --------------------
    --  Database Object representation
@@ -66,7 +92,28 @@ package ADO.Objects is
    type Object_Record_Access is access all Object_Record'Class;
 
    --  Get the object key
-   function Get_Id (Ref : in Object_Record'Class) return Object_Key;
+   function Get_Key (Ref : in Object_Record'Class) return Object_Key;
+
+   --  Get the object key value as a string.
+   function Get_Key_Value (Ref : in Object_Record'Class)
+                           return Ada.Strings.Unbounded.Unbounded_String;
+
+   --  Get the object key value as an identifier
+   function Get_Key_Value (Ref : in Object_Record'Class)
+                          return Identifier;
+
+   --  Set the object key
+   procedure Set_Key (Ref : in out Object_Record'Class;
+                      Key : in Object_Key);
+
+   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+                            Value : in Identifier);
+
+   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+                            Value : in Ada.Strings.Unbounded.Unbounded_String);
+
+   --  Get the table name associated with the object record.
+   function Get_Table_Name (Ref : in Object_Record'Class) return Util.Strings.Name_Access;
 
    --  Check if this is a new object.
    --  Returns True if an insert is necessary to persist this object.
@@ -190,8 +237,8 @@ private
       new Ada.Finalization.Controlled with record
       Counter    : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
       Key        : Object_Key (Of_Type => Key_Type, Of_Class => Of_Class);
-      Is_Created : Boolean  := False;
-      Modified   : Modified_Map;
+      Is_Created : Boolean      := False;
+      Modified   : Modified_Map := (others => False);
    end record;
 --
 --     type Object_Proxy is new Object_Ref with record
