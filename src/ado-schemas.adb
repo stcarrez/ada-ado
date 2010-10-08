@@ -30,6 +30,18 @@ package body ADO.Schemas is
 
 
    --  ------------------------------
+   --  Get the hash value associated with the class mapping.
+   --  ------------------------------
+   function Hash (Mapping : Class_Mapping_Access) return Ada.Containers.Hash_Type is
+   begin
+      if Mapping = null then
+         return 0;
+      else
+         return Util.Strings.Hash (Mapping.Table);
+      end if;
+   end Hash;
+
+   --  ------------------------------
    --  Column Representation
    --  ------------------------------
 

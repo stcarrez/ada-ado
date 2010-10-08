@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
 with Ada.Finalization;
+with Ada.Containers;
 with Util.Strings;
 package ADO.Schemas is
 
@@ -29,6 +30,9 @@ package ADO.Schemas is
    end record;
 
    type Class_Mapping_Access is access constant Class_Mapping'Class;
+
+   --  Get the hash value associated with the class mapping.
+   function Hash (Mapping : Class_Mapping_Access) return Ada.Containers.Hash_Type;
 
    --  Get the Ada type mapping for the column
    type Column_Type is
