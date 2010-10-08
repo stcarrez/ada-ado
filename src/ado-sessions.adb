@@ -174,13 +174,12 @@ package body ADO.Sessions is
    --  Allocate an identifier for the table.
    --  ------------------------------
    procedure Allocate (Database : in out Master_Session;
-                       Name     : in String;
-                       Id       : out Identifier) is
+                       Id       : in out ADO.Objects.Object_Record'Class) is
    begin
-      Log.Info ("Allocate id for {0}", Name);
+--        Log.Info ("Allocate id for {0}", Id.Get_Class_Name);
 
       Check_Session (Database);
-      ADO.Sequences.Allocate (Database.Sequences.all, Name, Id);
+      ADO.Sequences.Allocate (Database.Sequences.all, Id);
    end Allocate;
 
    --  ------------------------------

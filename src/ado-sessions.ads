@@ -101,8 +101,7 @@ package ADO.Sessions is
 
    --  Allocate an identifier for the table.
    procedure Allocate (Database : in out Master_Session;
-                       Name     : in String;
-                       Id       : out Identifier);
+                       Id       : in out ADO.Objects.Object_Record'Class);
 
    --  Flush the objects that were modified.
    procedure Flush (Database : in out Master_Session);
