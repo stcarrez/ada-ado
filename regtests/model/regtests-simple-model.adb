@@ -22,6 +22,10 @@
 with Ada.Unchecked_Deallocation;
 with ADO.Databases;
 package body Regtests.Simple.Model is
+   function "=" (Left, Right : User_Ref'Class) return Boolean is
+   begin
+      return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
+   end "=";
    procedure Set_Field (Object : in out User_Ref'Class;
                         Impl   : out User_Ref_Access;
                         Field  : in Positive) is
@@ -301,6 +305,10 @@ package body Regtests.Simple.Model is
       Object.Version := Stmt.Get_Integer (1);
       Set_Created (Object);
    end Load;
+   function "=" (Left, Right : Allocate_Ref'Class) return Boolean is
+   begin
+      return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
+   end "=";
    procedure Set_Field (Object : in out Allocate_Ref'Class;
                         Impl   : out Allocate_Ref_Access;
                         Field  : in Positive) is

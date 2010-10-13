@@ -33,8 +33,6 @@ package ADO.Tests is
 
    procedure Test_Create_Load (T : in out Test);
 
-   procedure Test_Object_Ref (T : in out Test);
-
    procedure Test_Not_Open (T : in out Test);
 
    procedure Test_Allocate (T : in out Test);

@@ -110,42 +110,6 @@ package body ADO.Tests is
       Assert (T, not Check.Is_Null, "Object_Ref.Load: Loading the object failed");
    end Test_Create_Load;
 
-   --  ------------------------------
-   --  Check:
-   --    Object_Ref := (reference counting)
-   --    Object_Ref.Copy
-   --    Object_Ref.Get_xxx generated method
-   --    Object_Ref.Set_xxx generated method
-   --    Object_Ref.=
-   --  ------------------------------
-   procedure Test_Object_Ref (T : in out Test) is
-      Obj1 : Regtests.Simple.Model.User_Ref;
-   begin
-      for I in 1 .. 10 loop
-         Obj1.Set_Name ("User name");
-         Assert (T, Obj1.Get_Name = "User name", "User_Ref.Set_Name invalid result");
-
-         declare
-            Obj2 : constant Regtests.Simple.Model.User_Ref := Obj1;
-            Obj3 : constant Regtests.Simple.Model.User_Ref := Obj1.Copy;
-         begin
-            --  Check the copy
-            Assert (T, Obj2.Get_Name = "User name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
-            Assert (T, Obj3 /= Obj1, "Object_Ref.'=' invalid comparison after copy");
-
-            --  Change original, make sure it's the same of Obj2.
-            Obj1.Set_Name ("Second name");
-            Assert (T, Obj2.Get_Name = "Second name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
-
-            --  The copy is not modified
-            Assert (T, Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
-         end;
-      end loop;
-   end Test_Object_Ref;
-
    procedure Test_Statement is
       DB: constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       S : ADO.Statements.Query_Statement := DB.Create_Statement ("select *");
@@ -188,17 +152,23 @@ package body ADO.Tests is
    --  ------------------------------
    procedure Test_Allocate (T : in out Test) is
       DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-      Id     : Identifier;
+      Key    : ADO.Objects.Object_Key (Of_Type => ADO.Objects.KEY_INTEGER,
+                                       Of_Class => Regtests.Simple.Model.ALLOCATE_REF_TABLE'Access);
       PrevId : Identifier := NO_IDENTIFIER;
       S      : Util.Measures.Stamp;
    begin
       for I in 1 .. 200 loop
-         DB.Allocate (Name => "test", Id => Id);
-         if PrevId /= NO_IDENTIFIER then
-            Assert (T, Id = PrevId + 1, "Invalid allocated identifier: "
-                    & Identifier'Image (Id) & " previous=" & Identifier'Image (PrevId));
-         end if;
-         PrevId := Id;
+         declare
+            Obj : Regtests.Simple.Model.Allocate_Ref;
+         begin
+            Obj.Save (DB);
+            Key := Obj.Get_Key;
+            if PrevId /= NO_IDENTIFIER then
+               Assert (T, Objects.Get_Value (Key) = PrevId + 1, "Invalid allocated identifier: "
+                       & Objects.To_String (Key) & " previous=" & Identifier'Image (PrevId));
+            end if;
+            PrevId := Objects.Get_Value (Key);
+         end;
       end loop;
       Util.Measures.Report (S, "Allocate 200 ids");
    end Test_Allocate;
@@ -272,7 +242,6 @@ package body ADO.Tests is
    begin
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Load", Test_Load'Access));
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Save", Test_Create_Load'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Get/Set", Test_Object_Ref'Access));
       Suite.Add_Test (Caller.Create ("Test Master_Connection init error", Test_Not_Open'Access));
       Suite.Add_Test (Caller.Create ("Test Sequences.Factory", Test_Allocate'Access));
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Save/Create/Update", Test_Create_Save'Access));
