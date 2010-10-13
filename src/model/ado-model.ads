@@ -59,6 +59,7 @@ package ADO.Model is
    --  Get the sequence block size
    function Get_Block_Size (Object : in Sequence_Ref)
                  return ADO.Identifier;
+   function "=" (Left, Right : Sequence_Ref'Class) return Boolean;
    --  Table definition
    SEQUENCE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance

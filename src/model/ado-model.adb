@@ -22,6 +22,10 @@
 with Ada.Unchecked_Deallocation;
 with ADO.Databases;
 package body ADO.Model is
+   function "=" (Left, Right : Sequence_Ref'Class) return Boolean is
+   begin
+      return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
+   end "=";
    procedure Set_Field (Object : in out Sequence_Ref'Class;
                         Impl   : out Sequence_Ref_Access;
                         Field  : in Positive) is
