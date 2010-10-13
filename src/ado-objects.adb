@@ -197,11 +197,19 @@ package body ADO.Objects is
    end Get_Object;
 
    --  ------------------------------
+   --  Get the object key
+   --  ------------------------------
+   function Get_Key (Ref : in Object_Ref'Class) return Object_Key is
+   begin
+      return Ref.Object.Key;
+   end Get_Key;
+
+   --  ------------------------------
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
    --  Returns true if the two objects have the same primary key.
    --  ------------------------------
-   function "=" (Left : Object_Ref'Class; Right : Object_Ref'Class) return Boolean is
+   function "=" (Left : Object_Ref; Right : Object_Ref) return Boolean is
    begin
       --  Same target object
       if Left.Object = Right.Object then

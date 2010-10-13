@@ -34,7 +34,7 @@ package ADO.Parameters is
       Position : Natural := 0;
       case T is
          when T_LONG_INTEGER =>
-            Long_Num : Long_Integer;
+            Long_Num : Long_Integer := 0;
 
          when T_INTEGER =>
             Num : Integer;

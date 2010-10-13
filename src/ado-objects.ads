@@ -172,10 +172,13 @@ package ADO.Objects is
    function Get_Object (Ref : in Object_Ref'Class) return Object_Record_Access;
    pragma Inline (Get_Object);
 
+   --  Get the object key
+   function Get_Key (Ref : in Object_Ref'Class) return Object_Key;
+
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
    --  Returns true if the two objects have the same primary key.
-   function "=" (Left : Object_Ref'Class; Right : Object_Ref'Class) return Boolean;
+   function "=" (Left : Object_Ref; Right : Object_Ref) return Boolean;
 
    procedure Set_Object (Ref : in out Object_Ref'Class;
                          Object : in Object_Record_Access);
