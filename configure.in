@@ -76,6 +76,44 @@ AC_SUBST(ADO_DATABASES_SRC_DIR)
 AC_SUBST(ADO_TESTS_SRC_DIR)
 AC_SUBST(ADO_TESTS_HARNESS)
 
+##########################################
+# Ada Util library
+##########################################
+
+AC_MSG_CHECKING([Ada Utility library (code.google.com/p/ada-util)])
+AC_ARG_WITH(ada-util,
+AS_HELP_STRING([--with-ada-util=x], [Path for the Ada Utility library (code.google.com/p/ada-util)]),
+[
+  UTIL_DIR=${withval}/
+],
+[
+  UTIL_DIR=../util/
+])
+if test ! -f ${UTIL_DIR}/util.gpr; then
+   AC_MSG_ERROR([Ada Utility library not found in ${UTIL_DIR}])
+fi
+AC_MSG_RESULT(${UTIL_DIR})
+AC_SUBST(UTIL_DIR)
+
+##########################################
+# Ada Expression Language library
+##########################################
+AC_MSG_CHECKING([Ada Expression Language library (code.google.com/p/ada-el)])
+AC_ARG_WITH(ada-el,
+AS_HELP_STRING([--with-ada-el=x], [Path for the Ada Expression Language library (code.google.com/p/ada-el)]),
+[
+  EL_DIR=${withval}/
+],
+[
+  EL_DIR=../el/
+])
+if test ! -f ${EL_DIR}/el.gpr; then
+   AC_MSG_ERROR([Ada Expression Language library not found in ${EL_DIR}])
+fi
+AC_MSG_RESULT(${EL_DIR})
+AC_SUBST(EL_DIR)
+
+
 AC_OUTPUT(
 Makefile ado.gpr tests.gpr
 )

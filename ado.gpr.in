@@ -1,6 +1,6 @@
 with "config";
-with "../util/util";
-with "../el/el";
+with "@UTIL_DIR@util";
+with "@EL_DIR@el";
 
 project Ado is
    Version := "@ADO_VERSION@";
