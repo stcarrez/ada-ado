@@ -3103,7 +3103,7 @@ $as_echo "${EL_DIR}" >&6; }
 
 
 
-ac_config_files="$ac_config_files Makefile ado.gpr tests.gpr"
+ac_config_files="$ac_config_files Makefile ado.gpr tests.gpr samples.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3807,6 +3807,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "ado.gpr") CONFIG_FILES="$CONFIG_FILES ado.gpr" ;;
     "tests.gpr") CONFIG_FILES="$CONFIG_FILES tests.gpr" ;;
+    "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
 
   *) as_fn_error "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
