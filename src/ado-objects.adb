@@ -129,14 +129,14 @@ package body ADO.Objects is
    --  ------------------------------
    --  Return the key value in an EL object.
    --  ------------------------------
-   function To_Object (Key : Object_Key) return EL.Objects.Object is
+   function To_Object (Key : Object_Key) return Util.Beans.Objects.Object is
    begin
       case Key.Of_Type is
          when KEY_INTEGER =>
-            return EL.Objects.To_Object (Long_Long_Integer (Key.Id));
+            return Util.Beans.Objects.To_Object (Long_Long_Integer (Key.Id));
 
          when KEY_STRING =>
-            return EL.Objects.To_Object (Key.Str);
+            return Util.Beans.Objects.To_Object (Key.Str);
 
       end case;
    end To_Object;

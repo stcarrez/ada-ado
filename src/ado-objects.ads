@@ -22,8 +22,8 @@ with Ada.Containers;
 with ADO.SQL;
 with ADO.Schemas;
 
-with EL.Beans;
-with EL.Objects;
+with Util.Beans.Basic;
+with Util.Beans.Objects;
 
 with Util.Strings;
 with Util.Concurrent.Counters;
@@ -73,7 +73,7 @@ package ADO.Objects is
    function Get_Value (Key : Object_Key) return Ada.Strings.Unbounded.Unbounded_String;
 
    --  Return the key value in an EL object.
-   function To_Object (Key : Object_Key) return EL.Objects.Object;
+   function To_Object (Key : Object_Key) return Util.Beans.Objects.Object;
 
    --  Get the key as a string
    function To_String (Key : Object_Key) return String;
@@ -158,7 +158,7 @@ package ADO.Objects is
    --  Reference to a database object representation
    --  --------------------
    type Object_Ref is abstract
-      new Ada.Finalization.Controlled and EL.Beans.Readonly_Bean with private;
+      new Ada.Finalization.Controlled and Util.Beans.Basic.Readonly_Bean with private;
 
    --  Mark the field identified by <b>Field</b> as modified.
    procedure Set_Field (Object : in out Object_Ref'Class;
@@ -220,7 +220,7 @@ private
    end record;
 
    type Object_Ref is abstract new Ada.Finalization.Controlled
-    and EL.Beans.Readonly_Bean with record
+    and Util.Beans.Basic.Readonly_Bean with record
       Object : Object_Record_Access := null;
    end record;
 
