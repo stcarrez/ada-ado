@@ -252,6 +252,12 @@ package ADO.Statements is
                          Name   : in String;
                          Value  : in ADO.Objects.Object_Key);
 
+   --  Prepare the update/insert query to save the table field.
+   --  identified by <b>Name</b> and set it to the identifier key held by <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in ADO.Objects.Object_Ref'Class);
+
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Statement) return Boolean;
 
