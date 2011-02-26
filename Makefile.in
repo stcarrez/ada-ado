@@ -8,6 +8,9 @@ distdir=ado-@ADO_VERSION@
 
 DIST_FILE=ado-@ADO_VERSION@.tar.gz
 
+HAVE_MYSQL=@ADO_DB_MYSQL@
+HAVE_SQLITE=@ADO_DB_SQLITE@
+
 srcdir = .
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -16,7 +19,7 @@ exec_prefix = @exec_prefix@
 top_builddir = .
 
 # Build executables for all mains defined by the project.
-build:
+build:  src/ado-drivers-initialize.adb
 	$(GNATMAKE) -P "$(GPRPATH)"
 
 # Not intended for manual invocation.
@@ -25,6 +28,12 @@ build:
 # Does not build executables.
 autobuild:
 	$(GNATMAKE) -gnatc -c -k  -P "$(GPRPATH)"
+
+# Configure the driver file
+src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
+	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
+	          -DHAVE_SQLITE=$(HAVE_SQLITE) \
+		  src/ado-drivers-initialize.gpb src/ado-drivers-initialize.adb
 
 # Clean the root project of all build products.
 clean:

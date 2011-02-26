@@ -51,8 +51,17 @@ ADO_LIBDIR="lib"
 AC_SUBST(ADO_LIBDIR)
 
 DB=""
-AC_CHECK_LIB(mysqlclient,mysql_init,[DB="$DB mysql"])
-AC_CHECK_LIB(sqlite3,sqlite3_open,[DB="$DB sqlite"])
+ADO_DB_MYSQL=False
+AC_CHECK_LIB(mysqlclient,mysql_init,[
+    DB="$DB mysql"
+    ADO_DB_MYSQL=True
+])
+
+ADO_DB_SQLITE=False
+AC_CHECK_LIB(sqlite3,sqlite3_open,[
+    DB="$DB sqlite"
+    ADO_DB_SQLITE=True
+])
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
@@ -75,6 +84,8 @@ fi
 AC_SUBST(ADO_DATABASES_SRC_DIR)
 AC_SUBST(ADO_TESTS_SRC_DIR)
 AC_SUBST(ADO_TESTS_HARNESS)
+AC_SUBST(ADO_DB_MYSQL)
+AC_SUBST(ADO_DB_SQLITE)
 
 ##########################################
 # Ada Util library
@@ -94,25 +105,6 @@ if test ! -f ${UTIL_DIR}/util.gpr; then
 fi
 AC_MSG_RESULT(${UTIL_DIR})
 AC_SUBST(UTIL_DIR)
-
-##########################################
-# Ada Expression Language library
-##########################################
-AC_MSG_CHECKING([Ada Expression Language library (code.google.com/p/ada-el)])
-AC_ARG_WITH(ada-el,
-AS_HELP_STRING([--with-ada-el=x], [Path for the Ada Expression Language library (code.google.com/p/ada-el)]),
-[
-  EL_DIR=${withval}/
-],
-[
-  EL_DIR=../el/
-])
-if test ! -f ${EL_DIR}/el.gpr; then
-   AC_MSG_ERROR([Ada Expression Language library not found in ${EL_DIR}])
-fi
-AC_MSG_RESULT(${EL_DIR})
-AC_SUBST(EL_DIR)
-
 
 AC_OUTPUT(
 Makefile ado.gpr tests.gpr samples.gpr

@@ -556,8 +556,9 @@ PACKAGE_URL=
 ac_unique_file="src/ado.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-EL_DIR
 UTIL_DIR
+ADO_DB_SQLITE
+ADO_DB_MYSQL
 ADO_TESTS_HARNESS
 ADO_TESTS_SRC_DIR
 ADO_DATABASES_SRC_DIR
@@ -633,7 +634,6 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 with_ada_util
-with_ada_el
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1257,8 +1257,6 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-ada-util=x       Path for the Ada Utility library
                           (code.google.com/p/ada-util)
-  --with-ada-el=x         Path for the Ada Expression Language library
-                          (code.google.com/p/ada-el)
 
 Some influential environment variables:
   CC          C compiler command
@@ -2949,6 +2947,7 @@ ADO_LIBDIR="lib"
 
 
 DB=""
+ADO_DB_MYSQL=False
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient" >&5
 $as_echo_n "checking for mysql_init in -lmysqlclient... " >&6; }
@@ -2987,9 +2986,14 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_mysql_init" >&5
 $as_echo "$ac_cv_lib_mysqlclient_mysql_init" >&6; }
 if test "x$ac_cv_lib_mysqlclient_mysql_init" = x""yes; then :
-  DB="$DB mysql"
+
+    DB="$DB mysql"
+    ADO_DB_MYSQL=True
+
 fi
 
+
+ADO_DB_SQLITE=False
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sqlite3_open in -lsqlite3" >&5
 $as_echo_n "checking for sqlite3_open in -lsqlite3... " >&6; }
 if test "${ac_cv_lib_sqlite3_sqlite3_open+set}" = set; then :
@@ -3027,7 +3031,10 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sqlite3_sqlite3_open" >&5
 $as_echo "$ac_cv_lib_sqlite3_sqlite3_open" >&6; }
 if test "x$ac_cv_lib_sqlite3_sqlite3_open" = x""yes; then :
-  DB="$DB sqlite"
+
+    DB="$DB sqlite"
+    ADO_DB_SQLITE=True
+
 fi
 
 
@@ -3048,6 +3055,8 @@ else
     ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS \"ado_${i}_harness\""
   done
 fi
+
+
 
 
 
@@ -3076,31 +3085,6 @@ if test ! -f ${UTIL_DIR}/util.gpr; then
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${UTIL_DIR}" >&5
 $as_echo "${UTIL_DIR}" >&6; }
-
-
-##########################################
-# Ada Expression Language library
-##########################################
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Expression Language library (code.google.com/p/ada-el)" >&5
-$as_echo_n "checking Ada Expression Language library (code.google.com/p/ada-el)... " >&6; }
-
-# Check whether --with-ada-el was given.
-if test "${with_ada_el+set}" = set; then :
-  withval=$with_ada_el;
-  EL_DIR=${withval}/
-
-else
-
-  EL_DIR=../el/
-
-fi
-
-if test ! -f ${EL_DIR}/el.gpr; then
-   as_fn_error "Ada Expression Language library not found in ${EL_DIR}" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${EL_DIR}" >&5
-$as_echo "${EL_DIR}" >&6; }
-
 
 
 ac_config_files="$ac_config_files Makefile ado.gpr tests.gpr samples.gpr"
