@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Print_User -- Example to find an object from the database
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ADO;
--- with ADO.Drivers.Sqlite;
-with ADO.Drivers.Mysql;
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.SQL;
 with ADO.Sessions.Factory;
@@ -35,15 +34,17 @@ procedure Print_User is
    User    : User_Ref;
 
 begin
-   if Ada.Command_Line.Argument_Count <= 2 then
+   if Ada.Command_Line.Argument_Count < 2 then
       Ada.Text_IO.Put_Line ("Usage: print_user connection user-name ...");
+      Ada.Text_IO.Put_Line ("Example: print_user 'mysql://localhost:3306/ado_test?user=root' joe");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
 
-   --   ADO.Drivers.Sqlite.Initialize;
-   ADO.Drivers.Mysql.Initialize;
+   --  Initialize the database drivers.
+   ADO.Drivers.Initialize;
 
+   --  Create and configure the connection pool
    Factory.Create (Ada.Command_Line.Argument (1));
 
    declare

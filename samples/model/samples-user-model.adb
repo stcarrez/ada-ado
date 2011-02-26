@@ -21,7 +21,12 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with ADO.Databases;
+with Util.Beans.Objects.Time;
 package body Samples.User.Model is
+   function "=" (Left, Right : User_Ref'Class) return Boolean is
+   begin
+      return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
+   end "=";
    procedure Set_Field (Object : in out User_Ref'Class;
                         Impl   : out User_Ref_Access;
                         Field  : in Positive) is
@@ -170,7 +175,7 @@ package body Samples.User.Model is
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
             Copy.all.Set_Key (Impl.all.Get_Key);
-            Copy.Object_Version := Impl.Object_Version;
+            Copy.Version := Impl.Version;
             Copy.Name := Impl.Name;
             Copy.Email := Impl.Email;
             Copy.Date := Impl.Date;
@@ -295,12 +300,12 @@ package body Samples.User.Model is
          Object.Clear_Modified (7);
       end if;
       if Stmt.Has_Save_Fields then
-         Object.Object_Version := Object.Object_Version + 1;
-         Stmt.Save_Field (Name  => "object_version",
-                          Value => Object.Object_Version);
-         Stmt.Set_Filter (Filter => "id = ? and object_version = ?");
+         Object.Version := Object.Version + 1;
+         Stmt.Save_Field (Name  => "version",
+                          Value => Object.Version);
+         Stmt.Set_Filter (Filter => "id = ? and version = ?");
          Stmt.Add_Param (Value => Object.Get_Key);
-         Stmt.Add_Param (Value => Object.Object_Version - 1);
+         Stmt.Add_Param (Value => Object.Version - 1);
          declare
             Result : Integer;
          begin
@@ -321,9 +326,9 @@ package body Samples.User.Model is
                   := Session.Create_Statement (USER_REF_TABLE'Access);
       Result : Integer;
    begin
-      Object.Object_Version := 1;
+      Object.Version := 1;
       Query.Save_Field (Name => "ID", Value => Object.Get_Key);
-      Query.Save_Field (Name => "objectVersion", Value => Object.Object_Version);
+      Query.Save_Field (Name => "object_version", Value => Object.Version);
       Query.Save_Field (Name => "NAME", Value => Object.Name);
       Query.Save_Field (Name => "EMAIL", Value => Object.Email);
       Query.Save_Field (Name => "DATE", Value => Object.Date);
@@ -344,26 +349,26 @@ package body Samples.User.Model is
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in User_Ref;
-                       Name : in String) return EL.Objects.Object is
+                       Name : in String) return Util.Beans.Objects.Object is
       Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
-         return EL.Objects.To_Object (Impl.Name);
+         return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
       if Name = "email" then
-         return EL.Objects.To_Object (Impl.Email);
+         return Util.Beans.Objects.To_Object (Impl.Email);
       end if;
       if Name = "date" then
-         return EL.Objects.To_Object (Impl.Date);
+         return Util.Beans.Objects.To_Object (Impl.Date);
       end if;
       if Name = "description" then
-         return EL.Objects.To_Object (Impl.Description);
+         return Util.Beans.Objects.To_Object (Impl.Description);
       end if;
       if Name = "status" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Status));
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Status));
       end if;
       raise ADO.Databases.NOT_FOUND;
    end Get_Value;
@@ -394,13 +399,13 @@ package body Samples.User.Model is
                    Stmt   : in out ADO.Statements.Query_Statement'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Object_Version := Stmt.Get_Integer (1);
+      Object.Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Email := Stmt.Get_Unbounded_String (3);
       Object.Date := Stmt.Get_Unbounded_String (4);
       Object.Description := Stmt.Get_Unbounded_String (5);
       Object.Status := Stmt.Get_Integer (6);
-      Object.Object_Version := Stmt.Get_Integer (1);
+      Object.Version := Stmt.Get_Integer (1);
       Set_Created (Object);
    end Load;
 end Samples.User.Model;

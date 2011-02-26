@@ -27,7 +27,7 @@ with ADO.Schemas;
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
-with EL.Objects;
+with Util.Beans.Objects;
 package Samples.User.Model is
    use Ada.Calendar;
    use Ada.Strings.Unbounded;
@@ -45,50 +45,51 @@ package Samples.User.Model is
                  return ADO.Identifier;
    --  Set the user name
    procedure Set_Name (Object : in out User_Ref;
-                       Value  : in String);
+                       Value  : in Unbounded_String);
    procedure Set_Name (Object : in out User_Ref;
-                       Value : in Unbounded_String);
+                       Value : in String);
    --  Get the user name
    function Get_Name (Object : in User_Ref)
-                 return String;
-   function Get_Name (Object : in User_Ref)
                  return Unbounded_String;
+   function Get_Name (Object : in User_Ref)
+                 return String;
    --  Set the user email
    procedure Set_Email (Object : in out User_Ref;
-                        Value  : in String);
+                        Value  : in Unbounded_String);
    procedure Set_Email (Object : in out User_Ref;
-                        Value : in Unbounded_String);
+                        Value : in String);
    --  Get the user email
    function Get_Email (Object : in User_Ref)
-                 return String;
-   function Get_Email (Object : in User_Ref)
                  return Unbounded_String;
+   function Get_Email (Object : in User_Ref)
+                 return String;
    --  Set the user registration date
    procedure Set_Date (Object : in out User_Ref;
-                       Value  : in String);
+                       Value  : in Unbounded_String);
    procedure Set_Date (Object : in out User_Ref;
-                       Value : in Unbounded_String);
+                       Value : in String);
    --  Get the user registration date
    function Get_Date (Object : in User_Ref)
-                 return String;
-   function Get_Date (Object : in User_Ref)
                  return Unbounded_String;
+   function Get_Date (Object : in User_Ref)
+                 return String;
    --  Set the user description
    procedure Set_Description (Object : in out User_Ref;
-                              Value  : in String);
+                              Value  : in Unbounded_String);
    procedure Set_Description (Object : in out User_Ref;
-                              Value : in Unbounded_String);
+                              Value : in String);
    --  Get the user description
    function Get_Description (Object : in User_Ref)
-                 return String;
-   function Get_Description (Object : in User_Ref)
                  return Unbounded_String;
+   function Get_Description (Object : in User_Ref)
+                 return String;
    --  Set the user status
    procedure Set_Status (Object : in out User_Ref;
                          Value  : in Integer);
    --  Get the user status
    function Get_Status (Object : in User_Ref)
                  return Integer;
+   function "=" (Left, Right : User_Ref'Class) return Boolean;
    --  Table definition
    USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
    --  Internal method to allocate the Object_Record instance
@@ -114,7 +115,7 @@ package Samples.User.Model is
    procedure Delete (Object  : in out User_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
    function Get_Value (Item : in User_Ref;
-                       Name : in String) return EL.Objects.Object;
+                       Name : in String) return Util.Beans.Objects.Object;
    package User_Ref_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
                                   Element_Type => User_Ref,
@@ -126,7 +127,7 @@ package Samples.User.Model is
 private
    USER_REF_NAME : aliased constant String := "user";
    COL_0_1_NAME : aliased constant String := "ID";
-   COL_1_1_NAME : aliased constant String := "objectVersion";
+   COL_1_1_NAME : aliased constant String := "object_version";
    COL_2_1_NAME : aliased constant String := "NAME";
    COL_3_1_NAME : aliased constant String := "EMAIL";
    COL_4_1_NAME : aliased constant String := "DATE";
@@ -148,7 +149,7 @@ private
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => USER_REF_TABLE'Access)
    with record
-       Object_Version : Integer;
+       Version : Integer;
        Name : Unbounded_String;
        Email : Unbounded_String;
        Date : Unbounded_String;
