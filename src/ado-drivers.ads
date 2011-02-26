@@ -37,6 +37,9 @@ package ADO.Drivers is
    --  Raised for all errors reported by the database
    DB_Error : exception;
 
+   --  Initialize the drivers which are available.
+   procedure Initialize;
+
    --  ------------------------------
    --  Database connection implementation
    --  ------------------------------
