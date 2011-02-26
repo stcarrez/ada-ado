@@ -174,7 +174,6 @@ package body Samples.User.Model is
               := new User_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
-            Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Version := Impl.Version;
             Copy.Name := Impl.Name;
             Copy.Email := Impl.Email;
@@ -327,6 +326,7 @@ package body Samples.User.Model is
       Result : Integer;
    begin
       Object.Version := 1;
+      Session.Allocate (Id => Object);
       Query.Save_Field (Name => "ID", Value => Object.Get_Key);
       Query.Save_Field (Name => "object_version", Value => Object.Version);
       Query.Save_Field (Name => "NAME", Value => Object.Name);
