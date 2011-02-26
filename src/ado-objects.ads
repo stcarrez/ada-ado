@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,10 @@ package ADO.Objects is
    --  The class mapping is used to know in which table the object is stored.
    --  In comparison and hashing, the class mapping is used to distinguish
    --  objects of different tables.
+   --
+   --  Limitations:
+   --  --------------------
+   --  o The primary key must be a single column represented as an integer or a string
    type Object_Key_Type is (KEY_INTEGER, KEY_STRING);
    type Object_Key (Of_Type  : Object_Key_Type;
                     Of_Class : Schemas.Class_Mapping_Access) is private;
@@ -72,7 +76,7 @@ package ADO.Objects is
    --  Get the key value
    function Get_Value (Key : Object_Key) return Ada.Strings.Unbounded.Unbounded_String;
 
-   --  Return the key value in an EL object.
+   --  Return the key value in a bean object.
    function To_Object (Key : Object_Key) return Util.Beans.Objects.Object;
 
    --  Get the key as a string
@@ -85,6 +89,10 @@ package ADO.Objects is
    --  --------------------
    --  Database Object representation
    --  --------------------
+   --  The <b>Object_Record</b> is the root type of any database record row.
+   --  It holds the primary key as well as the class mapping associated with the record.
+   --  Applications do not use the <b>Object_Record</b> directly but instead they receive
+   --  and use an <b>Object_Ref</b>.
    type Object_Record (Key_Type : Object_Key_Type;
                        Of_Class : ADO.Schemas.Class_Mapping_Access) is abstract
        new Ada.Finalization.Controlled with private;
@@ -106,10 +114,10 @@ package ADO.Objects is
    procedure Set_Key (Ref : in out Object_Record'Class;
                       Key : in Object_Key);
 
-   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Identifier);
 
-   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Ada.Strings.Unbounded.Unbounded_String);
 
    --  Get the table name associated with the object record.
@@ -157,6 +165,8 @@ package ADO.Objects is
    --  --------------------
    --  Reference to a database object representation
    --  --------------------
+   --  The <b>Object_Ref</b> is the root type of any database record reference.
+   --  The reference is the object that applications can use to access the record object.
    type Object_Ref is abstract
       new Ada.Finalization.Controlled and Util.Beans.Basic.Readonly_Bean with private;
 
@@ -180,7 +190,7 @@ package ADO.Objects is
    --  Returns true if the two objects have the same primary key.
    function "=" (Left : Object_Ref; Right : Object_Ref) return Boolean;
 
-   procedure Set_Object (Ref : in out Object_Ref'Class;
+   procedure Set_Object (Ref    : in out Object_Ref'Class;
                          Object : in Object_Record_Access);
 
    --  Internal method to allocate the Object_Record instance

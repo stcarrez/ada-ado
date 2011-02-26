@@ -27,7 +27,7 @@ with ADO.Schemas;
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
-with EL.Objects;
+with Util.Beans.Objects;
 package ADO.Model is
    use Ada.Calendar;
    use Ada.Strings.Unbounded;
@@ -39,14 +39,14 @@ package ADO.Model is
    type Sequence_Ref is new ADO.Objects.Object_Ref with null record;
    --  Set the sequence name
    procedure Set_Name (Object : in out Sequence_Ref;
-                       Value  : in String);
+                       Value  : in Unbounded_String);
    procedure Set_Name (Object : in out Sequence_Ref;
-                       Value : in Unbounded_String);
+                       Value : in String);
    --  Get the sequence name
    function Get_Name (Object : in Sequence_Ref)
-                 return String;
-   function Get_Name (Object : in Sequence_Ref)
                  return Unbounded_String;
+   function Get_Name (Object : in Sequence_Ref)
+                 return String;
    --  Set the sequence value
    procedure Set_Value (Object : in out Sequence_Ref;
                         Value  : in ADO.Identifier);
@@ -85,7 +85,7 @@ package ADO.Model is
    procedure Delete (Object  : in out Sequence_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
    function Get_Value (Item : in Sequence_Ref;
-                       Name : in String) return EL.Objects.Object;
+                       Name : in String) return Util.Beans.Objects.Object;
    package Sequence_Ref_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
                                   Element_Type => Sequence_Ref,

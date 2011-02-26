@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -127,7 +127,7 @@ package body ADO.Objects is
    end To_String;
 
    --  ------------------------------
-   --  Return the key value in an EL object.
+   --  Return the key value in a bean object.
    --  ------------------------------
    function To_Object (Key : Object_Key) return Util.Beans.Objects.Object is
    begin
@@ -222,7 +222,7 @@ package body ADO.Objects is
       return Left.Object.Key = Right.Object.Key;
    end "=";
 
-   procedure Set_Object (Ref : in out Object_Ref'Class;
+   procedure Set_Object (Ref    : in out Object_Ref'Class;
                          Object : in Object_Record_Access) is
       Is_Zero : Boolean;
    begin
@@ -266,13 +266,13 @@ package body ADO.Objects is
       return Ref.Key.Str;
    end Get_Key_Value;
 
-   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Identifier) is
    begin
       Set_Value (Ref.Key, Value);
    end Set_Key_Value;
 
-   procedure Set_Key_Value (Ref : in out Object_Record'Class;
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Ada.Strings.Unbounded.Unbounded_String) is
    begin
       Ref.Key.Str := Value;

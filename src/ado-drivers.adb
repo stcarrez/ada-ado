@@ -182,4 +182,7 @@ package body ADO.Drivers is
       return null;
    end Get_Driver;
 
+   --  Initialize the drivers which are available.
+   procedure Initialize is separate;
+
 end ADO.Drivers;

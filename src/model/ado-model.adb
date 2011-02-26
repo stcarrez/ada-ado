@@ -21,6 +21,7 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with ADO.Databases;
+with Util.Beans.Objects.Time;
 package body ADO.Model is
    function "=" (Left, Right : Sequence_Ref'Class) return Boolean is
    begin
@@ -258,17 +259,17 @@ package body ADO.Model is
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in Sequence_Ref;
-                       Name : in String) return EL.Objects.Object is
+                       Name : in String) return Util.Beans.Objects.Object is
       Impl : constant access Sequence_Ref_Impl := Sequence_Ref_Impl (Item.Get_Object.all)'Access;
    begin
       if Name = "name" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "value" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Value));
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Value));
       end if;
       if Name = "block_size" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Block_Size));
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Block_Size));
       end if;
       raise ADO.Databases.NOT_FOUND;
    end Get_Value;
