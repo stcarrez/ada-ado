@@ -17,5 +17,19 @@
             <column name="BLOCK_SIZE" not-null="false" unique="false" sql-type="BIGINT"/>
         </property>
     </class>
+    <class name="ADO.Model.Entity_Type_Ref" table="entity_type" dynamic-insert="true" dynamic-update="true">
+        <comment>Entity types</comment>
+        <id name="id" type="ADO.Identifier" unsaved-value="null">
+            <column name="ID" sql-type="INTEGER"/>
+            <generator class="hilo">
+                <!-- id-generator merge-point -->
+            </generator>
+        </id>
+        <version name="version" type="int" column="version"/>
+        <property name="name">
+            <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+            <type name="java.lang.String"/>
+        </property>
+    </class>
 
 </hibernate-mapping>

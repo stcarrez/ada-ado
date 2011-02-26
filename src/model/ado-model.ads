@@ -94,6 +94,57 @@ package ADO.Model is
    procedure List (Object  : in out Sequence_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class);
+   --  --------------------
+   --  Entity types
+   --  --------------------
+   type Entity_Type_Ref is new ADO.Objects.Object_Ref with null record;
+   --  Set 
+   procedure Set_Id (Object : in out Entity_Type_Ref;
+                     Value  : in ADO.Identifier);
+   --  Get 
+   function Get_Id (Object : in Entity_Type_Ref)
+                 return ADO.Identifier;
+   --  Set 
+   procedure Set_Name (Object : in out Entity_Type_Ref;
+                       Value  : in Unbounded_String);
+   --  Get 
+   function Get_Name (Object : in Entity_Type_Ref)
+                 return Unbounded_String;
+   function "=" (Left, Right : Entity_Type_Ref'Class) return Boolean;
+   --  Table definition
+   ENTITY_TYPE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
+   --  Internal method to allocate the Object_Record instance
+   procedure Allocate (Object : in out Entity_Type_Ref);
+   --  Copy of the object.
+   function Copy (Object : Entity_Type_Ref) return Entity_Type_Ref;
+   --  Load the entity identified by 'Id'.
+   --  Raises the NOT_FOUND exception if it does not exist.
+   procedure Load (Object  : in out Entity_Type_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Id      : in ADO.Identifier);
+   --  Find and load the entity.
+   procedure Find (Object  : in out Entity_Type_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
+   --  Save the entity.  If the entity does not have an identifier, an identifier is allocated
+   --  and it is inserted in the table.  Otherwise, only data fields which have been changed
+   --  are updated.
+   procedure Save (Object  : in out Entity_Type_Ref;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+   --  Delete the entity.
+   procedure Delete (Object  : in out Entity_Type_Ref;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+   function Get_Value (Item : in Entity_Type_Ref;
+                       Name : in String) return Util.Beans.Objects.Object;
+   package Entity_Type_Ref_Vectors is
+      new Ada.Containers.Vectors (Index_Type   => Natural,
+                                  Element_Type => Entity_Type_Ref,
+                                  "="          => "=");
+   subtype Entity_Type_Ref_Vector is Entity_Type_Ref_Vectors.Vector;
+   procedure List (Object  : in out Entity_Type_Ref_Vector;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class);
 private
    SEQUENCE_REF_NAME : aliased constant String := "sequence";
    COL_0_1_NAME : aliased constant String := "NAME";
@@ -137,5 +188,45 @@ private
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out Sequence_Ref'Class;
                         Impl   : out Sequence_Ref_Access;
+                        Field  : in Positive);
+   ENTITY_TYPE_REF_NAME : aliased constant String := "entity_type";
+   COL_0_2_NAME : aliased constant String := "ID";
+   COL_1_2_NAME : aliased constant String := "version";
+   COL_2_2_NAME : aliased constant String := "NAME";
+   ENTITY_TYPE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+     (Count => 3,
+      Table => ENTITY_TYPE_REF_NAME'Access,
+      Members => (         COL_0_2_NAME'Access,
+         COL_1_2_NAME'Access,
+         COL_2_2_NAME'Access
+)
+     );
+   type Entity_Type_Ref_Impl is
+      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
+                                     Of_Class => ENTITY_TYPE_REF_TABLE'Access)
+   with record
+       Version : Integer;
+       Name : Unbounded_String;
+   end record;
+   type Entity_Type_Ref_Access is access all Entity_Type_Ref_Impl;
+   overriding
+   procedure Destroy (Object : access Entity_Type_Ref_Impl);
+   overriding
+   procedure Find (Object  : in out Entity_Type_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
+   procedure Load (Object  : in out Entity_Type_Ref_Impl;
+                   Stmt   : in out ADO.Statements.Query_Statement'Class);
+   overriding
+   procedure Save (Object  : in out Entity_Type_Ref_Impl;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+   procedure Create (Object  : in out Entity_Type_Ref_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+   overriding
+   procedure Delete (Object  : in out Entity_Type_Ref_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+   procedure Set_Field (Object : in out Entity_Type_Ref'Class;
+                        Impl   : out Entity_Type_Ref_Access;
                         Field  : in Positive);
 end ADO.Model;
