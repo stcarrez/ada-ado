@@ -336,9 +336,14 @@ package body ADO.Parameters is
    --  Add the parameter in the list.
    --  ------------------------------
    procedure Add_Parameter (Params : in out List;
-			    Param  : in Parameter) is
+                            Param  : in Parameter) is
    begin
-      Params.Params.Append (Param);
+      if Param.Position = Natural (Length (Params.Params)) + 1 then
+         Params.Params.Append (Param);
+      else
+         Params.Params.Replace_Element (Index    => Param.Position,
+                                        New_Item => Param);
+      end if;
    end Add_Parameter;
 
    --  ------------------------------
