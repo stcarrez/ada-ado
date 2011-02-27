@@ -21,6 +21,7 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with ADO.Databases;
+with Util.Beans.Objects.Time;
 package body Regtests.Simple.Model is
    function "=" (Left, Right : User_Ref'Class) return Boolean is
    begin
@@ -65,7 +66,7 @@ package body Regtests.Simple.Model is
    end Set_Value;
    function Get_Value (Object : in User_Ref)
                   return ADO.Identifier is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Value;
    end Get_Value;
@@ -88,7 +89,7 @@ package body Regtests.Simple.Model is
    end Get_Name;
    function Get_Name (Object : in User_Ref)
                   return Unbounded_String is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Name;
    end Get_Name;
@@ -99,11 +100,12 @@ package body Regtests.Simple.Model is
       if not Object.Is_Null then
          declare
             Impl : constant User_Ref_Access
-              := User_Ref_Impl (Object.Get_Object.all)'Access;
+              := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
             Copy : constant User_Ref_Access
               := new User_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
+            Copy.Copy (Impl.all);
             Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
             Copy.Name := Impl.Name;
@@ -137,7 +139,7 @@ package body Regtests.Simple.Model is
       Impl.Find (Session, Query, Found);
       if not Found then
          Destroy (Impl);
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
@@ -184,29 +186,43 @@ package body Regtests.Simple.Model is
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
       if Stmt.Has_Elements then
-         Object.Load (Stmt);
+         Object.Load (Stmt, Session);
          Stmt.Next;
          Found := not Stmt.Has_Elements;
       else
          Found := False;
       end if;
    end Find;
+   overriding
+   procedure Load (Object  : in out User_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class) is
+      Found : Boolean;
+      Query : ADO.SQL.Query;
+      Id    : constant ADO.Identifier := Object.Get_Key_Value;
+   begin
+      Query.Bind_Param (Position => 1, Value => Id);
+      Query.Set_Filter ("id = ?");
+      Object.Find (Session, Query, Found);
+      if not Found then
+         raise ADO.Objects.NOT_FOUND;
+      end if;
+   end Load;
    procedure Save (Object  : in out User_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (USER_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "ID",
+         Stmt.Save_Field (Name  => COL_0_1_NAME, --  ID
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "VALUE",
+         Stmt.Save_Field (Name  => COL_2_1_NAME, --  VALUE
                           Value => Object.Value);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => "NAME",
+         Stmt.Save_Field (Name  => COL_3_1_NAME, --  NAME
                           Value => Object.Name);
          Object.Clear_Modified (4);
       end if;
@@ -239,10 +255,14 @@ package body Regtests.Simple.Model is
    begin
       Object.Version := 1;
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
-      Query.Save_Field (Name => "object_version", Value => Object.Version);
-      Query.Save_Field (Name => "VALUE", Value => Object.Value);
-      Query.Save_Field (Name => "NAME", Value => Object.Name);
+      Query.Save_Field (Name  => COL_0_1_NAME, --  ID
+                        Value => Object.Get_Key);
+      Query.Save_Field (Name  => COL_1_1_NAME, --  object_version
+                        Value => Object.Version);
+      Query.Save_Field (Name  => COL_2_1_NAME, --  VALUE
+                        Value => Object.Value);
+      Query.Save_Field (Name  => COL_3_1_NAME, --  NAME
+                        Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -258,19 +278,19 @@ package body Regtests.Simple.Model is
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in User_Ref;
-                       Name : in String) return EL.Objects.Object is
-      Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Object.all)'Access;
+                       Name : in String) return Util.Beans.Objects.Object is
+      Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "value" then
-         return EL.Objects.To_Object (Long_Long_Integer (Impl.Value));
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Value));
       end if;
       if Name = "name" then
-         return EL.Objects.To_Object (Impl.Name);
+         return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Databases.NOT_FOUND;
+      raise ADO.Objects.NOT_FOUND;
    end Get_Value;
    procedure List (Object  : in out User_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -285,7 +305,7 @@ package body Regtests.Simple.Model is
             Item : User_Ref;
             Impl : constant User_Ref_Access := new User_Ref_Impl;
          begin
-            Impl.Load (Stmt);
+            Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
             Object.Append (Item);
          end;
@@ -295,11 +315,11 @@ package body Regtests.Simple.Model is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object : in out User_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class) is
+   procedure Load (Object  : in out User_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Version := Stmt.Get_Integer (1);
       Object.Value := Stmt.Get_Identifier (2);
       Object.Name := Stmt.Get_Unbounded_String (3);
       Object.Version := Stmt.Get_Integer (1);
@@ -358,7 +378,7 @@ package body Regtests.Simple.Model is
    end Get_Name;
    function Get_Name (Object : in Allocate_Ref)
                   return Unbounded_String is
-      Impl : constant Allocate_Ref_Access := Allocate_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant Allocate_Ref_Access := Allocate_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Name;
    end Get_Name;
@@ -369,11 +389,12 @@ package body Regtests.Simple.Model is
       if not Object.Is_Null then
          declare
             Impl : constant Allocate_Ref_Access
-              := Allocate_Ref_Impl (Object.Get_Object.all)'Access;
+              := Allocate_Ref_Impl (Object.Get_Load_Object.all)'Access;
             Copy : constant Allocate_Ref_Access
               := new Allocate_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
+            Copy.Copy (Impl.all);
             Copy.Object_Version := Impl.Object_Version;
             Copy.Name := Impl.Name;
          end;
@@ -406,7 +427,7 @@ package body Regtests.Simple.Model is
       Impl.Find (Session, Query, Found);
       if not Found then
          Destroy (Impl);
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
@@ -453,24 +474,38 @@ package body Regtests.Simple.Model is
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
       if Stmt.Has_Elements then
-         Object.Load (Stmt);
+         Object.Load (Stmt, Session);
          Stmt.Next;
          Found := not Stmt.Has_Elements;
       else
          Found := False;
       end if;
    end Find;
+   overriding
+   procedure Load (Object  : in out Allocate_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class) is
+      Found : Boolean;
+      Query : ADO.SQL.Query;
+      Id    : constant ADO.Identifier := Object.Get_Key_Value;
+   begin
+      Query.Bind_Param (Position => 1, Value => Id);
+      Query.Set_Filter ("id = ?");
+      Object.Find (Session, Query, Found);
+      if not Found then
+         raise ADO.Objects.NOT_FOUND;
+      end if;
+   end Load;
    procedure Save (Object  : in out Allocate_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (ALLOCATE_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "ID",
+         Stmt.Save_Field (Name  => COL_0_2_NAME, --  ID
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "NAME",
+         Stmt.Save_Field (Name  => COL_2_2_NAME, --  NAME
                           Value => Object.Name);
          Object.Clear_Modified (3);
       end if;
@@ -503,9 +538,12 @@ package body Regtests.Simple.Model is
    begin
       Object.Object_Version := 1;
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
-      Query.Save_Field (Name => "object_version", Value => Object.Object_Version);
-      Query.Save_Field (Name => "NAME", Value => Object.Name);
+      Query.Save_Field (Name  => COL_0_2_NAME, --  ID
+                        Value => Object.Get_Key);
+      Query.Save_Field (Name  => COL_1_2_NAME, --  object_version
+                        Value => Object.Object_Version);
+      Query.Save_Field (Name  => COL_2_2_NAME, --  NAME
+                        Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -521,16 +559,16 @@ package body Regtests.Simple.Model is
       Stmt.Execute;
    end Delete;
    function Get_Value (Item : in Allocate_Ref;
-                       Name : in String) return EL.Objects.Object is
-      Impl : constant access Allocate_Ref_Impl := Allocate_Ref_Impl (Item.Get_Object.all)'Access;
+                       Name : in String) return Util.Beans.Objects.Object is
+      Impl : constant access Allocate_Ref_Impl := Allocate_Ref_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
-         return EL.Objects.To_Object (Impl.Name);
+         return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Databases.NOT_FOUND;
+      raise ADO.Objects.NOT_FOUND;
    end Get_Value;
    procedure List (Object  : in out Allocate_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -545,7 +583,7 @@ package body Regtests.Simple.Model is
             Item : Allocate_Ref;
             Impl : constant Allocate_Ref_Access := new Allocate_Ref_Impl;
          begin
-            Impl.Load (Stmt);
+            Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
             Object.Append (Item);
          end;
@@ -555,11 +593,11 @@ package body Regtests.Simple.Model is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object : in out Allocate_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class) is
+   procedure Load (Object  : in out Allocate_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Object_Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Object_Version := Stmt.Get_Integer (1);
       Set_Created (Object);

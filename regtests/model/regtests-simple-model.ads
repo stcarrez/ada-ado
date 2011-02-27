@@ -27,7 +27,7 @@ with ADO.Schemas;
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
-with EL.Objects;
+with Util.Beans.Objects;
 package Regtests.Simple.Model is
    use Ada.Calendar;
    use Ada.Strings.Unbounded;
@@ -51,14 +51,14 @@ package Regtests.Simple.Model is
                  return ADO.Identifier;
    --  Set the user name
    procedure Set_Name (Object : in out User_Ref;
-                       Value  : in String);
+                       Value  : in Unbounded_String);
    procedure Set_Name (Object : in out User_Ref;
-                       Value : in Unbounded_String);
+                       Value : in String);
    --  Get the user name
    function Get_Name (Object : in User_Ref)
-                 return String;
-   function Get_Name (Object : in User_Ref)
                  return Unbounded_String;
+   function Get_Name (Object : in User_Ref)
+                 return String;
    function "=" (Left, Right : User_Ref'Class) return Boolean;
    --  Table definition
    USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
@@ -85,7 +85,7 @@ package Regtests.Simple.Model is
    procedure Delete (Object  : in out User_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
    function Get_Value (Item : in User_Ref;
-                       Name : in String) return EL.Objects.Object;
+                       Name : in String) return Util.Beans.Objects.Object;
    package User_Ref_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
                                   Element_Type => User_Ref,
@@ -106,14 +106,14 @@ package Regtests.Simple.Model is
                  return ADO.Identifier;
    --  Set the sequence value
    procedure Set_Name (Object : in out Allocate_Ref;
-                       Value  : in String);
+                       Value  : in Unbounded_String);
    procedure Set_Name (Object : in out Allocate_Ref;
-                       Value : in Unbounded_String);
+                       Value : in String);
    --  Get the sequence value
    function Get_Name (Object : in Allocate_Ref)
-                 return String;
-   function Get_Name (Object : in Allocate_Ref)
                  return Unbounded_String;
+   function Get_Name (Object : in Allocate_Ref)
+                 return String;
    function "=" (Left, Right : Allocate_Ref'Class) return Boolean;
    --  Table definition
    ALLOCATE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
@@ -140,7 +140,7 @@ package Regtests.Simple.Model is
    procedure Delete (Object  : in out Allocate_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
    function Get_Value (Item : in Allocate_Ref;
-                       Name : in String) return EL.Objects.Object;
+                       Name : in String) return Util.Beans.Objects.Object;
    package Allocate_Ref_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
                                   Element_Type => Allocate_Ref,
@@ -180,8 +180,12 @@ private
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
+   overriding
    procedure Load (Object  : in out User_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class);
+                   Session : in out ADO.Sessions.Session'Class);
+   procedure Load (Object  : in out User_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class);
    overriding
    procedure Save (Object  : in out User_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
@@ -220,8 +224,12 @@ private
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
+   overriding
    procedure Load (Object  : in out Allocate_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class);
+                   Session : in out ADO.Sessions.Session'Class);
+   procedure Load (Object  : in out Allocate_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class);
    overriding
    procedure Save (Object  : in out Allocate_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
