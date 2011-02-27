@@ -267,6 +267,18 @@ package body ADO.Statements is
    end Next;
 
    --  ------------------------------
+   --  Returns true if the column <b>Column</b> is null.
+   --  ------------------------------
+   function Is_Null (Query  : in Query_Statement;
+                     Column : in Natural) return Boolean is
+   begin
+      if Query.Proxy = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
+      return Query.Proxy.Is_Null (Column);
+   end Is_Null;
+
+   --  ------------------------------
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Int64</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
@@ -545,8 +557,22 @@ package body ADO.Statements is
                          Name   : in String;
                          Value  : in ADO.Objects.Object_Ref'Class) is
    begin
-      Update.Save_Field (Name, Value.Get_Key);
+      if Value.Is_Null then
+         Update.Save_Null_Field (Name);
+      else
+         Update.Save_Field (Name, Value.Get_Key);
+      end if;
    end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to NULL.
+   --  ------------------------------
+   procedure Save_Null_Field (Update : in out Update_Statement;
+                              Name   : in String) is
+   begin
+      Update.Update.Save_Null_Field (Name);
+   end Save_Null_Field;
 
    --  ------------------------------
    --  Check if the update/insert query has some fields to update.

@@ -170,11 +170,11 @@ package body ADO.Objects.Cache is
       if Left.all'Size /= Right.all'Size then
          return False;
       end if;
-      if Left.Key = Right.Key then
+      if Left.Key /= Right.Key then
          return False;
       end if;
 
-      return Left.all = Right.all;
+      return True;
    end Equivalent_Elements;
 
    --  ------------------------------

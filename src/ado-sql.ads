@@ -189,6 +189,11 @@ package ADO.SQL is
                          Name   : in String;
                          Value  : in Unbounded_String);
 
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to NULL.
+   procedure Save_Null_Field (Update : in out Update_Query;
+                              Name   : in String);
+
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Query) return Boolean;
 

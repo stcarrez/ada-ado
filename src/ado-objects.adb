@@ -19,7 +19,7 @@
 with Util.Log;
 with Util.Log.Loggers;
 with Ada.Strings.Unbounded.Hash;
-
+with ADO.Sessions.Factory;
 package body ADO.Objects is
 
    use Util.Log;
@@ -176,6 +176,9 @@ package body ADO.Objects is
    begin
       if Object.Object = null then
          Object.Allocate;
+         Object.Object.Is_Loaded := True;
+      elsif not Object.Object.Is_Loaded then
+         Object.Lazy_Load;
       end if;
       Object.Object.Modified (Field) := True;
    end Set_Field;
@@ -187,6 +190,42 @@ package body ADO.Objects is
    begin
       return Object.Object = null;
    end Is_Null;
+
+   --  ------------------------------
+   --  Load the object from the database if it was not already loaded.
+   --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
+   --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
+   --  This procedure makes sure these values are loaded by invoking <b>Load</b> if necessary.
+   --  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  ------------------------------
+   procedure Lazy_Load (Ref : in Object_Ref'Class) is
+   begin
+      if Ref.Object /= null and then not Ref.Object.Is_Loaded then
+         if Ref.Object.Session = null then
+            raise SESSION_EXPIRED;
+         end if;
+         if Ref.Object.Session.Session = null then
+            raise SESSION_EXPIRED;
+         end if;
+         declare
+            S : ADO.Sessions.Session
+              := ADO.Sessions.Factory.Get_Session (Ref.Object.Session.Session.all'Access);
+         begin
+            Ref.Object.Load (S);
+         end;
+      end if;
+   end Lazy_Load;
+
+   --  ------------------------------
+   --  Internal method to get the object record instance and make sure it is fully loaded.
+   --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
+   --  database.  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  ------------------------------
+   function Get_Load_Object (Ref : in Object_Ref'Class) return Object_Record_Access is
+   begin
+      Ref.Lazy_Load;
+      return Ref.Object;
+   end Get_Load_Object;
 
    --  ------------------------------
    --  Internal method to get the object record instance.
@@ -203,6 +242,37 @@ package body ADO.Objects is
    begin
       return Ref.Object.Key;
    end Get_Key;
+
+   --  ------------------------------
+   --  Set the object key.
+   --  ------------------------------
+   procedure Set_Key_Value (Ref     : in out Object_Ref'Class;
+                            Value   : in Identifier;
+                            Session : in ADO.Sessions.Session'Class) is
+   begin
+      if Ref.Object = null then
+         Ref.Allocate;
+      end if;
+      Ref.Object.Set_Key_Value (Value);
+      Ref.Object.Session := Session.Get_Session_Proxy;
+      Ref.Object.Is_Created := True;
+   end Set_Key_Value;
+
+   --  ------------------------------
+   --  Set the object key.
+   --  ------------------------------
+   procedure Set_Key_Value (Ref     : in out Object_Ref'Class;
+                            Value   : in Ada.Strings.Unbounded.Unbounded_String;
+                            Session : in ADO.Sessions.Session'Class) is
+   begin
+      if Ref.Object = null then
+         Ref.Allocate;
+      end if;
+      Ref.Object.Set_Key_Value (Value);
+      Ref.Object.Session := Session.Get_Session_Proxy;
+      Ref.Object.Is_Created := True;
+   end Set_Key_Value;
+
 
    --  ------------------------------
    --  Check if the two objects are the same database objects.
@@ -233,6 +303,16 @@ package body ADO.Objects is
          end if;
       end if;
       Ref.Object := Object;
+   end Set_Object;
+
+   procedure Set_Object (Ref     : in out Object_Ref'Class;
+                         Object  : in Object_Record_Access;
+                         Session : in ADO.Sessions.Session'Class) is
+   begin
+      if Object /= null and then Object.Session = null then
+         Object.Session := Session.Get_Session_Proxy;
+      end if;
+      Ref.Set_Object (Object);
    end Set_Object;
 
    --  ------------------------------
@@ -275,7 +355,7 @@ package body ADO.Objects is
    procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Ada.Strings.Unbounded.Unbounded_String) is
    begin
-      Ref.Key.Str := Value;
+      Ref.Key.Str    := Value;
    end Set_Key_Value;
 
    --  ------------------------------
@@ -305,6 +385,7 @@ package body ADO.Objects is
    procedure Set_Created (Ref : in out Object_Record'Class) is
    begin
       Ref.Is_Created := True;
+      Ref.Is_Loaded  := True;
    end Set_Created;
 
    --  ------------------------------
@@ -325,5 +406,26 @@ package body ADO.Objects is
    begin
       Ref.Modified (Field) := False;
    end Clear_Modified;
+
+   --  ------------------------------
+   --  Copy the source object record into the target.
+   --  ------------------------------
+   procedure Copy (To   : in out Object_Record;
+                   From : in Object_Record'Class) is
+   begin
+      To.Session    := From.Session;
+      To.Is_Created := From.Is_Created;
+      To.Is_Loaded  := From.Is_Loaded;
+      To.Modified   := From.Modified;
+      To.Key        := From.Key;
+   end Copy;
+
+   function Create_Session_Proxy (S : access ADO.Sessions.Session_Record)
+                                  return Session_Proxy_Access is
+      Result : constant Session_Proxy_Access := new Session_Proxy;
+   begin
+      Result.Session := S;
+      return Result;
+   end Create_Session_Proxy;
 
 end ADO.Objects;

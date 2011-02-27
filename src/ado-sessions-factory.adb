@@ -49,6 +49,42 @@ package body ADO.Sessions.Factory is
    end Get_Session;
 
    --  ------------------------------
+   --  Get a read-only session from the session proxy.
+   --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
+   --  ------------------------------
+   function Get_Session (Proxy : in Session_Proxy_Access) return Session is
+      R : Session;
+   begin
+      if Proxy = null then
+         raise ADO.Objects.SESSION_EXPIRED;
+      end if;
+      if Proxy.Session = null then
+         raise ADO.Objects.SESSION_EXPIRED;
+      end if;
+      R.Impl := Proxy.Session;
+      R.Impl.Counter := R.Impl.Counter + 1;
+      return R;
+   end Get_Session;
+
+   --  ------------------------------
+   --  Get a read-only session from the session proxy.
+   --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
+   --  ------------------------------
+   function Get_Session (Proxy : in Session_Record_Access) return Session is
+      R : Session;
+   begin
+      if Proxy = null then
+         raise ADO.Objects.SESSION_EXPIRED;
+      end if;
+--        if Proxy.Session = null then
+--           raise ADO.Objects.SESSION_EXPIRED;
+--        end if;
+      R.Impl := Proxy;
+      R.Impl.Counter := R.Impl.Counter + 1;
+      return R;
+   end Get_Session;
+
+   --  ------------------------------
    --  Get a read-write session from the factory.
    --  ------------------------------
    function Get_Master_Session (Factory : in Session_Factory) return Master_Session is

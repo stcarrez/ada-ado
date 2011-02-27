@@ -32,11 +32,14 @@ package ADO.Objects is
 
    --  The object was modified by a another transaction.
    --  This exception is raised by 'Save'.
-   LAZY_LOCK : exception;
+   LAZY_LOCK    : exception;
 
    INSERT_ERROR : exception;
 
    UPDATE_ERROR : exception;
+
+   --  The session associated with the object is missing or has expired.
+   SESSION_EXPIRED : exception;
 
    --  --------------------
    --  Object Key
@@ -95,7 +98,7 @@ package ADO.Objects is
    --  and use an <b>Object_Ref</b>.
    type Object_Record (Key_Type : Object_Key_Type;
                        Of_Class : ADO.Schemas.Class_Mapping_Access) is abstract
-       new Ada.Finalization.Controlled with private;
+       new Ada.Finalization.Limited_Controlled with private;
 
    type Object_Record_Access is access all Object_Record'Class;
 
@@ -162,6 +165,15 @@ package ADO.Objects is
    procedure Delete (Object  : in out Object_Record;
                      Session : in out ADO.Sessions.Master_Session'Class) is abstract;
 
+   --  Load the object from the database.  The object has been lazy loaded and only its
+   --  primary key is known.  This is called from <b>Lazy_Load</b>.
+   procedure Load (Object  : in out Object_Record;
+                   Session : in out ADO.Sessions.Session'Class) is abstract;
+
+   --  Copy the source object record into the target.
+   procedure Copy (To   : in out Object_Record;
+                   From : in Object_Record'Class);
+
    --  --------------------
    --  Reference to a database object representation
    --  --------------------
@@ -178,12 +190,28 @@ package ADO.Objects is
    function Is_Null (Object : in Object_Ref'Class) return Boolean;
    pragma Inline (Is_Null);
 
+   --  Internal method to get the object record instance and make sure it is fully loaded.
+   --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
+   --  database.  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   function Get_Load_Object (Ref : in Object_Ref'Class) return Object_Record_Access;
+   pragma Inline (Get_Load_Object);
+
    --  Internal method to get the object record instance.
    function Get_Object (Ref : in Object_Ref'Class) return Object_Record_Access;
    pragma Inline (Get_Object);
 
    --  Get the object key
    function Get_Key (Ref : in Object_Ref'Class) return Object_Key;
+
+   --  Set the object key.
+   procedure Set_Key_Value (Ref     : in out Object_Ref'Class;
+                            Value   : in Identifier;
+                            Session : in ADO.Sessions.Session'Class);
+
+   --  Set the object key.
+   procedure Set_Key_Value (Ref     : in out Object_Ref'Class;
+                            Value   : in Ada.Strings.Unbounded.Unbounded_String;
+                            Session : in ADO.Sessions.Session'Class);
 
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
@@ -192,6 +220,10 @@ package ADO.Objects is
 
    procedure Set_Object (Ref    : in out Object_Ref'Class;
                          Object : in Object_Record_Access);
+
+   procedure Set_Object (Ref     : in out Object_Ref'Class;
+                         Object  : in Object_Record_Access;
+                         Session : in ADO.Sessions.Session'Class);
 
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Ref : in out Object_Ref) is abstract;
@@ -214,7 +246,19 @@ package ADO.Objects is
    type Modified_Map is array (1 .. 64) of Boolean;
    pragma Pack (Modified_Map);
 
+   type Session_Proxy is limited private;
+   type Session_Proxy_Access is access all Session_Proxy;
+
+   function Create_Session_Proxy (S : access ADO.Sessions.Session_Record) return Session_Proxy_Access;
+
 private
+
+   --  Load the object from the database if it was not already loaded.
+   --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
+   --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
+   --  This procedure makes sure these values are loaded by invoking <b>Load</b> if necessary.
+   --  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   procedure Lazy_Load (Ref : in Object_Ref'Class);
 
    type Object_Key (Of_Type  : Object_Key_Type;
                     Of_Class : ADO.Schemas.Class_Mapping_Access) is
@@ -242,31 +286,23 @@ private
    overriding
    procedure Finalize (Object : in out Object_Ref);
 
+   type Session_Proxy is limited record
+      Counter : Util.Concurrent.Counters.Counter;
+      Session : access ADO.Sessions.Session_Record;
+   end record;
+
    --  The Object_Record represents the base class for any database object.
    --  A reference counter is used by Object_Ref to release correctly the memory.
    --
    type Object_Record (Key_Type : Object_Key_Type;
                        Of_Class : ADO.Schemas.Class_Mapping_Access) is abstract
-      new Ada.Finalization.Controlled with record
+      new Ada.Finalization.Limited_Controlled with record
       Counter    : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
+      Session    : Session_Proxy_Access := null;
       Key        : Object_Key (Of_Type => Key_Type, Of_Class => Of_Class);
       Is_Created : Boolean      := False;
+      Is_Loaded  : Boolean      := False;
       Modified   : Modified_Map := (others => False);
    end record;
---
---     type Object_Proxy is new Object_Ref with record
---        Id         : Identifier := NO_IDENTIFIER;
---        Connection :
---     end Object_Proxy;
---
---     function Get_Session (User : User_Ref_Impl) return Session_Ref is
---     begin
---        if User.Session.Object then
---           return Session_Ref '(Object => User.Session.Object);
---        end if;
---        User.Session.Object := new Session_Ref_Impl;
---        User_Session.Object.Load (User.Session.Connection);
---
---     end Get_Session;
 
 end ADO.Objects;

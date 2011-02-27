@@ -69,7 +69,12 @@ package body ADO.Sessions is
          if Database.Impl.Counter = 0 then
             Free (Database.Impl);
          end if;
+--
+--           if Database.Impl.Proxy /= null then
+--              Database.Impl.Proxy.Counter := Database.Impl.Proxy.Counter - 1;
+--           end if;
          Database.Impl := null;
+
       end if;
    end Close;
 
@@ -242,5 +247,15 @@ package body ADO.Sessions is
       Check_Session (Database);
       return Database.Impl.Database.Create_Statement (Table);
    end Create_Statement;
+
+   function Get_Session_Proxy (Database : in Session) return ADO.Objects.Session_Proxy_Access is
+      use type ADO.Objects.Session_Proxy_Access;
+   begin
+      Check_Session (Database);
+      if Database.Impl.Proxy = null then
+         Database.Impl.Proxy := ADO.Objects.Create_Session_Proxy (Database.Impl);
+      end if;
+      return Database.Impl.Proxy;
+   end Get_Session_Proxy;
 
 end ADO.Sessions;

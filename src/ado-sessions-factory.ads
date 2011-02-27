@@ -55,6 +55,11 @@ package ADO.Sessions.Factory is
    procedure Create (Factory : out Session_Factory;
                      URI     : in String);
 
+   --  Get a read-only session from the session proxy.
+   --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
+   function Get_Session (Proxy : in Session_Proxy_Access) return Session;
+
+   function Get_Session (Proxy : in Session_Record_Access) return Session;
 private
 
    type Session_Factory is new Ada.Finalization.Limited_Controlled with record
