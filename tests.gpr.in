@@ -1,7 +1,6 @@
 with "config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@testutil";
-with "@EL_DIR@el";
 with "aunit";
 with "ado";
 
