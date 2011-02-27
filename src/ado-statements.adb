@@ -637,6 +637,7 @@ package body ADO.Statements is
    function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement is
    begin
       return Result : Delete_Statement do
+         Result.Query := Proxy.Get_Query;
          Result.Proxy := Proxy;
          Result.Proxy.Ref_Counter := 1;
       end return;
