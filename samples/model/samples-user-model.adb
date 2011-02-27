@@ -76,7 +76,7 @@ package body Samples.User.Model is
    end Get_Name;
    function Get_Name (Object : in User_Ref)
                   return Unbounded_String is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Name;
    end Get_Name;
@@ -99,7 +99,7 @@ package body Samples.User.Model is
    end Get_Email;
    function Get_Email (Object : in User_Ref)
                   return Unbounded_String is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Email;
    end Get_Email;
@@ -122,7 +122,7 @@ package body Samples.User.Model is
    end Get_Date;
    function Get_Date (Object : in User_Ref)
                   return Unbounded_String is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Date;
    end Get_Date;
@@ -145,7 +145,7 @@ package body Samples.User.Model is
    end Get_Description;
    function Get_Description (Object : in User_Ref)
                   return Unbounded_String is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Description;
    end Get_Description;
@@ -158,7 +158,7 @@ package body Samples.User.Model is
    end Set_Status;
    function Get_Status (Object : in User_Ref)
                   return Integer is
-      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant User_Ref_Access := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Status;
    end Get_Status;
@@ -169,11 +169,12 @@ package body Samples.User.Model is
       if not Object.Is_Null then
          declare
             Impl : constant User_Ref_Access
-              := User_Ref_Impl (Object.Get_Object.all)'Access;
+              := User_Ref_Impl (Object.Get_Load_Object.all)'Access;
             Copy : constant User_Ref_Access
               := new User_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
+            Copy.Copy (Impl.all);
             Copy.Version := Impl.Version;
             Copy.Name := Impl.Name;
             Copy.Email := Impl.Email;
@@ -257,44 +258,58 @@ package body Samples.User.Model is
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
       if Stmt.Has_Elements then
-         Object.Load (Stmt);
+         Object.Load (Stmt, Session);
          Stmt.Next;
          Found := not Stmt.Has_Elements;
       else
          Found := False;
       end if;
    end Find;
+   overriding
+   procedure Load (Object  : in out User_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class) is
+      Found : Boolean;
+      Query : ADO.SQL.Query;
+      Id    : constant ADO.Identifier := Object.Get_Key_Value;
+   begin
+      Query.Bind_Param (Position => 1, Value => Id);
+      Query.Set_Filter ("id = ?");
+      Object.Find (Session, Query, Found);
+      if not Found then
+         raise ADO.Databases.NOT_FOUND;
+      end if;
+   end Load;
    procedure Save (Object  : in out User_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (USER_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "ID",
+         Stmt.Save_Field (Name  => COL_0_1_NAME, --  ID
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "NAME",
+         Stmt.Save_Field (Name  => COL_2_1_NAME, --  NAME
                           Value => Object.Name);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => "EMAIL",
+         Stmt.Save_Field (Name  => COL_3_1_NAME, --  EMAIL
                           Value => Object.Email);
          Object.Clear_Modified (4);
       end if;
       if Object.Is_Modified (5) then
-         Stmt.Save_Field (Name  => "DATE",
+         Stmt.Save_Field (Name  => COL_4_1_NAME, --  DATE
                           Value => Object.Date);
          Object.Clear_Modified (5);
       end if;
       if Object.Is_Modified (6) then
-         Stmt.Save_Field (Name  => "DESCRIPTION",
+         Stmt.Save_Field (Name  => COL_5_1_NAME, --  DESCRIPTION
                           Value => Object.Description);
          Object.Clear_Modified (6);
       end if;
       if Object.Is_Modified (7) then
-         Stmt.Save_Field (Name  => "STATUS",
+         Stmt.Save_Field (Name  => COL_6_1_NAME, --  STATUS
                           Value => Object.Status);
          Object.Clear_Modified (7);
       end if;
@@ -327,13 +342,20 @@ package body Samples.User.Model is
    begin
       Object.Version := 1;
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
-      Query.Save_Field (Name => "object_version", Value => Object.Version);
-      Query.Save_Field (Name => "NAME", Value => Object.Name);
-      Query.Save_Field (Name => "EMAIL", Value => Object.Email);
-      Query.Save_Field (Name => "DATE", Value => Object.Date);
-      Query.Save_Field (Name => "DESCRIPTION", Value => Object.Description);
-      Query.Save_Field (Name => "STATUS", Value => Object.Status);
+      Query.Save_Field (Name  => COL_0_1_NAME, --  ID
+                        Value => Object.Get_Key);
+      Query.Save_Field (Name  => COL_1_1_NAME, --  object_version
+                        Value => Object.Version);
+      Query.Save_Field (Name  => COL_2_1_NAME, --  NAME
+                        Value => Object.Name);
+      Query.Save_Field (Name  => COL_3_1_NAME, --  EMAIL
+                        Value => Object.Email);
+      Query.Save_Field (Name  => COL_4_1_NAME, --  DATE
+                        Value => Object.Date);
+      Query.Save_Field (Name  => COL_5_1_NAME, --  DESCRIPTION
+                        Value => Object.Description);
+      Query.Save_Field (Name  => COL_6_1_NAME, --  STATUS
+                        Value => Object.Status);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -350,7 +372,7 @@ package body Samples.User.Model is
    end Delete;
    function Get_Value (Item : in User_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Object.all)'Access;
+      Impl : constant access User_Ref_Impl := User_Ref_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
@@ -385,7 +407,7 @@ package body Samples.User.Model is
             Item : User_Ref;
             Impl : constant User_Ref_Access := new User_Ref_Impl;
          begin
-            Impl.Load (Stmt);
+            Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
             Object.Append (Item);
          end;
@@ -395,11 +417,11 @@ package body Samples.User.Model is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object : in out User_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class) is
+   procedure Load (Object  : in out User_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Email := Stmt.Get_Unbounded_String (3);
       Object.Date := Stmt.Get_Unbounded_String (4);
