@@ -76,7 +76,7 @@ package body ADO.Model is
    end Set_Value;
    function Get_Value (Object : in Sequence_Ref)
                   return ADO.Identifier is
-      Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Value;
    end Get_Value;
@@ -89,7 +89,7 @@ package body ADO.Model is
    end Set_Block_Size;
    function Get_Block_Size (Object : in Sequence_Ref)
                   return ADO.Identifier is
-      Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant Sequence_Ref_Access := Sequence_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Block_Size;
    end Get_Block_Size;
@@ -100,11 +100,12 @@ package body ADO.Model is
       if not Object.Is_Null then
          declare
             Impl : constant Sequence_Ref_Access
-              := Sequence_Ref_Impl (Object.Get_Object.all)'Access;
+              := Sequence_Ref_Impl (Object.Get_Load_Object.all)'Access;
             Copy : constant Sequence_Ref_Access
               := new Sequence_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
+            Copy.Copy (Impl.all);
             Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
@@ -186,29 +187,43 @@ package body ADO.Model is
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
       if Stmt.Has_Elements then
-         Object.Load (Stmt);
+         Object.Load (Stmt, Session);
          Stmt.Next;
          Found := not Stmt.Has_Elements;
       else
          Found := False;
       end if;
    end Find;
+   overriding
+   procedure Load (Object  : in out Sequence_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class) is
+      Found : Boolean;
+      Query : ADO.SQL.Query;
+      Id    : constant Unbounded_String := Object.Get_Key_Value;
+   begin
+      Query.Bind_Param (Position => 1, Value => Id);
+      Query.Set_Filter ("name = ?");
+      Object.Find (Session, Query, Found);
+      if not Found then
+         raise ADO.Databases.NOT_FOUND;
+      end if;
+   end Load;
    procedure Save (Object  : in out Sequence_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (SEQUENCE_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "NAME",
+         Stmt.Save_Field (Name  => COL_0_1_NAME, --  NAME
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "VALUE",
+         Stmt.Save_Field (Name  => COL_2_1_NAME, --  VALUE
                           Value => Object.Value);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => "BLOCK_SIZE",
+         Stmt.Save_Field (Name  => COL_3_1_NAME, --  BLOCK_SIZE
                           Value => Object.Block_Size);
          Object.Clear_Modified (4);
       end if;
@@ -240,10 +255,14 @@ package body ADO.Model is
       Result : Integer;
    begin
       Object.Version := 1;
-      Query.Save_Field (Name => "NAME", Value => Object.Get_Key);
-      Query.Save_Field (Name => "version", Value => Object.Version);
-      Query.Save_Field (Name => "VALUE", Value => Object.Value);
-      Query.Save_Field (Name => "BLOCK_SIZE", Value => Object.Block_Size);
+      Query.Save_Field (Name  => COL_0_1_NAME, --  NAME
+                        Value => Object.Get_Key);
+      Query.Save_Field (Name  => COL_1_1_NAME, --  version
+                        Value => Object.Version);
+      Query.Save_Field (Name  => COL_2_1_NAME, --  VALUE
+                        Value => Object.Value);
+      Query.Save_Field (Name  => COL_3_1_NAME, --  BLOCK_SIZE
+                        Value => Object.Block_Size);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -260,7 +279,7 @@ package body ADO.Model is
    end Delete;
    function Get_Value (Item : in Sequence_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Sequence_Ref_Impl := Sequence_Ref_Impl (Item.Get_Object.all)'Access;
+      Impl : constant access Sequence_Ref_Impl := Sequence_Ref_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "name" then
          return ADO.Objects.To_Object (Impl.Get_Key);
@@ -286,7 +305,7 @@ package body ADO.Model is
             Item : Sequence_Ref;
             Impl : constant Sequence_Ref_Access := new Sequence_Ref_Impl;
          begin
-            Impl.Load (Stmt);
+            Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
             Object.Append (Item);
          end;
@@ -296,11 +315,11 @@ package body ADO.Model is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object : in out Sequence_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class) is
+   procedure Load (Object  : in out Sequence_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Unbounded_String (0));
-      Object.Version := Stmt.Get_Integer (1);
       Object.Value := Stmt.Get_Identifier (2);
       Object.Block_Size := Stmt.Get_Identifier (3);
       Object.Version := Stmt.Get_Integer (1);
@@ -349,7 +368,7 @@ package body ADO.Model is
    end Set_Name;
    function Get_Name (Object : in Entity_Type_Ref)
                   return Unbounded_String is
-      Impl : constant Entity_Type_Ref_Access := Entity_Type_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant Entity_Type_Ref_Access := Entity_Type_Ref_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Name;
    end Get_Name;
@@ -360,11 +379,12 @@ package body ADO.Model is
       if not Object.Is_Null then
          declare
             Impl : constant Entity_Type_Ref_Access
-              := Entity_Type_Ref_Impl (Object.Get_Object.all)'Access;
+              := Entity_Type_Ref_Impl (Object.Get_Load_Object.all)'Access;
             Copy : constant Entity_Type_Ref_Access
               := new Entity_Type_Ref_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
+            Copy.Copy (Impl.all);
             Copy.Version := Impl.Version;
             Copy.Name := Impl.Name;
          end;
@@ -444,24 +464,38 @@ package body ADO.Model is
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
       if Stmt.Has_Elements then
-         Object.Load (Stmt);
+         Object.Load (Stmt, Session);
          Stmt.Next;
          Found := not Stmt.Has_Elements;
       else
          Found := False;
       end if;
    end Find;
+   overriding
+   procedure Load (Object  : in out Entity_Type_Ref_Impl;
+                   Session : in out ADO.Sessions.Session'Class) is
+      Found : Boolean;
+      Query : ADO.SQL.Query;
+      Id    : constant ADO.Identifier := Object.Get_Key_Value;
+   begin
+      Query.Bind_Param (Position => 1, Value => Id);
+      Query.Set_Filter ("id = ?");
+      Object.Find (Session, Query, Found);
+      if not Found then
+         raise ADO.Databases.NOT_FOUND;
+      end if;
+   end Load;
    procedure Save (Object  : in out Entity_Type_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (ENTITY_TYPE_REF_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => "ID",
+         Stmt.Save_Field (Name  => COL_0_2_NAME, --  ID
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => "NAME",
+         Stmt.Save_Field (Name  => COL_2_2_NAME, --  NAME
                           Value => Object.Name);
          Object.Clear_Modified (3);
       end if;
@@ -494,9 +528,12 @@ package body ADO.Model is
    begin
       Object.Version := 1;
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name => "ID", Value => Object.Get_Key);
-      Query.Save_Field (Name => "version", Value => Object.Version);
-      Query.Save_Field (Name => "NAME", Value => Object.Name);
+      Query.Save_Field (Name  => COL_0_2_NAME, --  ID
+                        Value => Object.Get_Key);
+      Query.Save_Field (Name  => COL_1_2_NAME, --  version
+                        Value => Object.Version);
+      Query.Save_Field (Name  => COL_2_2_NAME, --  NAME
+                        Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise INSERT_ERROR;
@@ -513,7 +550,7 @@ package body ADO.Model is
    end Delete;
    function Get_Value (Item : in Entity_Type_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Entity_Type_Ref_Impl := Entity_Type_Ref_Impl (Item.Get_Object.all)'Access;
+      Impl : constant access Entity_Type_Ref_Impl := Entity_Type_Ref_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
@@ -536,7 +573,7 @@ package body ADO.Model is
             Item : Entity_Type_Ref;
             Impl : constant Entity_Type_Ref_Access := new Entity_Type_Ref_Impl;
          begin
-            Impl.Load (Stmt);
+            Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
             Object.Append (Item);
          end;
@@ -546,11 +583,11 @@ package body ADO.Model is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object : in out Entity_Type_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class) is
+   procedure Load (Object  : in out Entity_Type_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Version := Stmt.Get_Integer (1);
       Object.Name := Stmt.Get_Unbounded_String (2);
       Object.Version := Stmt.Get_Integer (1);
       Set_Created (Object);

@@ -176,8 +176,12 @@ private
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
+   overriding
    procedure Load (Object  : in out Sequence_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class);
+                   Session : in out ADO.Sessions.Session'Class);
+   procedure Load (Object  : in out Sequence_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class);
    overriding
    procedure Save (Object  : in out Sequence_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
@@ -216,8 +220,12 @@ private
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
+   overriding
    procedure Load (Object  : in out Entity_Type_Ref_Impl;
-                   Stmt   : in out ADO.Statements.Query_Statement'Class);
+                   Session : in out ADO.Sessions.Session'Class);
+   procedure Load (Object  : in out Entity_Type_Ref_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class);
    overriding
    procedure Save (Object  : in out Entity_Type_Ref_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
