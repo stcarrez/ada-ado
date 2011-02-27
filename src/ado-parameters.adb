@@ -203,6 +203,18 @@ package body ADO.Parameters is
       Abstract_List'Class (Params).Add_Parameter (P);
    end Bind_Param;
 
+   procedure Bind_Null_Param (Params   : in out Abstract_List;
+                              Position : in Natural) is
+      P : Parameter := Parameter '(T        => T_NULL,
+                                   Name     => Null_Unbounded_String,
+                                   Position => Position);
+   begin
+      if Position = 0 then
+         P.Position := Abstract_List'Class (Params).Length + 1;
+      end if;
+      Abstract_List'Class (Params).Add_Parameter (P);
+   end Bind_Null_Param;
+
    procedure Add_Param (Params : in out Abstract_List;
                         Value  : in Boolean) is
    begin
@@ -317,6 +329,9 @@ package body ADO.Parameters is
 
                   when T_DATE =>
                      Append_Date (Buffer, P.Time);
+
+                  when T_NULL =>
+                     Append (Buffer, "NULL");
 
                   when others =>
                      Append (Buffer, "'");

@@ -344,6 +344,17 @@ package body ADO.SQL is
       Update_Query'Class (Update).Bind_Param (Position => Update.Pos, Value => Value);
    end Save_Field;
 
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to NULL.
+   --  ------------------------------
+   procedure Save_Null_Field (Update : in out Update_Query;
+                              Name   : in String) is
+   begin
+      Update.Add_Field (Name => Name);
+      Update_Query'Class (Update).Bind_Null_Param (Position => Update.Pos);
+   end Save_Null_Field;
+
    --  --------------------
    --  Check if the update/insert query has some fields to update.
    --  --------------------

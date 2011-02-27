@@ -126,6 +126,10 @@ package ADO.Statements is
    --  Fetch the next row
    procedure Next (Query : in out Query_Statement);
 
+   --  Returns true if the column <b>Column</b> is null.
+   function Is_Null (Query  : in Query_Statement;
+                     Column : in Natural) return Boolean;
+
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Int64</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
@@ -257,6 +261,11 @@ package ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in ADO.Objects.Object_Ref'Class);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to NULL.
+   procedure Save_Null_Field (Update : in out Update_Statement;
+                              Name   : in String);
 
    --  Check if the update/insert query has some fields to update.
    function Has_Save_Fields (Update : in Update_Statement) return Boolean;

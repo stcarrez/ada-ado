@@ -27,12 +27,15 @@ package ADO.Parameters is
 
    use Ada.Strings.Unbounded;
 
-   type Parameter_Type is (T_STRING, T_DATE, T_LONG_INTEGER, T_INTEGER, T_Boolean);
+   type Parameter_Type is (T_NULL, T_STRING, T_DATE, T_LONG_INTEGER, T_INTEGER, T_Boolean);
 
    type Parameter (T : Parameter_Type) is record
       Name     : Unbounded_String;
       Position : Natural := 0;
       case T is
+         when T_NULL =>
+            null;
+
          when T_LONG_INTEGER =>
             Long_Num : Long_Integer := 0;
 
@@ -115,6 +118,8 @@ package ADO.Parameters is
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
                          Value    : in Ada.Calendar.Time);
+   procedure Bind_Null_Param (Params   : in out Abstract_List;
+                              Position : in Natural);
 
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Boolean);

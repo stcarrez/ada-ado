@@ -45,6 +45,9 @@ private
 
       Connected   : Boolean      := False;
       Server      : Mysql_Access := null;
+
+      --  MySQL autocommit flag
+      Autocommit  : Boolean := True;
    end record;
 
    type Database_Connection_Access is access all Database_Connection'Class;

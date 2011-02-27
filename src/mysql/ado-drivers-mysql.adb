@@ -85,6 +85,10 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
+      if Database.Autocommit then
+         Database.Execute ("set autocommit=0");
+         Database.Autocommit := False;
+      end if;
       Database.Execute ("start transaction;");
    end Begin_Transaction;
 

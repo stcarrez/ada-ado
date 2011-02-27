@@ -108,6 +108,11 @@ package ADO.Statements.Mysql is
    overriding
    procedure Next (Query : in out Mysql_Query_Statement);
 
+   --  Returns true if the column <b>Column</b> is null.
+   overriding
+   function Is_Null (Query  : in Mysql_Query_Statement;
+                     Column : in Natural) return Boolean;
+
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Int64</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
