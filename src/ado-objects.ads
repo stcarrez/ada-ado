@@ -41,6 +41,9 @@ package ADO.Objects is
    --  The session associated with the object is missing or has expired.
    SESSION_EXPIRED : exception;
 
+   --  The object record was not found in the database.
+   NOT_FOUND       : exception;
+
    --  --------------------
    --  Object Key
    --  --------------------

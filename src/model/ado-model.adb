@@ -140,7 +140,7 @@ package body ADO.Model is
       Impl.Find (Session, Query, Found);
       if not Found then
          Destroy (Impl);
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
@@ -205,7 +205,7 @@ package body ADO.Model is
       Query.Set_Filter ("name = ?");
       Object.Find (Session, Query, Found);
       if not Found then
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
    end Load;
    procedure Save (Object  : in out Sequence_Ref_Impl;
@@ -290,7 +290,7 @@ package body ADO.Model is
       if Name = "block_size" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Block_Size));
       end if;
-      raise ADO.Databases.NOT_FOUND;
+      raise ADO.Objects.NOT_FOUND;
    end Get_Value;
    procedure List (Object  : in out Sequence_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -417,7 +417,7 @@ package body ADO.Model is
       Impl.Find (Session, Query, Found);
       if not Found then
          Destroy (Impl);
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
@@ -482,7 +482,7 @@ package body ADO.Model is
       Query.Set_Filter ("id = ?");
       Object.Find (Session, Query, Found);
       if not Found then
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
    end Load;
    procedure Save (Object  : in out Entity_Type_Ref_Impl;
@@ -558,7 +558,7 @@ package body ADO.Model is
       if Name = "name" then
          return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Databases.NOT_FOUND;
+      raise ADO.Objects.NOT_FOUND;
    end Get_Value;
    procedure List (Object  : in out Entity_Type_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
