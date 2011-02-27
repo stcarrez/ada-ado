@@ -211,7 +211,7 @@ package body Samples.User.Model is
       Impl.Find (Session, Query, Found);
       if not Found then
          Destroy (Impl);
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
@@ -276,7 +276,7 @@ package body Samples.User.Model is
       Query.Set_Filter ("id = ?");
       Object.Find (Session, Query, Found);
       if not Found then
-         raise ADO.Databases.NOT_FOUND;
+         raise ADO.Objects.NOT_FOUND;
       end if;
    end Load;
    procedure Save (Object  : in out User_Ref_Impl;
@@ -392,7 +392,7 @@ package body Samples.User.Model is
       if Name = "status" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Status));
       end if;
-      raise ADO.Databases.NOT_FOUND;
+      raise ADO.Objects.NOT_FOUND;
    end Get_Value;
    procedure List (Object  : in out User_Ref_Vector;
                    Session : in out ADO.Sessions.Session'Class;
