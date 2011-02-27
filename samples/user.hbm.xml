@@ -9,30 +9,25 @@
             <generator class="sequence"/>
         </id>
         <version name="version" type="int" column="object_version"/>
-        <property name="name">
+        <property name="name" type="String">
             <comment>the user name</comment>
             <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-            <type name="String"/>
         </property>
-        <property name="email">
+        <property name="email" type="String">
             <comment>the user email</comment>
             <column name="EMAIL" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-            <type name="String"/>
         </property>
-        <property name="date">
+        <property name="date" type="String">
             <comment>the user registration date</comment>
             <column name="DATE" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-            <type name="String"/>
         </property>
-        <property name="description">
+        <property name="description" type="String">
             <comment>the user description</comment>
             <column name="DESCRIPTION" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-            <type name="String"/>
         </property>
-        <property name="status">
+        <property name="status" type="Integer">
             <comment>the user status</comment>
             <column name="STATUS" not-null="false" unique="false" sql-type="Integer"/>
-            <type name="Integer"/>
         </property>
     </class>
 

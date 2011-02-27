@@ -56,7 +56,7 @@ GENERATOR=../ada-gen/bin/dbmapper -t ../ada-gen/templates
 generate:
 	$(GENERATOR) -o src/model src/alloc-sequence.xml
 	$(GENERATOR) -o regtests/model regtests/simple-model.xml regtests/Comment.hbm.xml
-	$(GENERATOR) -o samples/model samples/user.xml
+	$(GENERATOR) -o samples/model samples/user.hbm.xml
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
