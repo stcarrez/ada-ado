@@ -92,6 +92,10 @@ package ADO.Objects is
    procedure Set_Value (Key   : in out Object_Key;
                         Value : in Identifier);
 
+   --  Set the key value
+   procedure Set_Value (Key   : in out Object_Key;
+                        Value : in String);
+
    --  --------------------
    --  Database Object representation
    --  --------------------

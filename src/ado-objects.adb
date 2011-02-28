@@ -112,6 +112,22 @@ package body ADO.Objects is
    end Set_Value;
 
    --  ------------------------------
+   --  Set the key value
+   --  ------------------------------
+   procedure Set_Value (Key   : in out Object_Key;
+                        Value : in String) is
+   begin
+      case Key.Of_Type is
+         when KEY_INTEGER =>
+            Key.Id := Identifier'Value (Value);
+
+         when KEY_STRING =>
+            Key.Str := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+
+      end case;
+   end Set_Value;
+
+   --  ------------------------------
    --  Get the key as a string
    --  ------------------------------
    function To_String (Key : Object_Key) return String is
