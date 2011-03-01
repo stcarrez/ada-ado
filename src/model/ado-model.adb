@@ -20,8 +20,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
-with ADO.Databases;
-with Util.Beans.Objects.Time;
 package body ADO.Model is
 
    use type ADO.Objects.Object_Record_Access;
@@ -344,6 +342,7 @@ package body ADO.Model is
    procedure Load (Object  : in out Sequence_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class) is
+      pragma Unreferenced (Session);
    begin
       Object.Set_Key_Value (Stmt.Get_Unbounded_String (0));
       Object.Value := Stmt.Get_Identifier (2);
@@ -638,6 +637,7 @@ package body ADO.Model is
    procedure Load (Object  : in out Entity_Type_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class) is
+      pragma Unreferenced (Session);
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Name := Stmt.Get_Unbounded_String (2);

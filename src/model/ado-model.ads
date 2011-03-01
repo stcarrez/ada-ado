@@ -24,15 +24,10 @@ with ADO.Objects;
 with ADO.Statements;
 with ADO.SQL;
 with ADO.Schemas;
-with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 package ADO.Model is
---   use Ada.Calendar;
---   use Ada.Strings.Unbounded;
---   use ADO.Objects;
---   use ADO.Statements;
 
    --  --------------------
    --  Sequence generator
@@ -58,6 +53,9 @@ package ADO.Model is
                  return Ada.Strings.Unbounded.Unbounded_String;
    function Get_Name (Object : in Sequence_Ref)
                  return String;
+   --  Get 
+   function Get_Version (Object : in Sequence_Ref)
+                 return Integer;
 
    --  Set the sequence value
    procedure Set_Value (Object : in out Sequence_Ref;
@@ -143,6 +141,9 @@ package ADO.Model is
    --  Get 
    function Get_Id (Object : in Entity_Type_Ref)
                  return ADO.Identifier;
+   --  Get 
+   function Get_Version (Object : in Entity_Type_Ref)
+                 return Integer;
 
    --  Set 
    procedure Set_Name (Object : in out Entity_Type_Ref;
