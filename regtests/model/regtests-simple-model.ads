@@ -24,66 +24,64 @@ with ADO.Objects;
 with ADO.Statements;
 with ADO.SQL;
 with ADO.Schemas;
-with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 package Regtests.Simple.Model is
---   use Ada.Calendar;
---   use Ada.Strings.Unbounded;
---   use ADO.Objects;
---   use ADO.Statements;
 
    --  --------------------
    --  Record representing a user
    --  --------------------
-   --  Create an object key for User_Ref.
-   function User_Ref_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
-   --  Create an object key for User_Ref from a string.
+   --  Create an object key for User.
+   function User_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
+   --  Create an object key for User from a string.
    --  Raises Constraint_Error if the string cannot be converted into the object key.
-   function User_Ref_Key (Id : in String) return ADO.Objects.Object_Key;
+   function User_Key (Id : in String) return ADO.Objects.Object_Key;
 
-   type User_Ref_Ref is new ADO.Objects.Object_Ref with null record;
+   type User_Ref is new ADO.Objects.Object_Ref with null record;
 
-   function "=" (Left, Right : User_Ref_Ref'Class) return Boolean;
+   function "=" (Left, Right : User_Ref'Class) return Boolean;
 
    --  Set the user id
-   procedure Set_Id (Object : in out User_Ref_Ref;
+   procedure Set_Id (Object : in out User_Ref;
                      Value  : in ADO.Identifier);
 
    --  Get the user id
-   function Get_Id (Object : in User_Ref_Ref)
+   function Get_Id (Object : in User_Ref)
                  return ADO.Identifier;
+   --  Get 
+   function Get_Version (Object : in User_Ref)
+                 return Integer;
 
    --  Set the sequence value
-   procedure Set_Value (Object : in out User_Ref_Ref;
+   procedure Set_Value (Object : in out User_Ref;
                         Value  : in ADO.Identifier);
 
    --  Get the sequence value
-   function Get_Value (Object : in User_Ref_Ref)
+   function Get_Value (Object : in User_Ref)
                  return ADO.Identifier;
 
    --  Set the user name
-   procedure Set_Name (Object : in out User_Ref_Ref;
+   procedure Set_Name (Object : in out User_Ref;
                        Value  : in Ada.Strings.Unbounded.Unbounded_String);
-   procedure Set_Name (Object : in out User_Ref_Ref;
+   procedure Set_Name (Object : in out User_Ref;
                        Value : in String);
 
    --  Get the user name
-   function Get_Name (Object : in User_Ref_Ref)
+   function Get_Name (Object : in User_Ref)
                  return Ada.Strings.Unbounded.Unbounded_String;
-   function Get_Name (Object : in User_Ref_Ref)
+   function Get_Name (Object : in User_Ref)
                  return String;
 
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
-   procedure Load (Object  : in out User_Ref_Ref;
+   procedure Load (Object  : in out User_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier);
 
    --  Find and load the entity.
    overriding
-   procedure Find (Object  : in out User_Ref_Ref;
+   procedure Find (Object  : in out User_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
@@ -92,79 +90,82 @@ package Regtests.Simple.Model is
    --  and it is inserted in the table.  Otherwise, only data fields which have been changed
    --  are updated.
    overriding
-   procedure Save (Object  : in out User_Ref_Ref;
+   procedure Save (Object  : in out User_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
    --  Delete the entity.
    overriding
-   procedure Delete (Object  : in out User_Ref_Ref;
+   procedure Delete (Object  : in out User_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
    overriding
-   function Get_Value (Item : in User_Ref_Ref;
+   function Get_Value (Item : in User_Ref;
                        Name : in String) return Util.Beans.Objects.Object;
 
    --  Table definition
-   USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
+   USER_TABLE : aliased constant ADO.Schemas.Class_Mapping;
 
    --  Internal method to allocate the Object_Record instance
    overriding
-   procedure Allocate (Object : in out User_Ref_Ref);
+   procedure Allocate (Object : in out User_Ref);
 
    --  Copy of the object.
-   function Copy (Object : User_Ref_Ref) return User_Ref_Ref;
+   function Copy (Object : User_Ref) return User_Ref;
 
-   package User_Ref_Vectors is
+   package User_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
-                                  Element_Type => User_Ref_Ref,
+                                  Element_Type => User_Ref,
                                   "="          => "=");
-   subtype User_Ref_Vector is User_Ref_Vectors.Vector;
+   subtype User_Vector is User_Vectors.Vector;
 
-   procedure List (Object  : in out User_Ref_Vector;
+   procedure List (Object  : in out User_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class);
    --  --------------------
    --  Record representing a user
    --  --------------------
-   --  Create an object key for Allocate_Ref.
-   function Allocate_Ref_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
-   --  Create an object key for Allocate_Ref from a string.
+   --  Create an object key for Allocate.
+   function Allocate_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
+   --  Create an object key for Allocate from a string.
    --  Raises Constraint_Error if the string cannot be converted into the object key.
-   function Allocate_Ref_Key (Id : in String) return ADO.Objects.Object_Key;
+   function Allocate_Key (Id : in String) return ADO.Objects.Object_Key;
 
-   type Allocate_Ref_Ref is new ADO.Objects.Object_Ref with null record;
+   type Allocate_Ref is new ADO.Objects.Object_Ref with null record;
 
-   function "=" (Left, Right : Allocate_Ref_Ref'Class) return Boolean;
+   function "=" (Left, Right : Allocate_Ref'Class) return Boolean;
 
    --  Set the user id
-   procedure Set_Id (Object : in out Allocate_Ref_Ref;
+   procedure Set_Id (Object : in out Allocate_Ref;
                      Value  : in ADO.Identifier);
 
    --  Get the user id
-   function Get_Id (Object : in Allocate_Ref_Ref)
+   function Get_Id (Object : in Allocate_Ref)
                  return ADO.Identifier;
+   --  Get 
+   function Get_Object_Version (Object : in Allocate_Ref)
+                 return Integer;
 
    --  Set the sequence value
-   procedure Set_Name (Object : in out Allocate_Ref_Ref;
+   procedure Set_Name (Object : in out Allocate_Ref;
                        Value  : in Ada.Strings.Unbounded.Unbounded_String);
-   procedure Set_Name (Object : in out Allocate_Ref_Ref;
+   procedure Set_Name (Object : in out Allocate_Ref;
                        Value : in String);
 
    --  Get the sequence value
-   function Get_Name (Object : in Allocate_Ref_Ref)
+   function Get_Name (Object : in Allocate_Ref)
                  return Ada.Strings.Unbounded.Unbounded_String;
-   function Get_Name (Object : in Allocate_Ref_Ref)
+   function Get_Name (Object : in Allocate_Ref)
                  return String;
 
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
-   procedure Load (Object  : in out Allocate_Ref_Ref;
+   procedure Load (Object  : in out Allocate_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier);
 
    --  Find and load the entity.
    overriding
-   procedure Find (Object  : in out Allocate_Ref_Ref;
+   procedure Find (Object  : in out Allocate_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
@@ -173,128 +174,128 @@ package Regtests.Simple.Model is
    --  and it is inserted in the table.  Otherwise, only data fields which have been changed
    --  are updated.
    overriding
-   procedure Save (Object  : in out Allocate_Ref_Ref;
+   procedure Save (Object  : in out Allocate_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
    --  Delete the entity.
    overriding
-   procedure Delete (Object  : in out Allocate_Ref_Ref;
+   procedure Delete (Object  : in out Allocate_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
    overriding
-   function Get_Value (Item : in Allocate_Ref_Ref;
+   function Get_Value (Item : in Allocate_Ref;
                        Name : in String) return Util.Beans.Objects.Object;
 
    --  Table definition
-   ALLOCATE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
+   ALLOCATE_TABLE : aliased constant ADO.Schemas.Class_Mapping;
 
    --  Internal method to allocate the Object_Record instance
    overriding
-   procedure Allocate (Object : in out Allocate_Ref_Ref);
+   procedure Allocate (Object : in out Allocate_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Allocate_Ref_Ref) return Allocate_Ref_Ref;
+   function Copy (Object : Allocate_Ref) return Allocate_Ref;
 
-   package Allocate_Ref_Vectors is
+   package Allocate_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
-                                  Element_Type => Allocate_Ref_Ref,
+                                  Element_Type => Allocate_Ref,
                                   "="          => "=");
-   subtype Allocate_Ref_Vector is Allocate_Ref_Vectors.Vector;
+   subtype Allocate_Vector is Allocate_Vectors.Vector;
 
-   procedure List (Object  : in out Allocate_Ref_Vector;
+   procedure List (Object  : in out Allocate_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class);
 
 private
-   USER_REF_NAME : aliased constant String := "test_user";
+   USER_NAME : aliased constant String := "test_user";
    COL_0_1_NAME : aliased constant String := "ID";
    COL_1_1_NAME : aliased constant String := "object_version";
    COL_2_1_NAME : aliased constant String := "VALUE";
    COL_3_1_NAME : aliased constant String := "NAME";
-   USER_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+   USER_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 4,
-      Table => USER_REF_NAME'Access,
+      Table => USER_NAME'Access,
       Members => (         COL_0_1_NAME'Access,
          COL_1_1_NAME'Access,
          COL_2_1_NAME'Access,
          COL_3_1_NAME'Access
 )
      );
-   type User_Ref_Impl is
+   type User_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
-                                     Of_Class => USER_REF_TABLE'Access)
+                                     Of_Class => USER_TABLE'Access)
    with record
        Version : Integer;
        Value : ADO.Identifier;
        Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
-   type User_Ref_Access is access all User_Ref_Impl;
+   type User_Access is access all User_Impl;
    overriding
-   procedure Destroy (Object : access User_Ref_Impl);
+   procedure Destroy (Object : access User_Impl);
    overriding
-   procedure Find (Object  : in out User_Ref_Impl;
+   procedure Find (Object  : in out User_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
    overriding
-   procedure Load (Object  : in out User_Ref_Impl;
+   procedure Load (Object  : in out User_Impl;
                    Session : in out ADO.Sessions.Session'Class);
-   procedure Load (Object  : in out User_Ref_Impl;
+   procedure Load (Object  : in out User_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class);
    overriding
-   procedure Save (Object  : in out User_Ref_Impl;
+   procedure Save (Object  : in out User_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Create (Object  : in out User_Ref_Impl;
+   procedure Create (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    overriding
-   procedure Delete (Object  : in out User_Ref_Impl;
+   procedure Delete (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Set_Field (Object : in out User_Ref_Ref'Class;
-                        Impl   : out User_Ref_Access;
+   procedure Set_Field (Object : in out User_Ref'Class;
+                        Impl   : out User_Access;
                         Field  : in Positive);
-   ALLOCATE_REF_NAME : aliased constant String := "allocate";
+   ALLOCATE_NAME : aliased constant String := "allocate";
    COL_0_2_NAME : aliased constant String := "ID";
    COL_1_2_NAME : aliased constant String := "object_version";
    COL_2_2_NAME : aliased constant String := "NAME";
-   ALLOCATE_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+   ALLOCATE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 3,
-      Table => ALLOCATE_REF_NAME'Access,
+      Table => ALLOCATE_NAME'Access,
       Members => (         COL_0_2_NAME'Access,
          COL_1_2_NAME'Access,
          COL_2_2_NAME'Access
 )
      );
-   type Allocate_Ref_Impl is
+   type Allocate_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
-                                     Of_Class => ALLOCATE_REF_TABLE'Access)
+                                     Of_Class => ALLOCATE_TABLE'Access)
    with record
        Object_Version : Integer;
        Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
-   type Allocate_Ref_Access is access all Allocate_Ref_Impl;
+   type Allocate_Access is access all Allocate_Impl;
    overriding
-   procedure Destroy (Object : access Allocate_Ref_Impl);
+   procedure Destroy (Object : access Allocate_Impl);
    overriding
-   procedure Find (Object  : in out Allocate_Ref_Impl;
+   procedure Find (Object  : in out Allocate_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
    overriding
-   procedure Load (Object  : in out Allocate_Ref_Impl;
+   procedure Load (Object  : in out Allocate_Impl;
                    Session : in out ADO.Sessions.Session'Class);
-   procedure Load (Object  : in out Allocate_Ref_Impl;
+   procedure Load (Object  : in out Allocate_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class);
    overriding
-   procedure Save (Object  : in out Allocate_Ref_Impl;
+   procedure Save (Object  : in out Allocate_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Create (Object  : in out Allocate_Ref_Impl;
+   procedure Create (Object  : in out Allocate_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    overriding
-   procedure Delete (Object  : in out Allocate_Ref_Impl;
+   procedure Delete (Object  : in out Allocate_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Set_Field (Object : in out Allocate_Ref_Ref'Class;
-                        Impl   : out Allocate_Ref_Access;
+   procedure Set_Field (Object : in out Allocate_Ref'Class;
+                        Impl   : out Allocate_Access;
                         Field  : in Positive);
 end Regtests.Simple.Model;

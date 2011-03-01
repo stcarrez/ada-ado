@@ -20,7 +20,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
-with ADO.Databases;
 with Util.Beans.Objects.Time;
 package body Regtests.Comments is
 
@@ -28,146 +27,146 @@ package body Regtests.Comments is
    use type ADO.Objects.Object_Ref;
    use type ADO.Objects.Object_Record;
 
-   function Comment_Ref_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key is
+   function Comment_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key is
       Result : ADO.Objects.Object_Key (Of_Type  => ADO.Objects.KEY_INTEGER,
-                                       Of_Class => COMMENT_REF_TABLE'Access);
+                                       Of_Class => COMMENT_TABLE'Access);
    begin
       ADO.Objects.Set_Value (Result, Id);
       return Result;
-   end Comment_Ref_Key;
-   function Comment_Ref_Key (Id : in String) return ADO.Objects.Object_Key is
+   end Comment_Key;
+   function Comment_Key (Id : in String) return ADO.Objects.Object_Key is
       Result : ADO.Objects.Object_Key (Of_Type  => ADO.Objects.KEY_INTEGER,
-                                       Of_Class => COMMENT_REF_TABLE'Access);
+                                       Of_Class => COMMENT_TABLE'Access);
    begin
       ADO.Objects.Set_Value (Result, Id);
       return Result;
-   end Comment_Ref_Key;
-   function "=" (Left, Right : Comment_Ref_Ref'Class) return Boolean is
+   end Comment_Key;
+   function "=" (Left, Right : Comment_Ref'Class) return Boolean is
    begin
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
-   procedure Set_Field (Object : in out Comment_Ref_Ref'Class;
-                        Impl   : out Comment_Ref_Access;
+   procedure Set_Field (Object : in out Comment_Ref'Class;
+                        Impl   : out Comment_Access;
                         Field  : in Positive) is
    begin
       Object.Set_Field (Field);
-      Impl := Comment_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl := Comment_Impl (Object.Get_Object.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
-   procedure Allocate (Object : in out Comment_Ref_Ref) is
-      Impl : Comment_Ref_Access;
+   procedure Allocate (Object : in out Comment_Ref) is
+      Impl : Comment_Access;
    begin
-      Impl := new Comment_Ref_Impl;
+      Impl := new Comment_Impl;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
  
    -- ----------------------------------------
-   --  Data object: Comment_Ref
+   --  Data object: Comment
    -- ----------------------------------------
-   procedure Set_Id (Object : in out Comment_Ref_Ref;
+   procedure Set_Id (Object : in out Comment_Ref;
                       Value  : in ADO.Identifier) is
-      Impl : Comment_Ref_Access;
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 1);
       ADO.Objects.Set_Key_Value (Impl.all, Value);
    end Set_Id;
-   function Get_Id (Object : in Comment_Ref_Ref)
+   function Get_Id (Object : in Comment_Ref)
                   return ADO.Identifier is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Object.all)'Access;
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Object.all)'Access;
    begin
       return Impl.Get_Key_Value;
    end Get_Id;
-   function Get_Version (Object : in Comment_Ref_Ref)
+   function Get_Version (Object : in Comment_Ref)
                   return Integer is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Version;
    end Get_Version;
-   procedure Set_Date (Object : in out Comment_Ref_Ref;
-                        Value  : in Timestamp) is
-      Impl : Comment_Ref_Access;
+   procedure Set_Date (Object : in out Comment_Ref;
+                        Value  : in Ada.Calendar.Time) is
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 3);
       Impl.Date := Value;
    end Set_Date;
-   function Get_Date (Object : in Comment_Ref_Ref)
-                  return Timestamp is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+   function Get_Date (Object : in Comment_Ref)
+                  return Ada.Calendar.Time is
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Date;
    end Get_Date;
-   procedure Set_Message (Object : in out Comment_Ref_Ref;
+   procedure Set_Message (Object : in out Comment_Ref;
                            Value : in String) is
    begin
       Object.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String (Value));
    end Set_Message;
-   procedure Set_Message (Object : in out Comment_Ref_Ref;
+   procedure Set_Message (Object : in out Comment_Ref;
                            Value  : in Ada.Strings.Unbounded.Unbounded_String) is
-      Impl : Comment_Ref_Access;
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 4);
       Impl.Message := Value;
    end Set_Message;
-   function Get_Message (Object : in Comment_Ref_Ref)
+   function Get_Message (Object : in Comment_Ref)
                  return String is
    begin
       return Ada.Strings.Unbounded.To_String (Object.Get_Message);
    end Get_Message;
-   function Get_Message (Object : in Comment_Ref_Ref)
+   function Get_Message (Object : in Comment_Ref)
                   return Ada.Strings.Unbounded.Unbounded_String is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Message;
    end Get_Message;
-   procedure Set_Entity_Id (Object : in out Comment_Ref_Ref;
+   procedure Set_Entity_Id (Object : in out Comment_Ref;
                              Value  : in Integer) is
-      Impl : Comment_Ref_Access;
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 5);
       Impl.Entity_Id := Value;
    end Set_Entity_Id;
-   function Get_Entity_Id (Object : in Comment_Ref_Ref)
+   function Get_Entity_Id (Object : in Comment_Ref)
                   return Integer is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Entity_Id;
    end Get_Entity_Id;
-   procedure Set_User (Object : in out Comment_Ref_Ref;
-                        Value  : in Regtests.Simple.Model.User_Ref) is
-      Impl : Comment_Ref_Access;
+   procedure Set_User (Object : in out Comment_Ref;
+                        Value  : in Regtests.Simple.Model.User_Ref'Class) is
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 6);
       Impl.User := Value;
    end Set_User;
-   function Get_User (Object : in Comment_Ref_Ref)
-                  return Regtests.Simple.Model.User_Ref is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+   function Get_User (Object : in Comment_Ref)
+                  return Regtests.Simple.Model.User_Ref'Class is
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.User;
    end Get_User;
-   procedure Set_Entity_Type (Object : in out Comment_Ref_Ref;
-                               Value  : in ADO.Model.Entity_Type_Ref) is
-      Impl : Comment_Ref_Access;
+   procedure Set_Entity_Type (Object : in out Comment_Ref;
+                               Value  : in ADO.Model.Entity_Type_Ref'Class) is
+      Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 7);
       Impl.Entity_Type := Value;
    end Set_Entity_Type;
-   function Get_Entity_Type (Object : in Comment_Ref_Ref)
-                  return ADO.Model.Entity_Type_Ref is
-      Impl : constant Comment_Ref_Access := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
+   function Get_Entity_Type (Object : in Comment_Ref)
+                  return ADO.Model.Entity_Type_Ref'Class is
+      Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Entity_Type;
    end Get_Entity_Type;
    --  Copy of the object.
-   function Copy (Object : Comment_Ref_Ref) return Comment_Ref_Ref is
-      Result : Comment_Ref_Ref;
+   function Copy (Object : Comment_Ref) return Comment_Ref is
+      Result : Comment_Ref;
    begin
       if not Object.Is_Null then
          declare
-            Impl : constant Comment_Ref_Access
-              := Comment_Ref_Impl (Object.Get_Load_Object.all)'Access;
-            Copy : constant Comment_Ref_Access
-              := new Comment_Ref_Impl;
+            Impl : constant Comment_Access
+              := Comment_Impl (Object.Get_Load_Object.all)'Access;
+            Copy : constant Comment_Access
+              := new Comment_Impl;
          begin
             ADO.Objects.Set_Object (Result, Copy.all'Access);
             Copy.Copy (Impl.all);
@@ -181,11 +180,11 @@ package body Regtests.Comments is
       end if;
       return Result;
    end Copy;
-   procedure Find (Object  : in out Comment_Ref_Ref;
+   procedure Find (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean) is
-      Impl  : constant Comment_Ref_Access := new Comment_Ref_Impl;
+      Impl  : constant Comment_Access := new Comment_Impl;
    begin
       Impl.Find (Session, Query, Found);
       if Found then
@@ -195,10 +194,10 @@ package body Regtests.Comments is
          Destroy (Impl);
       end if;
    end Find;
-   procedure Load (Object  : in out Comment_Ref_Ref;
+   procedure Load (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier) is
-      Impl  : constant Comment_Ref_Access := new Comment_Ref_Impl;
+      Impl  : constant Comment_Access := new Comment_Impl;
       Found : Boolean;
       Query : ADO.SQL.Query;
    begin
@@ -211,12 +210,12 @@ package body Regtests.Comments is
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
-   procedure Save (Object  : in out Comment_Ref_Ref;
+   procedure Save (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : ADO.Objects.Object_Record_Access := Object.Get_Object;
    begin
       if Impl = null then
-         Impl := new Comment_Ref_Impl;
+         Impl := new Comment_Impl;
          ADO.Objects.Set_Object (Object, Impl);
       end if;
       if not ADO.Objects.Is_Created (Impl.all) then
@@ -225,7 +224,7 @@ package body Regtests.Comments is
          Impl.Save (Session);
       end if;
    end Save;
-   procedure Delete (Object  : in out Comment_Ref_Ref;
+   procedure Delete (Object  : in out Comment_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : constant ADO.Objects.Object_Record_Access := Object.Get_Object;
    begin
@@ -236,20 +235,20 @@ package body Regtests.Comments is
    --  --------------------
    --  Free the object
    --  --------------------
-   procedure Destroy (Object : access Comment_Ref_Impl) is
-      type Comment_Ref_Impl_Ptr is access all Comment_Ref_Impl;
+   procedure Destroy (Object : access Comment_Impl) is
+      type Comment_Impl_Ptr is access all Comment_Impl;
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-              (Comment_Ref_Impl, Comment_Ref_Impl_Ptr);
-      Ptr : Comment_Ref_Impl_Ptr := Comment_Ref_Impl (Object.all)'Access;
+              (Comment_Impl, Comment_Impl_Ptr);
+      Ptr : Comment_Impl_Ptr := Comment_Impl (Object.all)'Access;
    begin
       Unchecked_Free (Ptr);
    end Destroy;
-   procedure Find (Object  : in out Comment_Ref_Impl;
+   procedure Find (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean) is
       Stmt : ADO.Statements.Query_Statement
-          := Session.Create_Statement (COMMENT_REF_TABLE'Access);
+          := Session.Create_Statement (COMMENT_TABLE'Access);
    begin
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
@@ -262,7 +261,7 @@ package body Regtests.Comments is
       end if;
    end Find;
    overriding
-   procedure Load (Object  : in out Comment_Ref_Impl;
+   procedure Load (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Session'Class) is
       Found : Boolean;
       Query : ADO.SQL.Query;
@@ -275,9 +274,9 @@ package body Regtests.Comments is
          raise ADO.Objects.NOT_FOUND;
       end if;
    end Load;
-   procedure Save (Object  : in out Comment_Ref_Impl;
+   procedure Save (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
-      Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (COMMENT_REF_TABLE'Access);
+      Stmt : ADO.Statements.Update_Statement := Session.Create_Statement (COMMENT_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
          Stmt.Save_Field (Name  => COL_0_1_NAME, --  ID
@@ -330,10 +329,10 @@ package body Regtests.Comments is
          end;
       end if;
    end Save;
-   procedure Create (Object  : in out Comment_Ref_Impl;
+   procedure Create (Object  : in out Comment_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Query : ADO.Statements.Insert_Statement
-                  := Session.Create_Statement (COMMENT_REF_TABLE'Access);
+                  := Session.Create_Statement (COMMENT_TABLE'Access);
       Result : Integer;
    begin
       Object.Version := 1;
@@ -358,20 +357,23 @@ package body Regtests.Comments is
       end if;
       ADO.Objects.Set_Created (Object);
    end Create;
-   procedure Delete (Object  : in out Comment_Ref_Impl;
+   procedure Delete (Object  : in out Comment_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
-      Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (COMMENT_REF_TABLE'Access);
+      Stmt : ADO.Statements.Delete_Statement := Session.Create_Statement (COMMENT_TABLE'Access);
    begin
       Stmt.Set_Filter (Filter => "id = ?");
       Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
-   function Get_Value (Item : in Comment_Ref_Ref;
+   function Get_Value (Item : in Comment_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Comment_Ref_Impl := Comment_Ref_Impl (Item.Get_Load_Object.all)'Access;
+      Impl : constant access Comment_Impl := Comment_Impl (Item.Get_Load_Object.all)'Access;
    begin
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
+      end if;
+      if Name = "date" then
+         return Util.Beans.Objects.To_Object (Impl.Date);
       end if;
       if Name = "message" then
          return Util.Beans.Objects.To_Object (Impl.Message);
@@ -381,18 +383,18 @@ package body Regtests.Comments is
       end if;
       raise ADO.Objects.NOT_FOUND;
    end Get_Value;
-   procedure List (Object  : in out Comment_Ref_Vector;
+   procedure List (Object  : in out Comment_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class) is
-      Stmt : ADO.Statements.Query_Statement := Session.Create_Statement (COMMENT_REF_TABLE'Access);
+      Stmt : ADO.Statements.Query_Statement := Session.Create_Statement (COMMENT_TABLE'Access);
    begin
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
-      Comment_Ref_Vectors.Clear (Object);
+      Comment_Vectors.Clear (Object);
       while Stmt.Has_Elements loop
          declare
-            Item : Comment_Ref_Ref;
-            Impl : constant Comment_Ref_Access := new Comment_Ref_Impl;
+            Item : Comment_Ref;
+            Impl : constant Comment_Access := new Comment_Impl;
          begin
             Impl.Load (Stmt, Session);
             ADO.Objects.Set_Object (Item, Impl.all'Access);
@@ -404,17 +406,14 @@ package body Regtests.Comments is
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------
-   procedure Load (Object  : in out Comment_Ref_Impl;
+   procedure Load (Object  : in out Comment_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      if not Stmt.Is_Null (2) then
-          Object.Date.Set_Key_Value (Stmt.Get_Identifier (2), Session);
-      end if;
+      Object.Date := Stmt.Get_Ada.Calendar.Time (2);
       Object.Message := Stmt.Get_Unbounded_String (3);
       Object.Entity_Id := Stmt.Get_Integer (4);
-Integer
       if not Stmt.Is_Null (5) then
           Object.User.Set_Key_Value (Stmt.Get_Identifier (5), Session);
       end if;

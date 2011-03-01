@@ -31,85 +31,84 @@ with Util.Beans.Objects;
 with ADO.Model;
 with Regtests.Simple.Model;
 package Regtests.Comments is
---   use Ada.Calendar;
---   use Ada.Strings.Unbounded;
---   use ADO.Objects;
---   use ADO.Statements;
 
    --  --------------------
    --  
    --  --------------------
-   --  Create an object key for Comment_Ref.
-   function Comment_Ref_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
-   --  Create an object key for Comment_Ref from a string.
+   --  Create an object key for Comment.
+   function Comment_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
+   --  Create an object key for Comment from a string.
    --  Raises Constraint_Error if the string cannot be converted into the object key.
-   function Comment_Ref_Key (Id : in String) return ADO.Objects.Object_Key;
+   function Comment_Key (Id : in String) return ADO.Objects.Object_Key;
 
-   type Comment_Ref_Ref is new ADO.Objects.Object_Ref with null record;
+   type Comment_Ref is new ADO.Objects.Object_Ref with null record;
 
-   function "=" (Left, Right : Comment_Ref_Ref'Class) return Boolean;
+   function "=" (Left, Right : Comment_Ref'Class) return Boolean;
 
    --  Set 
-   procedure Set_Id (Object : in out Comment_Ref_Ref;
+   procedure Set_Id (Object : in out Comment_Ref;
                      Value  : in ADO.Identifier);
 
    --  Get 
-   function Get_Id (Object : in Comment_Ref_Ref)
+   function Get_Id (Object : in Comment_Ref)
                  return ADO.Identifier;
-
-   --  Set 
-   procedure Set_Date (Object : in out Comment_Ref_Ref;
-                       Value  : in Timestamp);
-
    --  Get 
-   function Get_Date (Object : in Comment_Ref_Ref)
-                 return Timestamp;
-
-   --  Set 
-   procedure Set_Message (Object : in out Comment_Ref_Ref;
-                          Value  : in Ada.Strings.Unbounded.Unbounded_String);
-   procedure Set_Message (Object : in out Comment_Ref_Ref;
-                          Value : in String);
-
-   --  Get 
-   function Get_Message (Object : in Comment_Ref_Ref)
-                 return Ada.Strings.Unbounded.Unbounded_String;
-   function Get_Message (Object : in Comment_Ref_Ref)
-                 return String;
-
-   --  Set 
-   procedure Set_Entity_Id (Object : in out Comment_Ref_Ref;
-                            Value  : in Integer);
-
-   --  Get 
-   function Get_Entity_Id (Object : in Comment_Ref_Ref)
+   function Get_Version (Object : in Comment_Ref)
                  return Integer;
 
    --  Set 
-   procedure Set_User (Object : in out Comment_Ref_Ref;
-                       Value  : in Regtests.Simple.Model.User_Ref);
+   procedure Set_Date (Object : in out Comment_Ref;
+                       Value  : in Ada.Calendar.Time);
 
    --  Get 
-   function Get_User (Object : in Comment_Ref_Ref)
-                 return Regtests.Simple.Model.User_Ref;
+   function Get_Date (Object : in Comment_Ref)
+                 return Ada.Calendar.Time;
 
    --  Set 
-   procedure Set_Entity_Type (Object : in out Comment_Ref_Ref;
-                              Value  : in ADO.Model.Entity_Type_Ref);
+   procedure Set_Message (Object : in out Comment_Ref;
+                          Value  : in Ada.Strings.Unbounded.Unbounded_String);
+   procedure Set_Message (Object : in out Comment_Ref;
+                          Value : in String);
 
    --  Get 
-   function Get_Entity_Type (Object : in Comment_Ref_Ref)
-                 return ADO.Model.Entity_Type_Ref;
+   function Get_Message (Object : in Comment_Ref)
+                 return Ada.Strings.Unbounded.Unbounded_String;
+   function Get_Message (Object : in Comment_Ref)
+                 return String;
+
+   --  Set 
+   procedure Set_Entity_Id (Object : in out Comment_Ref;
+                            Value  : in Integer);
+
+   --  Get 
+   function Get_Entity_Id (Object : in Comment_Ref)
+                 return Integer;
+
+   --  Set 
+   procedure Set_User (Object : in out Comment_Ref;
+                       Value  : in Regtests.Simple.Model.User_Ref'Class);
+
+   --  Get 
+   function Get_User (Object : in Comment_Ref)
+                 return Regtests.Simple.Model.User_Ref'Class;
+
+   --  Set 
+   procedure Set_Entity_Type (Object : in out Comment_Ref;
+                              Value  : in ADO.Model.Entity_Type_Ref'Class);
+
+   --  Get 
+   function Get_Entity_Type (Object : in Comment_Ref)
+                 return ADO.Model.Entity_Type_Ref'Class;
 
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
-   procedure Load (Object  : in out Comment_Ref_Ref;
+   procedure Load (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier);
 
    --  Find and load the entity.
    overriding
-   procedure Find (Object  : in out Comment_Ref_Ref;
+   procedure Find (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
@@ -118,40 +117,40 @@ package Regtests.Comments is
    --  and it is inserted in the table.  Otherwise, only data fields which have been changed
    --  are updated.
    overriding
-   procedure Save (Object  : in out Comment_Ref_Ref;
+   procedure Save (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
    --  Delete the entity.
    overriding
-   procedure Delete (Object  : in out Comment_Ref_Ref;
+   procedure Delete (Object  : in out Comment_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
    overriding
-   function Get_Value (Item : in Comment_Ref_Ref;
+   function Get_Value (Item : in Comment_Ref;
                        Name : in String) return Util.Beans.Objects.Object;
 
    --  Table definition
-   COMMENT_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping;
+   COMMENT_TABLE : aliased constant ADO.Schemas.Class_Mapping;
 
    --  Internal method to allocate the Object_Record instance
    overriding
-   procedure Allocate (Object : in out Comment_Ref_Ref);
+   procedure Allocate (Object : in out Comment_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Comment_Ref_Ref) return Comment_Ref_Ref;
+   function Copy (Object : Comment_Ref) return Comment_Ref;
 
-   package Comment_Ref_Vectors is
+   package Comment_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
-                                  Element_Type => Comment_Ref_Ref,
+                                  Element_Type => Comment_Ref,
                                   "="          => "=");
-   subtype Comment_Ref_Vector is Comment_Ref_Vectors.Vector;
+   subtype Comment_Vector is Comment_Vectors.Vector;
 
-   procedure List (Object  : in out Comment_Ref_Vector;
+   procedure List (Object  : in out Comment_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class);
 
 private
-   COMMENT_REF_NAME : aliased constant String := "TEST_COMMENTS";
+   COMMENT_NAME : aliased constant String := "TEST_COMMENTS";
    COL_0_1_NAME : aliased constant String := "ID";
    COL_1_1_NAME : aliased constant String := "VERSION";
    COL_2_1_NAME : aliased constant String := "DATE";
@@ -159,9 +158,9 @@ private
    COL_4_1_NAME : aliased constant String := "ENTITY_ID";
    COL_5_1_NAME : aliased constant String := "USER_FK";
    COL_6_1_NAME : aliased constant String := "ENTITY__TYPE_FK";
-   COMMENT_REF_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+   COMMENT_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 7,
-      Table => COMMENT_REF_NAME'Access,
+      Table => COMMENT_NAME'Access,
       Members => (         COL_0_1_NAME'Access,
          COL_1_1_NAME'Access,
          COL_2_1_NAME'Access,
@@ -171,40 +170,40 @@ private
          COL_6_1_NAME'Access
 )
      );
-   type Comment_Ref_Impl is
+   type Comment_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
-                                     Of_Class => COMMENT_REF_TABLE'Access)
+                                     Of_Class => COMMENT_TABLE'Access)
    with record
        Version : Integer;
-       Date : Timestamp;
+       Date : Ada.Calendar.Time;
        Message : Ada.Strings.Unbounded.Unbounded_String;
        Entity_Id : Integer;
        User : Regtests.Simple.Model.User_Ref;
        Entity_Type : ADO.Model.Entity_Type_Ref;
    end record;
-   type Comment_Ref_Access is access all Comment_Ref_Impl;
+   type Comment_Access is access all Comment_Impl;
    overriding
-   procedure Destroy (Object : access Comment_Ref_Impl);
+   procedure Destroy (Object : access Comment_Impl);
    overriding
-   procedure Find (Object  : in out Comment_Ref_Impl;
+   procedure Find (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
                    Found   : out Boolean);
    overriding
-   procedure Load (Object  : in out Comment_Ref_Impl;
+   procedure Load (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Session'Class);
-   procedure Load (Object  : in out Comment_Ref_Impl;
+   procedure Load (Object  : in out Comment_Impl;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class);
    overriding
-   procedure Save (Object  : in out Comment_Ref_Impl;
+   procedure Save (Object  : in out Comment_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Create (Object  : in out Comment_Ref_Impl;
+   procedure Create (Object  : in out Comment_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    overriding
-   procedure Delete (Object  : in out Comment_Ref_Impl;
+   procedure Delete (Object  : in out Comment_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
-   procedure Set_Field (Object : in out Comment_Ref_Ref'Class;
-                        Impl   : out Comment_Ref_Access;
+   procedure Set_Field (Object : in out Comment_Ref'Class;
+                        Impl   : out Comment_Access;
                         Field  : in Positive);
 end Regtests.Comments;

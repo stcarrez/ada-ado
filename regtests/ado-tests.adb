@@ -153,7 +153,7 @@ package body ADO.Tests is
    procedure Test_Allocate (T : in out Test) is
       DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Key    : ADO.Objects.Object_Key (Of_Type => ADO.Objects.KEY_INTEGER,
-                                       Of_Class => Regtests.Simple.Model.ALLOCATE_REF_TABLE'Access);
+                                       Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
       PrevId : Identifier := NO_IDENTIFIER;
       S      : Util.Measures.Stamp;
    begin
@@ -227,7 +227,7 @@ package body ADO.Tests is
 
       DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Stmt : ADO.Statements.Delete_Statement
-        := DB.Create_Statement (Regtests.Simple.Model.ALLOCATE_REF_TABLE'Access);
+        := DB.Create_Statement (Regtests.Simple.Model.ALLOCATE_TABLE'Access);
       Result : Natural;
    begin
       DB.Begin_Transaction;

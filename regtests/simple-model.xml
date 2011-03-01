@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hibernate-mapping default-cascade="none">
-    <class name="Regtests.Simple.Model.User_Ref" table="test_user"
+    <class name="Regtests.Simple.Model.User" table="test_user"
            dynamic-insert="true" dynamic-update="true">
         <comment>Record representing a user</comment>
         <id name="id" type="ADO.Identifier" unsaved-value="0">
@@ -19,7 +19,7 @@
         </property>
     </class>
 
-    <class name="Regtests.Simple.Model.Allocate_Ref" table="allocate"
+    <class name="Regtests.Simple.Model.Allocate" table="allocate"
            dynamic-insert="true" dynamic-update="true">
         <comment>Record representing a user</comment>
         <id name="id" type="ADO.Identifier" unsaved-value="0">
