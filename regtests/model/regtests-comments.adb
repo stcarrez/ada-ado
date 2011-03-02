@@ -136,7 +136,7 @@ package body Regtests.Comments is
       Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 6);
-      Impl.User := Value;
+      Impl.User := Regtests.Simple.Model.User_Ref (Value);
    end Set_User;
    function Get_User (Object : in Comment_Ref)
                   return Regtests.Simple.Model.User_Ref'Class is
@@ -149,7 +149,7 @@ package body Regtests.Comments is
       Impl : Comment_Access;
    begin
       Set_Field (Object, Impl, 7);
-      Impl.Entity_Type := Value;
+      Impl.Entity_Type := ADO.Model.Entity_Type_Ref (Value);
    end Set_Entity_Type;
    function Get_Entity_Type (Object : in Comment_Ref)
                   return ADO.Model.Entity_Type_Ref'Class is
@@ -373,7 +373,7 @@ package body Regtests.Comments is
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "date" then
-         return Util.Beans.Objects.To_Object (Impl.Date);
+         return Util.Beans.Objects.Time.To_Object (Impl.Date);
       end if;
       if Name = "message" then
          return Util.Beans.Objects.To_Object (Impl.Message);
@@ -411,7 +411,7 @@ package body Regtests.Comments is
                    Session : in out ADO.Sessions.Session'Class) is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Date := Stmt.Get_Ada.Calendar.Time (2);
+      Object.Date := Stmt.Get_Time (2);
       Object.Message := Stmt.Get_Unbounded_String (3);
       Object.Entity_Id := Stmt.Get_Integer (4);
       if not Stmt.Is_Null (5) then
