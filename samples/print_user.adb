@@ -21,6 +21,7 @@ with ADO.Sessions;
 with ADO.SQL;
 with ADO.Sessions.Factory;
 with Samples.User.Model;
+with Util.Log.Loggers;
 with Ada.Text_IO;
 
 with Ada.Command_Line;
@@ -34,6 +35,8 @@ procedure Print_User is
    User    : User_Ref;
 
 begin
+   Util.Log.Loggers.Initialize ("log4j.properties");
+
    if Ada.Command_Line.Argument_Count < 2 then
       Ada.Text_IO.Put_Line ("Usage: print_user connection user-name ...");
       Ada.Text_IO.Put_Line ("Example: print_user 'mysql://localhost:3306/ado_test?user=root' joe");
