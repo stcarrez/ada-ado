@@ -311,6 +311,22 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Boolean (Query  : Query_Statement;
+                         Column : Natural) return Boolean is
+   begin
+      if Query.Proxy = null then
+         return Query_Statement'Class (Query).Get_Integer(Column) /= 0;
+      else
+         return Query.Proxy.Get_Boolean (Column);
+      end if;
+   end Get_Boolean;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Identifier</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -474,7 +490,7 @@ package body ADO.Statements is
    --  ------------------------------
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
-                         Value  : in Long_Integer) is
+                         Value  : in Long_Long_Integer) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
    end Save_Field;

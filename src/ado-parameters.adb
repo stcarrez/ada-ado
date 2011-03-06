@@ -19,6 +19,7 @@
 --  with GNAT.Calendar.Time_IO;      use GNAT.Calendar.Time_IO;
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Strings;
 with Ada.Calendar.Formatting;
 package body ADO.Parameters is
 
@@ -56,7 +57,7 @@ package body ADO.Parameters is
 
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
-                         Value  : in Long_Integer) is
+                         Value  : in Long_Long_Integer) is
       Param : constant Parameter := Parameter '(T        => T_LONG_INTEGER,
                                                 Name     => +(Name),
                                                 Position => 0,
@@ -71,7 +72,7 @@ package body ADO.Parameters is
       Param : constant Parameter := Parameter '(T        => T_LONG_INTEGER,
                                                 Name     => +(Name),
                                                 Position => 0,
-                                                Long_Num => Long_Integer (Value));
+                                                Long_Num => Long_Long_Integer (Value));
    begin
       Abstract_List'Class (Params).Add_Parameter (Param);
    end Bind_Param;
@@ -121,7 +122,7 @@ package body ADO.Parameters is
 
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
-                         Value    : in Long_Integer) is
+                         Value    : in Long_Long_Integer) is
       P : Parameter := Parameter '(T        => T_LONG_INTEGER,
                                    Name     => Null_Unbounded_String,
                                    Position => Position,
@@ -139,7 +140,7 @@ package body ADO.Parameters is
       P : Parameter := Parameter '(T        => T_LONG_INTEGER,
                                    Name     => Null_Unbounded_String,
                                    Position => Position,
-                                   Long_Num => Long_Integer (Value));
+                                   Long_Num => Long_Long_Integer (Value));
    begin
       if Position = 0 then
          P.Position := Abstract_List'Class (Params).Length + 1;
@@ -222,7 +223,7 @@ package body ADO.Parameters is
    end Add_Param;
 
    procedure Add_Param (Params : in out Abstract_List;
-                        Value : in Long_Integer) is
+                        Value : in Long_Long_Integer) is
    begin
       Params.Bind_Param (Position => 0, Value => Value);
    end Add_Param;
@@ -315,10 +316,10 @@ package body ADO.Parameters is
             begin
                case P.T is
                   when T_LONG_INTEGER =>
-                     Append (Buffer, Long_Integer'Image (P.Long_Num));
+                     Append (Buffer, Util.Strings.Image (P.Long_Num));
 
                   when T_INTEGER =>
-                     Append (Buffer, Integer'Image (P.Num));
+                     Append (Buffer, Util.Strings.Image (P.Num));
 
                   when T_BOOLEAN =>
                      if P.Bool then

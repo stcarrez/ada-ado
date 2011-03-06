@@ -170,7 +170,7 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    procedure Finalize (Database : in out Database_Connection) is
    begin
-      Log.Info ("Release connection {0}", Database.Name);
+      Log.Debug ("Release connection {0}", Database.Name);
       Database.Close;
    end Finalize;
 

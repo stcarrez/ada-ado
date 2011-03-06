@@ -37,7 +37,7 @@ package ADO.Parameters is
             null;
 
          when T_LONG_INTEGER =>
-            Long_Num : Long_Integer := 0;
+            Long_Num : Long_Long_Integer := 0;
 
          when T_INTEGER =>
             Num : Integer;
@@ -80,7 +80,7 @@ package ADO.Parameters is
                          Value  : in Boolean);
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
-                         Value  : in Long_Integer);
+                         Value  : in Long_Long_Integer);
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in Identifier);
@@ -102,7 +102,7 @@ package ADO.Parameters is
                          Value    : in Boolean);
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
-                         Value    : in Long_Integer);
+                         Value    : in Long_Long_Integer);
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
                          Value    : in Identifier);
@@ -124,7 +124,7 @@ package ADO.Parameters is
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Boolean);
    procedure Add_Param (Params : in out Abstract_List;
-                         Value : in Long_Integer);
+                         Value : in Long_Long_Integer);
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Identifier);
    procedure Add_Param (Params : in out Abstract_List;

@@ -121,6 +121,7 @@ package ADO.SQL is
    type Query is new ADO.Parameters.List with record
       SQL    : Buffer;
       Filter : Buffer;
+      Join   : Buffer;
    end record;
    type Query_Access is access all Query'Class;
 
@@ -130,6 +131,16 @@ package ADO.SQL is
    function Has_Filter (Source : in Query) return Boolean;
 
    function Get_Filter (Source : in Query) return String;
+
+   --  Set the join condition.
+   procedure Set_Join (Target : in out Query;
+                       Join   : in String);
+
+   --  Returns true if there is a join condition
+   function Has_Join (Source : in Query) return Boolean;
+
+   --  Get the join condition
+   function Get_Join (Source : in Query) return String;
 
    --  Set the parameters from another parameter list.
    --  If the parameter list is a query object, also copy the filter part.
@@ -163,7 +174,7 @@ package ADO.SQL is
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    procedure Save_Field (Update : in out Update_Query;
                          Name   : in String;
-                         Value  : in Long_Integer);
+                         Value  : in Long_Long_Integer);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.

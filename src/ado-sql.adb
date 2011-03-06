@@ -221,6 +221,36 @@ package body ADO.SQL is
    end Has_Filter;
 
    --  --------------------
+   --  Set the join condition.
+   --  --------------------
+   procedure Set_Join (Target : in out Query;
+                       Join   : in String) is
+   begin
+      Target.Join.Buf := To_Unbounded_String (Join);
+   end Set_Join;
+
+   --  --------------------
+   --  Returns true if there is a join condition
+   --  --------------------
+   function Has_Join (Source : in Query) return Boolean is
+   begin
+      return Source.Join.Buf /= Null_Unbounded_String
+        and Length (Source.Join.Buf) > 0;
+   end Has_Join;
+
+   --  --------------------
+   --  Get the join condition
+   --  --------------------
+   function Get_Join (Source : in Query) return String is
+   begin
+      if Source.Join.Buf = Null_Unbounded_String then
+         return "";
+      else
+         return To_String (Source.Join.Buf);
+      end if;
+   end Get_Join;
+
+   --  --------------------
    --  Set the parameters from another parameter list.
    --  If the parameter list is a query object, also copy the filter part.
    --  --------------------
@@ -233,6 +263,7 @@ package body ADO.SQL is
             L : constant Query'Class := Query'Class (From);
          begin
             Params.Filter := L.Filter;
+            Params.Join   := L.Join;
          end;
       end if;
    end Set_Parameters;
@@ -290,7 +321,7 @@ package body ADO.SQL is
    --  --------------------
    procedure Save_Field (Update : in out Update_Query;
                          Name   : in String;
-                         Value  : in Long_Integer) is
+                         Value  : in Long_Long_Integer) is
    begin
       Update.Add_Field (Name => Name);
       Update_Query'Class (Update).Bind_Param (Position => Update.Pos, Value => Value);

@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C.Strings;
-with Ada.Unchecked_Deallocation;
 with Ada.Unchecked_Conversion;
 with Ada.Calendar.Formatting;
 with Util.Log;
@@ -64,13 +63,18 @@ package body ADO.Statements.Mysql is
    --  Delete statement
    --  ------------------------------
 
+   --  ------------------------------
    --  Execute the query
+   --  ------------------------------
    overriding
    procedure Execute (Stmt   : in out Mysql_Delete_Statement;
                       Result : out Natural) is
    begin
       ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
       ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
+      if Stmt.Query.Has_Join then
+         ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => Stmt.Query.Get_Join);
+      end if;
       if Stmt.Query.Has_Filter then
          ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => " WHERE ");
          ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => Stmt.Query.Get_Filter);
@@ -87,7 +91,9 @@ package body ADO.Statements.Mysql is
       end;
    end Execute;
 
+   --  ------------------------------
    --  Create the delete statement
+   --  ------------------------------
    overriding
    function Create_Statement (Proxy : Delete_Statement_Access) return Mysql_Delete_Statement is
    begin
@@ -118,7 +124,9 @@ package body ADO.Statements.Mysql is
       Mysql_Update_Statement'Class (Stmt).Execute (Result);
    end Execute;
 
+   --  ------------------------------
    --  Execute the query
+   --  ------------------------------
    overriding
    procedure Execute (Stmt   : in out Mysql_Update_Statement;
                       Result : out Integer) is
@@ -127,6 +135,9 @@ package body ADO.Statements.Mysql is
       ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
       ADO.SQL.Append_Fields (Update => Stmt.This_Query);
+      if Stmt.This_Query.Has_Join then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
+      end if;
       if Stmt.This_Query.Has_Filter then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " WHERE ");
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Filter);
@@ -250,7 +261,6 @@ package body ADO.Statements.Mysql is
                        Column : Natural) return Chars_Ptr is
       use System;
 
-      Result : Chars_Ptr;
       R : System_Access;
    begin
       if Query.Row = null then
@@ -263,13 +273,19 @@ package body ADO.Statements.Mysql is
       return To_Chars_Ptr (R.all);
    end Get_Field;
 
+   --  ------------------------------
    --  Execute the query
+   --  ------------------------------
    overriding
    procedure Execute (Stmt : in out Mysql_Query_Statement) is
       use System;
 
       Result : Int;
    begin
+      if Stmt.This_Query.Has_Join then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " ");
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
+      end if;
       if Stmt.This_Query.Has_Filter then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " WHERE ");
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Filter);
@@ -305,7 +321,9 @@ package body ADO.Statements.Mysql is
       end if;
    end Execute;
 
+   --  ------------------------------
    --  Get the number of rows returned by the query
+   --  ------------------------------
    overriding
    function Get_Row_Count (Query : in Mysql_Query_Statement) return Natural is
    begin
@@ -316,7 +334,9 @@ package body ADO.Statements.Mysql is
       return Natural (Mysql_Num_Rows (Query.Result));
    end Get_Row_Count;
 
+   --  ------------------------------
    --  Returns True if there is more data (row) to fetch
+   --  ------------------------------
    overriding
    function Has_Elements (Query : in Mysql_Query_Statement) return Boolean is
       use System;
@@ -330,7 +350,9 @@ package body ADO.Statements.Mysql is
    end Has_Elements;
 
 
+   --  ------------------------------
    --  Fetch the next row
+   --  ------------------------------
    overriding
    procedure Next (Query : in out Mysql_Query_Statement) is
    begin
@@ -347,19 +369,21 @@ package body ADO.Statements.Mysql is
    overriding
    function Is_Null (Query  : in Mysql_Query_Statement;
                      Column : in Natural) return Boolean is
-      Field : Chars_Ptr := Query.Get_Field (Column);
+      Field : constant Chars_Ptr := Query.Get_Field (Column);
    begin
       return Field = null;
    end Is_Null;
 
+   --  ------------------------------
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Int64</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
    overriding
    function Get_Int64 (Query  : Mysql_Query_Statement;
                        Column : Natural) return Int64 is
-      Field  : Chars_Ptr := Query.Get_Field (Column);
+      Field  : constant Chars_Ptr := Query.Get_Field (Column);
    begin
       if Field = null then
          return 0;
@@ -368,10 +392,12 @@ package body ADO.Statements.Mysql is
       end if;
    end Get_Int64;
 
+   --  ------------------------------
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
    overriding
    function Get_Unbounded_String (Query  : Mysql_Query_Statement;
                                   Column : Natural) return Unbounded_String is
@@ -394,10 +420,12 @@ package body ADO.Statements.Mysql is
       end;
    end Get_Unbounded_String;
 
+   --  ------------------------------
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
    overriding
    function Get_String (Query  : Mysql_Query_Statement;
                         Column : Natural) return String is
@@ -405,14 +433,97 @@ package body ADO.Statements.Mysql is
       return To_String (Query.Get_Unbounded_String (Column));
    end Get_String;
 
+   --  ------------------------------
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Time</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   overriding
    function Get_Time (Query  : Mysql_Query_Statement;
                       Column : Natural) return Ada.Calendar.Time is
+
+      Year   : Year_Number  := Year_Number'First;
+      Month  : Month_Number := Month_Number'First;
+      Day    : Day_Number   := Day_Number'First;
+      Hours  : Natural      := 0;
+      Mins   : Natural      := 0;
+      Secs   : Natural      := 0;
+      Dt     : Duration;
+      Field  : Chars_Ptr    := Query.Get_Field (Column);
+
+      function Get_Number (P : in Chars_Ptr; Nb_Digits : in Positive) return Natural is
+         Ptr    : Chars_Ptr := P;
+         Result : Natural   := 0;
+         C      : Character;
+      begin
+         for I in 1 .. Nb_Digits loop
+            C := Ptr.all;
+            if not (C >= '0' and C <= '9') then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Result := Result * 10 + Character'Pos (C) - Character'Pos ('0');
+            Ptr := Ptr + 1;
+         end loop;
+         return Result;
+      end Get_Number;
+
    begin
-      return Clock;
+      if Field /= null then
+         declare
+            C      : Character;
+         begin
+            Year := Year_Number (Get_Number (Field, 4));
+            Field := Field + 4;
+            C := Field.all;
+            if C /= '-' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Month := Month_Number (Get_Number (Field, 2));
+            Field := Field + 2;
+            C := Field.all;
+            if C /= '-' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Day := Day_Number (Get_Number (Field, 2));
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ' ' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Hours := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ':' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Mins := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ':' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Secs := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= '.' and C /= ASCII.NUL then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+         end;
+      end if;
+
+      Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
+      return Ada.Calendar.Formatting.Time_Of (Year, Month, Day, Dt, False, 0);
    end Get_Time;
 
    --  Get the column type
@@ -549,39 +660,5 @@ package body ADO.Statements.Mysql is
       Result.Query      := Result.This_Query'Access;
       return Result.all'Access;
    end Create_Statement;
-
---   procedure Free_Param (Arg1 : System.Address) is
---      S : Strings.chars_ptr := To_Chars_Ptr (Arg1);
---   begin
---      Strings.Free (S);
---   end Free_Param;
-
-   --  ------------------------------
-   --  Execute the query
-   --  ------------------------------
---     overriding
---     procedure Execute (Query  : in out Mysql_Statement;
---                        Result : out Integer) is
---     begin
---        Statement'Class (Query).Execute;
---        Result := Integer (mysql_affected_rows (Query.Connection));
---     end Execute;
-
-   --  ------------------------------
-   --  Execute the query
-   --  ------------------------------
---     overriding
---     procedure Execute (Query : in out Mysql_Statement;
---                        Id    : out Identifier) is
---     begin
---        Statement'Class (Query).Execute;
---        Id := Identifier (mysql_insert_id (Query.Connection));
---     end Execute;
---
---
---     function Get_Time (Iter : Mysql_Statement; Column : Natural) return Time is
---     begin
---        return Clock;
---     end Get_Time;
 
 end ADO.Statements.Mysql;

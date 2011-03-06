@@ -138,6 +138,15 @@ package body ADO.Sessions is
       return Database.Impl.Database.Create_Statement (Query);
    end Create_Statement;
 
+   --  Create a query statement.  The statement is not prepared
+   function Create_Statement (Database : in Session;
+                              Query    : in ADO.Queries.Context'Class)
+                              return Query_Statement is
+   begin
+      Check_Session (Database);
+      return Database.Impl.Database.Create_Statement ("");
+   end Create_Statement;
+
    --  ---------
    --  Master Session
    --  ---------

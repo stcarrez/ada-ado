@@ -152,6 +152,13 @@ package ADO.Statements is
                          Column : Natural) return Integer;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Boolean (Query  : Query_Statement;
+                         Column : Natural) return Boolean;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -224,7 +231,7 @@ package ADO.Statements is
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
-                         Value  : in Long_Integer);
+                         Value  : in Long_Long_Integer);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
