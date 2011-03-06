@@ -17,8 +17,7 @@
 -----------------------------------------------------------------------
 
 with ADO.Testsuite;
-with ADO.Drivers.Sqlite;
-with ADO.Drivers.Mysql;
+with ADO.Drivers;
 with Regtests;
 
 with Util.Tests;
@@ -37,8 +36,7 @@ procedure ADO_Harness is
       DB : constant String := Props.Get ("test.database",
                                          "sqlite:///regtests.db");
    begin
-      ADO.Drivers.Sqlite.Initialize;
-      ADO.Drivers.Mysql.Initialize;
+      ADO.Drivers.Initialize;
       Regtests.Initialize (DB);
    end Initialize;
 
