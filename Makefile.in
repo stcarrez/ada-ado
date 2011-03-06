@@ -51,7 +51,7 @@ analyze:
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
 
-GENERATOR=../ada-gen/bin/dbmapper -t ../ada-gen/templates
+GENERATOR=../ada-gen/bin/dynamo -c ../ada-gen/config
 
 generate:
 	$(GENERATOR) -o src/model src/alloc-sequence.xml
