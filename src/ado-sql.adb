@@ -199,6 +199,18 @@ package body ADO.SQL is
       Target.Dialect := D;
    end Set_Dialect;
 
+   --  --------------------
+   --  Clear the query object.
+   --  --------------------
+   overriding
+   procedure Clear (Target : in out Query) is
+   begin
+      ADO.Parameters.List (Target).Clear;
+      Target.Join.Clear;
+      Target.Filter.Clear;
+      Target.SQL.Clear;
+   end Clear;
+
    procedure Set_Filter (Target : in out Query;
                          Filter : in String) is
    begin

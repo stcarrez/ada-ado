@@ -125,6 +125,10 @@ package ADO.SQL is
    end record;
    type Query_Access is access all Query'Class;
 
+   --  Clear the query object.
+   overriding
+   procedure Clear (Target : in out Query);
+
    procedure Set_Filter (Target : in out Query;
                          Filter : in String);
 
