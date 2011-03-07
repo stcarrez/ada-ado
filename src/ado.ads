@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Interfaces.C;
+with Ada.Strings.Unbounded;
+with Ada.Calendar;
 package ADO is
 
    type Identifier is new Integer;
@@ -34,5 +36,23 @@ package ADO is
 
    type Unsigned64 is mod 2**64;
    for Unsigned64'Size use 64;
+
+   --  An integer which can be null.
+   type Nullable_Integer is record
+      Value   : Integer := 0;
+      Is_Null : Boolean := True;
+   end record;
+
+   --  A string which can be null.
+   type Nullable_String is record
+      Value   : Ada.Strings.Unbounded.Unbounded_String;
+      Is_Null : Boolean := True;
+   end record;
+
+   --  A date which can be null.
+   type Nullable_Time is record
+      Value   : Ada.Calendar.Time;
+      Is_Null : Boolean := True;
+   end record;
 
 end ADO;

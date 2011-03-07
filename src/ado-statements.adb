@@ -311,6 +311,27 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_Integer</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Nullable_Integer (Query  : Query_Statement;
+                                  Column : Natural) return Nullable_Integer is
+   begin
+      if Query.Proxy = null then
+         return Result : Nullable_Integer do
+            Result.Is_Null := Query_Statement'Class (Query).Is_Null (Column);
+            if not Result.Is_Null then
+               Result.Value := Integer (Query_Statement'Class (Query).Get_Int64 (Column));
+            end if;
+         end return;
+      else
+         return Query.Proxy.Get_Nullable_Integer (Column);
+      end if;
+   end Get_Nullable_Integer;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Boolean</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -384,7 +405,27 @@ package body ADO.Statements is
       if Query.Proxy = null then
          raise Invalid_Statement with "Query statement is not initialized";
       end if;
-      return Query.Proxy.Get_Time (Column);
+      return Query.Proxy.all.Get_Time (Column);
+   end Get_Time;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Nullable_Time</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Time (Query  : in Query_Statement;
+                      Column : in Natural) return Nullable_Time is
+   begin
+      if Query.Proxy = null then
+         return Result : Nullable_Time do
+            Result.Is_Null := Query_Statement'Class (Query).Is_Null (Column);
+            if not Result.Is_Null then
+               Result.Value := Query_Statement'Class (Query).Get_Time (Column);
+            end if;
+         end return;
+      end if;
+      return Query.Proxy.all.Get_Time (Column);
    end Get_Time;
 
    --  ------------------------------
@@ -515,6 +556,21 @@ package body ADO.Statements is
                          Value  : in Ada.Calendar.Time) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Time) is
+   begin
+      if Value.Is_Null then
+         Update.Save_Null_Field (Name);
+      else
+         Update.Save_Field (Name, Value.Value);
+      end if;
    end Save_Field;
 
    --  ------------------------------

@@ -152,6 +152,13 @@ package ADO.Statements is
                          Column : Natural) return Integer;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_Integer</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Nullable_Integer (Query  : Query_Statement;
+                                  Column : Natural) return Nullable_Integer;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Boolean</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -178,6 +185,13 @@ package ADO.Statements is
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    function Get_Time (Query  : Query_Statement;
                       Column : Natural) return Ada.Calendar.Time;
+
+   --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Nullable_Time</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Time (Query  : Query_Statement;
+                      Column : Natural) return Nullable_Time;
 
    --  Get the column type
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -244,6 +258,12 @@ package ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in Ada.Calendar.Time);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Time);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
