@@ -59,8 +59,8 @@ AC_CHECK_LIB(mysqlclient,mysql_init,[
 
 ADO_DB_SQLITE=False
 AC_CHECK_LIB(sqlite3,sqlite3_open,[
-    DB="$DB sqlite"
-    ADO_DB_SQLITE=True
+    #DB="$DB sqlite"
+    #ADO_DB_SQLITE=True
 ])
 
 ADO_TESTS_HARNESS=''

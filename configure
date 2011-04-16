@@ -3032,8 +3032,8 @@ fi
 $as_echo "$ac_cv_lib_sqlite3_sqlite3_open" >&6; }
 if test "x$ac_cv_lib_sqlite3_sqlite3_open" = x""yes; then :
 
-    DB="$DB sqlite"
-    ADO_DB_SQLITE=True
+    #DB="$DB sqlite"
+    #ADO_DB_SQLITE=True
 
 fi
 
