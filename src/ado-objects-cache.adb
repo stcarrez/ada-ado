@@ -95,7 +95,7 @@ package body ADO.Objects.Cache is
    begin
       if Object_Set.Has_Element (Pos) then
          declare
-            Current : Object_Record_Access := Object_Set.Element (Pos);
+            Current : constant Object_Record_Access := Object_Set.Element (Pos);
             Is_Zero : Boolean;
          begin
             Cache.Objects.Delete (Pos);

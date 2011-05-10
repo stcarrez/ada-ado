@@ -1,6 +1,7 @@
 # You may edit this makefile as long as you keep these original 
 # target names defined.
-GNATMAKE=gnatmake
+MODE=debug
+GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
 GNATCLEAN=gnatclean
 GPRPATH=ado.gpr
 
@@ -11,12 +12,20 @@ DIST_FILE=ado-@ADO_VERSION@.tar.gz
 HAVE_MYSQL=@ADO_DB_MYSQL@
 HAVE_SQLITE=@ADO_DB_SQLITE@
 
+MKDIR=mkdir
+CP=cp
+
 srcdir = .
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
+
+includedir=${prefix}/share/ada/adainclude
+projectdir=${prefix}/share/ada/adainclude
+libdir=${prefix}/lib
+alidir=${prefix}/share/ada/adainclude
 
 # Build executables for all mains defined by the project.
 build:  src/ado-drivers-initialize.adb
@@ -35,9 +44,14 @@ src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
 	          -DHAVE_SQLITE=$(HAVE_SQLITE) \
 		  src/ado-drivers-initialize.gpb src/ado-drivers-initialize.adb
 
+# Build and run the unit tests
+test:	build
+	$(GNATMAKE) -p -Ptests
+	bin/ado_harness -config tests.properties
+
 # Clean the root project of all build products.
 clean:
-	$(GNATCLEAN) -P "$(GPRPATH)"
+	$(GNATCLEAN) -q -P "$(GPRPATH)"
 
 # Clean root project and all imported projects too.
 clean_tree:
@@ -51,12 +65,10 @@ analyze:
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
 
-GENERATOR=../ada-gen/bin/dynamo -c ../ada-gen/config
+GENERATOR=dynamo
 
 generate:
-	$(GENERATOR) -o src/model src/alloc-sequence.xml
-	$(GENERATOR) -o regtests/model regtests/simple-model.xml regtests/Comment.hbm.xml
-	$(GENERATOR) -o samples/model samples/user.hbm.xml
+	$(GENERATOR) generate
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \

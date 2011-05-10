@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with GNAT.Calendar.Time_IO;      use GNAT.Calendar.Time_IO;
 with Util.Log;
 with Util.Log.Loggers;
 with System.Storage_Elements;
 with Ada.Unchecked_Deallocation;
-with Ada.Calendar.Formatting;
 with ADO.Objects;
 package body ADO.Statements is
 
@@ -29,9 +27,6 @@ package body ADO.Statements is
    use System.Storage_Elements;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements");
-
-   function "+"(Str : in String)
-                     return Unbounded_String renames To_Unbounded_String;
 
    function Get_Query (Query : Statement) return ADO.SQL.Query_Access is
    begin
@@ -158,6 +153,9 @@ package body ADO.Statements is
       return To_Chars_Ptr (To_Address (Left) + Storage_Offset (Right));
    end "+";
 
+   --  ------------------------------
+   --  Get the query result as an integer
+   --  ------------------------------
    function Get_Result_Integer (Query : Query_Statement) return Integer is
    begin
       if not Query_Statement'Class (Query).Has_Elements then
@@ -340,7 +338,7 @@ package body ADO.Statements is
                          Column : Natural) return Boolean is
    begin
       if Query.Proxy = null then
-         return Query_Statement'Class (Query).Get_Integer(Column) /= 0;
+         return Query_Statement'Class (Query).Get_Integer (Column) /= 0;
       else
          return Query.Proxy.Get_Boolean (Column);
       end if;
@@ -665,13 +663,6 @@ package body ADO.Statements is
       end if;
       Query.Proxy.Execute;
    end Execute;
-
-   procedure Update_Field (Update : in out Update_Statement;
-                           Name   : in String;
-                           Value  : in Unbounded_String) is
-   begin
-      Update.Update.Save_Field (Name, Value);
-   end Update_Field;
 
    --  ------------------------------
    --  Execute the query

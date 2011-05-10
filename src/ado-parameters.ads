@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ package ADO.Parameters is
 
    use Ada.Strings.Unbounded;
 
-   type Parameter_Type is (T_NULL, T_STRING, T_DATE, T_LONG_INTEGER, T_INTEGER, T_Boolean);
+   type Parameter_Type is (T_NULL, T_STRING, T_DATE, T_LONG_INTEGER, T_INTEGER, T_BOOLEAN);
 
    type Parameter (T : Parameter_Type) is record
       Name     : Unbounded_String;

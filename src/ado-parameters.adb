@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  with GNAT.Calendar.Time_IO;      use GNAT.Calendar.Time_IO;
 with Util.Log;
 with Util.Log.Loggers;
 with Util.Strings;
@@ -82,10 +81,10 @@ package body ADO.Parameters is
                          Value : in String) is
    begin
       Abstract_List'Class (Params).
-	Add_Parameter (Parameter '(T    => T_STRING,
-				   Name => To_Unbounded_String (Name),
-				   Position => 0,
-				   Str      => To_Unbounded_String (Value)));
+        Add_Parameter (Parameter '(T    => T_STRING,
+                                   Name => To_Unbounded_String (Name),
+                                   Position => 0,
+                                   Str      => To_Unbounded_String (Value)));
    end Bind_Param;
 
    procedure Bind_Param (Params : in out Abstract_List;
@@ -293,20 +292,20 @@ package body ADO.Parameters is
 
    begin
       --  Build the SQL query by injecting the parameters.
-      Pos := Sql'First;
-      while Pos <= Sql'Last loop
-         C := Sql (Pos);
+      Pos := SQL'First;
+      while Pos <= SQL'Last loop
+         C := SQL (Pos);
          if C = '\' then
             Append (Buffer, C);
             Pos := Pos + 1;
-            exit when Pos > Sql'Last;
-            Append (Buffer, Sql (Pos));
+            exit when Pos > SQL'Last;
+            Append (Buffer, SQL (Pos));
 
          elsif C = ':' or C = '?' then
             if C = ':' then
                Pos := Pos + 1;
-               exit when Pos > Sql'Last;
-               C := Sql (Pos);
+               exit when Pos > SQL'Last;
+               C := SQL (Pos);
                Num := Natural (Character'Pos (C) - Character'Pos ('0'));
             else
                Num := Num + 1;

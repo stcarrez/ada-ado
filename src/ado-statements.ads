@@ -199,7 +199,8 @@ package ADO.Statements is
                              Column : Natural)
                              return ADO.Schemas.Column_Type;
 
---   function Get_Result_Integer (Query : Query_Statement) return Integer;
+   --  Get the query result as an integer
+   function Get_Result_Integer (Query : Query_Statement) return Integer;
 
    --  ------------------------------
    --  Delete statement
