@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,27 @@ with Ada.Strings.Unbounded;
 with Ada.Calendar;
 package ADO is
 
-   type Identifier is new Integer;
-
-   NO_IDENTIFIER : constant Identifier := -1;
-
---   subtype Int8 is Interfaces.C.signed_char;
-
---   subtype Int16 is Interfaces.C.short;
-
---   subtype Int32 is Interfaces.C.int;
-
    type Int64 is range -2**63 .. 2**63 - 1;
    for Int64'Size use 64;
 
    type Unsigned64 is mod 2**64;
    for Unsigned64'Size use 64;
+
+   --  ------------------------------
+   --  Database Identifier
+   --  ------------------------------
+   --
+   type Identifier is new Integer;
+
+   NO_IDENTIFIER : constant Identifier := -1;
+
+   --  ------------------------------
+   --  Nullable Types
+   --  ------------------------------
+   --  Most database allow to store a NULL instead of an actual integer, date or string value.
+   --  Unlike Java, there is no easy way to distinguish between a NULL and an actual valid value.
+   --  The <b>Nullable_T</b> types provide a way to specify and check whether a value is null
+   --  or not.
 
    --  An integer which can be null.
    type Nullable_Integer is record

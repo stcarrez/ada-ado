@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -160,7 +160,7 @@ package body ADO.Drivers.Mysql is
    begin
       Log.Info ("Closing connection {0}", Database.Name);
       if Database.Server /= null then
-         Mysql_Close (Database.Server);
+         mysql_close (Database.Server);
          Database.Server := null;
       end if;
    end Close;
@@ -187,7 +187,7 @@ package body ADO.Drivers.Mysql is
       Server   : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
       Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Database);
       Login    : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Property ("user"));
-      Password : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Property ("password"));
+      Password : constant ADO.C.String_Ptr := C.To_String_Ptr (Config.Get_Property ("password"));
       Socket   : ADO.C.String_Ptr;
       Port     : unsigned := unsigned (Config.Port);
       Flags    : constant unsigned_long := 0;
@@ -204,7 +204,8 @@ package body ADO.Drivers.Mysql is
       end if;
 
       Log.Info ("Connecting to {0}:{1}", To_String (Config.Server), To_String (Config.Database));
-      Log.Debug ("user={0} password={1}", Config.Get_Property ("user"), Config.Get_Property ("password"));
+      Log.Debug ("user={0} password={1}", Config.Get_Property ("user"),
+                 Config.Get_Property ("password"));
       Connection := mysql_init (null);
       Database.Server := mysql_real_connect (Connection, ADO.C.To_C (Server),
                                              ADO.C.To_C (Login), ADO.C.To_C (Password),

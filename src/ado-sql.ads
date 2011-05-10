@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO SQL -- Basic SQL Generation
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -234,5 +234,8 @@ private
    type Dialect is tagged record
       Keywords : Util.Strings.String_Set.Set;
    end record;
+
+   procedure Add_Field (Update : in out Update_Query'Class;
+                        Name   : in String);
 
 end ADO.SQL;

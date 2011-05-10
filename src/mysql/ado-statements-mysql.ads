@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -156,7 +156,7 @@ package ADO.Statements.Mysql is
 
    --  Create the query statement.
    overriding
-   function Create_Statement (Proxy :Query_Statement_Access) return Mysql_Query_Statement;
+   function Create_Statement (Proxy : Query_Statement_Access) return Mysql_Query_Statement;
 
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)

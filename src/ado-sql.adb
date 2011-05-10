@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO SQL -- Basic SQL Generation
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -294,7 +294,7 @@ package body ADO.SQL is
       Update.Pos := Update.Pos + 1;
       if Update.Pos > 1 then
          Append (Target => Update.Set_Fields, SQL => ",");
-         Append (Target => Update.Fields, SQL =>",");
+         Append (Target => Update.Fields, SQL => ",");
       end if;
       Append_Name (Target => Update.Set_Fields, Name => Name);
       if Update.Is_Update_Stmt then
