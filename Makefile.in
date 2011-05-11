@@ -68,7 +68,9 @@ rebuild: clean build
 GENERATOR=dynamo
 
 generate:
-	$(GENERATOR) generate
+	$(GENERATOR) generate db
+	$(GENERATOR) generate db/regtests
+	$(GENERATOR) generate db/samples
 
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \

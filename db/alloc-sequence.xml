@@ -7,7 +7,9 @@
             <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
             <generator class="none"/>
         </id>
-        <version name="version" type="int" column="version"/>
+        <version name="version" type="int" column="version">
+            <comment>the sequence record version</comment>
+        </version>
         <property name="value" type="ADO.Identifier">
             <comment>the sequence value</comment>
             <column name="VALUE" not-null="false" unique="false" sql-type="BIGINT"/>
@@ -20,13 +22,14 @@
     <class name="ADO.Model.Entity_Type" table="entity_type" dynamic-insert="true" dynamic-update="true">
         <comment>Entity types</comment>
         <id name="id" type="ADO.Identifier" unsaved-value="null">
+            <comment>the entity type identifier</comment>
             <column name="ID" sql-type="INTEGER"/>
             <generator class="hilo">
                 <!-- id-generator merge-point -->
             </generator>
         </id>
-        <version name="version" type="int" column="version"/>
         <property name="name" insert="true" update="false">
+            <comment>the entity type name (table name)</comment>
             <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
             <type name="java.lang.String"/>
         </property>

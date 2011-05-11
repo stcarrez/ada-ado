@@ -19,6 +19,7 @@
 with ADO.Tests;
 with ADO.Schemas.Tests;
 with ADO.Objects.Tests;
+with ADO.Queries.Tests;
 package body ADO.Testsuite is
 
    use ADO.Tests;
@@ -28,9 +29,10 @@ package body ADO.Testsuite is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
       Ret : constant AUnit.Test_Suites.Access_Test_Suite := Tests'Access;
    begin
-      ADO.Objects.Tests.Add_Tests (Ret);
-      ADO.Tests.Add_Tests (Ret);
-      ADO.Schemas.Tests.Add_Tests (Ret);
+--        ADO.Objects.Tests.Add_Tests (Ret);
+--        ADO.Tests.Add_Tests (Ret);
+--        ADO.Schemas.Tests.Add_Tests (Ret);
+      ADO.Queries.Tests.Add_Tests (Ret);
       return Ret;
    end Suite;
 
