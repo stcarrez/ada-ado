@@ -26,6 +26,7 @@ with ADO.Statements;
 with ADO.SQL;
 with ADO.Schemas;
 with ADO.Queries;
+with ADO.Queries.Loaders;
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
@@ -168,6 +169,35 @@ package Samples.User.Model is
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class);
 
+   --  --------------------
+   --  
+   --  --------------------
+   type User_Info is tagged record
+      --  the user identifier.
+      Id : ADO.Identifier;
+
+      --  the user name.
+      Name : Ada.Strings.Unbounded.Unbounded_String;
+
+      --  the user email address.
+      Email : Ada.Strings.Unbounded.Unbounded_String;
+
+   end record;
+
+   package User_Info_Vectors is
+      new Ada.Containers.Vectors (Index_Type   => Natural,
+                                  Element_Type => User_Info,
+                                  "="          => "=");
+   subtype User_Info_Vector is User_Info_Vectors.Vector;
+
+   procedure List (Object  : in out User_Info_Vector;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Context : in out ADO.Queries.Context'Class);
+
+   Query_User_List : constant ADO.Queries.Query_Definition_Access;
+
+   Query_User_List_Filter : constant ADO.Queries.Query_Definition_Access;
+
 
 private
    USER_NAME : aliased constant String := "user";
@@ -227,4 +257,20 @@ private
    procedure Set_Field (Object : in out User_Ref'Class;
                         Impl   : out User_Access;
                         Field  : in Positive);
+
+   package Query_Userinfo is
+      new ADO.Queries.Loaders.File (Path => "user-list.xml",
+                                    Sha1 => "72010791BC6D2696682FF9B2D887D67CFCDFC99D");
+
+   package Query_Userinfo_User_List is
+      new ADO.Queries.Loaders.Query (Name => "user-list",
+                                     File => Query_Userinfo.File'Access);
+   Query_User_List : constant ADO.Queries.Query_Definition_Access
+   := Query_Userinfo_User_List.Query'Access;
+
+   package Query_Userinfo_User_List_Filter is
+      new ADO.Queries.Loaders.Query (Name => "user-list-filter",
+                                     File => Query_Userinfo.File'Access);
+   Query_User_List_Filter : constant ADO.Queries.Query_Definition_Access
+   := Query_Userinfo_User_List_Filter.Query'Access;
 end Samples.User.Model;

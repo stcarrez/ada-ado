@@ -4,7 +4,8 @@ with "ado";
 
 project Samples is
 
-   Mains := ("userdb.adb", "pschema.adb", "print_user.adb");
+   Mains := ("userdb.adb", "pschema.adb", "print_user.adb",
+             "add_user.adb", "list_user.adb");
 
    for Main use Mains;
 
