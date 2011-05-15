@@ -35,6 +35,35 @@ package ADO.Queries is
    type Query_Info_Access is access all Query_Info;
 
    --  ------------------------------
+   --  Query Context
+   --  ------------------------------
+   --  The <b>Context</b> type holds the necessary information to build and execute
+   --  a query whose SQL pattern is defined in an XML query file.
+   type Context is new ADO.SQL.Query with private;
+
+   --  Set the query definition which identifies the SQL query to execute.
+   procedure Set_Query (Into  : in out Context;
+                        Query : in Query_Definition_Access);
+
+   --  Set the limit for the SQL query.
+   procedure Set_Limit (Into  : in out Context;
+                        First : in Natural;
+                        Last  : in Natural);
+
+   --  Get the first row index.
+   function Get_First_Row_Index (From : in Context) return Natural;
+
+   --  Get the last row index.
+   function Get_Last_Row_Index (From : in Context) return Natural;
+
+   --  Get the maximum number of rows that the SQL query can return.
+   --  This operation uses the <b>sql-count</b> query.
+   function Get_Max_Row_Count (From : in Context) return Natural;
+
+   --  Get the SQL query that correspond to the query context.
+   function Get_SQL (From : in Context) return String;
+
+   --  ------------------------------
    --  Query Definition
    --  ------------------------------
    --  The <b>Query_Definition</b> holds the SQL query pattern which is defined
@@ -59,8 +88,6 @@ package ADO.Queries is
 
    function Get_SQL (From   : in Query_Definition_Access;
                      Driver : in ADO.Drivers.Driver_Index) return String;
-
-   type Context is new ADO.SQL.Query with null record;
 
    --  ------------------------------
    --  Query File
@@ -91,6 +118,13 @@ package ADO.Queries is
    end record;
 
 private
+
+   type Context is new ADO.SQL.Query with record
+      First      : Natural := 0;
+      Last       : Natural := 0;
+      Last_Index : Natural := 0;
+      Query_Def  : Query_Definition_Access := null;
+   end record;
 
    --  Find the query with the given name.
    --  Returns the query definition that matches the name or null if there is none

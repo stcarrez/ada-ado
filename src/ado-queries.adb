@@ -20,6 +20,63 @@ with ADO.Queries.Loaders;
 package body ADO.Queries is
 
    --  ------------------------------
+   --  Set the query definition which identifies the SQL query to execute.
+   --  ------------------------------
+   procedure Set_Query (Into  : in out Context;
+                        Query : in Query_Definition_Access) is
+   begin
+      Into.Query_Def := Query;
+   end Set_Query;
+
+   --  ------------------------------
+   --  Set the limit for the SQL query.
+   --  ------------------------------
+   procedure Set_Limit (Into  : in out Context;
+                        First : in Natural;
+                        Last  : in Natural) is
+   begin
+      Into.First := First;
+      Into.Last  := Last;
+   end Set_Limit;
+
+   --  ------------------------------
+   --  Get the first row index.
+   --  ------------------------------
+   function Get_First_Row_Index (From : in Context) return Natural is
+   begin
+      return From.First;
+   end Get_First_Row_Index;
+
+   --  ------------------------------
+   --  Get the last row index.
+   --  ------------------------------
+   function Get_Last_Row_Index (From : in Context) return Natural is
+   begin
+      return From.Last_Index;
+   end Get_Last_Row_Index;
+
+   --  ------------------------------
+   --  Get the maximum number of rows that the SQL query can return.
+   --  This operation uses the <b>sql-count</b> query.
+   --  ------------------------------
+   function Get_Max_Row_Count (From : in Context) return Natural is
+   begin
+      return 0;
+   end Get_Max_Row_Count;
+
+   --  ------------------------------
+   --  Get the SQL query that correspond to the query context.
+   --  ------------------------------
+   function Get_SQL (From : in Context) return String is
+   begin
+      if From.Query_Def = null then
+         return "";
+      else
+         return Get_SQL (From.Query_Def, 0);
+      end if;
+   end Get_SQL;
+
+   --  ------------------------------
    --  Find the query with the given name.
    --  Returns the query definition that matches the name or null if there is none
    --  ------------------------------
