@@ -39,8 +39,17 @@ package ADO.Drivers is
 
    type Driver_Index is new Natural range 0 .. 4;
 
+   --  Initialize the drivers and the library by reading the property file
+   --  and configure the runtime with it.
+   procedure Initialize (Config : in String);
+
    --  Initialize the drivers which are available.
    procedure Initialize;
+
+   --  Get the global configuration property identified by the name.
+   --  If the configuration property does not exist, returns the default value.
+   function Get_Config (Name    : in String;
+                        Default : in String := "") return String;
 
    --  ------------------------------
    --  Database connection implementation

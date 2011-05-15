@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,53 @@
 
 with Util.Log.Loggers;
 
+with Ada.IO_Exceptions;
 with Ada.Strings.Fixed;
 with Ada.Containers.Doubly_Linked_Lists;
 
+with ADO.Queries.Loaders;
 package body ADO.Drivers is
 
    use Util.Log;
    use Ada.Strings.Fixed;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Drivers");
+
+   --  Global configuration properties (loaded by Initialize).
+   Global_Config : Util.Properties.Manager;
+
+   --  ------------------------------
+   --  Initialize the drivers and the library by reading the property file
+   --  and configure the runtime with it.
+   --  ------------------------------
+   procedure Initialize (Config : in String) is
+   begin
+      Log.Info ("Initialize using property file {0}", Config);
+
+      begin
+         Util.Properties.Load_Properties (Global_Config, Config);
+      exception
+         when Ada.IO_Exceptions.Name_Error =>
+            Log.Error ("Configuration file '{0}' does not exist", Config);
+      end;
+
+      --  Configure the XML query loader.
+      ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),
+                                      Global_Config.Get ("ado.queries.load", "false") = "true");
+
+      --  Initialize the drivers.
+      ADO.Drivers.Initialize;
+   end Initialize;
+
+   --  ------------------------------
+   --  Get the global configuration property identified by the name.
+   --  If the configuration property does not exist, returns the default value.
+   --  ------------------------------
+   function Get_Config (Name    : in String;
+                        Default : in String := "") return String is
+   begin
+      return Global_Config.Get (Name, Default);
+   end Get_Config;
 
    --  ------------------------------
    --  Set the connection URL to connect to the database.
