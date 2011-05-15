@@ -37,6 +37,8 @@ package ADO.Drivers is
    --  Raised for all errors reported by the database
    DB_Error : exception;
 
+   type Driver_Index is new Natural range 0 .. 4;
+
    --  Initialize the drivers which are available.
    procedure Initialize;
 

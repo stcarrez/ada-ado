@@ -19,42 +19,99 @@
 with Util.Strings;
 with Util.Refs;
 with ADO.SQL;
+with ADO.Drivers;
 
-with Ada.Containers.Hashed_Maps;
+with Interfaces;
 with Ada.Strings.Unbounded;
-with Ada.Strings.Unbounded.Hash;
 package ADO.Queries is
 
-   type Query_Definition_Record is limited record
-      Name : Util.Strings.Name_Access;
+   type Query_File;
+   type Query_File_Access is access all Query_File;
+
+   type Query_Definition;
+   type Query_Definition_Access is access all Query_Definition;
+
+   type Query_Info is limited private;
+   type Query_Info_Access is access all Query_Info;
+
+   --  ------------------------------
+   --  Query Definition
+   --  ------------------------------
+   --  The <b>Query_Definition</b> holds the SQL query pattern which is defined
+   --  in an XML query file.  The query is identified by a name and a given XML
+   --  query file can contain several queries.  The Dynamo generator generates
+   --  one instance of <b>Query_Definition</b> for each query defined in the XML
+   --  file.  The XML file is loaded during application initialization (or later)
+   --  to get the SQL query pattern.
+   type Query_Definition is limited record
+      --  The query name.
+      Name   : Util.Strings.Name_Access;
+
+      --  The query file in which the query is defined.
+      File   : Query_File_Access;
+
+      --  The next query defined in the query file.
+      Next   : Query_Definition_Access;
+
+      --  The SQL query pattern (initialized when reading the XML query file).
+      Query  : Query_Info_Access;
    end record;
 
-   type Query_Definition is access all Query_Definition_Record;
+   function Get_SQL (From   : in Query_Definition_Access;
+                     Driver : in ADO.Drivers.Driver_Index) return String;
 
    type Context is new ADO.SQL.Query with null record;
 
-   type Query_Info is new Util.Refs.Ref_Entity with private;
+   --  ------------------------------
+   --  Query File
+   --  ------------------------------
+   --  The <b>Query_File</b> describes the SQL queries associated and loaded from
+   --  a given XML query file.  The Dynamo generator generates one instance of
+   --  <b>Query_File</b> for each XML query file that it has read.  The Path,
+   --  Sha1_Map, Queries and Next are initialized statically by the generator (during
+   --  package elaboration).
+   type Query_File is limited record
+      --  Query relative path name
+      Path          : Util.Strings.Name_Access;
 
-   procedure Read_Query (Into : in out Query_Info;
-                         Path : in String);
+      --  The SHA1 hash of the query map section.
+      Sha1_Map      : Util.Strings.Name_Access;
+
+      --  Stamp when the query file will be checked.
+      Next_Check    : Interfaces.Unsigned_32;
+
+      --  Stamp identifying the modification date of the query file.
+      Last_Modified : Interfaces.Unsigned_32;
+
+      --  The first query defined for that file.
+      Queries       : Query_Definition_Access;
+
+      --  The next XML query file registered in the application.
+      Next          : Query_File_Access;
+   end record;
 
 private
 
+   --  Find the query with the given name.
+   --  Returns the query definition that matches the name or null if there is none
+   function Find_Query (File : in Query_File;
+                        Name : in String) return Query_Definition_Access;
+
    use Ada.Strings.Unbounded;
 
-   type Query_Info is new Util.Refs.Ref_Entity with record
-      Query : Ada.Strings.Unbounded.Unbounded_String;
+   --  SQL query pattern
+   type Query_Pattern is limited record
+      SQL : Ada.Strings.Unbounded.Unbounded_String;
    end record;
-   type Query_Info_Access is access all Query_Info;
 
-   package Query_Info_Ref is
-      new Util.Refs.References (Query_Info, Query_Info_Access);
+   type Query_Pattern_Array is array (ADO.Drivers.Driver_Index) of Query_Pattern;
 
-   package Query_Info_Maps is
-     new Ada.Containers.Hashed_Maps (Key_Type        => Unbounded_String,
-                                     Element_Type    => Query_Info_Ref.Ref,
-                                     Hash            => Hash,
-                                     Equivalent_Keys => "=",
-                                     "="             => Query_Info_Ref."=");
+   type Query_Info is new Util.Refs.Ref_Entity with record
+      Main_Query  : Query_Pattern_Array;
+      Count_Query : Query_Pattern_Array;
+   end record;
+
+--     package Query_Info_Ref is
+--        new Util.Refs.References (Query_Info, Query_Info_Access);
 
 end ADO.Queries;

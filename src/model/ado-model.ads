@@ -26,6 +26,7 @@ with ADO.Statements;
 with ADO.SQL;
 with ADO.Schemas;
 with ADO.Queries;
+with ADO.Queries.Loaders;
 with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;

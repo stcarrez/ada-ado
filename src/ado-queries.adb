@@ -16,55 +16,38 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Strings;
-with Util.Refs;
-with ADO.SQL;
-
-with Ada.Containers.Hashed_Maps;
-with Ada.Strings.Unbounded;
-with Ada.Strings.Unbounded.Hash;
-
-with Util.Beans.Objects;
-with Util.Serialize.IO.XML;
-with Util.Serialize.Mappers.Record_Mapper;
+with ADO.Queries.Loaders;
 package body ADO.Queries is
 
-   type Query_Info_Fields is (FIELD_SQL, FIELD_SQL_COUNT);
-
-   procedure Set_Member (Into  : in out Query_Info;
-                         Field : in Query_Info_Fields;
-                         Value : in Util.Beans.Objects.Object) is
+   --  ------------------------------
+   --  Find the query with the given name.
+   --  Returns the query definition that matches the name or null if there is none
+   --  ------------------------------
+   function Find_Query (File : in Query_File;
+                        Name : in String) return Query_Definition_Access is
+      Query : Query_Definition_Access := File.Queries;
    begin
-      case Field is
-         when FIELD_SQL =>
-            Into.Query := Util.Beans.Objects.To_Unbounded_String (Value);
+      while Query /= null loop
+         if Query.Name.all = Name then
+            return Query;
+         end if;
+         Query := Query.Next;
+      end loop;
+      return null;
+   end Find_Query;
 
-         when FIELD_SQL_COUNT =>
-            null;
-
-      end case;
-   end Set_Member;
-
-   package Query_Mapper is
-     new Util.Serialize.Mappers.Record_Mapper (Element_Type        => Query_Info,
-                                               Element_Type_Access => Query_Info_Access,
-                                               Fields              => Query_Info_Fields,
-                                               Set_Member          => Set_Member);
-
-   procedure Read_Query (Into : in out Query_Info;
-                         Path : in String) is
-
-      Sql_Mapper       : aliased Query_Mapper.Mapper;
-      Sql_Count_Mapper : aliased Query_Mapper.Mapper;
-      Reader           : Util.Serialize.IO.XML.Parser;
+   function Get_SQL (From   : in Query_Definition_Access;
+                     Driver : in ADO.Drivers.Driver_Index) return String is
    begin
-
-      Sql_Mapper.Add_Mapping ("sql", FIELD_SQL);
-      Sql_Mapper.Add_Mapping ("sql-count", FIELD_SQL_COUNT);
-      Reader.Add_Mapping ("query", Sql_Mapper'Unchecked_Access);
-      Query_Mapper.Set_Context (Reader, Into'Unchecked_Access);
-      Reader.Parse (Path);
-   end Read_Query;
-
+      ADO.Queries.Loaders.Read_Query (From);
+      if From.Query = null then
+         return "";
+      end if;
+      if Length (From.Query.Main_Query (Driver).SQL) > 0 then
+         return To_String (From.Query.Main_Query (Driver).SQL);
+      else
+         return To_String (From.Query.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
+      end if;
+   end Get_SQL;
 
 end ADO.Queries;
