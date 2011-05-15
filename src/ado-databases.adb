@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Connections
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 with Util.Log;
 with Util.Log.Loggers;
 
-with ADO.SQL;
 with Ada.Unchecked_Deallocation;
 with System.Address_Image;
+with ADO.Statements.Create;
 package body ADO.Databases is
 
    use Util.Log;
@@ -53,13 +53,15 @@ package body ADO.Databases is
          raise NOT_OPEN with "No connection to the database";
       end if;
       declare
-         Query : Query_Statement_Access := Database.Impl.all.Create_Statement (Table);
+         Query : constant Query_Statement_Access := Database.Impl.all.Create_Statement (Table);
       begin
-         return ADO.Statements.Create_Statement (Query);
+         return ADO.Statements.Create.Create_Statement (Query);
       end;
    end Create_Statement;
 
+   --  ------------------------------
    --  Create a query statement.  The statement is not prepared
+   --  ------------------------------
    function Create_Statement (Database : in Connection;
                               Query    : in String)
                               return Query_Statement is
@@ -69,10 +71,10 @@ package body ADO.Databases is
          raise NOT_OPEN with "No connection to the database";
       end if;
       declare
-         Stmt : Query_Statement_Access := Database.Impl.all.Create_Statement (null);
+         Stmt : constant Query_Statement_Access := Database.Impl.all.Create_Statement (null);
       begin
          Append (Query => Stmt.all, SQL => Query);
-         return ADO.Statements.Create_Statement (Stmt);
+         return ADO.Statements.Create.Create_Statement (Stmt);
       end;
    end Create_Statement;
 
@@ -170,9 +172,9 @@ package body ADO.Databases is
       Log.Info ("Create delete statement");
 
       declare
-         Stmt : Delete_Statement_Access := Database.Impl.all.Create_Statement (Table);
+         Stmt : constant Delete_Statement_Access := Database.Impl.all.Create_Statement (Table);
       begin
-         return Create_Statement (Stmt);
+         return ADO.Statements.Create.Create_Statement (Stmt);
       end;
    end Create_Statement;
 
@@ -188,7 +190,7 @@ package body ADO.Databases is
       declare
          Stmt : constant Insert_Statement_Access := Database.Impl.all.Create_Statement (Table);
       begin
-         return Create_Statement (Stmt.all'Access);
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access);
       end;
    end Create_Statement;
 
@@ -199,9 +201,9 @@ package body ADO.Databases is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement is
    begin
-      Log.Info ("Create insert statement");
+      Log.Info ("Create update statement");
 
-      return Create_Statement (Database.Impl.all.Create_Statement (Table));
+      return ADO.Statements.Create.Create_Statement (Database.Impl.all.Create_Statement (Table));
    end Create_Statement;
 
    --  ------------------------------
