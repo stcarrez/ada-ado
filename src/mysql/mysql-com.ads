@@ -21,6 +21,8 @@ with System;
 with Interfaces.C.Strings;
 
 package Mysql.Com is
+   pragma Warnings (Off);
+   pragma Warnings (Off, "*style*");
 
    subtype my_socket is int;  -- /usr/include/mysql/mysql.h:66:13
 
@@ -282,7 +284,7 @@ package Mysql.Com is
       sqlstate : aliased anon1416_anon1443_array;  -- /usr/include/mysql/mysql_com.h:210:39
       last_errno : aliased unsigned;  -- /usr/include/mysql/mysql_com.h:211:16
       error : aliased unsigned_char;  -- /usr/include/mysql/mysql_com.h:212:17
-      query_cache_query : Interfaces.C.Strings.Chars_Ptr;  --  mysql_mysql_h.gptr;  -- /usr/include/mysql/mysql_com.h:218:8
+      query_cache_query : Interfaces.C.Strings.chars_ptr;  --  mysql_mysql_h.gptr;  -- /usr/include/mysql/mysql_com.h:218:8
       report_error : aliased char;  -- /usr/include/mysql/mysql_com.h:220:11
       return_errno : aliased char;  -- /usr/include/mysql/mysql_com.h:221:11
    end record;
@@ -431,12 +433,12 @@ package Mysql.Com is
    pragma Import (C, my_connect, "my_connect");
 
    type rand_struct is record
-      seed1 : aliased unsigned_long;  -- /usr/include/mysql/mysql_com.h:362:17
-      seed2 : aliased unsigned_long;  -- /usr/include/mysql/mysql_com.h:362:23
-      max_value : aliased unsigned_long;  -- /usr/include/mysql/mysql_com.h:362:29
-      max_value_dbl : aliased double;  -- /usr/include/mysql/mysql_com.h:363:10
+      seed1 : aliased unsigned_long;
+      seed2 : aliased unsigned_long;
+      max_value : aliased unsigned_long;
+      max_value_dbl : aliased double;
    end record;
-   pragma Convention (C, rand_struct);  -- /usr/include/mysql/mysql_com.h:361:8
+   pragma Convention (C, rand_struct);
 
    -- The following is for user defined functions
    subtype Item_result is unsigned;
@@ -444,19 +446,19 @@ package Mysql.Com is
    REAL_RESULT : constant Item_result := 1;
    INT_RESULT : constant Item_result := 2;
    ROW_RESULT : constant Item_result := 3;
-   DECIMAL_RESULT : constant Item_result := 4;  -- /usr/include/mysql/mysql_com.h:372:6
+   DECIMAL_RESULT : constant Item_result := 4;
 
    -- Number of arguments
    type st_udf_args is record
-      arg_count : aliased unsigned;  -- /usr/include/mysql/mysql_com.h:377:16
-      arg_type : access Item_result;  -- /usr/include/mysql/mysql_com.h:378:21
-      args : System.Address;  -- /usr/include/mysql/mysql_com.h:379:10
-      lengths : access unsigned_long;  -- /usr/include/mysql/mysql_com.h:380:18
-      maybe_null : Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql_com.h:381:9
-      attributes : System.Address;  -- /usr/include/mysql/mysql_com.h:382:10
-      attribute_lengths : access unsigned_long;  -- /usr/include/mysql/mysql_com.h:383:18
+      arg_count : aliased unsigned;
+      arg_type : access Item_result;
+      args : System.Address;
+      lengths : access unsigned_long;
+      maybe_null : Interfaces.C.Strings.chars_ptr;
+      attributes : System.Address;
+      attribute_lengths : access unsigned_long;
    end record;
-   pragma Convention (C, st_udf_args);  -- /usr/include/mysql/mysql_com.h:376:1
+   pragma Convention (C, st_udf_args);
 
    -- Pointer to item_results
    -- Pointer to argument
@@ -469,18 +471,18 @@ package Mysql.Com is
    -- This holds information about the result
    -- 1 if function can return NULL
    type st_udf_init is record
-      maybe_null : aliased char;  -- /usr/include/mysql/mysql_com.h:390:11
-      decimals : aliased unsigned;  -- /usr/include/mysql/mysql_com.h:391:16
-      max_length : aliased unsigned_long;  -- /usr/include/mysql/mysql_com.h:392:17
-      ptr : Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql_com.h:393:9
-      const_item : aliased char;  -- /usr/include/mysql/mysql_com.h:394:11
+      maybe_null : aliased char;
+      decimals : aliased unsigned;
+      max_length : aliased unsigned_long;
+      ptr : Interfaces.C.Strings.chars_ptr;
+      const_item : aliased char;
    end record;
-   pragma Convention (C, st_udf_init);  -- /usr/include/mysql/mysql_com.h:389:1
+   pragma Convention (C, st_udf_init);
 
-   -- for real functions
-   -- For string functions
-   -- free pointer for function data
-   -- 1 if function always returns the same value
+   --  for real functions
+   --  For string functions
+   --  free pointer for function data
+   --  1 if function always returns the same value
    subtype UDF_INIT is st_udf_init;
 
    --
@@ -488,8 +490,8 @@ package Mysql.Com is
    --  See Item_udf_func::update_used_tables ()
    --
 
-   -- Constants when using compression
-   -- Prototypes to password functions
+   --  Constants when using compression
+   --  Prototypes to password functions
    --  These functions are used for authentication by client and server and
    --  implemented in sql/password.c
    --
@@ -497,81 +499,88 @@ package Mysql.Com is
    procedure randominit
      (arg1 : access rand_struct;
       arg2 : unsigned_long;
-      arg3 : unsigned_long);  -- /usr/include/mysql/mysql_com.h:416:6
+      arg3 : unsigned_long);
    pragma Import (C, randominit, "randominit");
 
-   function my_rnd (arg1 : access rand_struct) return double;  -- /usr/include/mysql/mysql_com.h:418:8
+   function my_rnd (arg1 : access rand_struct) return double;
    pragma Import (C, my_rnd, "my_rnd");
 
    procedure create_random_string
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : unsigned;
-      arg3 : access rand_struct);  -- /usr/include/mysql/mysql_com.h:419:6
+      arg3 : access rand_struct);
    pragma Import (C, create_random_string, "create_random_string");
 
    procedure hash_password
      (arg1 : access unsigned_long;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : unsigned);  -- /usr/include/mysql/mysql_com.h:421:6
+      arg3 : unsigned);
    pragma Import (C, hash_password, "hash_password");
 
-   procedure make_scrambled_password_323 (arg1 : Interfaces.C.Strings.chars_ptr; arg2 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:422:6
+   procedure Make_Scrambled_Password_323 (Arg1 : Interfaces.C.Strings.chars_ptr;
+                                          arg2 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, make_scrambled_password_323, "make_scrambled_password_323");
 
    procedure scramble_323
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:423:6
+      arg3 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, scramble_323, "scramble_323");
 
    function check_scramble_323
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : access unsigned_long) return char;  -- /usr/include/mysql/mysql_com.h:424:9
+      arg3 : access unsigned_long) return char;
    pragma Import (C, check_scramble_323, "check_scramble_323");
 
-   procedure get_salt_from_password_323 (arg1 : access unsigned_long; arg2 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:426:6
+   procedure Get_Salt_From_Password_323 (Arg1 : access Unsigned_Long;
+                                         arg2 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, get_salt_from_password_323, "get_salt_from_password_323");
 
-   procedure make_password_from_salt_323 (arg1 : Interfaces.C.Strings.chars_ptr; arg2 : access unsigned_long);  -- /usr/include/mysql/mysql_com.h:427:6
+   procedure Make_Password_From_Salt_323 (Arg1 : Interfaces.C.Strings.chars_ptr;
+                                          arg2 : access unsigned_long);
    pragma Import (C, make_password_from_salt_323, "make_password_from_salt_323");
 
-   procedure make_scrambled_password (arg1 : Interfaces.C.Strings.chars_ptr; arg2 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:429:6
+   procedure Make_Scrambled_Password (Arg1 : Interfaces.C.Strings.chars_ptr;
+                                      arg2 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, make_scrambled_password, "make_scrambled_password");
 
    procedure scramble
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:430:6
+      arg3 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, scramble, "scramble");
 
    function check_scramble
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : access unsigned_char) return char;  -- /usr/include/mysql/mysql_com.h:431:9
+      arg3 : access unsigned_char) return char;
    pragma Import (C, check_scramble, "check_scramble");
 
-   procedure get_salt_from_password (arg1 : access unsigned_char; arg2 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql_com.h:433:6
+   procedure Get_Salt_From_Password (Arg1 : access Unsigned_Char;
+                                     arg2 : Interfaces.C.Strings.chars_ptr);
    pragma Import (C, get_salt_from_password, "get_salt_from_password");
 
-   procedure make_password_from_salt (arg1 : Interfaces.C.Strings.chars_ptr; arg2 : access unsigned_char);  -- /usr/include/mysql/mysql_com.h:434:6
+   procedure Make_Password_From_Salt (Arg1 : Interfaces.C.Strings.chars_ptr;
+                                      arg2 : access unsigned_char);
    pragma Import (C, make_password_from_salt, "make_password_from_salt");
 
    function octet2hex
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
-      arg3 : unsigned) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql_com.h:435:7
+      arg3 : unsigned) return Interfaces.C.Strings.chars_ptr;
    pragma Import (C, octet2hex, "octet2hex");
 
    -- end of password.c
-   function get_tty_password (arg1 : Interfaces.C.Strings.chars_ptr) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql_com.h:439:7
+   function Get_Tty_Password (Arg1 : Interfaces.C.Strings.chars_ptr)
+                              return Interfaces.C.Strings.chars_ptr;
    pragma Import (C, get_tty_password, "get_tty_password");
 
-   function mysql_errno_to_sqlstate (arg1 : unsigned) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql_com.h:440:13
+   function mysql_errno_to_sqlstate (arg1 : unsigned) return Interfaces.C.Strings.chars_ptr;
    pragma Import (C, mysql_errno_to_sqlstate, "mysql_errno_to_sqlstate");
 
    -- Some other useful functions
-   function my_init return char;  -- /usr/include/mysql/mysql_com.h:444:9
+   function my_init return char;
    pragma Import (C, my_init, "my_init");
 
    function modify_defaults_file
@@ -579,20 +588,20 @@ package Mysql.Com is
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : Interfaces.C.Strings.chars_ptr;
       arg4 : Interfaces.C.Strings.chars_ptr;
-      arg5 : int) return int;  -- /usr/include/mysql/mysql_com.h:445:12
+      arg5 : int) return int;
    pragma Import (C, modify_defaults_file, "modify_defaults_file");
 
    function load_defaults
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : System.Address;
       arg3 : access int;
-      arg4 : System.Address) return int;  -- /usr/include/mysql/mysql_com.h:448:5
+      arg4 : System.Address) return int;
    pragma Import (C, load_defaults, "load_defaults");
 
-   function my_thread_init return char;  -- /usr/include/mysql/mysql_com.h:450:9
+   function my_thread_init return char;
    pragma Import (C, my_thread_init, "my_thread_init");
 
-   procedure my_thread_end;  -- /usr/include/mysql/mysql_com.h:451:6
+   procedure my_thread_end;
    pragma Import (C, my_thread_end, "my_thread_end");
 
 end Mysql.Com ;

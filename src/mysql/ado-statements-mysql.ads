@@ -35,9 +35,6 @@ package ADO.Statements.Mysql is
                       Result : out Natural);
 
    --  Create the delete statement
-   overriding
-   function Create_Statement (Proxy : Delete_Statement_Access) return Mysql_Delete_Statement;
-
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access;
@@ -58,10 +55,6 @@ package ADO.Statements.Mysql is
                       Result : out Integer);
 
    --  Create an update statement
-   overriding
-   function Create_Statement (Proxy : Update_Statement_Access) return Mysql_Update_Statement;
-
-   --  Create an update statement
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access;
@@ -76,10 +69,6 @@ package ADO.Statements.Mysql is
    overriding
    procedure Execute (Stmt   : in out Mysql_Insert_Statement;
                       Result : out Integer);
-
-   --  Create the insert statement.
-   overriding
-   function Create_Statement (Proxy : Update_Statement_Access) return Mysql_Insert_Statement;
 
    --  Create an insert statement.
    function Create_Statement (Database : in Mysql_Access;
@@ -155,9 +144,6 @@ package ADO.Statements.Mysql is
    procedure Finalize (Query : in out Mysql_Query_Statement);
 
    --  Create the query statement.
-   overriding
-   function Create_Statement (Proxy : Query_Statement_Access) return Mysql_Query_Statement;
-
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access;
@@ -190,7 +176,7 @@ private
    --  If the query was not executed, raises Invalid_Statement
    --  If the column is out of bound, raises Constraint_Error
    function Get_Field (Query  : Mysql_Query_Statement'Class;
-                       Column : Natural) return Chars_Ptr;
+                       Column : Natural) return chars_ptr;
 
    type Mysql_Delete_Statement is new Delete_Statement with record
       Connection : Mysql_Access;

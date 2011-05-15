@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,5 +70,8 @@ private
    --  Finalize and release the factory
    overriding
    procedure Finalize (Factory : in out Session_Factory);
+
+   --  Initialize the sequence factory associated with the session factory.
+   procedure Initialize_Sequences (Factory : in out Session_Factory);
 
 end ADO.Sessions.Factory;

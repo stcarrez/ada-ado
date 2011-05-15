@@ -5,17 +5,17 @@ with Mysql.Mysql;  use Mysql.Mysql;
 package Mysql.Time is
 
 
-   -- Copyright (C) 2004 MySQL AB
-   -- This program is free software; you can redistribute it and/or modify
-   -- it under the terms of the GNU General Public License as published by
-   -- the Free Software Foundation; version 2 of the License.
-   -- This program is distributed in the hope that it will be useful,
-   -- but WITHOUT ANY WARRANTY; without even the implied warranty of
-   -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   -- GNU General Public License for more details.
-   -- You should have received a copy of the GNU General Public License
-   -- along with this program; if not, write to the Free Software
-   -- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+   --  Copyright (C) 2004 MySQL AB
+   --  This program is free software; you can redistribute it and/or modify
+   --  it under the terms of the GNU General Public License as published by
+   --  the Free Software Foundation; version 2 of the License.
+   --  This program is distributed in the hope that it will be useful,
+   --  but WITHOUT ANY WARRANTY; without even the implied warranty of
+   --  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   --  GNU General Public License for more details.
+   --  You should have received a copy of the GNU General Public License
+   --  along with this program; if not, write to the Free Software
+   --  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
    --  Time declarations shared between the server and client API:
    --  you should not add anything to this header unless it's used
@@ -30,7 +30,7 @@ package Mysql.Time is
    MYSQL_TIMESTAMP_ERROR : constant enum_mysql_timestamp_type := -1;
    MYSQL_TIMESTAMP_DATE : constant enum_mysql_timestamp_type := 0;
    MYSQL_TIMESTAMP_DATETIME : constant enum_mysql_timestamp_type := 1;
-   MYSQL_TIMESTAMP_TIME : constant enum_mysql_timestamp_type := 2;  -- /usr/include/mysql/mysql_time.h:29:1
+   MYSQL_TIMESTAMP_TIME : constant enum_mysql_timestamp_type := 2;
 
    --  Structure which is used to represent datetime values inside MySQL.
    --  We assume that values in this structure are normalized, i.e. year <= 9999,
@@ -44,17 +44,17 @@ package Mysql.Time is
    --
 
    type st_mysql_time is record
-      year : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:17
-      month : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:23
-      day : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:30
-      hour : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:35
-      minute : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:41
-      second : aliased unsigned;  -- /usr/include/mysql/mysql_time.h:49:49
-      second_part : aliased unsigned_long;  -- /usr/include/mysql/mysql_time.h:50:17
-      neg : aliased my_bool;  -- /usr/include/mysql/mysql_time.h:51:17
-      time_type : aliased enum_mysql_timestamp_type;  -- /usr/include/mysql/mysql_time.h:52:34
+      year : aliased unsigned;
+      month : aliased unsigned;
+      day : aliased unsigned;
+      hour : aliased unsigned;
+      minute : aliased unsigned;
+      second : aliased unsigned;
+      second_part : aliased unsigned_long;
+      neg : aliased my_bool;
+      time_type : aliased enum_mysql_timestamp_type;
    end record;
-   pragma Convention (C, st_mysql_time);  -- /usr/include/mysql/mysql_time.h:48:1
+   pragma Convention (C, st_mysql_time);
 
    subtype MYSQL_TIME is st_mysql_time;
 

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,15 +33,14 @@ package body ADO.Statements.Mysql is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
 
-   use Interfaces.C;
    use type ADO.Schemas.Class_Mapping_Access;
 
    procedure Check_Error (Connection : in Mysql_Access;
-                          Result     : in Int) is
+                          Result     : in int) is
    begin
       if Result /= 0 then
          declare
-            Error : Strings.Chars_Ptr := Mysql_Error (Connection);
+            Error : constant Strings.chars_ptr := Mysql_Error (Connection);
             Msg   : constant String := Strings.Value (Error);
          begin
             Log.Error ("Error: {0}", Msg);
@@ -94,12 +93,6 @@ package body ADO.Statements.Mysql is
    --  ------------------------------
    --  Create the delete statement
    --  ------------------------------
-   overriding
-   function Create_Statement (Proxy : Delete_Statement_Access) return Mysql_Delete_Statement is
-   begin
-      return Result : Mysql_Delete_Statement;
-   end Create_Statement;
-
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access is
@@ -145,24 +138,17 @@ package body ADO.Statements.Mysql is
 
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
-         Res       : Int;
-         Res2  : my_ulonglong;
+         Res       : int;
+         Res2      : My_Ulonglong;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
          Check_Error (Stmt.Connection, Res);
 
          Res2 := Mysql_Affected_Rows (Stmt.Connection);
-         Log.Info ("Update: {0}", my_ulonglong'Image (Res2));
+         Log.Info ("Update: {0}", My_Ulonglong'Image (Res2));
          Result := Integer (Res2);
       end;
    end Execute;
-
-   --  Create an update statement
-   overriding
-   function Create_Statement (Proxy : Update_Statement_Access) return Mysql_Update_Statement is
-   begin
-      return Result : Mysql_Update_Statement;
-   end Create_Statement;
 
    --  Create an update statement.
    function Create_Statement (Database : in Mysql_Access;
@@ -197,7 +183,7 @@ package body ADO.Statements.Mysql is
       end if;
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
-         Res       : Int;
+         Res       : int;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
          Check_Error (Stmt.Connection, Res);
@@ -209,13 +195,6 @@ package body ADO.Statements.Mysql is
       end;
 --        Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
    end Execute;
-
-   --  Create the insert statement.
-   overriding
-   function Create_Statement (Proxy : Update_Statement_Access) return Mysql_Insert_Statement is
-   begin
-      return Result : Mysql_Insert_Statement;
-   end Create_Statement;
 
    --  Create an insert statement.
    function Create_Statement (Database : in Mysql_Access;
@@ -241,10 +220,7 @@ package body ADO.Statements.Mysql is
    function To_Address is
      new Ada.Unchecked_Conversion (System_Access, System.Address);
 
-   function To_Array_Chars_Ptr is
-     new Ada.Unchecked_Conversion (System.Address, MYSQL_ROW);
-
-   function "+" (Left :System_Access; Right : Size_T) return System_Access;
+   function "+" (Left : System_Access; Right : Size_T) return System_Access;
    pragma Inline ("+");
 
    function "+" (Left : System_Access; Right : Size_T) return System_Access is
@@ -258,7 +234,7 @@ package body ADO.Statements.Mysql is
    --  If the column is out of bound, raises Constraint_Error
    --  ------------------------------
    function Get_Field (Query  : Mysql_Query_Statement'Class;
-                       Column : Natural) return Chars_Ptr is
+                       Column : Natural) return chars_ptr is
       use System;
 
       R : System_Access;
@@ -280,7 +256,7 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt : in out Mysql_Query_Statement) is
       use System;
 
-      Result : Int;
+      Result : int;
    begin
       if Stmt.This_Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " ");
@@ -369,7 +345,7 @@ package body ADO.Statements.Mysql is
    overriding
    function Is_Null (Query  : in Mysql_Query_Statement;
                      Column : in Natural) return Boolean is
-      Field : constant Chars_Ptr := Query.Get_Field (Column);
+      Field : constant chars_ptr := Query.Get_Field (Column);
    begin
       return Field = null;
    end Is_Null;
@@ -383,7 +359,7 @@ package body ADO.Statements.Mysql is
    overriding
    function Get_Int64 (Query  : Mysql_Query_Statement;
                        Column : Natural) return Int64 is
-      Field  : constant Chars_Ptr := Query.Get_Field (Column);
+      Field  : constant chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
          return 0;
@@ -401,7 +377,7 @@ package body ADO.Statements.Mysql is
    overriding
    function Get_Unbounded_String (Query  : Mysql_Query_Statement;
                                   Column : Natural) return Unbounded_String is
-      Field  : Chars_Ptr := Query.Get_Field (Column);
+      Field  : chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
          return Null_Unbounded_String;
@@ -450,10 +426,10 @@ package body ADO.Statements.Mysql is
       Mins   : Natural      := 0;
       Secs   : Natural      := 0;
       Dt     : Duration;
-      Field  : Chars_Ptr    := Query.Get_Field (Column);
+      Field  : chars_ptr    := Query.Get_Field (Column);
 
-      function Get_Number (P : in Chars_Ptr; Nb_Digits : in Positive) return Natural is
-         Ptr    : Chars_Ptr := P;
+      function Get_Number (P : in chars_ptr; Nb_Digits : in Positive) return Natural is
+         Ptr    : chars_ptr := P;
          Result : Natural   := 0;
          C      : Character;
       begin
@@ -620,17 +596,9 @@ package body ADO.Statements.Mysql is
       end if;
    end Finalize;
 
-   --  Create the query statement.
-   overriding
-   function Create_Statement (Proxy :Query_Statement_Access) return Mysql_Query_Statement is
-   begin
-      return Result : Mysql_Query_Statement;
-   end Create_Statement;
-
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access is
-      use type ADO.Schemas.Class_Mapping_Access;
       Result : constant Mysql_Query_Statement_Access := new Mysql_Query_Statement;
    begin
       Result.Connection := Database;
@@ -654,6 +622,8 @@ package body ADO.Statements.Mysql is
    function Create_Statement (Database : in Mysql_Access;
                               Query    : in String)
                               return Query_Statement_Access is
+      pragma Unreferenced (Query);
+
       Result : constant Mysql_Query_Statement_Access := new Mysql_Query_Statement;
    begin
       Result.Connection := Database;

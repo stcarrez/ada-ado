@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Sequences.HiLo;
+with ADO.Sequences.Hilo;
 with Ada.Unchecked_Deallocation;
 
 --  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
@@ -25,7 +25,9 @@ package body ADO.Sessions.Factory is
 
    use ADO.Databases;
 
+   --  ------------------------------
    --  Open a session
+   --  ------------------------------
    procedure Open_Session (Factory  : in out Session_Factory;
                            Database : out Session) is
       S  : constant Session_Record_Access := new Session_Record;
@@ -98,13 +100,18 @@ package body ADO.Sessions.Factory is
       return R;
    end Get_Master_Session;
 
+   --  ------------------------------
    --  Open a session
+   --  ------------------------------
    procedure Open_Session (Factory : in Session_Factory;
                            Database : out Master_Session) is
    begin
       null;
    end Open_Session;
 
+   --  ------------------------------
+   --  Initialize the sequence factory associated with the session factory.
+   --  ------------------------------
    procedure Initialize_Sequences (Factory : in out Session_Factory) is
       use ADO.Sequences;
    begin

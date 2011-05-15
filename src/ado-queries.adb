@@ -61,7 +61,7 @@ package body ADO.Queries is
    --  ------------------------------
    function Get_Max_Row_Count (From : in Context) return Natural is
    begin
-      return 0;
+      return From.Max_Row_Count;
    end Get_Max_Row_Count;
 
    --  ------------------------------

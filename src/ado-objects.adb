@@ -357,7 +357,8 @@ package body ADO.Objects is
       return Ref.Key.Id;
    end Get_Key_Value;
 
-   function Get_Key_Value (Ref : in Object_Record'Class) return Ada.Strings.Unbounded.Unbounded_String is
+   function Get_Key_Value (Ref : in Object_Record'Class)
+                           return Ada.Strings.Unbounded.Unbounded_String is
    begin
       return Ref.Key.Str;
    end Get_Key_Value;

@@ -140,7 +140,7 @@ package body ADO.Drivers.Mysql is
          Log.Error ("Database connection is not open");
       end if;
 
-      Result := mysql_query (Database.Server, ADO.C.To_C (SQL_Stat));
+      Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
    end Execute;
 
    procedure Execute (Database : in out Database_Connection;
@@ -213,7 +213,7 @@ package body ADO.Drivers.Mysql is
 
       if Database.Server = null then
          declare
-            Message : constant String := Strings.Value (mysql_error (Connection));
+            Message : constant String := Strings.Value (Mysql_Error (Connection));
          begin
             Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.URI), Message);
             mysql_close (Connection);

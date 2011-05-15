@@ -256,7 +256,8 @@ package ADO.Objects is
    type Session_Proxy is limited private;
    type Session_Proxy_Access is access all Session_Proxy;
 
-   function Create_Session_Proxy (S : access ADO.Sessions.Session_Record) return Session_Proxy_Access;
+   function Create_Session_Proxy (S : access ADO.Sessions.Session_Record)
+                                  return Session_Proxy_Access;
 
 private
 

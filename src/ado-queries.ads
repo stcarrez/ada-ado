@@ -123,6 +123,7 @@ private
       First      : Natural := 0;
       Last       : Natural := 0;
       Last_Index : Natural := 0;
+      Max_Row_Count : Natural := 0;
       Query_Def  : Query_Definition_Access := null;
    end record;
 

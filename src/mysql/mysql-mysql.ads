@@ -24,6 +24,8 @@ with Mysql.My_list;
 with Mysql.Com;
 
 package Mysql.Mysql is
+   pragma Warnings (Off);
+   pragma Warnings (Off, "*style*");
 
    use Mysql;
 
@@ -112,7 +114,7 @@ package Mysql.Mysql is
    -- Type of field. See mysql_com.h for types
    type MYSQL_FIELD is access all St_Mysql_Field;
 
-   type Row_Fields is array (Natural range <>) of Interfaces.C.Strings.Chars_Ptr;
+   type Row_Fields is array (Natural range <>) of Interfaces.C.Strings.chars_ptr;
    pragma Convention (C, Row_Fields);
 
    type System_Access is access all System.Address;
@@ -455,7 +457,7 @@ package Mysql.Mysql is
    -- for unbuffered reads
    -- If unbuffered read
    -- buffer to current row
-   -- Used by mysql_fetch_row
+   -- Used by Mysql_Fetch_Row
    -- mysql_stmt_close() had to cancel this result
    type MYSQL_RES is access st_mysql_res;
 
@@ -530,11 +532,11 @@ package Mysql.Mysql is
    --  Should definitely be used if one uses shared libraries.
    --
 
-   function mysql_num_rows (arg1 : MYSQL_RES) return my_ulonglong;
-   pragma Import (C, mysql_num_rows, "mysql_num_rows");
+   function Mysql_Num_Rows (arg1 : MYSQL_RES) return my_ulonglong;
+   pragma Import (C, Mysql_Num_Rows, "mysql_num_rows");
 
-   function mysql_num_fields (arg1 : MYSQL_RES) return unsigned;
-   pragma Import (C, mysql_num_fields, "mysql_num_fields");
+   function Mysql_Num_Fields (arg1 : MYSQL_RES) return unsigned;
+   pragma Import (C, Mysql_Num_Fields, "mysql_num_fields");
 
    function mysql_eof (arg1 : MYSQL_RES) return my_bool;
    pragma Import (C, mysql_eof, "mysql_eof");
@@ -543,8 +545,8 @@ package Mysql.Mysql is
                                       return MYSQL_FIELD;
    pragma Import (C, mysql_fetch_field_direct, "mysql_fetch_field_direct");
 
-   function mysql_fetch_fields (arg1 : MYSQL_RES) return MYSQL_FIELD;
-   pragma Import (C, mysql_fetch_fields, "mysql_fetch_fields");
+   function Mysql_Fetch_Fields (arg1 : MYSQL_RES) return MYSQL_FIELD;
+   pragma Import (C, Mysql_Fetch_Fields, "mysql_fetch_fields");
 
    function mysql_row_tell (arg1 : MYSQL_RES) return MYSQL_ROW_OFFSET;
    pragma Import (C, mysql_row_tell, "mysql_row_tell");
@@ -555,8 +557,8 @@ package Mysql.Mysql is
    function mysql_field_count (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:413:22
    pragma Import (C, mysql_field_count, "mysql_field_count");
 
-   function mysql_affected_rows (arg1 : Mysql_Access) return my_ulonglong;  -- /usr/include/mysql/mysql.h:414:22
-   pragma Import (C, mysql_affected_rows, "mysql_affected_rows");
+   function Mysql_Affected_Rows (arg1 : Mysql_Access) return my_ulonglong;  -- /usr/include/mysql/mysql.h:414:22
+   pragma Import (C, Mysql_Affected_Rows, "mysql_affected_rows");
 
    function mysql_insert_id (arg1 : Mysql_Access) return my_ulonglong;  -- /usr/include/mysql/mysql.h:415:22
    pragma Import (C, mysql_insert_id, "mysql_insert_id");
@@ -564,8 +566,8 @@ package Mysql.Mysql is
    function mysql_errno (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:416:22
    pragma Import (C, mysql_errno, "mysql_errno");
 
-   function mysql_error (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:417:22
-   pragma Import (C, mysql_error, "mysql_error");
+   function Mysql_Error (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:417:22
+   pragma Import (C, Mysql_Error, "mysql_error");
 
    function mysql_sqlstate (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:418:21
    pragma Import (C, mysql_sqlstate, "mysql_sqlstate");
@@ -621,8 +623,8 @@ package Mysql.Mysql is
    function mysql_select_db (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:439:14
    pragma Import (C, mysql_select_db, "mysql_select_db");
 
-   function mysql_query (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:440:14
-   pragma Import (C, mysql_query, "mysql_query");
+   function Mysql_Query (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:440:14
+   pragma Import (C, Mysql_Query, "mysql_query");
 
    function mysql_send_query
      (arg1 : Mysql_Access;
@@ -636,8 +638,8 @@ package Mysql.Mysql is
       arg3 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:443:14
    pragma Import (C, mysql_real_query, "mysql_real_query");
 
-   function mysql_store_result (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:445:25
-   pragma Import (C, mysql_store_result, "mysql_store_result");
+   function Mysql_Store_Result (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:445:25
+   pragma Import (C, Mysql_Store_Result, "mysql_store_result");
 
    function mysql_use_result (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:446:25
    pragma Import (C, mysql_use_result, "mysql_use_result");
@@ -796,8 +798,8 @@ package Mysql.Mysql is
       arg3 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:531:14
    pragma Import (C, mysql_options, "mysql_options");
 
-   procedure mysql_free_result (arg1 : MYSQL_RES);  -- /usr/include/mysql/mysql.h:533:15
-   pragma Import (C, mysql_free_result, "mysql_free_result");
+   procedure Mysql_Free_Result (arg1 : MYSQL_RES);  -- /usr/include/mysql/mysql.h:533:15
+   pragma Import (C, Mysql_Free_Result, "mysql_free_result");
 
    procedure mysql_data_seek (arg1 : MYSQL_RES; arg2 : my_ulonglong);  -- /usr/include/mysql/mysql.h:534:15
    pragma Import (C, mysql_data_seek, "mysql_data_seek");
@@ -805,11 +807,11 @@ package Mysql.Mysql is
    function mysql_row_seek (arg1 : MYSQL_RES; arg2 : MYSQL_ROW_OFFSET) return MYSQL_ROW_OFFSET;  -- /usr/include/mysql/mysql.h:536:26
    pragma Import (C, mysql_row_seek, "mysql_row_seek");
 
-   function mysql_field_seek (arg1 : MYSQL_RES; arg2 : MYSQL_FIELD_OFFSET) return MYSQL_FIELD_OFFSET;  -- /usr/include/mysql/mysql.h:538:28
-   pragma Import (C, mysql_field_seek, "mysql_field_seek");
+   function Mysql_Field_Seek (arg1 : MYSQL_RES; arg2 : MYSQL_FIELD_OFFSET) return MYSQL_FIELD_OFFSET;  -- /usr/include/mysql/mysql.h:538:28
+   pragma Import (C, Mysql_Field_Seek, "mysql_field_seek");
 
-   function mysql_fetch_row (arg1 : MYSQL_RES) return System_Access; --  MYSQL_ROW;  -- /usr/include/mysql/mysql.h:540:19
-   pragma Import (C, mysql_fetch_row, "mysql_fetch_row");
+   function Mysql_Fetch_Row (arg1 : MYSQL_RES) return System_Access; --  MYSQL_ROW;  -- /usr/include/mysql/mysql.h:540:19
+   pragma Import (C, Mysql_Fetch_Row, "mysql_fetch_row");
 
    function mysql_fetch_lengths (arg1 : MYSQL_RES) return access unsigned_long;  -- /usr/include/mysql/mysql.h:541:25
    pragma Import (C, mysql_fetch_lengths, "mysql_fetch_lengths");
