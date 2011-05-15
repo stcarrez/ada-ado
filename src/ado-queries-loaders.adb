@@ -21,6 +21,7 @@ with Interfaces;
 with Ada.IO_Exceptions;
 with Ada.Directories;
 
+with Util.Files;
 with Util.Log.Loggers;
 with Util.Beans.Objects;
 with Util.Serialize.IO.XML;
@@ -139,8 +140,7 @@ package body ADO.Queries.Loaders is
       Into.SQL := Util.Beans.Objects.To_Unbounded_String (Value);
    end Set_Query_Pattern;
 
-   procedure Read_Query (Into : in Query_File_Access;
-                         Path : in String) is
+   procedure Read_Query (Into : in Query_File_Access) is
 
       type Query_Info_Fields is (FIELD_CLASS_NAME, FIELD_PROPERTY_TYPE,
                                  FIELD_PROPERTY_NAME, FIELD_QUERY_NAME,
@@ -218,7 +218,7 @@ package body ADO.Queries.Loaders is
       Sql_Mapper : aliased Query_Mapper.Mapper;
       Reader     : Util.Serialize.IO.XML.Parser;
    begin
-      Log.Info ("Reading XML query {0}", Path);
+      Log.Info ("Reading XML query {0}", Into.Path.all);
       Loader.File   := Into;
       Loader.Driver := 0;
 
@@ -236,7 +236,7 @@ package body ADO.Queries.Loaders is
       Query_Mapper.Set_Context (Reader, Loader'Access);
 
       --  Read the XML query file.
-      Reader.Parse (Path);
+      Reader.Parse (Into.Path.all);
 
       Into.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
    end Read_Query;
@@ -247,9 +247,35 @@ package body ADO.Queries.Loaders is
    procedure Read_Query (Into : in Query_Definition_Access) is
    begin
       if Into.Query = null or else Is_Modified (Into)  then
-         Read_Query (Into.File, Into.File.Path.all);
+         Read_Query (Into.File);
       end if;
    end Read_Query;
+
+   --  ------------------------------
+   --  Initialize the queries to look in the list of directories specified by <b>Paths</b>.
+   --  Each search directory is separated by ';' (yes, even on Unix).
+   --  When <b>Load</b> is true, read the XML query file and initialize the query
+   --  definitions from that file.
+   --  ------------------------------
+   procedure Initialize (Paths : in String;
+                         Load  : in Boolean) is
+      File : Query_File_Access := Query_Files;
+   begin
+      Log.Info ("Initializing query search paths to {0}", Paths);
+
+      while File /= null loop
+         declare
+            Path : constant String := Util.Files.Find_File_Path (Name  => File.Path.all,
+                                                                 Paths => Paths);
+         begin
+            File.Path := new String '(Path);
+            if Load then
+               Read_Query (File);
+            end if;
+         end;
+         File := File.Next;
+      end loop;
+   end Initialize;
 
    package body Query is
    begin

@@ -51,13 +51,19 @@ package ADO.Queries.Loaders is
    procedure Register (File  : in Query_File_Access;
                        Query : in Query_Definition_Access);
 
+   --  Initialize the queries to look in the list of directories specified by <b>Paths</b>.
+   --  Each search directory is separated by ';' (yes, even on Unix).
+   --  When <b>Load</b> is true, read the XML query file and initialize the query
+   --  definitions from that file.
+   procedure Initialize (Paths : in String;
+                         Load  : in Boolean);
+
 private
 
    --  Returns True if the XML query file must be reloaded.
    function Is_Modified (Query : in Query_Definition_Access) return Boolean;
 
    --  Read the query file and all the associated definitions.
-   procedure Read_Query (Into : in Query_File_Access;
-                         Path : in String);
+   procedure Read_Query (Into : in Query_File_Access);
 
 end ADO.Queries.Loaders;
