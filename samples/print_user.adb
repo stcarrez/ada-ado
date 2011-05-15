@@ -32,29 +32,28 @@ procedure Print_User is
    use Samples.User.Model;
 
    Factory : ADO.Sessions.Factory.Session_Factory;
-   User    : User_Ref;
-
 begin
-   Util.Log.Loggers.Initialize ("log4j.properties");
+   Util.Log.Loggers.Initialize ("samples.properties");
 
-   if Ada.Command_Line.Argument_Count < 2 then
-      Ada.Text_IO.Put_Line ("Usage: print_user connection user-name ...");
-      Ada.Text_IO.Put_Line ("Example: print_user 'mysql://localhost:3306/ado_test?user=root' joe");
+   --  Initialize the database drivers.
+   ADO.Drivers.Initialize ("samples.properties");
+
+   if Ada.Command_Line.Argument_Count < 1 then
+      Ada.Text_IO.Put_Line ("Usage: print_user user-name ...");
+      Ada.Text_IO.Put_Line ("Example: print_user joe");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
 
-   --  Initialize the database drivers.
-   ADO.Drivers.Initialize;
-
    --  Create and configure the connection pool
-   Factory.Create (Ada.Command_Line.Argument (1));
+   Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
 
    declare
       Session : ADO.Sessions.Session := Factory.Get_Session;
+      User    : User_Ref;
       Found   : Boolean;
    begin
-      for I in 2 .. Ada.Command_Line.Argument_Count loop
+      for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare
             User_Name : constant String := Ada.Command_Line.Argument (I);
             Query     : ADO.SQL.Query;
