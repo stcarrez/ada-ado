@@ -1,0 +1,51 @@
+<query-mapping>
+    <description>
+      Get the list of users (compact form).
+    </description>
+    <class name="Samples.User.Model.User_Info">
+        <property type='Identifier' name="id">
+            <comment>the user identifier.</comment>
+        </property>
+        <property type='String' name="name">
+            <comment>the user name.</comment>
+        </property>
+        <property type='String' name="email">
+            <comment>the user email address.</comment>
+        </property>
+    </class>
+
+    <query name='user-list'>
+       <comment>Get the list of users</comment>
+       <sql>
+    select
+        u.id as ID,
+        u.name as NAME,
+        u.email as EMAIL
+    from
+        user u
+    order by
+        u.name asc
+       </sql>
+       <sql-count driver='mysql'>
+          select count(*) from user          
+       </sql-count>
+       <sql-count>
+          select count(*) from user
+       </sql-count>
+    </query>
+
+    <query name='user-list-filter'>
+       <sql>
+    select
+        u.id as ID,
+        u.name as NAME,
+        u.email as EMAIL
+    from
+        user u
+    where
+        u.name = ?
+    order by
+        u.name asc
+       </sql>
+    </query>
+</query-mapping>
