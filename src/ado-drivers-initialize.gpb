@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Interfaces.C;
 #if HAVE_MYSQL
 with ADO.Drivers.Mysql;
 #end if;
