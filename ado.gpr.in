@@ -20,6 +20,5 @@ project Ado is
    package Binder renames Config.Binder;
    package Builder renames Config.Builder;
    package Compiler renames Config.Compiler;
-   package Linker renames Config.Linker;
 
 end Ado;

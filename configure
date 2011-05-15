@@ -3076,13 +3076,25 @@ if test "${with_ada_util+set}" = set; then :
 
 else
 
-  UTIL_DIR=../util/
+  echo "with \"util\"; project t is for Source_Dirs use (); end t;" > t.gpr
+  gnatmake -p -Pt >/dev/null 2>/dev/null
+  if test $? -eq 0; then
+    UTIL_DIR=
+  else
+    UTIL_DIR=../util/
+  fi;
+  rm -f t.gpr
 
 fi
 
-if test ! -f ${UTIL_DIR}/util.gpr; then
+
+echo "with \"${UTIL_DIR}util\"; project t is for Source_Dirs use (); end t;" > t.gpr
+gnatmake -p -Pt >/dev/null 2>/dev/null
+if test $? -ne 0 ; then
+   rm -f t.gpr
    as_fn_error "Ada Utility library not found in ${UTIL_DIR}" "$LINENO" 5
 fi
+rm -f t.gpr
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${UTIL_DIR}" >&5
 $as_echo "${UTIL_DIR}" >&6; }
 
