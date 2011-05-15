@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -111,8 +111,6 @@ package ADO.Statements is
    type Query_Statement is new Statement with private;
    type Query_Statement_Access is access all Query_Statement'Class;
 
-   function Create_Statement (Proxy : Query_Statement_Access) return Query_Statement;
-
    --  Execute the query
    overriding
    procedure Execute (Query : in out Query_Statement);
@@ -217,9 +215,6 @@ package ADO.Statements is
    procedure Execute (Query  : in out Delete_Statement;
                       Result : out Natural);
 
-   --  Create the delete statement
-   function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement;
-
    --  ------------------------------
    --  Update statement
    --  ------------------------------
@@ -302,9 +297,6 @@ package ADO.Statements is
    overriding
    procedure Execute (Query : in out Update_Statement);
 
-   --  Create an update statement
-   function Create_Statement (Proxy : Update_Statement_Access) return Update_Statement;
-
    --  Execute the query
    procedure Execute (Query : in out Update_Statement;
                       Result : out Integer);
@@ -318,10 +310,6 @@ package ADO.Statements is
    --  Execute the query
    overriding
    procedure Execute (Query : in out Insert_Statement);
-
-   --  Create the insert statement.
-   overriding
-   function Create_Statement (Proxy : Update_Statement_Access) return Insert_Statement;
 
 private
 
@@ -347,27 +335,27 @@ private
    procedure Finalize (Stmt : in out Query_Statement);
 
    --  String pointer to interface with a C library
-   type Chars_Ptr is access all Character;
-   pragma Convention (C, Chars_Ptr);
+   type chars_ptr is access all Character;
+   pragma Convention (C, chars_ptr);
 
    type Size_T is mod 2 ** Standard'Address_Size;
 
    use Interfaces.C;
 
    function To_Chars_Ptr is
-     new Ada.Unchecked_Conversion (System.Address, Chars_Ptr);
+     new Ada.Unchecked_Conversion (System.Address, chars_ptr);
 
    function To_Address is
-     new Ada.Unchecked_Conversion (Chars_Ptr, System.Address);
+     new Ada.Unchecked_Conversion (chars_ptr, System.Address);
 
-   function "+" (Left : Chars_Ptr; Right : Size_T) return Chars_Ptr;
+   function "+" (Left : chars_ptr; Right : Size_T) return chars_ptr;
    pragma Inline ("+");
 
    --  Get an unsigned 64-bit number from a C string terminated by \0
-   function Get_Uint64 (Str : Chars_Ptr) return unsigned_long;
+   function Get_Uint64 (Str : chars_ptr) return unsigned_long;
 
    --  Get a signed 64-bit number from a C string terminated by \0
-   function Get_Int64 (Str : Chars_Ptr) return Int64;
+   function Get_Int64 (Str : chars_ptr) return Int64;
 
    type Delete_Statement is new Statement with record
       Proxy : Delete_Statement_Access := null;

@@ -20,7 +20,6 @@ with Util.Log;
 with Util.Log.Loggers;
 with System.Storage_Elements;
 with Ada.Unchecked_Deallocation;
-with ADO.Objects;
 package body ADO.Statements is
 
    use Util.Log;
@@ -120,10 +119,10 @@ package body ADO.Statements is
    --  ------------------------------
    --  Get the filter condition or the empty string
    --  ------------------------------
-   function Get_Filter (Parameters : in Statement) return String is
-   begin
-      return Parameters.Query.Get_Filter;
-   end Get_Filter;
+--     function Get_Filter (Parameters : in Statement) return String is
+--     begin
+--        return Parameters.Query.Get_Filter;
+--     end Get_Filter;
 
    procedure Execute (Query  : in out Statement;
                       SQL    : in Unbounded_String;
@@ -148,7 +147,7 @@ package body ADO.Statements is
       ADO.SQL.Append_Value (Query.Query.SQL, To_String (Value));
    end Append_Escape;
 
-   function "+" (Left : Chars_Ptr; Right : Size_T) return Chars_Ptr is
+   function "+" (Left : chars_ptr; Right : Size_T) return chars_ptr is
    begin
       return To_Chars_Ptr (To_Address (Left) + Storage_Offset (Right));
    end "+";
@@ -167,9 +166,9 @@ package body ADO.Statements is
    --  ------------------------------
    --  Get an unsigned 64-bit number from a C string terminated by \0
    --  ------------------------------
-   function Get_Uint64 (Str : Chars_Ptr) return unsigned_long is
+   function Get_Uint64 (Str : chars_ptr) return unsigned_long is
       C      : Character;
-      P      : Chars_Ptr := Str;
+      P      : chars_ptr := Str;
       Result : unsigned_long := 0;
    begin
       loop
@@ -190,9 +189,9 @@ package body ADO.Statements is
    --  ------------------------------
    --  Get a signed 64-bit number from a C string terminated by \0
    --  ------------------------------
-   function Get_Int64 (Str : Chars_Ptr) return Int64 is
+   function Get_Int64 (Str : chars_ptr) return Int64 is
       C : Character;
-      P : Chars_Ptr := Str;
+      P : chars_ptr := Str;
    begin
       if P = null then
          return 0;
@@ -687,44 +686,6 @@ package body ADO.Statements is
       end if;
       Query.Proxy.Execute (Result);
    end Execute;
-
-   function Create_Statement (Proxy : Query_Statement_Access) return Query_Statement is
-   begin
-      return Result : Query_Statement do
-         Result.Query := Proxy.Get_Query;
-         Result.Proxy := Proxy;
-         Result.Proxy.Ref_Counter := 1;
-      end return;
-   end Create_Statement;
-
-   function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement is
-   begin
-      return Result : Delete_Statement do
-         Result.Query := Proxy.Get_Query;
-         Result.Proxy := Proxy;
-         Result.Proxy.Ref_Counter := 1;
-      end return;
-   end Create_Statement;
-
-   function Create_Statement (Proxy : Update_Statement_Access) return Update_Statement is
-   begin
-      return Result : Update_Statement do
-         Result.Update := Proxy.Get_Update_Query;
-         Result.Query := Result.Update.all'Access;
-         Result.Proxy := Proxy;
-         Result.Proxy.Ref_Counter := 1;
-      end return;
-   end Create_Statement;
-
-   function Create_Statement (Proxy : Update_Statement_Access) return Insert_Statement is
-   begin
-      return Result : Insert_Statement do
-         Result.Update := Proxy.Get_Update_Query;
-         Result.Query := Result.Update.all'Access;
-         Result.Proxy := Proxy;
-         Result.Proxy.Ref_Counter := 1;
-      end return;
-   end Create_Statement;
 
    overriding
    procedure Adjust (Stmt : in out Delete_Statement) is
