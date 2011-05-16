@@ -141,6 +141,7 @@ package body ADO.Drivers.Mysql is
       end if;
 
       Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
+      Log.Debug ("Query result: {0}", int'Image (Result));
    end Execute;
 
    procedure Execute (Database : in out Database_Connection;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,7 +82,7 @@ package body ADO.Sequences is
    procedure Allocate (Manager : in out Factory;
                        Id      : in out ADO.Objects.Object_Record'Class) is
       Gen  : Sequence_Generator_Access;
-      Name : Util.Strings.Name_Access := Id.Get_Table_Name;
+      Name : constant Util.Strings.Name_Access := Id.Get_Table_Name;
    begin
       Manager.Map.Get_Generator (To_Unbounded_String (Name.all), Gen);
       Gen.Allocate (Id);

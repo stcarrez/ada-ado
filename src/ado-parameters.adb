@@ -16,17 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Log;
-with Util.Log.Loggers;
 with Util.Strings;
 with Ada.Calendar.Formatting;
 package body ADO.Parameters is
 
-   use Util.Log;
-
    use Parameter_Vectors;
-
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements");
 
    --
    function "+"(Str : in String)
@@ -35,8 +29,8 @@ package body ADO.Parameters is
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in Boolean) is
-      Param : constant Parameter := Parameter '(T        => T_Boolean,
-                                                Name     => + (Name),
+      Param : constant Parameter := Parameter '(T        => T_BOOLEAN,
+                                                Name     => +(Name),
                                                 Position => 0,
                                                 Bool     => Value);
    begin
@@ -261,6 +255,17 @@ package body ADO.Parameters is
    function Expand (Params : in Abstract_List;
                     SQL    : in String) return String is
 
+      --  Append the item in the buffer escaping some characters if necessary
+      procedure Escape_Sql (Buffer : in out Unbounded_String;
+                            Item   : in String);
+
+      --  Format and append the date to the buffer.
+      procedure Append_Date (Buffer : in out Unbounded_String;
+                             Time   : in Ada.Calendar.Time);
+
+      --  ------------------------------
+      --  Append the item in the buffer escaping some characters if necessary
+      --  ------------------------------
       procedure Escape_Sql (Buffer : in out Unbounded_String;
                             Item   : in String) is
          C  : Character;
@@ -274,6 +279,9 @@ package body ADO.Parameters is
          end loop;
       end Escape_Sql;
 
+      --  ------------------------------
+      --  Format and append the date to the buffer.
+      --  ------------------------------
       procedure Append_Date (Buffer : in out Unbounded_String;
                              Time   : in Ada.Calendar.Time) is
       begin

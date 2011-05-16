@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Interfaces.C;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
 package ADO is

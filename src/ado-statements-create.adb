@@ -16,17 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Log;
-with Util.Log.Loggers;
-with System.Storage_Elements;
-with Ada.Unchecked_Deallocation;
 package body ADO.Statements.Create is
 
-   use Util.Log;
-   use System.Storage_Elements;
-
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements");
-
+   --  ------------------------------
+   --  Create the query statement
+   --  ------------------------------
    function Create_Statement (Proxy : Query_Statement_Access) return Query_Statement is
    begin
       return Result : Query_Statement do
@@ -36,6 +30,9 @@ package body ADO.Statements.Create is
       end return;
    end Create_Statement;
 
+   --  ------------------------------
+   --  Create the delete statement
+   --  ------------------------------
    function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement is
    begin
       return Result : Delete_Statement do
@@ -45,6 +42,9 @@ package body ADO.Statements.Create is
       end return;
    end Create_Statement;
 
+   --  ------------------------------
+   --  Create an update statement
+   --  ------------------------------
    function Create_Statement (Proxy : Update_Statement_Access) return Update_Statement is
    begin
       return Result : Update_Statement do
@@ -55,6 +55,9 @@ package body ADO.Statements.Create is
       end return;
    end Create_Statement;
 
+   --  ------------------------------
+   --  Create the insert statement.
+   --  ------------------------------
    function Create_Statement (Proxy : Update_Statement_Access) return Insert_Statement is
    begin
       return Result : Insert_Statement do

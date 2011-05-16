@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,35 +18,16 @@
 
 package ADO.Statements.Create is
 
-   --  ------------------------------
-   --  An SQL query statement
-   --
-   --  The Query_Statement provides operations to retrieve the
-   --  results after execution of the query.
-   --  ------------------------------
-
+   --  Create the query statement
    function Create_Statement (Proxy : Query_Statement_Access) return Query_Statement;
-
-   --  ------------------------------
-   --  Delete statement
-   --  ------------------------------
 
    --  Create the delete statement
    function Create_Statement (Proxy : Delete_Statement_Access) return Delete_Statement;
 
-   --  ------------------------------
-   --  Update statement
-   --  ------------------------------
-
    --  Create an update statement
    function Create_Statement (Proxy : Update_Statement_Access) return Update_Statement;
 
-   --  ------------------------------
-   --  Insert statement
-   --  ------------------------------
-
    --  Create the insert statement.
-   --     overriding
    function Create_Statement (Proxy : Update_Statement_Access) return Insert_Statement;
 
 end ADO.Statements.Create;

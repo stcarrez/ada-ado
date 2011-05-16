@@ -30,11 +30,23 @@ package body ADO.Statements.Mysql is
    use Util.Log;
    use Ada.Calendar;
    use System.Storage_Elements;
+   use type ADO.Schemas.Class_Mapping_Access;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
 
-   use type ADO.Schemas.Class_Mapping_Access;
+   --  Execute the SQL query on the given mysql connection.
+   --  Returns the query execution status
+   function Execute (Connection : in Mysql_Access;
+                     Query      : in String) return int;
 
+   --  Check for an error after executing a mysql statement.
+   procedure Check_Error (Connection : in Mysql_Access;
+                          Result     : in int);
+   pragma Inline (Check_Error);
+
+   --  ------------------------------
+   --  Check for an error after executing a mysql statement.
+   --  ------------------------------
    procedure Check_Error (Connection : in Mysql_Access;
                           Result     : in int) is
    begin
@@ -48,6 +60,10 @@ package body ADO.Statements.Mysql is
       end if;
    end Check_Error;
 
+   --  ------------------------------
+   --  Execute the SQL query on the given mysql connection.
+   --  Returns the query execution status
+   --  ------------------------------
    function Execute (Connection : in Mysql_Access;
                      Query      : in String) return int is
       Sql : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Query);
@@ -98,7 +114,6 @@ package body ADO.Statements.Mysql is
                               return Delete_Statement_Access is
       Result : constant Mysql_Delete_Statement_Access := new Mysql_Delete_Statement;
    begin
---        Result.SQL := To_Unbounded_String (Query);
       Result.Connection := Database;
       Result.Table      := Table;
       Result.Query      := Result.Delete_Query'Access;
@@ -150,7 +165,9 @@ package body ADO.Statements.Mysql is
       end;
    end Execute;
 
+   --  ------------------------------
    --  Create an update statement.
+   --  ------------------------------
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access is
@@ -167,7 +184,9 @@ package body ADO.Statements.Mysql is
    --  Insert statement
    --  ------------------------------
 
+   --  ------------------------------
    --  Execute the query
+   --  ------------------------------
    overriding
    procedure Execute (Stmt   : in out Mysql_Insert_Statement;
                       Result : out Integer) is
@@ -196,7 +215,9 @@ package body ADO.Statements.Mysql is
 --        Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
    end Execute;
 
+   --  ------------------------------
    --  Create an insert statement.
+   --  ------------------------------
    function Create_Statement (Database : in Mysql_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access is
@@ -205,7 +226,6 @@ package body ADO.Statements.Mysql is
       Result.Connection := Database;
       Result.Table  := Table;
       Result.Update := Result.This_Query'Access;
---        Result.Proxy  := Result.all'Access;
       ADO.SQL.Set_Insert_Mode (Result.This_Query);
       return Result.all'Access;
    end Create_Statement;
@@ -221,7 +241,7 @@ package body ADO.Statements.Mysql is
      new Ada.Unchecked_Conversion (System_Access, System.Address);
 
    function "+" (Left : System_Access; Right : Size_T) return System_Access;
-   pragma Inline ("+");
+   pragma Inline_Always ("+");
 
    function "+" (Left : System_Access; Right : Size_T) return System_Access is
    begin
@@ -428,7 +448,14 @@ package body ADO.Statements.Mysql is
       Dt     : Duration;
       Field  : chars_ptr    := Query.Get_Field (Column);
 
-      function Get_Number (P : in chars_ptr; Nb_Digits : in Positive) return Natural is
+      function Get_Number (P : in chars_ptr;
+                           Nb_Digits : in Positive) return Natural;
+
+      --  ------------------------------
+      --  Get a number composed of N digits
+      --  ------------------------------
+      function Get_Number (P : in chars_ptr;
+                           Nb_Digits : in Positive) return Natural is
          Ptr    : chars_ptr := P;
          Result : Natural   := 0;
          C      : Character;
@@ -502,8 +529,10 @@ package body ADO.Statements.Mysql is
       return Ada.Calendar.Formatting.Time_Of (Year, Month, Day, Dt, False, 0);
    end Get_Time;
 
+   --  ------------------------------
    --  Get the column type
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
    overriding
    function Get_Column_Type (Query  : Mysql_Query_Statement;
                              Column : Natural)

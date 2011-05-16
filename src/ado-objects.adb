@@ -16,15 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Log;
-with Util.Log.Loggers;
 with Ada.Strings.Unbounded.Hash;
 with ADO.Sessions.Factory;
 package body ADO.Objects is
 
-   use Util.Log;
-
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Objects");
    use type ADO.Schemas.Class_Mapping_Access;
 
    --  ------------------------------

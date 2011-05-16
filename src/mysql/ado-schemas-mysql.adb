@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,7 +77,7 @@ package body ADO.Schemas.Mysql is
       Last : Column_Definition := null;
       Col  : Column_Definition;
       Value : Unbounded_String;
-      Query : ADO.SQL.Query_Access := Stmt.Get_Query;
+      Query : constant ADO.SQL.Query_Access := Stmt.Get_Query;
    begin
       ADO.SQL.Append_Name (Target => Query.SQL, Name => Name);
       Stmt.Execute;

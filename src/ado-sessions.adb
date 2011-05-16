@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +92,7 @@ package body ADO.Sessions is
    --  ------------------------------
    procedure Attach (Database : in out Session;
                      Object   : in ADO.Objects.Object_Ref'Class) is
+      pragma Unreferenced (Object);
    begin
       Check_Session (Database);
    end Attach;
@@ -138,7 +139,9 @@ package body ADO.Sessions is
       return Database.Impl.Database.Create_Statement (Query);
    end Create_Statement;
 
+   --  ------------------------------
    --  Create a query statement.  The statement is not prepared
+   --  ------------------------------
    function Create_Statement (Database : in Session;
                               Query    : in ADO.Queries.Context'Class)
                               return Query_Statement is
@@ -191,8 +194,6 @@ package body ADO.Sessions is
    procedure Allocate (Database : in out Master_Session;
                        Id       : in out ADO.Objects.Object_Record'Class) is
    begin
---        Log.Info ("Allocate id for {0}", Id.Get_Class_Name);
-
       Check_Session (Database);
       ADO.Sequences.Allocate (Database.Sequences.all, Id);
    end Allocate;
