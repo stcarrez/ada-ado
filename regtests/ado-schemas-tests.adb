@@ -48,10 +48,10 @@ package body ADO.Schemas.Tests is
    begin
       ADO.Schemas.Mysql.Load_Schema (DB, Schema);
 
-      Table := ADO.Schemas.Find_Table (Schema, "test_allocate");
+      Table := ADO.Schemas.Find_Table (Schema, "allocate");
       Assert (Table /= null, "Table schema for test_allocate not found");
 
-      Assert_Equals (T, "test_allocate", Get_Name (Table));
+      Assert_Equals (T, "allocate", Get_Name (Table));
 
       declare
          C : Column_Cursor := Get_Columns (Table);

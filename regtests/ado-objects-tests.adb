@@ -19,6 +19,7 @@
 with AUnit.Test_Caller;
 with AUnit.Assertions;
 with ADO.Sessions;
+with ADO.Model;
 with Regtests.Simple.Model;
 with Regtests.Comments;
 with Util.Tests;
@@ -142,11 +143,15 @@ package body ADO.Objects.Tests is
       --  Create a comment for the user.
       declare
          S  : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         E  : ADO.Model.Entity_Type_Ref;
       begin
          S.Begin_Transaction;
+         E.Load (Session => S,
+                 Id      => 1);
          Cmt.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String ("A comment from Joe"));
          Cmt.Set_User (User);
          Cmt.Set_Entity_Id (2);
+         Cmt.Set_Entity_Type (E);
          Cmt.Save (S);
          S.Commit;
       end;
@@ -162,7 +167,7 @@ package body ADO.Objects.Tests is
          Assert (T, "A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message), "Invalid message");
 
          Assert (T, not C2.Get_User.Is_Null, "User associated with the comment should not be null");
-         Assert (T, C2.Get_Entity_Type.Is_Null, "Entity type was not set");
+         Assert (T, not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
 
          --  Check that we can access the user name (lazy load)
          Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (C2.Get_User.Get_Name),

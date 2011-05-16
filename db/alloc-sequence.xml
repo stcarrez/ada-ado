@@ -24,11 +24,9 @@
         <id name="id" type="ADO.Identifier" unsaved-value="null">
             <comment>the entity type identifier</comment>
             <column name="ID" sql-type="INTEGER"/>
-            <generator class="hilo">
-                <!-- id-generator merge-point -->
-            </generator>
+            <generator class="increment"/>
         </id>
-        <property name="name" insert="true" update="false">
+        <property name="name" insert="true" update="false" unique="true">
             <comment>the entity type name (table name)</comment>
             <column name="NAME" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
             <type name="java.lang.String"/>

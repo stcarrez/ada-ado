@@ -21,6 +21,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
+with Util.Beans.Objects.Time;
 package body Regtests.Comments is
 
    use type ADO.Objects.Object_Record_Access;

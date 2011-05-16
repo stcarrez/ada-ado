@@ -13,7 +13,7 @@
             <comment>the user name</comment>
             <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
         </property>
-        <property name="email" type="String">
+        <property name="email" type="String" unique='true'>
             <comment>the user email</comment>
             <column name="EMAIL" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
         </property>

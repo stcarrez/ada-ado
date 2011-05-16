@@ -474,9 +474,13 @@ package body ADO.Statements.Mysql is
    begin
       if Field /= null then
          declare
-            C      : Character;
+            C : Character;
+            N : Natural;
          begin
-            Year := Year_Number (Get_Number (Field, 4));
+            N := Get_Number (Field, 4);
+            if N /= 0 then
+               Year := Year_Number (N);
+            end if;
             Field := Field + 4;
             C := Field.all;
             if C /= '-' then
@@ -484,7 +488,10 @@ package body ADO.Statements.Mysql is
             end if;
             Field := Field + 1;
 
-            Month := Month_Number (Get_Number (Field, 2));
+            N := Get_Number (Field, 2);
+            if N /= 0 then
+               Month := Month_Number (N);
+            end if;
             Field := Field + 2;
             C := Field.all;
             if C /= '-' then
@@ -492,7 +499,10 @@ package body ADO.Statements.Mysql is
             end if;
             Field := Field + 1;
 
-            Day := Day_Number (Get_Number (Field, 2));
+            N := Get_Number (Field, 2);
+            if N /= 0 then
+               Day := Day_Number (N);
+            end if;
             Field := Field + 2;
             C := Field.all;
             if C /= ' ' then
