@@ -239,6 +239,11 @@ package body ADO.Queries.Loaders is
       Reader.Parse (Into.Path.all);
 
       Into.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+
+   exception
+      when Ada.IO_Exceptions.Name_Error =>
+         Log.Error ("XML query file '{0}' does not exist", Into.Path.all);
+
    end Read_Query;
 
    --  ------------------------------
