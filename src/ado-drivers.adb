@@ -171,6 +171,30 @@ package body ADO.Drivers is
    end Get_Property;
 
    --  ------------------------------
+   --  Get the server hostname.
+   --  ------------------------------
+   function Get_Server (Controller : in Configuration) return String is
+   begin
+      return To_String (Controller.Server);
+   end Get_Server;
+
+   --  ------------------------------
+   --  Get the server port.
+   --  ------------------------------
+   function Get_Port (Controller : in Configuration) return Integer is
+   begin
+      return Controller.Port;
+   end Get_Port;
+
+   --  ------------------------------
+   --  Get the database name.
+   --  ------------------------------
+   function Get_Database (Controller : in Configuration) return String is
+   begin
+      return To_String (Controller.Database);
+   end Get_Database;
+
+   --  ------------------------------
    --  Create a new connection using the configuration parameters.
    --  ------------------------------
    procedure Create_Connection (Config : in Configuration'Class;

@@ -134,6 +134,15 @@ package ADO.Drivers is
    function Get_Property (Controller : in Configuration;
                           Name       : in String) return String;
 
+   --  Get the server hostname.
+   function Get_Server (Controller : in Configuration) return String;
+
+   --  Get the server port.
+   function Get_Port (Controller : in Configuration) return Integer;
+
+   --  Get the database name.
+   function Get_Database (Controller : in Configuration) return String;
+
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (Config : in Configuration'Class;
                                 Result : out Database_Connection_Access);
