@@ -8,7 +8,7 @@ project Tests is
 
    for Languages use ("Ada", "Project file");
 
-   Mains := (@ADO_TESTS_HARNESS@);
+   Mains := ("ado_harness", @ADO_TESTS_HARNESS@);
 
    for Source_Dirs use ("regtests", "regtests/model"@ADO_TESTS_SRC_DIR@);
 
