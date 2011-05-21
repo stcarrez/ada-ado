@@ -85,13 +85,13 @@ package ADO.Databases is
    procedure Rollback (Database : in out Master_Connection);
 
    --  Execute an SQL statement
-   procedure Execute (Database : in Master_Connection;
-                      SQL      : in Query_String);
+--     procedure Execute (Database : in Master_Connection;
+--                        SQL      : in Query_String);
 
    --  Execute an SQL statement
-   procedure Execute (Database : in Master_Connection;
-                      SQL      : in Query_String;
-                      Id       : out Identifier);
+--     procedure Execute (Database : in Master_Connection;
+--                        SQL      : in Query_String;
+--                        Id       : out Identifier);
 
    --  Create a delete statement.
    function Create_Statement (Database : in Master_Connection;

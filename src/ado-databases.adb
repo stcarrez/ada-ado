@@ -145,23 +145,6 @@ package body ADO.Databases is
       Database.Impl.Rollback;
    end Rollback;
 
-   procedure Execute (Database : in Master_Connection;
-                      SQL      : in Query_String) is
-   begin
-      Log.Info ("Execute: {0}", SQL);
-
-      Database.Impl.Execute (SQL);
-   end Execute;
-
-   procedure Execute (Database : in Master_Connection;
-                      SQL      : in Query_String;
-                      Id       : out Identifier) is
-   begin
-      Log.Info ("Execute: {0}", SQL);
-
-      Database.Impl.Execute (SQL, Id);
-   end Execute;
-
    --  ------------------------------
    --  Create a delete statement.
    --  ------------------------------
