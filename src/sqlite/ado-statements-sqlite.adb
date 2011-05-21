@@ -98,6 +98,8 @@ package body ADO.Statements.Sqlite is
       ZSql   : Strings.chars_ptr := Strings.New_String (SQL);
       Handle : aliased System.Address;
    begin
+      Log.Debug ("Execute: {0}", SQL);
+
       Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Connection,
                                               zSql   => ZSql,
                                               nByte  => int (SQL'Length + 1),
@@ -267,6 +269,8 @@ package body ADO.Statements.Sqlite is
       begin
          --  Execute the query
          Prepare (Query, Expanded_Query);
+
+         Log.Debug ("Execute: {0}", Expanded_Query);
 
          Result := Sqlite3_H.sqlite3_step (Query.Stmt);
          if Result = Sqlite3_H.SQLITE_ROW then
