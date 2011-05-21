@@ -22,6 +22,7 @@ package ADO.Drivers.Mysql is
 
    type Mysql_Driver is limited private;
 
+   --  Initialize the Mysql driver.
    procedure Initialize;
 
 private
@@ -33,6 +34,7 @@ private
 
    type Mysql_Driver is new ADO.Drivers.Driver with null record;
 
+   --  Deletes the Mysql driver.
    overriding
    procedure Finalize (D : in out Mysql_Driver);
 
@@ -92,14 +94,8 @@ private
    overriding
    procedure Rollback (Database : in out Database_Connection);
 
-   overriding
    procedure Execute (Database : in out Database_Connection;
                       SQL      : in Query_String);
-
-   overriding
-   procedure Execute (Database : in out Database_Connection;
-                      SQL      : in Query_String;
-                      Id       : out Identifier);
 
    --  Closes the database connection
    overriding

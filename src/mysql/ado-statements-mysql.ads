@@ -179,8 +179,8 @@ private
                        Column : Natural) return chars_ptr;
 
    type Mysql_Delete_Statement is new Delete_Statement with record
-      Connection : Mysql_Access;
-      Table      : ADO.Schemas.Class_Mapping_Access;
+      Connection   : Mysql_Access;
+      Table        : ADO.Schemas.Class_Mapping_Access;
       Delete_Query : aliased ADO.SQL.Query;
    end record;
 

@@ -129,7 +129,6 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    --  Execute a simple SQL statement
    --  ------------------------------
-   overriding
    procedure Execute (Database : in out Database_Connection;
                       SQL      : in Query_String) is
       SQL_Stat  : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (SQL);
@@ -142,15 +141,6 @@ package body ADO.Drivers.Mysql is
 
       Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
       Log.Debug ("Query result: {0}", int'Image (Result));
-   end Execute;
-
-   procedure Execute (Database : in out Database_Connection;
-                      SQL      : in Query_String;
-                      Id       : out Identifier) is
-   begin
-      --  Execute (Database, SQL);
-      null;
-      --  Id := Identifier (sqlite3_h.sqlite3_last_insert_rowid (Database.H));
    end Execute;
 
    --  ------------------------------
@@ -169,16 +159,19 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    --  Releases the mysql connection if it is open
    --  ------------------------------
+   overriding
    procedure Finalize (Database : in out Database_Connection) is
    begin
       Log.Debug ("Release connection {0}", Database.Name);
       Database.Close;
    end Finalize;
 
+   --  ------------------------------
    --  Initialize the database connection manager.
    --
    --  mysql://localhost:3306/db
    --
+   --  ------------------------------
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
                                 Result : out ADO.Drivers.Database_Connection_Access) is
@@ -227,16 +220,23 @@ package body ADO.Drivers.Mysql is
       Result         := Database.all'Access;
    end Create_Connection;
 
-   Driver : aliased Mysql_Driver;
+   Driver_Name : aliased constant String := "mysql";
+   Driver      : aliased Mysql_Driver;
 
+   --  ------------------------------
+   --  Initialize the Mysql driver.
+   --  ------------------------------
    procedure Initialize is
    begin
       Log.Debug ("Initializing mysql driver");
 
-      Driver.Name := To_Unbounded_String ("mysql");
+      Driver.Name := Driver_Name'Access;
       Register (Driver'Access);
    end Initialize;
 
+   --  ------------------------------
+   --  Deletes the Mysql driver.
+   --  ------------------------------
    overriding
    procedure Finalize (D : in out Mysql_Driver) is
       pragma Unreferenced (D);
