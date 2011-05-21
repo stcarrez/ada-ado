@@ -63,7 +63,9 @@ package ADO.Schemas is
 
       T_CHAR,
       T_VARCHAR,
-      T_BLOB
+      T_BLOB,
+
+      T_NULL
      );
 
    --  ------------------------------
