@@ -41,6 +41,30 @@ package body ADO.Statements.Sqlite is
                       Result     : out int;
                       Stmt       : out System.Address);
 
+   --  Releases the sqlite statement
+   procedure Release_Stmt (Connection : in ADO.Drivers.Sqlite.Sqlite_Access;
+                           Stmt       : in out System.Address);
+
+   --  ------------------------------
+   --  Releases the sqlite statement
+   --  ------------------------------
+   procedure Release_Stmt (Connection : in ADO.Drivers.Sqlite.Sqlite_Access;
+                           Stmt       : in out System.Address) is
+      use System;
+
+      Result : Int;
+   begin
+      if Stmt /= System.Null_Address then
+         Result := Sqlite3_H.Sqlite3_Reset (Stmt);
+         ADO.Drivers.Sqlite.Check_Error (Connection, Result);
+
+         Result := Sqlite3_H.Sqlite3_Finalize (Stmt);
+         ADO.Drivers.Sqlite.Check_Error (Connection, Result);
+
+         Stmt := System.Null_Address;
+      end if;
+   end Release_Stmt;
+
    --  ------------------------------
    --  Delete statement
    --  ------------------------------
@@ -73,6 +97,7 @@ package body ADO.Statements.Sqlite is
                   Stmt       => Handle);
          ADO.Drivers.Sqlite.Check_Error (Stmt.Connection, Res);
 
+         Release_Stmt (Stmt.Connection, Handle);
          Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
       end;
    end Execute;
@@ -159,6 +184,7 @@ package body ADO.Statements.Sqlite is
                   Stmt       => Handle);
          ADO.Drivers.Sqlite.Check_Error (Stmt.Connection, Res);
 
+         Release_Stmt (Stmt.Connection, Handle);
          Result := Natural (Sqlite3_H.Sqlite3_Changes (Stmt.Connection));
       end;
    end Execute;
@@ -209,6 +235,7 @@ package body ADO.Statements.Sqlite is
                   Stmt       => Handle);
          ADO.Drivers.Sqlite.Check_Error (Stmt.Connection, Res);
 
+         Release_Stmt (Stmt.Connection, Handle);
          Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
       end;
    end Execute;
@@ -451,19 +478,8 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    overriding
    procedure Finalize (Query : in out Sqlite_Query_Statement) is
-      use System;
-
-      Result : int;
    begin
-      if Query.Stmt /= System.Null_Address then
-         Result := Sqlite3_H.sqlite3_reset (Query.Stmt);
-         ADO.Drivers.Sqlite.Check_Error (Query.Connection, Result);
-
-         Result := Sqlite3_H.sqlite3_finalize (Query.Stmt);
-         ADO.Drivers.Sqlite.Check_Error (Query.Connection, Result);
-
-         Query.Stmt := System.Null_Address;
-      end if;
+      Release_Stmt (Query.Connection, Query.Stmt);
    end Finalize;
 
    --  ------------------------------
