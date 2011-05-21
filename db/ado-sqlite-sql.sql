@@ -2,24 +2,20 @@
 /* Sequence generator */
 create table sequence (
   /* the sequence name */
-  `NAME` VARCHAR(256) NOT NULL,
+  `NAME` VARCHAR(256) PRIMARY KEY,
   /* the sequence record version */
   `version` int NOT NULL,
   /* the sequence value */
   `VALUE` BIGINT NOT NULL,
   /* the sequence block size */
-  `BLOCK_SIZE` BIGINT NOT NULL,
-  primary key (`name`)
+  `BLOCK_SIZE` BIGINT NOT NULL
 );
 /* Entity types */
 create table entity_type (
   /* the entity type identifier */
-  `ID` INTEGER NOT NULL AUTO_INCREMENT,
+  `ID` INTEGER PRIMARY KEY AUTOINCREMENT,
   /* the entity type name (table name) */
-  `NAME` VARCHAR(256) UNIQUE NOT NULL,
-  primary key (`id`)
+  `NAME` VARCHAR(256) UNIQUE NOT NULL
 );
-insert into entity_type (name) values
-("sequence")
-,("entity_type")
-;
+insert into entity_type (name) values ("sequence");
+insert into entity_type (name) values ("entity_type");

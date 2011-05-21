@@ -2,7 +2,7 @@
 /* Record representing a user */
 create table user (
   /* the user identifier */
-  `ID` BIGINT NOT NULL,
+  `ID` BIGINT PRIMARY KEY,
   /*  */
   `object_version` int NOT NULL,
   /* the user name */
@@ -14,9 +14,6 @@ create table user (
   /* the user description */
   `DESCRIPTION` VARCHAR(256) NOT NULL,
   /* the user status */
-  `STATUS` Integer NOT NULL,
-  primary key (`id`)
+  `STATUS` Integer NOT NULL
 );
-insert into entity_type (name) values
-("user")
-;
+insert into entity_type (name) values ("user");

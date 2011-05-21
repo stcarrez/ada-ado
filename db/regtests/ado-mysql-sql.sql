@@ -15,7 +15,7 @@ create table TEST_COMMENTS (
   `USER_FK` INTEGER NOT NULL,
   /*  */
   `ENTITY__TYPE_FK` INTEGER NOT NULL,
-  primary key (`id`)
+  primary key (`ID`)
 );
 /* Record representing a user */
 create table test_user (
@@ -27,7 +27,7 @@ create table test_user (
   `VALUE` BIGINT NOT NULL,
   /* the user name */
   `NAME` VARCHAR(255) NOT NULL,
-  primary key (`id`)
+  primary key (`ID`)
 );
 /* Record representing a user */
 create table allocate (
@@ -37,7 +37,7 @@ create table allocate (
   `object_version` int NOT NULL,
   /* the sequence value */
   `NAME` VARCHAR(255) NOT NULL,
-  primary key (`id`)
+  primary key (`ID`)
 );
 insert into entity_type (name) values
 ("TEST_COMMENTS")
