@@ -48,6 +48,16 @@ package body ADO.Drivers is
             Log.Error ("Configuration file '{0}' does not exist", Config);
       end;
 
+      Initialize (Global_Config);
+   end Initialize;
+
+   --  ------------------------------
+   --  Initialize the drivers and the library and configure the runtime with the given properties.
+   --  ------------------------------
+   procedure Initialize (Config : in Util.Properties.Manager) is
+   begin
+      Global_Config := Config;
+
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),
                                       Global_Config.Get ("ado.queries.load", "false") = "true");
@@ -93,7 +103,7 @@ package body ADO.Drivers is
       if Controller.Driver = null then
          Log.Error ("No driver found for connection URI: {0}", URI);
          raise Connection_Error
-           with "Driver '" & URI (URI'First .. Pos) & "' not found";
+           with "Driver '" & URI (URI'First .. Pos - 1) & "' not found";
       end if;
 
       Pos := Pos + 3;
@@ -218,7 +228,7 @@ package body ADO.Drivers is
    --  ------------------------------
    procedure Register (Driver : in Driver_Access) is
    begin
-      Log.Info ("Register driver {0}", Driver.Name);
+      Log.Info ("Register driver {0}", Driver.Name.all);
 
       Driver_List.Prepend (Container => Drivers, New_Item => Driver);
    end Register;
@@ -235,7 +245,7 @@ package body ADO.Drivers is
          declare
             D : constant Driver_Access := Driver_List.Element (Iter);
          begin
-            if Name = D.Name then
+            if Name = D.Name.all then
                return D;
             end if;
          end;

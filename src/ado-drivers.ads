@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with Ada.Finalization;
 with ADO.Statements;
 with ADO.Schemas;
 with Util.Properties;
+with Util.Strings;
 
 --  The <b>ADO.Drivers</b> package represents the database driver that will create
 --  database connections and provide the database specific implementation.
@@ -42,6 +43,9 @@ package ADO.Drivers is
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    procedure Initialize (Config : in String);
+
+   --  Initialize the drivers and the library and configure the runtime with the given properties.
+   procedure Initialize (Config : in Util.Properties.Manager);
 
    --  Initialize the drivers which are available.
    procedure Initialize;
@@ -91,13 +95,6 @@ package ADO.Drivers is
 
    --  Rollback the current transaction.
    procedure Rollback (Database : in out Database_Connection) is abstract;
-
-   procedure Execute (Database : in out Database_Connection;
-                      SQL : in Query_String) is abstract;
-
-   procedure Execute (Database : in out Database_Connection;
-                      SQL      : in Query_String;
-                      Id       : out Identifier) is abstract;
 
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Database_Connection;
@@ -167,7 +164,7 @@ package ADO.Drivers is
 private
 
    type Driver is abstract new Ada.Finalization.Limited_Controlled with record
-      Name : Unbounded_String;
+      Name : Util.Strings.Name_Access;
    end record;
 
    type Configuration is new Ada.Finalization.Controlled with record
