@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.Sessions;
@@ -73,7 +74,7 @@ package body ADO.Sequences.Hilo is
       Seq_Block : Sequence_Ref;
       DB        : Master_Session'Class := Gen.Get_Session;
    begin
-      loop
+      for Retry in 1 .. 10 loop
          --  Allocate a new sequence within a transaction.
          declare
             Query : ADO.SQL.Query;
@@ -106,8 +107,10 @@ package body ADO.Sequences.Hilo is
 
             exception
                when ADO.Objects.LAZY_LOCK =>
-                  Log.Info ("Sequence table modified, retrying");
+                  Log.Info ("Sequence table modified, retrying {0}/100",
+                            Util.Strings.Image (Retry));
                   DB.Rollback;
+                  delay 0.01 * Retry;
             end;
 
          exception
@@ -116,6 +119,8 @@ package body ADO.Sequences.Hilo is
                raise;
          end;
       end loop;
+      Log.Error ("Cannot allocate sequence range");
+      raise ADO.Objects.ALLOCATE_ID_ERROR with "Cannot allocate unique identifier";
    end Allocate_Sequence;
 
 end ADO.Sequences.Hilo;

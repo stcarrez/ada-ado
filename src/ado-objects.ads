@@ -44,6 +44,9 @@ package ADO.Objects is
    --  The object record was not found in the database.
    NOT_FOUND       : exception;
 
+   --  The object identifier could not be allocated.
+   ALLOCATE_ID_ERROR : exception;
+
    --  --------------------
    --  Object Key
    --  --------------------
