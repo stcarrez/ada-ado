@@ -34,19 +34,11 @@ package ADO.Drivers.Sqlite is
 
 private
 
-   type Sqlite_Driver is new ADO.Drivers.Driver with null record;
-
-   --  Create a new SQLite connection using the configuration parameters.
-   overriding
-   procedure Create_Connection (D      : in out Sqlite_Driver;
-                                Config : in Configuration'Class;
-                                Result : out Database_Connection_Access);
-
    --  Database connection implementation
    type Database_Connection is new ADO.Drivers.Database_Connection with record
       Server : aliased Sqlite_Access;
+      Name   : Unbounded_String;
    end record;
-
    type Database_Connection_Access is access all Database_Connection'Class;
 
    overriding
@@ -104,5 +96,13 @@ private
 
    procedure Execute (Database : in out Database_Connection;
                       SQL : in Query_String);
+
+   type Sqlite_Driver is new ADO.Drivers.Driver with null record;
+
+   --  Create a new SQLite connection using the configuration parameters.
+   overriding
+   procedure Create_Connection (D      : in out Sqlite_Driver;
+                                Config : in Configuration'Class;
+                                Result : out ADO.Drivers.Database_Connection_Access);
 
 end ADO.Drivers.Sqlite;

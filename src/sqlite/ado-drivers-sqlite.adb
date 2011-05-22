@@ -49,7 +49,7 @@ package body ADO.Drivers.Sqlite is
             Error : constant Strings.Chars_Ptr := Sqlite3_H.Sqlite3_Errmsg (Connection);
             Msg   : constant String := Strings.Value (Error);
          begin
-            Log.Error ("Error: {0}", Msg);
+            Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
          end;
       end if;
    end Check_Error;
@@ -108,7 +108,8 @@ package body ADO.Drivers.Sqlite is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
-      Database.Execute ("begin transaction;");
+--        Database.Execute ("begin transaction;");
+      null;
    end Begin_Transaction;
 
    --  ------------------------------
@@ -116,7 +117,8 @@ package body ADO.Drivers.Sqlite is
    --  ------------------------------
    procedure Commit (Database : in out Database_Connection) is
    begin
-      Database.Execute ("commit transaction;");
+--        Database.Execute ("commit transaction;");
+      null;
    end Commit;
 
    --  ------------------------------
@@ -124,19 +126,33 @@ package body ADO.Drivers.Sqlite is
    --  ------------------------------
    procedure Rollback (Database : in out Database_Connection) is
    begin
-      Database.Execute ("rollback transaction;");
+--        Database.Execute ("rollback transaction;");
+      null;
    end Rollback;
+
+   procedure Sqlite3_Free (Arg1 : Strings.Chars_Ptr);
+   pragma Import (C, Sqlite3_Free, "sqlite3_free");
 
    procedure Execute (Database : in out Database_Connection;
                       SQL      : in Query_String) is
+      use type Strings.chars_ptr;
+
       SQL_Stat  : Strings.chars_ptr := Strings.New_String (SQL);
       Result    : int;
       Error_Msg : Strings.chars_ptr;
    begin
-      Result := Sqlite3_H.sqlite3_exec (Database.Server, SQL_Stat, No_Callback,
-                                        System.Null_Address, Error_Msg'Address);
+      for Retry in 1 .. 100 loop
+         Result := Sqlite3_H.sqlite3_exec (Database.Server, SQL_Stat, No_Callback,
+                                           System.Null_Address, Error_Msg'Address);
 
+         exit when Result /= Sqlite3_H.SQLITE_BUSY;
+         delay 0.01 * Retry;
+      end loop;
       Check_Error (Database.Server, Result);
+      if Error_Msg /= Strings.Null_Ptr then
+         Log.Error ("Error: {0}", Strings.Value (Error_Msg));
+         Sqlite3_Free (Error_Msg);
+      end if;
 
       --  Free
       Strings.Free (SQL_Stat);
@@ -151,7 +167,10 @@ package body ADO.Drivers.Sqlite is
    begin
       Log.Info ("Close connection");
 
-      Result := Sqlite3_H.sqlite3_close (Database.Server);
+--        if Database.Count = 1 then
+         Result := Sqlite3_H.sqlite3_close (Database.Server);
+         Database.Server := System.Null_Address;
+--        end if;
       pragma Unreferenced (Result);
    end Close;
 
@@ -165,6 +184,7 @@ package body ADO.Drivers.Sqlite is
       Log.Debug ("Release connection");
 
       Result := Sqlite3_H.sqlite3_close (Database.Server);
+      Database.Server := System.Null_Address;
       pragma Unreferenced (Result);
    end Finalize;
 
@@ -185,15 +205,21 @@ package body ADO.Drivers.Sqlite is
                                 Config : in Configuration'Class;
                                 Result : out ADO.Drivers.Database_Connection_Access) is
       use Strings;
+      use type System.Address;
 
       Name     : constant String := To_String (Config.Database);
-      Filename : Strings.chars_ptr := Strings.New_String (Name);
+      Filename : Strings.chars_ptr;
       Status   : int;
       Handle   : aliased System.Address;
+      Flags    : constant int := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
    begin
       Log.Info ("Opening database {0}", Name);
 
-      Status := Sqlite3_H.sqlite3_open (Filename, Handle'Access);
+      Filename := Strings.New_String (Name);
+      Status := Sqlite3_H.Sqlite3_Open_V2 (Filename, Handle'Access,
+                                           Flags,
+                                           Strings.Null_Ptr);
+
       Strings.Free (Filename);
       if Status /= Sqlite3_H.SQLITE_OK then
          raise DB_Error;
@@ -204,6 +230,7 @@ package body ADO.Drivers.Sqlite is
       begin
          Database.Server := Handle;
          Database.Count  := 1;
+         Database.Name   := Config.Database;
          Result := Database.all'Access;
       end;
    end Create_Connection;
