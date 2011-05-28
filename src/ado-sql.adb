@@ -357,6 +357,18 @@ package body ADO.SQL is
    --  --------------------
    procedure Save_Field (Update : in out Update_Query;
                          Name   : in String;
+                         Value  : in Entity_Type) is
+   begin
+      Update.Add_Field (Name => Name);
+      Update_Query'Class (Update).Add_Param (Value => Integer (Value));
+   end Save_Field;
+
+   --  --------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  --------------------
+   procedure Save_Field (Update : in out Update_Query;
+                         Name   : in String;
                          Value  : in Ada.Calendar.Time) is
    begin
       Update.Add_Field (Name => Name);

@@ -157,6 +157,20 @@ package body ADO.Parameters is
 
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
+                         Value    : in Entity_Type) is
+      P : Parameter := Parameter '(T        => T_INTEGER,
+                                   Name     => Null_Unbounded_String,
+                                   Position => Position,
+                                   Num      => Integer (Value));
+   begin
+      if Position = 0 then
+         P.Position := Abstract_List'Class (Params).Length + 1;
+      end if;
+      Abstract_List'Class (Params).Add_Parameter (P);
+   end Bind_Param;
+
+   procedure Bind_Param (Params   : in out Abstract_List;
+                         Position : in Natural;
                          Value    : in String) is
       P : Parameter := Parameter '(T        => T_STRING,
                                    Name     => Null_Unbounded_String,

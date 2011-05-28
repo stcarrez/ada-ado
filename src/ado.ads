@@ -34,6 +34,8 @@ package ADO is
 
    NO_IDENTIFIER : constant Identifier := -1;
 
+   type Entity_Type is new Integer;
+
    --  ------------------------------
    --  Nullable Types
    --  ------------------------------

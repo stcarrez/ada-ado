@@ -253,6 +253,12 @@ package ADO.Statements is
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
+                         Value  : in Entity_Type);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
                          Value  : in Ada.Calendar.Time);
 
    --  Prepare the update/insert query to save the table field
