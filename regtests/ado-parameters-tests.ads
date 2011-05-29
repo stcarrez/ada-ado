@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ado-testsuite -- Testsuite for ADO
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  ado-parameters-tests -- Test query parameters and SQL expansion
+--  Copyright (C) 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,21 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Tests;
-with ADO.Schemas.Tests;
-with ADO.Objects.Tests;
-with ADO.Queries.Tests;
-with ADO.Parameters.Tests;
-package body ADO.Testsuite is
+with AUnit.Test_Fixtures;
+with AUnit.Test_Suites;
+package ADO.Parameters.Tests is
 
-   use ADO.Tests;
+   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   Tests : aliased AUnit.Test_Suites.Test_Suite;
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-   function Suite return AUnit.Test_Suites.Access_Test_Suite is
-      Ret : constant AUnit.Test_Suites.Access_Test_Suite := Tests'Access;
-   begin
-      ADO.Parameters.Tests.Add_Tests (Ret);
-      ADO.Objects.Tests.Add_Tests (Ret);
-      ADO.Tests.Add_Tests (Ret);
-      ADO.Schemas.Tests.Add_Tests (Ret);
-      ADO.Queries.Tests.Add_Tests (Ret);
-      return Ret;
-   end Suite;
+   --  Test expand SQL with parameters.
+   procedure Test_Expand_Sql (T : in out Test);
 
-end ADO.Testsuite;
+   --  Test expand with invalid parameters.
+   procedure Test_Expand_Error (T : in out Test);
+
+   --  Test expand performance.
+   procedure Test_Expand_Perf (T : in out Test);
+
+end ADO.Parameters.Tests;
