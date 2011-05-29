@@ -75,6 +75,12 @@ package ADO.Statements is
    function Element (Query    : in Statement;
                      Position : in Natural) return ADO.Parameters.Parameter;
 
+   --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   procedure Query_Element (Query    : in Statement;
+                            Position : in Natural;
+                            Process  : not null access
+                              procedure (Element : in ADO.Parameters.Parameter));
+
    --  Clear the list of parameters.
    procedure Clear (Query : in out Statement);
 

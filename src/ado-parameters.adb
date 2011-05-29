@@ -17,10 +17,16 @@
 -----------------------------------------------------------------------
 
 with Util.Strings;
+with Util.Log.Loggers;
+
 with Ada.Calendar.Formatting;
 package body ADO.Parameters is
 
    use Parameter_Vectors;
+
+   use Util.Log;
+
+   Log : constant Loggers.Logger := Loggers.Create ("ADO.Parameters");
 
    --
    function "+"(Str : in String)
@@ -265,9 +271,21 @@ package body ADO.Parameters is
       Params.Bind_Param (Position => 0, Value => Value);
    end Add_Param;
 
-   --  Expand the query parameters
-   function Expand (Params : in Abstract_List;
+   --  ------------------------------
+   --  Expand the SQL string with the query parameters.  The following parameters syntax
+   --  are recognized and replaced:
+   --  <ul>
+   --     <li>? is replaced according to the current parameter index.  The index is incremented
+   --         after each occurrence of ? character.
+   --     <li>:nnn is replaced by the parameter at index <b>nnn</b>.
+   --     <li>:name is replaced by the parameter with the name <b>name</b>
+   --  </ul>
+   --  Parameter strings are escaped.  When a parameter is not found, an empty string is used.
+   --  Returns the expanded SQL string.
+   --  ------------------------------
+   function Expand (Params : in Abstract_List'Class;
                     SQL    : in String) return String is
+      use ADO.Parameters;
 
       --  Append the item in the buffer escaping some characters if necessary
       procedure Escape_Sql (Buffer : in out Unbounded_String;
@@ -276,6 +294,15 @@ package body ADO.Parameters is
       --  Format and append the date to the buffer.
       procedure Append_Date (Buffer : in out Unbounded_String;
                              Time   : in Ada.Calendar.Time);
+
+      --  Replace the given parameter.
+      procedure Replace_Parameter (Param : in Parameter);
+
+      --  Find and replace the parameter identified by the name.
+      procedure Replace_Parameter (Name : in String);
+
+      --  Find and replace the parameter at the given index.
+      procedure Replace_Parameter (Position : in Natural);
 
       --  ------------------------------
       --  Append the item in the buffer escaping some characters if necessary
@@ -300,17 +327,96 @@ package body ADO.Parameters is
                              Time   : in Ada.Calendar.Time) is
       begin
          Append (Buffer, "'");
-         Append (Buffer,
-                 Ada.Calendar.Formatting.Image (Time, True));
+         Append (Buffer, Ada.Calendar.Formatting.Image (Time, True));
          Append (Buffer, "'");
       end Append_Date;
 
       Num    : Natural := 0;
+      Max    : constant Natural := Params.Length;
       Pos    : Natural;
       C      : Character;
       Buffer : Unbounded_String;
 
-      use ADO.Parameters;
+      --  ------------------------------
+      --  Replace the given parameter.
+      --  ------------------------------
+      procedure Replace_Parameter (Param : in Parameter) is
+      begin
+         case Param.T is
+            when T_LONG_INTEGER =>
+               Append (Buffer, Util.Strings.Image (Param.Long_Num));
+
+            when T_INTEGER =>
+               Append (Buffer, Util.Strings.Image (Param.Num));
+
+            when T_BOOLEAN =>
+               if Param.Bool then
+                  Append (Buffer, '1');
+               else
+                  Append (Buffer, '0');
+               end if;
+
+            when T_DATE =>
+               Append_Date (Buffer, Param.Time);
+
+            when T_NULL =>
+               Append (Buffer, "NULL");
+
+            when others =>
+               Append (Buffer, ''');
+               Escape_Sql (Buffer, To_String (Param.Str));
+               Append (Buffer, ''');
+         end case;
+      end Replace_Parameter;
+
+      --  ------------------------------
+      --  Find and replace the parameter at the given index.
+      --  ------------------------------
+      procedure Replace_Parameter (Position : in Natural) is
+      begin
+         if Position = 0 or Position > Max then
+            Log.Warn ("Invalid parameter '{0}' in query '{1}'",
+                      Natural'Image (Position), SQL);
+         else
+            Params.Query_Element (Position => Position,
+                                  Process  => Replace_Parameter'Access);
+         end if;
+      end Replace_Parameter;
+
+      --  ------------------------------
+      --  Find and replace the parameter identified by the name.
+      --  ------------------------------
+      procedure Replace_Parameter (Name : in String) is
+
+         --  Check if the parameter matches and replace it.
+         procedure Process (Param : in Parameter);
+
+         Found : Boolean := False;
+
+         --  ------------------------------
+         --  Check if the parameter matches and replace it.
+         --  ------------------------------
+         procedure Process (Param : in Parameter) is
+         begin
+            if Param.Name = Name then
+               Replace_Parameter (Param);
+               Found := True;
+            end if;
+         end Process;
+
+      begin
+         --  We assume that in most queries, the number of parameters is relatively small
+         --  (1, 2 or 3) and even complex queries should not have a lot of parameters.
+         --  To avoid the cost and complexity of hash map, we use a simple search.
+         for I in 1 .. Max loop
+            Params.Query_Element (I, Process'Access);
+            if Found then
+               return;
+            end if;
+         end loop;
+
+         Log.Warn ("Parameter '{0}' not found in query '{1}'", Name, SQL);
+      end Replace_Parameter;
 
    begin
       --  Build the SQL query by injecting the parameters.
@@ -322,49 +428,48 @@ package body ADO.Parameters is
             Pos := Pos + 1;
             exit when Pos > SQL'Last;
             Append (Buffer, SQL (Pos));
+            Pos := Pos + 1;
 
-         elsif C = ':' or C = '?' then
-            if C = ':' then
-               Pos := Pos + 1;
-               exit when Pos > SQL'Last;
-               C := SQL (Pos);
-               Num := Natural (Character'Pos (C) - Character'Pos ('0'));
+         elsif C = ':' and Pos + 1 <= SQL'Last then
+            Pos := Pos + 1;
+            C := SQL (Pos);
+            if C >= '0' and C <= '9' then
+               Num := 0;
+               loop
+                  Num := Num * 10 + Natural (Character'Pos (C) - Character'Pos ('0'));
+                  Pos := Pos + 1;
+                  exit when Pos > SQL'Last;
+                  C := SQL (Pos);
+                  exit when not (C >= '0' and C <= '9');
+               end loop;
+               Replace_Parameter (Position => Num);
+
             else
-               Num := Num + 1;
+               declare
+                  Start_Pos : constant Natural := Pos;
+               begin
+                  --  Isolate the parameter name.
+                  loop
+                     exit when not (C >= 'a' and C <= 'z') and not (C >= 'A' and C <= 'Z')
+                       and not (C >= '0' and C <= '9') and C /= '_';
+                     Pos := Pos + 1;
+                     exit when Pos > SQL'Last;
+                     C := SQL (Pos);
+                  end loop;
+
+                  --  And replace it with its value.
+                  Replace_Parameter (Name => SQL (Start_Pos .. Pos - 1));
+               end;
             end if;
-            declare
-               P   : constant Parameter := Abstract_List'Class (Params).Element (Num);
-            begin
-               case P.T is
-                  when T_LONG_INTEGER =>
-                     Append (Buffer, Util.Strings.Image (P.Long_Num));
 
-                  when T_INTEGER =>
-                     Append (Buffer, Util.Strings.Image (P.Num));
-
-                  when T_BOOLEAN =>
-                     if P.Bool then
-                        Append (Buffer, "1");
-                     else
-                        Append (Buffer, "0");
-                     end if;
-
-                  when T_DATE =>
-                     Append_Date (Buffer, P.Time);
-
-                  when T_NULL =>
-                     Append (Buffer, "NULL");
-
-                  when others =>
-                     Append (Buffer, "'");
-                     Escape_Sql (Buffer, To_String (P.Str));
-                     Append (Buffer, "'");
-               end case;
-            end;
+         elsif C = '?' then
+            Num := Num + 1;
+            Replace_Parameter (Position => Num);
+            Pos := Pos + 1;
          else
             Append (Buffer, C);
+            Pos := Pos + 1;
          end if;
-         Pos := Pos + 1;
       end loop;
       return To_String (Buffer);
    end Expand;
@@ -375,7 +480,7 @@ package body ADO.Parameters is
    procedure Add_Parameter (Params : in out List;
                             Param  : in Parameter) is
    begin
-      if Param.Position = Natural (Length (Params.Params)) + 1 then
+      if Param.Position = 0 or else Param.Position = Natural (Length (Params.Params)) + 1 then
          Params.Params.Append (Param);
       else
          Params.Params.Replace_Element (Index    => Param.Position,
@@ -417,5 +522,15 @@ package body ADO.Parameters is
    begin
       return Element (Params.Params, Position);
    end Element;
+
+   --  ------------------------------
+   --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   --  ------------------------------
+   procedure Query_Element (Params   : in List;
+                            Position : in Natural;
+                            Process  : not null access procedure (Element : in Parameter)) is
+   begin
+      Query_Element (Params.Params, Position, Process);
+   end Query_Element;
 
 end ADO.Parameters;

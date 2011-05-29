@@ -71,6 +71,12 @@ package ADO.Parameters is
    function Element (Params   : in Abstract_List;
                      Position : in Natural) return Parameter is abstract;
 
+   --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   procedure Query_Element (Params   : in Abstract_List;
+                            Position : in Natural;
+                            Process  : not null access
+                              procedure (Element : in Parameter)) is abstract;
+
    --  Clear the list of parameters.
    procedure Clear (Parameters : in out Abstract_List) is abstract;
 
@@ -139,8 +145,17 @@ package ADO.Parameters is
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Ada.Calendar.Time);
 
-   --  Expand the query parameters
-   function Expand (Params : in Abstract_List;
+   --  Expand the SQL string with the query parameters.  The following parameters syntax
+   --  are recognized and replaced:
+   --  <ul>
+   --     <li>? is replaced according to the current parameter index.  The index is incremented
+   --         after each occurrence of ? character.
+   --     <li>:nnn is replaced by the parameter at index <b>nnn</b>.
+   --     <li>:name is replaced by the parameter with the name <b>name</b>
+   --  </ul>
+   --  Parameter strings are escaped.  When a parameter is not found, an empty string is used.
+   --  Returns the expanded SQL string.
+   function Expand (Params : in Abstract_List'Class;
                     SQL    : in String) return String;
 
    --  ------------------------------
@@ -161,6 +176,11 @@ package ADO.Parameters is
    --  Return the parameter at the given position
    function Element (Params   : in List;
                      Position : in Natural) return Parameter;
+
+   --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   procedure Query_Element (Params   : in List;
+                            Position : in Natural;
+                            Process  : not null access procedure (Element : in Parameter));
 
    --  Clear the list of parameters.
    procedure Clear (Params : in out List);
