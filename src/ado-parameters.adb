@@ -229,6 +229,15 @@ package body ADO.Parameters is
       Abstract_List'Class (Params).Add_Parameter (P);
    end Bind_Null_Param;
 
+   procedure Bind_Null_Param (Params   : in out Abstract_List;
+                              Name     : in String) is
+      P : constant Parameter := Parameter '(T        => T_NULL,
+                                            Name     => +(Name),
+                                            Position => 0);
+   begin
+      Abstract_List'Class (Params).Add_Parameter (P);
+   end Bind_Null_Param;
+
    procedure Add_Param (Params : in out Abstract_List;
                         Value  : in Boolean) is
    begin
@@ -331,10 +340,7 @@ package body ADO.Parameters is
          Append (Buffer, "'");
       end Append_Date;
 
-      Num    : Natural := 0;
       Max    : constant Natural := Params.Length;
-      Pos    : Natural;
-      C      : Character;
       Buffer : Unbounded_String;
 
       --  ------------------------------
@@ -418,19 +424,29 @@ package body ADO.Parameters is
          Log.Warn ("Parameter '{0}' not found in query '{1}'", Name, SQL);
       end Replace_Parameter;
 
+      Num       : Natural := 0;
+      Pos       : Natural;
+      C         : Character;
+      First_Pos : Natural;
    begin
       --  Build the SQL query by injecting the parameters.
       Pos := SQL'First;
+      First_Pos := Pos;
       while Pos <= SQL'Last loop
          C := SQL (Pos);
          if C = '\' then
-            Append (Buffer, C);
+            if First_Pos <= Pos - 1 then
+               Append (Buffer, SQL (First_Pos .. Pos - 1));
+            end if;
             Pos := Pos + 1;
+            First_Pos := Pos + 1;
             exit when Pos > SQL'Last;
-            Append (Buffer, SQL (Pos));
             Pos := Pos + 1;
 
          elsif C = ':' and Pos + 1 <= SQL'Last then
+            if First_Pos <= Pos - 1 then
+               Append (Buffer, SQL (First_Pos .. Pos - 1));
+            end if;
             Pos := Pos + 1;
             C := SQL (Pos);
             if C >= '0' and C <= '9' then
@@ -443,6 +459,7 @@ package body ADO.Parameters is
                   exit when not (C >= '0' and C <= '9');
                end loop;
                Replace_Parameter (Position => Num);
+               First_Pos := Pos;
 
             else
                declare
@@ -459,18 +476,25 @@ package body ADO.Parameters is
 
                   --  And replace it with its value.
                   Replace_Parameter (Name => SQL (Start_Pos .. Pos - 1));
+                  First_Pos := Pos;
                end;
             end if;
 
          elsif C = '?' then
+            if First_Pos <= Pos - 1 then
+               Append (Buffer, SQL (First_Pos .. Pos - 1));
+            end if;
             Num := Num + 1;
             Replace_Parameter (Position => Num);
             Pos := Pos + 1;
+            First_Pos := Pos;
          else
-            Append (Buffer, C);
             Pos := Pos + 1;
          end if;
       end loop;
+      if First_Pos <= SQL'Last then
+         Append (Buffer, SQL (First_Pos .. SQL'Last));
+      end if;
       return To_String (Buffer);
    end Expand;
 

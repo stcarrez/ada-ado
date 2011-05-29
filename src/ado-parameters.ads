@@ -129,6 +129,8 @@ package ADO.Parameters is
                          Value    : in Ada.Calendar.Time);
    procedure Bind_Null_Param (Params   : in out Abstract_List;
                               Position : in Natural);
+   procedure Bind_Null_Param (Params   : in out Abstract_List;
+                              Name     : in String);
 
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Boolean);
