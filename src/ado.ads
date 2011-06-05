@@ -18,6 +18,9 @@
 
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
+
+with Util.Refs;
+with Util.Streams.Buffered;
 package ADO is
 
    type Int64 is range -2**63 .. 2**63 - 1;
@@ -30,11 +33,19 @@ package ADO is
    --  Database Identifier
    --  ------------------------------
    --
-   type Identifier is new Integer;
+   type Identifier is range -2**47 .. 2**47 - 1;
 
    NO_IDENTIFIER : constant Identifier := -1;
 
-   type Entity_Type is new Integer;
+   type Entity_Type is range 0 .. 2**16 - 1;
+
+   NO_ENTITY_TYPE : constant Entity_Type := 0;
+
+   type Object_Id is record
+      Id   : Identifier;
+      Kind : Entity_Type;
+   end record;
+   pragma Pack (Object_Id);
 
    --  ------------------------------
    --  Nullable Types
@@ -61,5 +72,20 @@ package ADO is
       Value   : Ada.Calendar.Time;
       Is_Null : Boolean := True;
    end record;
+
+   --  ------------------------------
+   --  Blob data type
+   --  ------------------------------
+   --  The <b>Blob</b> type is used to represent database blobs.  The data is stored
+   --  in an <b>Ada.Streams.Stream_Element_Array</b> pointed to by the <b>Data</b> member.
+   --  The query statement and bind parameter will use a <b>Blob_Ref</b> which represents
+   --  a reference to the blob data.  This is intended to minimize data copy.
+   type Blob is new Util.Refs.Ref_Entity with record
+      Data : Util.Streams.Buffered.Buffer_Access := null;
+   end record;
+   type Blob_Access is access all Blob;
+
+   package Blob_References is new Util.Refs.References (Blob, Blob_Access);
+   subtype Blob_Ref is Blob_References.Ref;
 
 end ADO;
