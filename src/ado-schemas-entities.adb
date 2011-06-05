@@ -33,7 +33,7 @@ package body ADO.Schemas.Entities is
                               Table : in Class_Mapping_Access) return ADO.Model.Entity_Type_Ref is
       Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Table.Table);
    begin
-      if Entity_Map.Has_Element (Pos) then
+      if not Entity_Map.Has_Element (Pos) then
          Log.Error ("No entity type associated with table {0}", Table.Table.all);
          raise No_Entity_Type with "No entity type associated with table " & Table.Table.all;
       end if;
@@ -48,7 +48,7 @@ package body ADO.Schemas.Entities is
                               Table : in Class_Mapping_Access) return ADO.Entity_Type is
       Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Table.Table);
    begin
-      if Entity_Map.Has_Element (Pos) then
+      if not Entity_Map.Has_Element (Pos) then
          Log.Error ("No entity type associated with table {0}", Table.Table.all);
          raise No_Entity_Type with "No entity type associated with table " & Table.Table.all;
       end if;
@@ -60,6 +60,7 @@ package body ADO.Schemas.Entities is
    --  ------------------------------
    procedure Initialize (Cache   : in out Entity_Cache;
                          Session : in out ADO.Sessions.Session'Class) is
+      use type Ada.Containers.Count_Type;
       List  : ADO.Model.Entity_Type_Vector;
       Query : ADO.SQL.Query;
 
@@ -71,8 +72,8 @@ package body ADO.Schemas.Entities is
 
    begin
       ADO.Model.List (List, Session, Query);
-      for I in 0 .. Natural (List.Length) loop
-         List.Query_Element (I, Process'Access);
+      for I in 0 .. List.Length - 1 loop
+         List.Query_Element (Natural (I), Process'Access);
       end loop;
    end Initialize;
 

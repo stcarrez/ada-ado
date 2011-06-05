@@ -26,4 +26,10 @@ package ADO.Schemas.Tests is
 
    procedure Test_Load_Schema (T : in out Test);
 
+   --  Test reading the entity cache and the Find_Entity_Type operation
+   procedure Test_Find_Entity_Type (T : in out Test);
+
+   --  Test calling Find_Entity_Type with an invalid table.
+   procedure Test_Find_Entity_Type_Error (T : in out Test);
+
 end ADO.Schemas.Tests;
