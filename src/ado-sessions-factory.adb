@@ -34,6 +34,7 @@ package body ADO.Sessions.Factory is
       DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
    begin
       S.Database := Master_Connection (DB);
+      S.Entities := Factory.Entities;
       Database.Impl := S;
    end Open_Session;
 
@@ -46,6 +47,7 @@ package body ADO.Sessions.Factory is
       DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
    begin
       S.Database := Master_Connection (DB);
+      S.Entities := Factory.Entities;
       R.Impl := S;
       return R;
    end Get_Session;
@@ -95,6 +97,7 @@ package body ADO.Sessions.Factory is
       DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
    begin
       S.Database := Master_Connection (DB);
+      S.Entities := Factory.Entities;
       R.Impl := S;
       R.Sequences := Factory.Sequences;
       return R;
@@ -129,7 +132,14 @@ package body ADO.Sessions.Factory is
                      Source  : in ADO.Databases.DataSource) is
    begin
       Factory.Source := Source;
+      Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
       Initialize_Sequences (Factory);
+
+      declare
+         S : Session := Factory.Get_Session;
+      begin
+         ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+      end;
    end Create;
 
    --  ------------------------------
@@ -140,7 +150,14 @@ package body ADO.Sessions.Factory is
                      URI     : in String) is
    begin
       Factory.Source.Set_Connection (URI);
+      Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
       Initialize_Sequences (Factory);
+
+      declare
+         S : Session := Factory.Get_Session;
+      begin
+         ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+      end;
    end Create;
 
    --  ------------------------------

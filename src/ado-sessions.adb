@@ -26,9 +26,6 @@ package body ADO.Sessions is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Sessions");
 
-   procedure Check_Session (Database : in Session'Class);
-   pragma Inline (Check_Session);
-
    procedure Check_Session (Database : in Session'Class) is
    begin
       if Database.Impl = null then

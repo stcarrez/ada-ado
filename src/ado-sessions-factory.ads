@@ -20,6 +20,7 @@ with Ada.Finalization;
 
 with ADO.Databases;
 with ADO.Sequences;
+with ADO.Schemas.Entities;
 
 --  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
 --  sessions.
@@ -62,9 +63,15 @@ package ADO.Sessions.Factory is
    function Get_Session (Proxy : in Session_Record_Access) return Session;
 private
 
+   --  The session factory holds the necessary information to obtain a master or slave
+   --  database connection.  The sequence factory is shared by all sessions of the same
+   --  factory (implementation is thread-safe).  The factory also contains the entity type
+   --  cache which is initialized when the factory is created.
    type Session_Factory is new Ada.Finalization.Limited_Controlled with record
-      Source    : ADO.Databases.DataSource;
-      Sequences : access ADO.Sequences.Factory;
+      Source       : ADO.Databases.DataSource;
+      Sequences    : access ADO.Sequences.Factory;
+      Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
+      Entities     : ADO.Sessions.Entity_Cache_Access;
    end record;
 
    --  Finalize and release the factory

@@ -27,6 +27,7 @@ with ADO.Queries;
 
 with Util.Concurrent.Counters;
 limited with ADO.Sequences;
+limited with ADO.Schemas.Entities;
 
 package ADO.Sessions is
 
@@ -138,6 +139,8 @@ package ADO.Sessions is
 
 private
 
+   type Entity_Cache_Access is access constant ADO.Schemas.Entities.Entity_Cache;
+
    type Object_Factory is tagged record
       A : Integer;
    end record;
@@ -164,6 +167,7 @@ private
       Database : ADO.Databases.Master_Connection;
       Proxy    : ADO.Objects.Session_Proxy_Access;
       Cache    : ADO.Objects.Cache.Object_Cache;
+      Entities : Entity_Cache_Access;
    end record;
 
    type Session is new Ada.Finalization.Controlled with record
@@ -179,5 +183,8 @@ private
    type Master_Session is new Session with record
       Sequences : access ADO.Sequences.Factory;
    end record;
+
+   procedure Check_Session (Database : in Session'Class);
+   pragma Inline (Check_Session);
 
 end ADO.Sessions;
