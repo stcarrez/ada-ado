@@ -135,11 +135,13 @@ package body ADO.Sessions.Factory is
       Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
       Initialize_Sequences (Factory);
 
-      declare
-         S : Session := Factory.Get_Session;
-      begin
-         ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
-      end;
+      if Factory.Source.Get_Database /= "" then
+         declare
+            S : Session := Factory.Get_Session;
+         begin
+            ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+         end;
+      end if;
    end Create;
 
    --  ------------------------------
@@ -153,11 +155,13 @@ package body ADO.Sessions.Factory is
       Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
       Initialize_Sequences (Factory);
 
-      declare
-         S : Session := Factory.Get_Session;
-      begin
-         ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
-      end;
+      if Factory.Source.Get_Database /= "" then
+         declare
+            S : Session := Factory.Get_Session;
+         begin
+            ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+         end;
+      end if;
    end Create;
 
    --  ------------------------------
