@@ -24,6 +24,19 @@ package body ADO.Sessions.Entities is
    --  Raises the No_Entity_Type exception if no such mapping exist.
    --  ------------------------------
    function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Object  : in ADO.Objects.Object_Key)
+                              return ADO.Model.Entity_Type_Ref is
+   begin
+      Check_Session (Session);
+      return ADO.Schemas.Entities.Find_Entity_Type (Session.Impl.Entities.all,
+                                                    Object.Of_Class);
+   end Find_Entity_Type;
+
+   --  ------------------------------
+   --  Find the entity type object associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   --  ------------------------------
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
                               Table   : in ADO.Schemas.Class_Mapping_Access)
                               return ADO.Model.Entity_Type_Ref is
    begin

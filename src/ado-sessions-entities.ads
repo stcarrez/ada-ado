@@ -18,7 +18,14 @@
 
 with ADO.Model;
 with ADO.Schemas;
+with ADO.Objects;
 package ADO.Sessions.Entities is
+
+   --  Find the entity type object associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Object  : in ADO.Objects.Object_Key)
+                              return ADO.Model.Entity_Type_Ref;
 
    --  Find the entity type object associated with the given database table.
    --  Raises the No_Entity_Type exception if no such mapping exist.
