@@ -16,11 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Fixtures;
 with AUnit.Test_Suites;
+with Util.Tests;
 package ADO.Objects.Tests is
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
+   type Test is new Util.Tests.Test with null record;
 
    procedure Test_Key (T : in out Test);
 

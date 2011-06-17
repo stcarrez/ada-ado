@@ -82,31 +82,31 @@ package body ADO.Objects.Tests is
       Obj1     : Regtests.Simple.Model.User_Ref;
       Null_Obj : Regtests.Simple.Model.User_Ref;
    begin
-      Assert (T, Obj1 = Null_Obj, "Two null objects are identical");
+      T.Assert (Obj1 = Null_Obj, "Two null objects are identical");
       for I in 1 .. 10 loop
          Obj1.Set_Name ("User name");
-         Assert (T, Obj1.Get_Name = "User name", "User_Ref.Set_Name invalid result");
+         T.Assert (Obj1.Get_Name = "User name", "User_Ref.Set_Name invalid result");
 
-         Assert (T, Obj1 /= Null_Obj, "Object is not identical as the null object");
+         T.Assert (Obj1 /= Null_Obj, "Object is not identical as the null object");
          declare
             Obj2 : constant Regtests.Simple.Model.User_Ref := Obj1;
             Obj3 : Regtests.Simple.Model.User_Ref := Obj1.Copy;
          begin
             Obj3.Set_Id (2);
             --  Check the copy
-            Assert (T, Obj2.Get_Name = "User name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
+            T.Assert (Obj2.Get_Name = "User name", "Object_Ref.Copy invalid copy");
+            T.Assert (Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
+            T.Assert (Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
 
-            Assert (T, Obj3 /= Obj1, "Object_Ref.'=' invalid comparison after copy");
+            T.Assert (Obj3 /= Obj1, "Object_Ref.'=' invalid comparison after copy");
 
             --  Change original, make sure it's the same of Obj2.
             Obj1.Set_Name ("Second name");
-            Assert (T, Obj2.Get_Name = "Second name", "Object_Ref.Copy invalid copy");
-            Assert (T, Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
+            T.Assert (Obj2.Get_Name = "Second name", "Object_Ref.Copy invalid copy");
+            T.Assert (Obj2 = Obj1, "Object_Ref.'=' invalid comparison after assignment");
 
             --  The copy is not modified
-            Assert (T, Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
+            T.Assert (Obj3.Get_Name = "User name", "Object_Ref.Copy invalid copy");
          end;
       end loop;
    end Test_Object_Ref;
@@ -137,7 +137,7 @@ package body ADO.Objects.Tests is
          U2.Load (S, User.Get_Id);
          Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (U2.Get_Name), "Cannot load created object");
          Assert_Equals (T, Integer (0), Integer (U2.Get_Value), "Invalid load");
-         Assert (T, User.Get_Key = U2.Get_Key, "Invalid key after load");
+         T.Assert (User.Get_Key = U2.Get_Key, "Invalid key after load");
       end;
 
       --  Create a comment for the user.
@@ -162,12 +162,12 @@ package body ADO.Objects.Tests is
          C2 : Regtests.Comments.Comment_Ref;
       begin
          C2.Load (S, Cmt.Get_Id);
-         Assert (T, not C2.Is_Null, "Loading of object failed");
-         Assert (T, Cmt.Get_Key = C2.Get_Key, "Invalid key after load");
-         Assert (T, "A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message), "Invalid message");
+         T.Assert (not C2.Is_Null, "Loading of object failed");
+         T.Assert (Cmt.Get_Key = C2.Get_Key, "Invalid key after load");
+         T.Assert_Equals ("A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message), "Invalid message");
 
-         Assert (T, not C2.Get_User.Is_Null, "User associated with the comment should not be null");
-         Assert (T, not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
+         T.Assert (not C2.Get_User.Is_Null, "User associated with the comment should not be null");
+         T.Assert (not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
 
          --  Check that we can access the user name (lazy load)
          Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (C2.Get_User.Get_Name),
@@ -211,7 +211,7 @@ package body ADO.Objects.Tests is
          U2 : Regtests.Simple.Model.User_Ref;
       begin
          U2.Load (S, User.Get_Id);
-         Assert (T, False, "Load of a deleted object should raise NOT_FOUND");
+         T.Assert (False, "Load of a deleted object should raise NOT_FOUND");
 
       exception
          when ADO.Objects.NOT_FOUND =>
