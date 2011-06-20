@@ -54,9 +54,9 @@ package body ADO.Drivers is
    --  ------------------------------
    --  Initialize the drivers and the library and configure the runtime with the given properties.
    --  ------------------------------
-   procedure Initialize (Config : in Util.Properties.Manager) is
+   procedure Initialize (Config : in Util.Properties.Manager'Class) is
    begin
-      Global_Config := Config;
+      Global_Config := Util.Properties.Manager (Config);
 
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),

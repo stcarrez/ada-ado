@@ -45,7 +45,7 @@ package ADO.Drivers is
    procedure Initialize (Config : in String);
 
    --  Initialize the drivers and the library and configure the runtime with the given properties.
-   procedure Initialize (Config : in Util.Properties.Manager);
+   procedure Initialize (Config : in Util.Properties.Manager'Class);
 
    --  Initialize the drivers which are available.
    procedure Initialize;
