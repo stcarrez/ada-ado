@@ -23,10 +23,14 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
 
+dynamodir=${prefix}/share/dynamo
 includedir=${prefix}/share/ada/adainclude
 projectdir=${prefix}/share/ada/adainclude
 libdir=${prefix}/lib
 alidir=${prefix}/share/ada/adainclude
+
+mysql_src_dir=${srcdir}/src/mysql
+sqlite_src_dir=${srcdir}/src/sqlite
 
 # Build executables for all mains defined by the project.
 build:  src/ado-drivers-initialize.adb
@@ -102,6 +106,30 @@ dist:
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
+
+install:
+	$(MKDIR) -p ${includedir}/ado
+	$(MKDIR) -p ${projectdir}/
+	${MKDIR} -p ${alidir}/ado
+	${MKDIR} -p ${dynamodir}/ado/db
+	${CP} src/*.ad[bs] ${includedir}/ado
+	if test T${HAVE_MYSQL} = TTrue ; then \
+	   ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado ; \
+	fi
+	if test T${HAVE_SQLITE} = TTrue ; then \
+	   ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado ; \
+	fi
+	${CP} distrib/ado.gpr ${projectdir}/ado.gpr
+	${CP} db/*.xml ${dynamodir}/ado
+	${CP} db/*.sql ${dynamodir}/ado
+	${CP} lib/ado/*.ali ${alidir}/ado
+	${CP} lib/ado/libadaado.a ${libdir}/
+
+
+uninstall:
+	rm -rf ${includedir}/ado
+	rm -f ${libdir}/libadaado.a
+	rm -f ${projectdir}/ado.gpr
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)
