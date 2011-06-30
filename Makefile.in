@@ -120,8 +120,8 @@ install:
 	   ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado ; \
 	fi
 	${CP} distrib/ado.gpr ${projectdir}/ado.gpr
-	${CP} db/*.xml ${dynamodir}/ado
-	${CP} db/*.sql ${dynamodir}/ado
+	${CP} db/*.xml ${dynamodir}/ado/db/
+	${CP} db/*.sql ${dynamodir}/ado/db/
 	${CP} lib/ado/*.ali ${alidir}/ado
 	${CP} lib/ado/libadaado.a ${libdir}/
 
