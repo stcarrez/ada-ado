@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Tests -- Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Fixtures;
 with AUnit.Test_Suites;
+with Util.Tests;
 package ADO.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
+   type Test is new Util.Tests.Test with record
       I1 : Integer;
       I2 : Integer;
    end record;

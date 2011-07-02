@@ -20,7 +20,6 @@ with Ada.Exceptions;
 with AUnit;
 with AUnit.Test_Caller;
 
-with ADO.Databases;
 with ADO.Statements;
 with ADO.Objects;
 with ADO.Sessions;
@@ -35,7 +34,6 @@ package body ADO.Tests is
 
    use Util.Log;
    use Ada.Exceptions;
-   use ADO.Databases;
    use ADO.Statements;
    use type Regtests.Simple.Model.User_Ref;
    use type Regtests.Simple.Model.Allocate_Ref;
@@ -45,9 +43,12 @@ package body ADO.Tests is
    package Caller is new AUnit.Test_Caller (Test);
 
    procedure Fail (T : in Test; Message : in String);
+   procedure Assert_Has_Message (T : in Test;
+                                 E : in Exception_Occurrence);
+
    procedure Fail (T : in Test; Message : in String) is
    begin
-      Assert (T, False, Message);
+      T.Assert (False, Message);
    end Fail;
 
    procedure Assert_Has_Message (T : in Test;
@@ -94,7 +95,7 @@ package body ADO.Tests is
    --  ------------------------------
    procedure Test_Create_Load (T : in out Test) is
 
-      DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
 
       Object : Regtests.Simple.Model.User_Ref;
       Check  : Regtests.Simple.Model.User_Ref;
@@ -109,14 +110,6 @@ package body ADO.Tests is
       Check.Load (DB, Object.Get_Id);
       Assert (T, not Check.Is_Null, "Object_Ref.Load: Loading the object failed");
    end Test_Create_Load;
-
-   procedure Test_Statement is
-      DB: constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-      S : ADO.Statements.Query_Statement := DB.Create_Statement ("select *");
-   begin
-      S.Bind_Param ("name", Integer (23));
-      S.Bind_Param ("value", S.Get_Integer (2));
-   end Test_Statement;
 
    --  ------------------------------
    --  Check:
@@ -182,7 +175,7 @@ package body ADO.Tests is
    procedure Test_Create_Save (T : in out Test) is
       use ADO.Objects;
 
-      DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
 
       Ref  : Regtests.Simple.Model.Allocate_Ref;
       Ref2 : Regtests.Simple.Model.Allocate_Ref;
@@ -205,9 +198,9 @@ package body ADO.Tests is
    procedure Test_Perf_Create_Save (T : in out Test) is
       use ADO.Objects;
 
-      DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      DB : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
 
-      S    : Util.Measures.Stamp;
+      S  : Util.Measures.Stamp;
    begin
       DB.Begin_Transaction;
       for I in 1 .. 1_000 loop
@@ -225,7 +218,7 @@ package body ADO.Tests is
 
    procedure Test_Delete_All (T : in out Test) is
 
-      DB: ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      DB : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Stmt : ADO.Statements.Delete_Statement
         := DB.Create_Statement (Regtests.Simple.Model.ALLOCATE_TABLE'Access);
       Result : Natural;
@@ -244,7 +237,8 @@ package body ADO.Tests is
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Save", Test_Create_Load'Access));
       Suite.Add_Test (Caller.Create ("Test Master_Connection init error", Test_Not_Open'Access));
       Suite.Add_Test (Caller.Create ("Test Sequences.Factory", Test_Allocate'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Save/Create/Update", Test_Create_Save'Access));
+      Suite.Add_Test (Caller.Create ("Test Object_Ref.Save/Create/Update",
+        Test_Create_Save'Access));
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Create (DB Insert)",
         Test_Perf_Create_Save'Access));
       Suite.Add_Test (Caller.Create ("Test Statement.Delete_Statement (delete all)",
