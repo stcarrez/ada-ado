@@ -4,10 +4,10 @@ project Ado is
    Version := "0.2.0";
 
    for Library_Name use "adaado";
-   for Library_Dir use "/usr/lib";
+   for Library_Dir use "INSTALL/lib";
    for Library_Kind use "static";
 
-   for Source_Dirs use ("/usr/share/ada/adainclude/ado");
-   for Library_ALI_Dir use "/usr/share/ada/adainclude/ado";
+   for Source_Dirs use ("INSTALL/share/ada/adainclude/ado");
+   for Library_ALI_Dir use "INSTALL/share/ada/adainclude/ado";
    for Externally_Built use "true";
 end Ado;

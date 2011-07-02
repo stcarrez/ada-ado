@@ -119,7 +119,7 @@ install:
 	if test T${HAVE_SQLITE} = TTrue ; then \
 	   ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado ; \
 	fi
-	${CP} distrib/ado.gpr ${projectdir}/ado.gpr
+	sed -e "s,INSTALL,${prefix},g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	${CP} db/*.sql ${dynamodir}/ado/db/
 	${CP} lib/ado/*.ali ${alidir}/ado
