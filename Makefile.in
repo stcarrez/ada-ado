@@ -113,12 +113,9 @@ install:
 	${MKDIR} -p ${alidir}/ado
 	${MKDIR} -p ${dynamodir}/ado/db
 	${CP} src/*.ad[bs] ${includedir}/ado
-	if test T${HAVE_MYSQL} = TTrue ; then \
-	   ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado ; \
-	fi
-	if test T${HAVE_SQLITE} = TTrue ; then \
-	   ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado ; \
-	fi
+	test T${HAVE_MYSQL} = TTrue && ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
+	test T${HAVE_SQLITE} = TTrue && ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
+	${CP} src/model/*.ad[bs] ${includedir}/ado
 	sed -e "s,INSTALL,${prefix},g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	${CP} db/*.sql ${dynamodir}/ado/db/
