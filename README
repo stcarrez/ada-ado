@@ -33,3 +33,19 @@ Documentation
 
    http://code.google.com/p/ada-ado/
 
+
+
+Database Drivers
+
+   The MySQL and SQLite development headers are necessary for building
+   the ADO driver.
+
+   MySQL Development installation
+
+      sudo apt-get install libmysqlclient-dev
+
+
+   SQLite Development installation
+
+      sudo apt-get install libsqlite3-dev
+
