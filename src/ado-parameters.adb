@@ -89,6 +89,17 @@ package body ADO.Parameters is
 
    procedure Bind_Param (Params : in out Abstract_List;
                          Name  : in String;
+                         Value : in Token) is
+   begin
+      Abstract_List'Class (Params).
+        Add_Parameter (Parameter '(T        => T_TOKEN,
+                                   Name     => To_Unbounded_String (Name),
+                                   Position => 0,
+                                   Str      => To_Unbounded_String (String (Value))));
+   end Bind_Param;
+
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name  : in String;
                          Value : in Unbounded_String) is
       Param : constant Parameter := Parameter '(T => T_STRING, Name => +(Name),
                                                 Position => 0, Str => Value);
@@ -367,6 +378,9 @@ package body ADO.Parameters is
 
             when T_NULL =>
                Append (Buffer, "NULL");
+
+            when T_TOKEN =>
+               Append (Buffer, To_String (Param.Str));
 
             when others =>
                Append (Buffer, ''');

@@ -27,7 +27,10 @@ package ADO.Parameters is
 
    use Ada.Strings.Unbounded;
 
-   type Parameter_Type is (T_NULL, T_STRING, T_DATE, T_LONG_INTEGER, T_INTEGER, T_BOOLEAN);
+   type Token is new String;
+
+   type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_DATE, T_LONG_INTEGER,
+                           T_INTEGER, T_BOOLEAN);
 
    type Parameter (T : Parameter_Type) is record
       Name     : Unbounded_String;
@@ -102,6 +105,9 @@ package ADO.Parameters is
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in Ada.Calendar.Time);
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
+                         Value  : in Token);
 
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
