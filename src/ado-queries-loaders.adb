@@ -74,13 +74,18 @@ package body ADO.Queries.Loaders is
 
    function Find_Driver (Name : in String) return ADO.Drivers.Driver_Index is
    begin
-      if Name = "mysql" then
-         return 1;
-      elsif Name = "sqlite" then
-         return 2;
-      else
+      if Name'Length = 0 then
          return 0;
       end if;
+      declare
+         Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver (Name);
+      begin
+         if Driver = null then
+            Log.Error ("Database driver {0} not found", Name);
+            return 0;
+         end if;
+         return Driver.Get_Driver_Index;
+      end;
    end Find_Driver;
 
    --  ------------------------------

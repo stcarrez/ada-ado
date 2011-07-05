@@ -31,6 +31,19 @@ package body ADO.Drivers.Mysql is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases.Mysql");
 
+   Driver_Name : aliased constant String := "mysql";
+   Driver      : aliased Mysql_Driver;
+
+   --  ------------------------------
+   --  Get the database driver which manages this connection.
+   --  ------------------------------
+   overriding
+   function Get_Driver (Database : in Database_Connection)
+                        return Driver_Access is
+   begin
+      return Driver'Access;
+   end Get_Driver;
+
    overriding
    function Create_Statement (Database : in Database_Connection;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
@@ -219,9 +232,6 @@ package body ADO.Drivers.Mysql is
       Database.Count := 1;
       Result         := Database.all'Access;
    end Create_Connection;
-
-   Driver_Name : aliased constant String := "mysql";
-   Driver      : aliased Mysql_Driver;
 
    --  ------------------------------
    --  Initialize the Mysql driver.

@@ -55,6 +55,9 @@ package ADO.Drivers is
    function Get_Config (Name    : in String;
                         Default : in String := "") return String;
 
+   type Driver is abstract tagged limited private;
+   type Driver_Access is access all Driver'Class;
+
    --  ------------------------------
    --  Database connection implementation
    --  ------------------------------
@@ -99,6 +102,10 @@ package ADO.Drivers is
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is abstract;
+
+   --  Get the database driver which manages this connection.
+   function Get_Driver (Database : in Database_Connection)
+                        return Driver_Access is abstract;
 
    --  Closes the database connection
    procedure Close (Database : in out Database_Connection) is abstract;
@@ -147,13 +154,14 @@ package ADO.Drivers is
    --  ------------------------------
    --  Database Driver
    --  ------------------------------
-   type Driver is abstract tagged limited private;
-   type Driver_Access is access all Driver'Class;
 
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (D      : in out Driver;
                                 Config : in Configuration'Class;
                                 Result : out Database_Connection_Access) is abstract;
+
+   --  Get the driver unique index.
+   function Get_Driver_Index (D : in Driver) return Driver_Index;
 
    --  Register a database driver.
    procedure Register (Driver : in Driver_Access);
@@ -164,7 +172,8 @@ package ADO.Drivers is
 private
 
    type Driver is abstract new Ada.Finalization.Limited_Controlled with record
-      Name : Util.Strings.Name_Access;
+      Name  : Util.Strings.Name_Access;
+      Index : Driver_Index;
    end record;
 
    type Configuration is new Ada.Finalization.Controlled with record

@@ -142,10 +142,13 @@ package body ADO.Sessions is
    function Create_Statement (Database : in Session;
                               Query    : in ADO.Queries.Context'Class)
                               return Query_Statement is
-      SQL : constant String := Query.Get_SQL;
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (SQL);
+      declare
+         SQL : constant String := Query.Get_SQL (Database.Impl.Database.Get_Driver_Index);
+      begin
+         return Database.Impl.Database.Create_Statement (SQL);
+      end;
    end Create_Statement;
 
    --  ---------

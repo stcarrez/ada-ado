@@ -35,8 +35,20 @@ package body ADO.Drivers.Sqlite is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases.Sqlite");
 
+   Driver_Name : aliased constant String := "sqlite";
+   Driver      : aliased Sqlite_Driver;
 
    No_Callback : constant Sqlite3_H.sqlite3_callback := null;
+
+   --  ------------------------------
+   --  Get the database driver which manages this connection.
+   --  ------------------------------
+   overriding
+   function Get_Driver (Database : in Database_Connection)
+                        return Driver_Access is
+   begin
+      return Driver'Access;
+   end Get_Driver;
 
    --  ------------------------------
    --  Check for an error after executing a sqlite statement.
@@ -234,9 +246,6 @@ package body ADO.Drivers.Sqlite is
          Result := Database.all'Access;
       end;
    end Create_Connection;
-
-   Driver_Name : aliased constant String := "sqlite";
-   Driver      : aliased Sqlite_Driver;
 
    --  ------------------------------
    --  Initialize the SQLite driver.

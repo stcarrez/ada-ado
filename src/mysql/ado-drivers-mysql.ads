@@ -54,6 +54,11 @@ private
 
    type Database_Connection_Access is access all Database_Connection'Class;
 
+   --  Get the database driver which manages this connection.
+   overriding
+   function Get_Driver (Database : in Database_Connection)
+                        return Driver_Access;
+
    overriding
    function Create_Statement (Database : in Database_Connection;
                               Table    : in ADO.Schemas.Class_Mapping_Access)

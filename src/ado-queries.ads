@@ -61,7 +61,8 @@ package ADO.Queries is
    function Get_Max_Row_Count (From : in Context) return Natural;
 
    --  Get the SQL query that correspond to the query context.
-   function Get_SQL (From : in Context) return String;
+   function Get_SQL (From   : in Context;
+                     Driver : in ADO.Drivers.Driver_Index) return String;
 
    --  ------------------------------
    --  Query Definition

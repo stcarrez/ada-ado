@@ -79,6 +79,27 @@ package body ADO.Databases is
    end Create_Statement;
 
    --  ------------------------------
+   --  Get the database driver which manages this connection.
+   --  ------------------------------
+   function Get_Driver (Database : in Connection) return ADO.Drivers.Driver_Access is
+   begin
+      if Database.Impl = null then
+         Log.Error ("Database implementation is not initialized");
+         raise NOT_OPEN with "No connection to the database";
+      end if;
+      return Database.Impl.Get_Driver;
+   end Get_Driver;
+
+   --  ------------------------------
+   --  Get the database driver index.
+   --  ------------------------------
+   function Get_Driver_Index (Database : in Connection) return ADO.Drivers.Driver_Index is
+      Driver : constant ADO.Drivers.Driver_Access := Database.Get_Driver;
+   begin
+      return Driver.Get_Driver_Index;
+   end Get_Driver_Index;
+
+   --  ------------------------------
    --  Load the database schema definition for the current database.
    --  ------------------------------
    procedure Load_Schema (Database : in Connection;

@@ -67,12 +67,13 @@ package body ADO.Queries is
    --  ------------------------------
    --  Get the SQL query that correspond to the query context.
    --  ------------------------------
-   function Get_SQL (From : in Context) return String is
+   function Get_SQL (From   : in Context;
+                     Driver : in ADO.Drivers.Driver_Index) return String is
    begin
       if From.Query_Def = null then
          return "";
       else
-         return Get_SQL (From.Query_Def, 0);
+         return Get_SQL (From.Query_Def, Driver);
       end if;
    end Get_SQL;
 

@@ -221,7 +221,16 @@ package body ADO.Drivers is
    package Driver_List is
      new Ada.Containers.Doubly_Linked_Lists (Element_Type => Driver_Access);
 
-   Drivers : Driver_List.List;
+   Next_Index : Driver_Index := 1;
+   Drivers    : Driver_List.List;
+
+   --  ------------------------------
+   --  Get the driver unique index.
+   --  ------------------------------
+   function Get_Driver_Index (D : in Driver) return Driver_Index is
+   begin
+      return D.Index;
+   end Get_Driver_Index;
 
    --  ------------------------------
    --  Register a database driver.
@@ -231,6 +240,8 @@ package body ADO.Drivers is
       Log.Info ("Register driver {0}", Driver.Name.all);
 
       Driver_List.Prepend (Container => Drivers, New_Item => Driver);
+      Driver.Index := Next_Index;
+      Next_Index := Next_Index + 1;
    end Register;
 
    --  ------------------------------

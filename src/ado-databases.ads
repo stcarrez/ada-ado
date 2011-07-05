@@ -69,6 +69,12 @@ package ADO.Databases is
    procedure Load_Schema (Database : in Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
+   --  Get the database driver which manages this connection.
+   function Get_Driver (Database : in Connection) return ADO.Drivers.Driver_Access;
+
+   --  Get the database driver index.
+   function Get_Driver_Index (Database : in Connection) return ADO.Drivers.Driver_Index;
+
    --  ---------
    --  Master Database connection
    --  ---------
