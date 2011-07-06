@@ -52,9 +52,9 @@ Database Drivers
 
 Database Creation
 
-   Create the tests database by using the following command.
-   Change 'root' and 'password' to a MySQL user that has admin access rights
-   ('create database' and 'grant option' privileges).
+   Create the tests database by using the Dynamo command.
+       Note: change 'root' and 'password' to a MySQL user that has admin access rights
+             ('create database' and 'grant option' privileges).
 
       dynamo create-database db/regtests root password
 
@@ -62,4 +62,23 @@ Database Creation
    You can also specify the connection string and create the schema by using:
 
       dynamo create-database db/regtests 'mysql://localhost:3306/ado_test?user=ado' root password
+
+   To create manually the database, you can proceed to the following steps:
+
+    1. Create the 'ado_test' database in MySQL
+
+         mysql -u root
+         mysql> create database ado_test;
+
+    2. Create the 'ado' user and give the access rights:
+
+         mysql> grant select, insert, update, delete,
+                      create, drop, create temporary tables, execute,
+                      show view on `ado_test`.* to ado@'localhost';
+         mysql> flush privileges;
+
+    3. Create the tables
+
+         mysql> use ado_test
+         mysql> source db/regtests/mysql/create-ado-mysql.sql
 
