@@ -37,8 +37,8 @@ Documentation
 
 Database Drivers
 
-   The MySQL and SQLite development headers are necessary for building
-   the ADO driver.
+   The MySQL and SQLite development headers and runtime are necessary for building
+   the ADO driver.  The configure script will use them to enable the ADO drivers.
 
    MySQL Development installation
 
@@ -48,4 +48,18 @@ Database Drivers
    SQLite Development installation
 
       sudo apt-get install libsqlite3-dev
+
+
+Database Creation
+
+   Create the tests database by using the following command.
+   Change 'root' and 'password' to a MySQL user that has admin access rights
+   ('create database' and 'grant option' privileges).
+
+      dynamo create-database db/regtests root password
+
+   The default database connection string is defined in dynamo.xml.
+   You can also specify the connection string and create the schema by using:
+
+      dynamo create-database db/regtests 'mysql://localhost:3306/ado_test?user=ado' root password
 
