@@ -78,11 +78,11 @@ generate:
 	$(GENERATOR) generate db/samples
 
 # Files to package in source distribution
-DISTFILES=README LICENSE.txt NOTICE.txt CHANGES config.guess configure config.sub \
-configure.in Makefile.in install-sh \
+DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog config.guess configure config.sub \
+configure.in Makefile.in install-sh dynamo.xml \
 ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests \
-bin obj lib
+bin obj lib distrib
 
 dist:
 	-rm -rf $(distdir)
@@ -112,13 +112,16 @@ install:
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ado
 	${MKDIR} -p ${dynamodir}/ado/db
+	${MKDIR} -p ${dynamodir}/ado/db/mysql
+	${MKDIR} -p ${dynamodir}/ado/db/sqlite
 	${CP} src/*.ad[bs] ${includedir}/ado
 	test T${HAVE_MYSQL} = TTrue && ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
 	test T${HAVE_SQLITE} = TTrue && ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
 	${CP} src/model/*.ad[bs] ${includedir}/ado
 	sed -e "s,INSTALL,${prefix},g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
-	${CP} db/*.sql ${dynamodir}/ado/db/
+	${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
+	${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
 	${CP} lib/ado/*.ali ${alidir}/ado
 	${CP} lib/ado/libadaado.a ${libdir}/
 
