@@ -29,6 +29,8 @@ package ADO is
    type Unsigned64 is mod 2**64;
    for Unsigned64'Size use 64;
 
+   DEFAULT_TIME : constant Ada.Calendar.Time;
+
    --  ------------------------------
    --  Database Identifier
    --  ------------------------------
@@ -87,5 +89,12 @@ package ADO is
 
    package Blob_References is new Util.Refs.References (Blob, Blob_Access);
    subtype Blob_Ref is Blob_References.Ref;
+
+private
+
+   DEFAULT_TIME : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year    => 1901,
+                                                                      Month   => 1,
+                                                                      Day     => 1,
+                                                                      Seconds => 0.0);
 
 end ADO;

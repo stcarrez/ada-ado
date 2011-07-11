@@ -276,7 +276,7 @@ private
      new Ada.Finalization.Controlled with record
       case Of_Type is
          when KEY_INTEGER =>
-            Id : Identifier;
+            Id : Identifier := 0;
 
          when KEY_STRING =>
             Str : Ada.Strings.Unbounded.Unbounded_String;

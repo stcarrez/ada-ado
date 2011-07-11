@@ -32,7 +32,7 @@ package ADO.Parameters is
    type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_DATE, T_LONG_INTEGER,
                            T_INTEGER, T_BOOLEAN);
 
-   type Parameter (T : Parameter_Type) is record
+   type Parameter (T : Parameter_Type := T_NULL) is record
       Name     : Unbounded_String;
       Position : Natural := 0;
       case T is
