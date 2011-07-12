@@ -56,8 +56,8 @@ package body ADO.Tests is
       Message : constant String := Exception_Message (E);
    begin
       Log.Info ("Exception: {0}", Message);
-      Assert (T, Message'Length > 0,
-              "Exception " & Exception_Name (E) & " does not have any message");
+      T.Assert (Message'Length > 0,
+                "Exception " & Exception_Name (E) & " does not have any message");
    end Assert_Has_Message;
 
    procedure Set_Up (T : in out Test) is
