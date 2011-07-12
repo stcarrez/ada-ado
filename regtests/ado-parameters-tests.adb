@@ -59,7 +59,7 @@ package body ADO.Parameters.Tests is
    begin
       SQL.Bind_Param (1, "select '");
       SQL.Bind_Param (2, "from");
-      SQL.Bind_Param ("user_id", "23");
+      SQL.Bind_Param ("user_id", String '("23"));
       SQL.Bind_Param ("object_23_identifier", Integer (44));
       SQL.Bind_Param ("bool", True);
       SQL.Bind_Param (6, False);

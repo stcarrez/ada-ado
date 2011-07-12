@@ -152,6 +152,7 @@ package body ADO.Objects.Tests is
          Cmt.Set_User (User);
          Cmt.Set_Entity_Id (2);
          Cmt.Set_Entity_Type (E);
+         Cmt.Set_Date (ADO.DEFAULT_TIME);
          Cmt.Save (S);
          S.Commit;
       end;

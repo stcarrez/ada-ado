@@ -59,6 +59,7 @@ package body Regtests.Comments is
    begin
       Impl := new Comment_Impl;
       Impl.Version := 0;
+      Impl.Date := ADO.DEFAULT_TIME;
       Impl.Entity_Id := 0;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
