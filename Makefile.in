@@ -35,6 +35,7 @@ sqlite_src_dir=${srcdir}/src/sqlite
 # Build executables for all mains defined by the project.
 build:  src/ado-drivers-initialize.adb
 	$(GNATMAKE) -p -P "$(GPRPATH)"
+	$(GNATMAKE) -p -Ptests
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -51,12 +52,12 @@ src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
 
 # Build and run the unit tests
 test:	build
-	$(GNATMAKE) -p -Ptests
 	bin/ado_harness -config tests.properties
 
 # Clean the root project of all build products.
 clean:
 	$(GNATCLEAN) -q -P "$(GPRPATH)"
+	$(GNATCLEAN) -q -Ptests
 
 # Clean root project and all imported projects too.
 clean_tree:
