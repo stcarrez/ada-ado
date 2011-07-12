@@ -1,1 +1,2 @@
-<project><name>ado</name></project>
+<project><name>ado</name>
+<property name="database">mysql://localhost:3306/ado_test?user=ado</property></project>
