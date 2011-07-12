@@ -77,11 +77,19 @@ generate:
 	$(GENERATOR) generate db/regtests
 	$(GENERATOR) generate db/samples
 
+# Create the test sqlite database
+regtests.db:
+	sqlite3 $@ < db/regtests/sqlite/create-ado-sqlite.sql
+
+# Create the samples sqlite database
+samples.db:
+	sqlite3 $@ < db/samples/sqlite/create-ado-sqlite.sql
+
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog config.guess configure config.sub \
 configure.in Makefile.in install-sh dynamo.xml \
 ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
-src samples regtests \
+src samples regtests db \
 bin obj lib distrib
 
 dist:
