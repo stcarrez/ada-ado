@@ -1,0 +1,7 @@
+[client]
+host     = localhost
+user     = ado
+password = 
+database = ado_test
+
+
