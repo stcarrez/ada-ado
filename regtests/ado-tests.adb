@@ -76,14 +76,14 @@ package body ADO.Tests is
 
       Object : Regtests.Simple.Model.User_Ref;
    begin
-      Assert (T, Object.Is_Null, "Object_Ref.Is_Null: Empty object must be null");
+      T.Assert (Object.Is_Null, "Object_Ref.Is_Null: Empty object must be null");
 
       Object.Load (DB, -1);
-      Assert (T, False, "Object_Ref.Load: Load must raise NOT_FOUND exception");
+      T.Assert (False, "Object_Ref.Load: Load must raise NOT_FOUND exception");
 
    exception
       when ADO.Objects.NOT_FOUND =>
-         Assert (T, Object.Is_Null, "Object_Ref.Load: Must not change the object");
+         T.Assert (Object.Is_Null, "Object_Ref.Load: Must not change the object");
    end Test_Load;
 
    --  ------------------------------
@@ -104,11 +104,11 @@ package body ADO.Tests is
       Object.Set_Name ("A simple test name");
       Object.Save (DB);
 
-      Assert (T, Object.Get_Id > 0, "Saving an object did not allocate an identifier");
+      T.Assert (Object.Get_Id > 0, "Saving an object did not allocate an identifier");
 
       --  Load the object
       Check.Load (DB, Object.Get_Id);
-      Assert (T, not Check.Is_Null, "Object_Ref.Load: Loading the object failed");
+      T.Assert (not Check.Is_Null, "Object_Ref.Load: Loading the object failed");
    end Test_Create_Load;
 
    --  ------------------------------
@@ -182,7 +182,7 @@ package body ADO.Tests is
    begin
       Ref.Set_Name ("Testing the allocation");
       Ref.Save (DB);
-      Assert (T, Ref.Get_Id > 0, "Object must have an id");
+      T.Assert (Ref.Get_Id > 0, "Object must have an id");
 
       Ref.Set_Name ("Testing the allocation: update");
       Ref.Save (DB);
@@ -209,7 +209,7 @@ package body ADO.Tests is
          begin
             Ref.Set_Name ("Testing the allocation");
             Ref.Save (DB);
-            Assert (T, Ref.Get_Id > 0, "Object must have an id");
+            T.Assert (Ref.Get_Id > 0, "Object must have an id");
          end;
       end loop;
       DB.Commit;
@@ -228,7 +228,7 @@ package body ADO.Tests is
       Log.Info ("Deleted {0} rows", Natural'Image (Result));
       DB.Commit;
 
-      Assert (T, Result > 100, "Too few rows were deleted");
+      T.Assert (Result > 100, "Too few rows were deleted");
    end Test_Delete_All;
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
