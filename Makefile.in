@@ -86,6 +86,12 @@ regtests.db:
 samples.db:
 	sqlite3 $@ < db/samples/sqlite/create-ado-sqlite.sql
 
+# Create the tables in the database.
+# (The database itself must have been created)
+create-mysql-tests:
+	-mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
+	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
+
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog config.guess configure config.sub \
 configure.in Makefile.in install-sh dynamo.xml \
