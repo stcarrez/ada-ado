@@ -157,8 +157,8 @@ package body ADO.Tests is
             Obj.Save (DB);
             Key := Obj.Get_Key;
             if PrevId /= NO_IDENTIFIER then
-               Assert (T, Objects.Get_Value (Key) = PrevId + 1, "Invalid allocated identifier: "
-                       & Objects.To_String (Key) & " previous=" & Identifier'Image (PrevId));
+               T.Assert (Objects.Get_Value (Key) = PrevId + 1, "Invalid allocated identifier: "
+                         & Objects.To_String (Key) & " previous=" & Identifier'Image (PrevId));
             end if;
             PrevId := Objects.Get_Value (Key);
          end;
