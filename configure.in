@@ -50,11 +50,25 @@ AC_SUBST(EXEC_PREFIX)
 ADO_LIBDIR="lib"
 AC_SUBST(ADO_LIBDIR)
 
+
+case "${host}" in
+  ## On Windows, the MySQL library name is libmysql
+  *mingw* )
+    MYSQL_LIB=mysql
+    ;;
+
+  *)
+    MYSQL_LIB=mysqlclient
+    ;;
+
+esac
+
 DB=""
 ADO_DB_MYSQL=False
-AC_CHECK_LIB(mysqlclient,mysql_init,[
+AC_CHECK_LIB($MYSQL_LIB,mysql_init,[
     DB="$DB mysql"
     ADO_DB_MYSQL=True
+    MYSQL_LIBNAME="$MYSQL_LIB"
 ])
 
 ADO_DB_SQLITE=False
@@ -86,6 +100,7 @@ AC_SUBST(ADO_TESTS_SRC_DIR)
 AC_SUBST(ADO_TESTS_HARNESS)
 AC_SUBST(ADO_DB_MYSQL)
 AC_SUBST(ADO_DB_SQLITE)
+AC_SUBST(MYSQL_LIBNAME)
 
 ##########################################
 # Ada Util library

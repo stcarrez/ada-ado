@@ -21,13 +21,14 @@ with Util.Log;
 with Util.Log.Loggers;
 with ADO.Statements.Mysql;
 with ADO.C;
+with Mysql.Lib; use Mysql.Lib;
 package body ADO.Drivers.Mysql is
 
    use ADO.Statements.Mysql;
    use Util.Log;
    use Interfaces.C;
 
-   pragma Linker_Options ("-lmysqlclient");
+   pragma Linker_Options (MYSQL_LIB_NAME);
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases.Mysql");
 

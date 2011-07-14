@@ -557,6 +557,7 @@ ac_unique_file="src/ado.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 UTIL_DIR
+MYSQL_LIBNAME
 ADO_DB_SQLITE
 ADO_DB_MYSQL
 ADO_TESTS_HARNESS
@@ -2946,16 +2947,30 @@ EXEC_PREFIX="$prefix"
 ADO_LIBDIR="lib"
 
 
+
+case "${host}" in
+  ## On Windows, the MySQL library name is libmysql
+  *mingw* )
+    MYSQL_LIB=mysql
+    ;;
+
+  *)
+    MYSQL_LIB=mysqlclient
+    ;;
+
+esac
+
 DB=""
 ADO_DB_MYSQL=False
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -lmysqlclient" >&5
-$as_echo_n "checking for mysql_init in -lmysqlclient... " >&6; }
-if test "${ac_cv_lib_mysqlclient_mysql_init+set}" = set; then :
+as_ac_Lib=`$as_echo "ac_cv_lib_$MYSQL_LIB''_mysql_init" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -l$MYSQL_LIB" >&5
+$as_echo_n "checking for mysql_init in -l$MYSQL_LIB... " >&6; }
+if { as_var=$as_ac_Lib; eval "test \"\${$as_var+set}\" = set"; }; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-lmysqlclient  $LIBS"
+LIBS="-l$MYSQL_LIB  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -2975,20 +2990,23 @@ return mysql_init ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_mysqlclient_mysql_init=yes
+  eval "$as_ac_Lib=yes"
 else
-  ac_cv_lib_mysqlclient_mysql_init=no
+  eval "$as_ac_Lib=no"
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_mysql_init" >&5
-$as_echo "$ac_cv_lib_mysqlclient_mysql_init" >&6; }
-if test "x$ac_cv_lib_mysqlclient_mysql_init" = x""yes; then :
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+eval as_val=\$$as_ac_Lib
+   if test "x$as_val" = x""yes; then :
 
     DB="$DB mysql"
     ADO_DB_MYSQL=True
+    MYSQL_LIBNAME="$MYSQL_LIB"
 
 fi
 
@@ -3055,6 +3073,7 @@ else
     ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS \"ado_${i}_harness\""
   done
 fi
+
 
 
 

@@ -13,6 +13,8 @@ DIST_FILE=ado-@ADO_VERSION@.tar.gz
 HAVE_MYSQL=@ADO_DB_MYSQL@
 HAVE_SQLITE=@ADO_DB_SQLITE@
 
+MYSQL_LIBNAME=@MYSQL_LIBNAME@
+
 MKDIR=mkdir
 CP=cp
 
@@ -33,7 +35,7 @@ mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
 
 # Build executables for all mains defined by the project.
-build:  src/ado-drivers-initialize.adb
+build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads
 	$(GNATMAKE) -p -P "$(GPRPATH)"
 	$(GNATMAKE) -p -Ptests
 
@@ -49,6 +51,9 @@ src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
 	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
 	          -DHAVE_SQLITE=$(HAVE_SQLITE) \
 		  src/ado-drivers-initialize.gpb src/ado-drivers-initialize.adb
+
+src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
+	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb src/mysql/mysql-lib.ads
 
 # Build and run the unit tests
 test:	test-sqlite test-mysql
