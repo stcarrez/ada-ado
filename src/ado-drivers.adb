@@ -233,6 +233,14 @@ package body ADO.Drivers is
    end Get_Driver_Index;
 
    --  ------------------------------
+   --  Get the driver name.
+   --  ------------------------------
+   function Get_Driver_Name (D : in Driver) return String is
+   begin
+      return D.Name.all;
+   end Get_Driver_Name;
+
+   --  ------------------------------
    --  Register a database driver.
    --  ------------------------------
    procedure Register (Driver : in Driver_Access) is

@@ -163,6 +163,9 @@ package ADO.Drivers is
    --  Get the driver unique index.
    function Get_Driver_Index (D : in Driver) return Driver_Index;
 
+   --  Get the driver name.
+   function Get_Driver_Name (D : in Driver) return String;
+
    --  Register a database driver.
    procedure Register (Driver : in Driver_Access);
 
