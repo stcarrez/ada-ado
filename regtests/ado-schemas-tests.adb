@@ -19,6 +19,7 @@
 with Util.Tests;
 with Util.Test_Caller;
 
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Databases;
 with ADO.Schemas.Mysql;
@@ -45,13 +46,20 @@ package body ADO.Schemas.Tests is
    end Add_Tests;
 
    procedure Test_Load_Schema (T : in out Test) is
+      use type ADO.Drivers.Driver_Access;
 
       S   : constant ADO.Sessions.Session := Regtests.Get_Database;
       DB  : constant ADO.Databases.Connection'Class := S.Get_Connection;
+      Dr  : constant ADO.Drivers.Driver_Access := DB.Get_Driver;
 
       Schema : Schema_Definition;
       Table  : Table_Definition;
    begin
+      T.Assert (Dr /= null, "Database connection has no driver");
+      if Dr.Get_Driver_Name /= "mysql" then
+         return;
+      end if;
+
       ADO.Schemas.Mysql.Load_Schema (DB, Schema);
 
       Table := ADO.Schemas.Find_Table (Schema, "allocate");
