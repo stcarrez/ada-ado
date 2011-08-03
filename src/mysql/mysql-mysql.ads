@@ -69,10 +69,10 @@ package Mysql.Mysql is
 
    -- for LISTs used in 'Mysql_Access' and 'Mysql_Access'
    mysql_port : aliased unsigned;  -- /usr/include/mysql/mysql.h:78:21
-   pragma Import (C, mysql_port, "mysql_port");
+   pragma Import (Stdcall, mysql_port, "mysql_port");
 
    mysql_unix_port : Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:79:14
-   pragma Import (C, mysql_unix_port, "mysql_unix_port");
+   pragma Import (Stdcall, mysql_unix_port, "mysql_unix_port");
 
    -- Name of column
    type st_mysql_field is record
@@ -499,10 +499,10 @@ package Mysql.Mysql is
      (arg1 : int;
       arg2 : System.Address;
       arg3 : System.Address) return int;  -- /usr/include/mysql/mysql.h:374:13
-   pragma Import (C, mysql_server_init, "mysql_server_init");
+   pragma Import (Stdcall, mysql_server_init, "mysql_server_init");
 
    procedure mysql_server_end;  -- /usr/include/mysql/mysql.h:375:14
-   pragma Import (C, mysql_server_end, "mysql_server_end");
+   pragma Import (Stdcall, mysql_server_end, "mysql_server_end");
 
    --  mysql_server_init/end need to be called when using libmysqld or
    --  libmysqlclient (exactly, mysql_server_init() is called by mysql_init() so
@@ -514,7 +514,7 @@ package Mysql.Mysql is
    --
 
    function mysql_get_parameters return MYSQL_PARAMETERS;
-   pragma Import (C, mysql_get_parameters, "mysql_get_parameters");
+   pragma Import (Stdcall, mysql_get_parameters, "mysql_get_parameters");
 
    --  Set up and bring down a thread; these function should be called
    --  for each thread in an application which opens at least one MySQL
@@ -523,72 +523,72 @@ package Mysql.Mysql is
    --
 
    function mysql_thread_init return my_bool;  -- /usr/include/mysql/mysql.h:396:17
-   pragma Import (C, mysql_thread_init, "mysql_thread_init");
+   pragma Import (Stdcall, mysql_thread_init, "mysql_thread_init");
 
    procedure mysql_thread_end;  -- /usr/include/mysql/mysql.h:397:14
-   pragma Import (C, mysql_thread_end, "mysql_thread_end");
+   pragma Import (Stdcall, mysql_thread_end, "mysql_thread_end");
 
    --  Functions to get information from the Mysql_Access and MYSQL_RES structures
    --  Should definitely be used if one uses shared libraries.
    --
 
    function Mysql_Num_Rows (arg1 : MYSQL_RES) return my_ulonglong;
-   pragma Import (C, Mysql_Num_Rows, "mysql_num_rows");
+   pragma Import (Stdcall, Mysql_Num_Rows, "mysql_num_rows");
 
    function Mysql_Num_Fields (arg1 : MYSQL_RES) return unsigned;
-   pragma Import (C, Mysql_Num_Fields, "mysql_num_fields");
+   pragma Import (Stdcall, Mysql_Num_Fields, "mysql_num_fields");
 
    function mysql_eof (arg1 : MYSQL_RES) return my_bool;
-   pragma Import (C, mysql_eof, "mysql_eof");
+   pragma Import (Stdcall, mysql_eof, "mysql_eof");
 
    function Mysql_Fetch_Field_Direct (Arg1 : MYSQL_RES; Arg2 : Unsigned)
                                       return MYSQL_FIELD;
-   pragma Import (C, mysql_fetch_field_direct, "mysql_fetch_field_direct");
+   pragma Import (Stdcall, mysql_fetch_field_direct, "mysql_fetch_field_direct");
 
    function Mysql_Fetch_Fields (arg1 : MYSQL_RES) return MYSQL_FIELD;
-   pragma Import (C, Mysql_Fetch_Fields, "mysql_fetch_fields");
+   pragma Import (Stdcall, Mysql_Fetch_Fields, "mysql_fetch_fields");
 
    function mysql_row_tell (arg1 : MYSQL_RES) return MYSQL_ROW_OFFSET;
-   pragma Import (C, mysql_row_tell, "mysql_row_tell");
+   pragma Import (Stdcall, mysql_row_tell, "mysql_row_tell");
 
    function mysql_field_tell (arg1 : MYSQL_RES) return MYSQL_FIELD_OFFSET;
-   pragma Import (C, mysql_field_tell, "mysql_field_tell");
+   pragma Import (Stdcall, mysql_field_tell, "mysql_field_tell");
 
    function mysql_field_count (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:413:22
-   pragma Import (C, mysql_field_count, "mysql_field_count");
+   pragma Import (Stdcall, mysql_field_count, "mysql_field_count");
 
    function Mysql_Affected_Rows (arg1 : Mysql_Access) return my_ulonglong;  -- /usr/include/mysql/mysql.h:414:22
-   pragma Import (C, Mysql_Affected_Rows, "mysql_affected_rows");
+   pragma Import (Stdcall, Mysql_Affected_Rows, "mysql_affected_rows");
 
    function mysql_insert_id (arg1 : Mysql_Access) return my_ulonglong;  -- /usr/include/mysql/mysql.h:415:22
-   pragma Import (C, mysql_insert_id, "mysql_insert_id");
+   pragma Import (Stdcall, mysql_insert_id, "mysql_insert_id");
 
    function mysql_errno (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:416:22
-   pragma Import (C, mysql_errno, "mysql_errno");
+   pragma Import (Stdcall, mysql_errno, "mysql_errno");
 
    function Mysql_Error (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:417:22
-   pragma Import (C, Mysql_Error, "mysql_error");
+   pragma Import (Stdcall, Mysql_Error, "mysql_error");
 
    function mysql_sqlstate (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:418:21
-   pragma Import (C, mysql_sqlstate, "mysql_sqlstate");
+   pragma Import (Stdcall, mysql_sqlstate, "mysql_sqlstate");
 
    function mysql_warning_count (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:419:22
-   pragma Import (C, mysql_warning_count, "mysql_warning_count");
+   pragma Import (Stdcall, mysql_warning_count, "mysql_warning_count");
 
    function mysql_info (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:420:22
-   pragma Import (C, mysql_info, "mysql_info");
+   pragma Import (Stdcall, mysql_info, "mysql_info");
 
    function mysql_thread_id (arg1 : Mysql_Access) return unsigned_long;  -- /usr/include/mysql/mysql.h:421:23
-   pragma Import (C, mysql_thread_id, "mysql_thread_id");
+   pragma Import (Stdcall, mysql_thread_id, "mysql_thread_id");
 
    function mysql_character_set_name (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:422:22
-   pragma Import (C, mysql_character_set_name, "mysql_character_set_name");
+   pragma Import (Stdcall, mysql_character_set_name, "mysql_character_set_name");
 
    function mysql_set_character_set (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:423:22
-   pragma Import (C, mysql_set_character_set, "mysql_set_character_set");
+   pragma Import (Stdcall, mysql_set_character_set, "mysql_set_character_set");
 
    function mysql_init (arg1 : Mysql_Access) return Mysql_Access;  -- /usr/include/mysql/mysql.h:425:18
-   pragma Import (C, mysql_init, "mysql_init");
+   pragma Import (Stdcall, mysql_init, "mysql_init");
 
    function mysql_ssl_set
      (arg1 : Mysql_Access;
@@ -597,17 +597,17 @@ package Mysql.Mysql is
       arg4 : Interfaces.C.Strings.chars_ptr;
       arg5 : Interfaces.C.Strings.chars_ptr;
       arg6 : Interfaces.C.Strings.chars_ptr) return my_bool;  -- /usr/include/mysql/mysql.h:426:18
-   pragma Import (C, mysql_ssl_set, "mysql_ssl_set");
+   pragma Import (Stdcall, mysql_ssl_set, "mysql_ssl_set");
 
    function mysql_get_ssl_cipher (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:429:25
-   pragma Import (C, mysql_get_ssl_cipher, "mysql_get_ssl_cipher");
+   pragma Import (Stdcall, mysql_get_ssl_cipher, "mysql_get_ssl_cipher");
 
    function mysql_change_user
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : Interfaces.C.Strings.chars_ptr;
       arg4 : Interfaces.C.Strings.chars_ptr) return my_bool;  -- /usr/include/mysql/mysql.h:430:18
-   pragma Import (C, mysql_change_user, "mysql_change_user");
+   pragma Import (Stdcall, mysql_change_user, "mysql_change_user");
 
    function mysql_real_connect
      (arg1 : Mysql_Access;
@@ -618,60 +618,60 @@ package Mysql.Mysql is
       arg6 : unsigned;
       arg7 : Interfaces.C.Strings.chars_ptr;
       arg8 : unsigned_long) return Mysql_Access;  -- /usr/include/mysql/mysql.h:432:18
-   pragma Import (C, mysql_real_connect, "mysql_real_connect");
+   pragma Import (Stdcall, mysql_real_connect, "mysql_real_connect");
 
    function mysql_select_db (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:439:14
-   pragma Import (C, mysql_select_db, "mysql_select_db");
+   pragma Import (Stdcall, mysql_select_db, "mysql_select_db");
 
    function Mysql_Query (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:440:14
-   pragma Import (C, Mysql_Query, "mysql_query");
+   pragma Import (Stdcall, Mysql_Query, "mysql_query");
 
    function mysql_send_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:441:14
-   pragma Import (C, mysql_send_query, "mysql_send_query");
+   pragma Import (Stdcall, mysql_send_query, "mysql_send_query");
 
    function mysql_real_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:443:14
-   pragma Import (C, mysql_real_query, "mysql_real_query");
+   pragma Import (Stdcall, mysql_real_query, "mysql_real_query");
 
    function Mysql_Store_Result (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:445:25
-   pragma Import (C, Mysql_Store_Result, "mysql_store_result");
+   pragma Import (Stdcall, Mysql_Store_Result, "mysql_store_result");
 
    function mysql_use_result (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:446:25
-   pragma Import (C, mysql_use_result, "mysql_use_result");
+   pragma Import (Stdcall, mysql_use_result, "mysql_use_result");
 
    -- perform query on master
    function mysql_master_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return my_bool;  -- /usr/include/mysql/mysql.h:449:18
-   pragma Import (C, mysql_master_query, "mysql_master_query");
+   pragma Import (Stdcall, mysql_master_query, "mysql_master_query");
 
    function mysql_master_send_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return my_bool;  -- /usr/include/mysql/mysql.h:451:18
-   pragma Import (C, mysql_master_send_query, "mysql_master_send_query");
+   pragma Import (Stdcall, mysql_master_send_query, "mysql_master_send_query");
 
    -- perform query on slave
    function mysql_slave_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return my_bool;  -- /usr/include/mysql/mysql.h:454:18
-   pragma Import (C, mysql_slave_query, "mysql_slave_query");
+   pragma Import (Stdcall, mysql_slave_query, "mysql_slave_query");
 
    function mysql_slave_send_query
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return my_bool;  -- /usr/include/mysql/mysql.h:456:18
-   pragma Import (C, mysql_slave_send_query, "mysql_slave_send_query");
+   pragma Import (Stdcall, mysql_slave_send_query, "mysql_slave_send_query");
 
    procedure mysql_get_character_set_info (arg1 : Mysql_Access; arg2 : access character_set);  -- /usr/include/mysql/mysql.h:458:21
-   pragma Import (C, mysql_get_character_set_info, "mysql_get_character_set_info");
+   pragma Import (Stdcall, mysql_get_character_set_info, "mysql_get_character_set_info");
 
    -- local infile support
    procedure mysql_set_local_infile_handler
@@ -690,42 +690,42 @@ package Mysql.Mysql is
          arg2 : Interfaces.C.Strings.chars_ptr;
          arg3 : unsigned) return int;
       arg6 : System.Address);  -- /usr/include/mysql/mysql.h:466:1
-   pragma Import (C, mysql_set_local_infile_handler, "mysql_set_local_infile_handler");
+   pragma Import (Stdcall, mysql_set_local_infile_handler, "mysql_set_local_infile_handler");
 
    procedure mysql_set_local_infile_default (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:477:1
-   pragma Import (C, mysql_set_local_infile_default, "mysql_set_local_infile_default");
+   pragma Import (Stdcall, mysql_set_local_infile_default, "mysql_set_local_infile_default");
 
    --  enable/disable parsing of all queries to decide if they go on master or
    --  slave
    --
 
    procedure mysql_enable_rpl_parse (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:484:25
-   pragma Import (C, mysql_enable_rpl_parse, "mysql_enable_rpl_parse");
+   pragma Import (Stdcall, mysql_enable_rpl_parse, "mysql_enable_rpl_parse");
 
    procedure mysql_disable_rpl_parse (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:485:25
-   pragma Import (C, mysql_disable_rpl_parse, "mysql_disable_rpl_parse");
+   pragma Import (Stdcall, mysql_disable_rpl_parse, "mysql_disable_rpl_parse");
 
    -- get the value of the parse flag
    function mysql_rpl_parse_enabled (arg1 : Mysql_Access) return int;  -- /usr/include/mysql/mysql.h:487:25
-   pragma Import (C, mysql_rpl_parse_enabled, "mysql_rpl_parse_enabled");
+   pragma Import (Stdcall, mysql_rpl_parse_enabled, "mysql_rpl_parse_enabled");
 
    --  enable/disable reads from master
    procedure mysql_enable_reads_from_master (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:490:25
-   pragma Import (C, mysql_enable_reads_from_master, "mysql_enable_reads_from_master");
+   pragma Import (Stdcall, mysql_enable_reads_from_master, "mysql_enable_reads_from_master");
 
    procedure mysql_disable_reads_from_master (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:491:25
-   pragma Import (C, mysql_disable_reads_from_master, "mysql_disable_reads_from_master");
+   pragma Import (Stdcall, mysql_disable_reads_from_master, "mysql_disable_reads_from_master");
 
    -- get the value of the master read flag
    function mysql_reads_from_master_enabled (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:493:18
-   pragma Import (C, mysql_reads_from_master_enabled, "mysql_reads_from_master_enabled");
+   pragma Import (Stdcall, mysql_reads_from_master_enabled, "mysql_reads_from_master_enabled");
 
    function mysql_rpl_query_type (arg1 : Interfaces.C.Strings.chars_ptr; arg2 : int) return mysql_rpl_type;  -- /usr/include/mysql/mysql.h:495:33
-   pragma Import (C, mysql_rpl_query_type, "mysql_rpl_query_type");
+   pragma Import (Stdcall, mysql_rpl_query_type, "mysql_rpl_query_type");
 
    -- discover the master and its slaves
    function mysql_rpl_probe (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:498:18
-   pragma Import (C, mysql_rpl_probe, "mysql_rpl_probe");
+   pragma Import (Stdcall, mysql_rpl_probe, "mysql_rpl_probe");
 
    -- set the master, close/free the old one, if it is not a pivot
    function mysql_set_master
@@ -734,7 +734,7 @@ package Mysql.Mysql is
       arg3 : unsigned;
       arg4 : Interfaces.C.Strings.chars_ptr;
       arg5 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:501:25
-   pragma Import (C, mysql_set_master, "mysql_set_master");
+   pragma Import (Stdcall, mysql_set_master, "mysql_set_master");
 
    function mysql_add_slave
      (arg1 : Mysql_Access;
@@ -742,122 +742,122 @@ package Mysql.Mysql is
       arg3 : unsigned;
       arg4 : Interfaces.C.Strings.chars_ptr;
       arg5 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:505:25
-   pragma Import (C, mysql_add_slave, "mysql_add_slave");
+   pragma Import (Stdcall, mysql_add_slave, "mysql_add_slave");
 
    function mysql_shutdown (arg1 : Mysql_Access; arg2 : Com.mysql_enum_shutdown_level) return int;  -- /usr/include/mysql/mysql.h:510:14
-   pragma Import (C, mysql_shutdown, "mysql_shutdown");
+   pragma Import (Stdcall, mysql_shutdown, "mysql_shutdown");
 
    function mysql_dump_debug_info (arg1 : Mysql_Access) return int;  -- /usr/include/mysql/mysql.h:513:14
-   pragma Import (C, mysql_dump_debug_info, "mysql_dump_debug_info");
+   pragma Import (Stdcall, mysql_dump_debug_info, "mysql_dump_debug_info");
 
    function mysql_refresh (arg1 : Mysql_Access; arg2 : unsigned) return int;  -- /usr/include/mysql/mysql.h:514:14
-   pragma Import (C, mysql_refresh, "mysql_refresh");
+   pragma Import (Stdcall, mysql_refresh, "mysql_refresh");
 
    function mysql_kill (arg1 : Mysql_Access; arg2 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:516:14
-   pragma Import (C, mysql_kill, "mysql_kill");
+   pragma Import (Stdcall, mysql_kill, "mysql_kill");
 
    function mysql_set_server_option (arg1 : Mysql_Access; arg2 : Com.enum_mysql_set_option) return int;  -- /usr/include/mysql/mysql.h:517:14
-   pragma Import (C, mysql_set_server_option, "mysql_set_server_option");
+   pragma Import (Stdcall, mysql_set_server_option, "mysql_set_server_option");
 
    function mysql_ping (arg1 : Mysql_Access) return int;  -- /usr/include/mysql/mysql.h:520:14
-   pragma Import (C, mysql_ping, "mysql_ping");
+   pragma Import (Stdcall, mysql_ping, "mysql_ping");
 
    function mysql_stat (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:521:22
-   pragma Import (C, mysql_stat, "mysql_stat");
+   pragma Import (Stdcall, mysql_stat, "mysql_stat");
 
    function mysql_get_server_info (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:522:22
-   pragma Import (C, mysql_get_server_info, "mysql_get_server_info");
+   pragma Import (Stdcall, mysql_get_server_info, "mysql_get_server_info");
 
    function mysql_get_client_info return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:523:22
-   pragma Import (C, mysql_get_client_info, "mysql_get_client_info");
+   pragma Import (Stdcall, mysql_get_client_info, "mysql_get_client_info");
 
    function mysql_get_client_version return unsigned_long;  -- /usr/include/mysql/mysql.h:524:23
-   pragma Import (C, mysql_get_client_version, "mysql_get_client_version");
+   pragma Import (Stdcall, mysql_get_client_version, "mysql_get_client_version");
 
    function mysql_get_host_info (arg1 : Mysql_Access) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:525:22
-   pragma Import (C, mysql_get_host_info, "mysql_get_host_info");
+   pragma Import (Stdcall, mysql_get_host_info, "mysql_get_host_info");
 
    function mysql_get_server_version (arg1 : Mysql_Access) return unsigned_long;  -- /usr/include/mysql/mysql.h:526:23
-   pragma Import (C, mysql_get_server_version, "mysql_get_server_version");
+   pragma Import (Stdcall, mysql_get_server_version, "mysql_get_server_version");
 
    function mysql_get_proto_info (arg1 : Mysql_Access) return unsigned;  -- /usr/include/mysql/mysql.h:527:22
-   pragma Import (C, mysql_get_proto_info, "mysql_get_proto_info");
+   pragma Import (Stdcall, mysql_get_proto_info, "mysql_get_proto_info");
 
    function mysql_list_dbs (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:528:21
-   pragma Import (C, mysql_list_dbs, "mysql_list_dbs");
+   pragma Import (Stdcall, mysql_list_dbs, "mysql_list_dbs");
 
    function mysql_list_tables (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:529:21
-   pragma Import (C, mysql_list_tables, "mysql_list_tables");
+   pragma Import (Stdcall, mysql_list_tables, "mysql_list_tables");
 
    function mysql_list_processes (arg1 : Mysql_Access) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:530:21
-   pragma Import (C, mysql_list_processes, "mysql_list_processes");
+   pragma Import (Stdcall, mysql_list_processes, "mysql_list_processes");
 
    function mysql_options
      (arg1 : Mysql_Access;
       arg2 : mysql_option;
       arg3 : Interfaces.C.Strings.chars_ptr) return int;  -- /usr/include/mysql/mysql.h:531:14
-   pragma Import (C, mysql_options, "mysql_options");
+   pragma Import (Stdcall, mysql_options, "mysql_options");
 
    procedure Mysql_Free_Result (arg1 : MYSQL_RES);  -- /usr/include/mysql/mysql.h:533:15
-   pragma Import (C, Mysql_Free_Result, "mysql_free_result");
+   pragma Import (Stdcall, Mysql_Free_Result, "mysql_free_result");
 
    procedure mysql_data_seek (arg1 : MYSQL_RES; arg2 : my_ulonglong);  -- /usr/include/mysql/mysql.h:534:15
-   pragma Import (C, mysql_data_seek, "mysql_data_seek");
+   pragma Import (Stdcall, mysql_data_seek, "mysql_data_seek");
 
    function mysql_row_seek (arg1 : MYSQL_RES; arg2 : MYSQL_ROW_OFFSET) return MYSQL_ROW_OFFSET;  -- /usr/include/mysql/mysql.h:536:26
-   pragma Import (C, mysql_row_seek, "mysql_row_seek");
+   pragma Import (Stdcall, mysql_row_seek, "mysql_row_seek");
 
    function Mysql_Field_Seek (arg1 : MYSQL_RES; arg2 : MYSQL_FIELD_OFFSET) return MYSQL_FIELD_OFFSET;  -- /usr/include/mysql/mysql.h:538:28
-   pragma Import (C, Mysql_Field_Seek, "mysql_field_seek");
+   pragma Import (Stdcall, Mysql_Field_Seek, "mysql_field_seek");
 
    function Mysql_Fetch_Row (arg1 : MYSQL_RES) return System_Access; --  MYSQL_ROW;  -- /usr/include/mysql/mysql.h:540:19
-   pragma Import (C, Mysql_Fetch_Row, "mysql_fetch_row");
+   pragma Import (Stdcall, Mysql_Fetch_Row, "mysql_fetch_row");
 
    function mysql_fetch_lengths (arg1 : MYSQL_RES) return access unsigned_long;  -- /usr/include/mysql/mysql.h:541:25
-   pragma Import (C, mysql_fetch_lengths, "mysql_fetch_lengths");
+   pragma Import (Stdcall, mysql_fetch_lengths, "mysql_fetch_lengths");
 
    function mysql_fetch_field (arg1 : MYSQL_RES) return MYSQL_FIELD;  -- /usr/include/mysql/mysql.h:542:23
-   pragma Import (C, mysql_fetch_field, "mysql_fetch_field");
+   pragma Import (Stdcall, mysql_fetch_field, "mysql_fetch_field");
 
    function mysql_list_fields
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : Interfaces.C.Strings.chars_ptr) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:543:25
-   pragma Import (C, mysql_list_fields, "mysql_list_fields");
+   pragma Import (Stdcall, mysql_list_fields, "mysql_list_fields");
 
    function mysql_escape_string
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return unsigned_long;  -- /usr/include/mysql/mysql.h:545:23
-   pragma Import (C, mysql_escape_string, "mysql_escape_string");
+   pragma Import (Stdcall, mysql_escape_string, "mysql_escape_string");
 
    function mysql_hex_string
      (arg1 : Interfaces.C.Strings.chars_ptr;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return unsigned_long;  -- /usr/include/mysql/mysql.h:547:23
-   pragma Import (C, mysql_hex_string, "mysql_hex_string");
+   pragma Import (Stdcall, mysql_hex_string, "mysql_hex_string");
 
    function mysql_real_escape_string
      (arg1 : Mysql_Access;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : Interfaces.C.Strings.chars_ptr;
       arg4 : unsigned_long) return unsigned_long;  -- /usr/include/mysql/mysql.h:549:23
-   pragma Import (C, mysql_real_escape_string, "mysql_real_escape_string");
+   pragma Import (Stdcall, mysql_real_escape_string, "mysql_real_escape_string");
 
    procedure mysql_debug (arg1 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql.h:552:15
-   pragma Import (C, mysql_debug, "mysql_debug");
+   pragma Import (Stdcall, mysql_debug, "mysql_debug");
 
    procedure myodbc_remove_escape (arg1 : Mysql_Access; arg2 : Interfaces.C.Strings.chars_ptr);  -- /usr/include/mysql/mysql.h:553:16
-   pragma Import (C, myodbc_remove_escape, "myodbc_remove_escape");
+   pragma Import (Stdcall, myodbc_remove_escape, "myodbc_remove_escape");
 
    function mysql_thread_safe return unsigned;  -- /usr/include/mysql/mysql.h:554:22
-   pragma Import (C, mysql_thread_safe, "mysql_thread_safe");
+   pragma Import (Stdcall, mysql_thread_safe, "mysql_thread_safe");
 
    function mysql_embedded return my_bool;  -- /usr/include/mysql/mysql.h:555:18
-   pragma Import (C, mysql_embedded, "mysql_embedded");
+   pragma Import (Stdcall, mysql_embedded, "mysql_embedded");
 
    function mysql_manager_init (arg1 : MYSQL_MANAGER) return MYSQL_MANAGER;  -- /usr/include/mysql/mysql.h:556:25
-   pragma Import (C, mysql_manager_init, "mysql_manager_init");
+   pragma Import (Stdcall, mysql_manager_init, "mysql_manager_init");
 
    function mysql_manager_connect
      (arg1 : MYSQL_MANAGER;
@@ -865,25 +865,25 @@ package Mysql.Mysql is
       arg3 : Interfaces.C.Strings.chars_ptr;
       arg4 : Interfaces.C.Strings.chars_ptr;
       arg5 : unsigned) return MYSQL_MANAGER;  -- /usr/include/mysql/mysql.h:557:25
-   pragma Import (C, mysql_manager_connect, "mysql_manager_connect");
+   pragma Import (Stdcall, mysql_manager_connect, "mysql_manager_connect");
 
    procedure mysql_manager_close (arg1 : MYSQL_MANAGER);  -- /usr/include/mysql/mysql.h:562:25
-   pragma Import (C, mysql_manager_close, "mysql_manager_close");
+   pragma Import (Stdcall, mysql_manager_close, "mysql_manager_close");
 
    function mysql_manager_command
      (arg1 : MYSQL_MANAGER;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : int) return int;  -- /usr/include/mysql/mysql.h:563:25
-   pragma Import (C, mysql_manager_command, "mysql_manager_command");
+   pragma Import (Stdcall, mysql_manager_command, "mysql_manager_command");
 
    function mysql_manager_fetch_line
      (arg1 : MYSQL_MANAGER;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : int) return int;  -- /usr/include/mysql/mysql.h:565:25
-   pragma Import (C, mysql_manager_fetch_line, "mysql_manager_fetch_line");
+   pragma Import (Stdcall, mysql_manager_fetch_line, "mysql_manager_fetch_line");
 
    function mysql_read_query_result (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:568:25
-   pragma Import (C, mysql_read_query_result, "mysql_read_query_result");
+   pragma Import (Stdcall, mysql_read_query_result, "mysql_read_query_result");
 
    --  The following definitions are added for the enhanced
    --  client-server protocol
@@ -1124,120 +1124,120 @@ package Mysql.Mysql is
    subtype MYSQL_METHODS is st_mysql_methods;
 
    function mysql_stmt_init (arg1 : Mysql_Access) return MYSQL_STMT;  -- /usr/include/mysql/mysql.h:776:22
-   pragma Import (C, mysql_stmt_init, "mysql_stmt_init");
+   pragma Import (Stdcall, mysql_stmt_init, "mysql_stmt_init");
 
    function mysql_stmt_prepare
      (arg1 : MYSQL_STMT;
       arg2 : Interfaces.C.Strings.chars_ptr;
       arg3 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:777:13
-   pragma Import (C, mysql_stmt_prepare, "mysql_stmt_prepare");
+   pragma Import (Stdcall, mysql_stmt_prepare, "mysql_stmt_prepare");
 
    function mysql_stmt_execute (arg1 : MYSQL_STMT) return int;  -- /usr/include/mysql/mysql.h:779:13
-   pragma Import (C, mysql_stmt_execute, "mysql_stmt_execute");
+   pragma Import (Stdcall, mysql_stmt_execute, "mysql_stmt_execute");
 
    function mysql_stmt_fetch (arg1 : MYSQL_STMT) return int;  -- /usr/include/mysql/mysql.h:780:13
-   pragma Import (C, mysql_stmt_fetch, "mysql_stmt_fetch");
+   pragma Import (Stdcall, mysql_stmt_fetch, "mysql_stmt_fetch");
 
    function mysql_stmt_fetch_column
      (arg1 : MYSQL_STMT;
       arg2 : MYSQL_BIND;
       arg3 : unsigned;
       arg4 : unsigned_long) return int;  -- /usr/include/mysql/mysql.h:781:13
-   pragma Import (C, mysql_stmt_fetch_column, "mysql_stmt_fetch_column");
+   pragma Import (Stdcall, mysql_stmt_fetch_column, "mysql_stmt_fetch_column");
 
    function mysql_stmt_store_result (arg1 : MYSQL_STMT) return int;  -- /usr/include/mysql/mysql.h:784:13
-   pragma Import (C, mysql_stmt_store_result, "mysql_stmt_store_result");
+   pragma Import (Stdcall, mysql_stmt_store_result, "mysql_stmt_store_result");
 
    function mysql_stmt_param_count (arg1 : MYSQL_STMT) return unsigned_long;  -- /usr/include/mysql/mysql.h:785:23
-   pragma Import (C, mysql_stmt_param_count, "mysql_stmt_param_count");
+   pragma Import (Stdcall, mysql_stmt_param_count, "mysql_stmt_param_count");
 
    function mysql_stmt_attr_set
      (arg1 : MYSQL_STMT;
       arg2 : enum_stmt_attr_type;
       arg3 : System.Address) return my_bool;  -- /usr/include/mysql/mysql.h:786:17
-   pragma Import (C, mysql_stmt_attr_set, "mysql_stmt_attr_set");
+   pragma Import (Stdcall, mysql_stmt_attr_set, "mysql_stmt_attr_set");
 
    function mysql_stmt_attr_get
      (arg1 : MYSQL_STMT;
       arg2 : enum_stmt_attr_type;
       arg3 : System.Address) return my_bool;  -- /usr/include/mysql/mysql.h:789:17
-   pragma Import (C, mysql_stmt_attr_get, "mysql_stmt_attr_get");
+   pragma Import (Stdcall, mysql_stmt_attr_get, "mysql_stmt_attr_get");
 
    function mysql_stmt_bind_param (arg1 : MYSQL_STMT; arg2 : MYSQL_BIND) return my_bool;  -- /usr/include/mysql/mysql.h:792:17
-   pragma Import (C, mysql_stmt_bind_param, "mysql_stmt_bind_param");
+   pragma Import (Stdcall, mysql_stmt_bind_param, "mysql_stmt_bind_param");
 
    function mysql_stmt_bind_result (arg1 : MYSQL_STMT; arg2 : MYSQL_BIND) return my_bool;  -- /usr/include/mysql/mysql.h:793:17
-   pragma Import (C, mysql_stmt_bind_result, "mysql_stmt_bind_result");
+   pragma Import (Stdcall, mysql_stmt_bind_result, "mysql_stmt_bind_result");
 
    function mysql_stmt_close (arg1 : MYSQL_STMT) return my_bool;  -- /usr/include/mysql/mysql.h:794:17
-   pragma Import (C, mysql_stmt_close, "mysql_stmt_close");
+   pragma Import (Stdcall, mysql_stmt_close, "mysql_stmt_close");
 
    function mysql_stmt_reset (arg1 : MYSQL_STMT) return my_bool;  -- /usr/include/mysql/mysql.h:795:17
-   pragma Import (C, mysql_stmt_reset, "mysql_stmt_reset");
+   pragma Import (Stdcall, mysql_stmt_reset, "mysql_stmt_reset");
 
    function mysql_stmt_free_result (arg1 : MYSQL_STMT) return my_bool;  -- /usr/include/mysql/mysql.h:796:17
-   pragma Import (C, mysql_stmt_free_result, "mysql_stmt_free_result");
+   pragma Import (Stdcall, mysql_stmt_free_result, "mysql_stmt_free_result");
 
    function mysql_stmt_send_long_data
      (arg1 : MYSQL_STMT;
       arg2 : unsigned;
       arg3 : Interfaces.C.Strings.chars_ptr;
       arg4 : unsigned_long) return my_bool;  -- /usr/include/mysql/mysql.h:797:17
-   pragma Import (C, mysql_stmt_send_long_data, "mysql_stmt_send_long_data");
+   pragma Import (Stdcall, mysql_stmt_send_long_data, "mysql_stmt_send_long_data");
 
    function mysql_stmt_result_metadata (arg1 : MYSQL_STMT) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:801:20
-   pragma Import (C, mysql_stmt_result_metadata, "mysql_stmt_result_metadata");
+   pragma Import (Stdcall, mysql_stmt_result_metadata, "mysql_stmt_result_metadata");
 
    function mysql_stmt_param_metadata (arg1 : MYSQL_STMT) return MYSQL_RES;  -- /usr/include/mysql/mysql.h:802:20
-   pragma Import (C, mysql_stmt_param_metadata, "mysql_stmt_param_metadata");
+   pragma Import (Stdcall, mysql_stmt_param_metadata, "mysql_stmt_param_metadata");
 
    function mysql_stmt_errno (arg1 : MYSQL_STMT) return unsigned;  -- /usr/include/mysql/mysql.h:803:22
-   pragma Import (C, mysql_stmt_errno, "mysql_stmt_errno");
+   pragma Import (Stdcall, mysql_stmt_errno, "mysql_stmt_errno");
 
    function mysql_stmt_error (arg1 : MYSQL_STMT) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:804:21
-   pragma Import (C, mysql_stmt_error, "mysql_stmt_error");
+   pragma Import (Stdcall, mysql_stmt_error, "mysql_stmt_error");
 
    function mysql_stmt_sqlstate (arg1 : MYSQL_STMT) return Interfaces.C.Strings.chars_ptr;  -- /usr/include/mysql/mysql.h:805:21
-   pragma Import (C, mysql_stmt_sqlstate, "mysql_stmt_sqlstate");
+   pragma Import (Stdcall, mysql_stmt_sqlstate, "mysql_stmt_sqlstate");
 
    function mysql_stmt_row_seek (arg1 : MYSQL_STMT; arg2 : MYSQL_ROW_OFFSET) return MYSQL_ROW_OFFSET;  -- /usr/include/mysql/mysql.h:806:26
-   pragma Import (C, mysql_stmt_row_seek, "mysql_stmt_row_seek");
+   pragma Import (Stdcall, mysql_stmt_row_seek, "mysql_stmt_row_seek");
 
    function mysql_stmt_row_tell (arg1 : MYSQL_STMT) return MYSQL_ROW_OFFSET;  -- /usr/include/mysql/mysql.h:808:26
-   pragma Import (C, mysql_stmt_row_tell, "mysql_stmt_row_tell");
+   pragma Import (Stdcall, mysql_stmt_row_tell, "mysql_stmt_row_tell");
 
    procedure mysql_stmt_data_seek (arg1 : MYSQL_STMT; arg2 : my_ulonglong);  -- /usr/include/mysql/mysql.h:809:14
-   pragma Import (C, mysql_stmt_data_seek, "mysql_stmt_data_seek");
+   pragma Import (Stdcall, mysql_stmt_data_seek, "mysql_stmt_data_seek");
 
    function mysql_stmt_num_rows (arg1 : MYSQL_STMT) return my_ulonglong;  -- /usr/include/mysql/mysql.h:810:22
-   pragma Import (C, mysql_stmt_num_rows, "mysql_stmt_num_rows");
+   pragma Import (Stdcall, mysql_stmt_num_rows, "mysql_stmt_num_rows");
 
    function mysql_stmt_affected_rows (arg1 : MYSQL_STMT) return my_ulonglong;  -- /usr/include/mysql/mysql.h:811:22
-   pragma Import (C, mysql_stmt_affected_rows, "mysql_stmt_affected_rows");
+   pragma Import (Stdcall, mysql_stmt_affected_rows, "mysql_stmt_affected_rows");
 
    function mysql_stmt_insert_id (arg1 : MYSQL_STMT) return my_ulonglong;  -- /usr/include/mysql/mysql.h:812:22
-   pragma Import (C, mysql_stmt_insert_id, "mysql_stmt_insert_id");
+   pragma Import (Stdcall, mysql_stmt_insert_id, "mysql_stmt_insert_id");
 
    function mysql_stmt_field_count (arg1 : MYSQL_STMT) return unsigned;  -- /usr/include/mysql/mysql.h:813:22
-   pragma Import (C, mysql_stmt_field_count, "mysql_stmt_field_count");
+   pragma Import (Stdcall, mysql_stmt_field_count, "mysql_stmt_field_count");
 
    function mysql_commit (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:815:17
-   pragma Import (C, mysql_commit, "mysql_commit");
+   pragma Import (Stdcall, mysql_commit, "mysql_commit");
 
    function mysql_rollback (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:816:17
-   pragma Import (C, mysql_rollback, "mysql_rollback");
+   pragma Import (Stdcall, mysql_rollback, "mysql_rollback");
 
    function mysql_autocommit (arg1 : Mysql_Access; arg2 : my_bool) return my_bool;  -- /usr/include/mysql/mysql.h:817:17
-   pragma Import (C, mysql_autocommit, "mysql_autocommit");
+   pragma Import (Stdcall, mysql_autocommit, "mysql_autocommit");
 
    function mysql_more_results (arg1 : Mysql_Access) return my_bool;  -- /usr/include/mysql/mysql.h:818:17
-   pragma Import (C, mysql_more_results, "mysql_more_results");
+   pragma Import (Stdcall, mysql_more_results, "mysql_more_results");
 
    function mysql_next_result (arg1 : Mysql_Access) return int;  -- /usr/include/mysql/mysql.h:819:13
-   pragma Import (C, mysql_next_result, "mysql_next_result");
+   pragma Import (Stdcall, mysql_next_result, "mysql_next_result");
 
    procedure mysql_close (arg1 : Mysql_Access);  -- /usr/include/mysql/mysql.h:820:14
-   pragma Import (C, mysql_close, "mysql_close");
+   pragma Import (Stdcall, mysql_close, "mysql_close");
 
    --  status return codes
    --  The following functions are mainly exported because of mysqlbinlog;
