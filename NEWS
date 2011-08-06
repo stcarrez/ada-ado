@@ -1,3 +1,6 @@
+Version 0.2.0   - Aug 2011
+  - Port on Windows
+
 Version 0.1.0	- May 2011
   - ADO model with Mysql driver
   - ADO model with SQLite driver
