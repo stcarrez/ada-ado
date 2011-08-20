@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Util.Strings;
+
 with ADO.Model;
 with ADO.Schemas;
 with ADO.Objects;
@@ -38,5 +40,16 @@ package ADO.Sessions.Entities is
    function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
                               Table   : in ADO.Schemas.Class_Mapping_Access)
                               return ADO.Entity_Type;
+
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Name    : in Util.Strings.Name_Access)
+                              return ADO.Entity_Type;
+
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Name    : in String) return ADO.Entity_Type;
 
 end ADO.Sessions.Entities;

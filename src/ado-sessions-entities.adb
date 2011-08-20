@@ -56,4 +56,26 @@ package body ADO.Sessions.Entities is
       return ADO.Schemas.Entities.Find_Entity_Type (Session.Impl.Entities.all, Table);
    end Find_Entity_Type;
 
+   --  ------------------------------
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   --  ------------------------------
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Name    : in Util.Strings.Name_Access)
+                              return ADO.Entity_Type is
+   begin
+      Check_Session (Session);
+      return ADO.Schemas.Entities.Find_Entity_Type (Session.Impl.Entities.all, Name);
+   end Find_Entity_Type;
+
+   --  ------------------------------
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   --  ------------------------------
+   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
+                              Name    : in String) return ADO.Entity_Type is
+   begin
+      return Find_Entity_Type (Session, Name'Unrestricted_Access);
+   end Find_Entity_Type;
+
 end ADO.Sessions.Entities;

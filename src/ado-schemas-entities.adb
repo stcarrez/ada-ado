@@ -46,11 +46,21 @@ package body ADO.Schemas.Entities is
    --  ------------------------------
    function Find_Entity_Type (Cache : in Entity_Cache;
                               Table : in Class_Mapping_Access) return ADO.Entity_Type is
-      Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Table.Table);
+   begin
+      return Find_Entity_Type (Cache, Table.Table);
+   end Find_Entity_Type;
+
+   --  ------------------------------
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   --  ------------------------------
+   function Find_Entity_Type (Cache : in Entity_Cache;
+                              Name  : in Util.Strings.Name_Access) return ADO.Entity_Type is
+      Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Name);
    begin
       if not Entity_Map.Has_Element (Pos) then
-         Log.Error ("No entity type associated with table {0}", Table.Table.all);
-         raise No_Entity_Type with "No entity type associated with table " & Table.Table.all;
+         Log.Error ("No entity type associated with table {0}", Name.all);
+         raise No_Entity_Type with "No entity type associated with table " & Name.all;
       end if;
       return Entity_Type (Entity_Map.Element (Pos).Get_Id);
    end Find_Entity_Type;

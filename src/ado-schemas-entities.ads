@@ -38,6 +38,11 @@ package ADO.Schemas.Entities is
    function Find_Entity_Type (Cache : in Entity_Cache;
                               Table : in Class_Mapping_Access) return ADO.Entity_Type;
 
+   --  Find the entity type index associated with the given database table.
+   --  Raises the No_Entity_Type exception if no such mapping exist.
+   function Find_Entity_Type (Cache : in Entity_Cache;
+                              Name  : in Util.Strings.Name_Access) return ADO.Entity_Type;
+
    --  Initialize the entity cache by reading the database entity table.
    procedure Initialize (Cache   : in out Entity_Cache;
                          Session : in out ADO.Sessions.Session'Class);
