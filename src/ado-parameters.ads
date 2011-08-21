@@ -98,6 +98,9 @@ package ADO.Parameters is
                          Value  : in Integer);
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
+                         Value  : in ADO.Entity_Type);
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
                          Value  : in String);
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;

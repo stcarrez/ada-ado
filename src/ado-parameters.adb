@@ -77,6 +77,17 @@ package body ADO.Parameters is
    end Bind_Param;
 
    procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
+                         Value  : in ADO.Entity_Type) is
+      Param : constant Parameter := Parameter '(T        => T_LONG_INTEGER,
+                                                Name     => +(Name),
+                                                Position => 0,
+                                                Long_Num => Long_Long_Integer (Value));
+   begin
+      Abstract_List'Class (Params).Add_Parameter (Param);
+   end Bind_Param;
+
+   procedure Bind_Param (Params : in out Abstract_List;
                          Name  : in String;
                          Value : in String) is
    begin
