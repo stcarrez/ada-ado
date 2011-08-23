@@ -79,10 +79,10 @@ package body ADO.Schemas.Tests is
       end;
 
       declare
-         C : constant Column_Definition := Find_Column (Table, "id");
+         C : constant Column_Definition := Find_Column (Table, "ID");
       begin
          T.Assert (C /= null, "Cannot find column 'id' in table schema");
-         Assert_Equals (T, "id", Get_Name (C), "Invalid column name");
+         Assert_Equals (T, "ID", Get_Name (C), "Invalid column name");
       end;
    end Test_Load_Schema;
 
