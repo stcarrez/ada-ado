@@ -17,16 +17,9 @@ Build with the following commands:
    ./configure
    make
 
+The unit tests are built and executed using:
 
-The samples can be built using:
-
-   gnatmake -Psamples
-   
-   
-The unit tests are built using:
-
-   gnatmake -Ptests
-
+   make test
 
 And unit tests are executed with:
 
@@ -34,6 +27,18 @@ And unit tests are executed with:
 or
    bin/ado_harness -config test-sqlite.properties
 
+
+Samples
+
+   The samples can be built using:
+
+      gnatmake -Psamples
+   
+
+   Before launching the samples, the database must have been created.
+   For SQLite, use:
+
+      make samples.db
 
 Documentation
 
