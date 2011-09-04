@@ -5,6 +5,12 @@ to access a database in Ada05.  Most of the concepts
 developped for ADO come from the Java Hibernate ORM.
 
 This library supports MySQL, Sqlite as databases.
+You need at least one of these databases (or both).
+
+To build ASF, you will need:
+
+ - Ada Util (http://code.google.com/p/ada-util)
+ - XML/Ada  (http://libre.adacore.com/libre/tools/xmlada/)
 
 Build with the following commands:
 
@@ -24,7 +30,9 @@ The unit tests are built using:
 
 And unit tests are executed with:
 
-   bin/ado_mysql_harness
+   bin/ado_harness -config test-mysql.properties
+or
+   bin/ado_harness -config test-sqlite.properties
 
 
 Documentation
@@ -49,10 +57,13 @@ Database Drivers
 
       sudo apt-get install libsqlite3-dev
 
+   For Windows, check win32/README to install the libraries.
+
 
 Database Creation
 
    Create the tests database by using the Dynamo command.
+   (Dynamo is available at: http://code.google.com/p/ada-gen/)
        Note: change 'root' and 'password' to a MySQL user that has admin access rights
              ('create database' and 'grant option' privileges).
 
