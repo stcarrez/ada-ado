@@ -105,11 +105,11 @@ create-mysql-tests:
 	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
 
 # Files to package in source distribution
-DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog config.guess configure config.sub \
-configure.in Makefile.in install-sh dynamo.xml \
+DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
+configure.in Makefile.in install-sh \
 ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db \
-bin obj lib distrib
+bin obj lib distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
 dist:
 	-rm -rf $(distdir)
