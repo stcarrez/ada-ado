@@ -18,7 +18,6 @@
 
 with Interfaces.C.Strings;
 with Ada.Unchecked_Conversion;
-with Ada.Calendar.Formatting;
 with Util.Log;
 with Util.Log.Loggers;
 with System.Storage_Elements;
@@ -438,105 +437,9 @@ package body ADO.Statements.Mysql is
    overriding
    function Get_Time (Query  : Mysql_Query_Statement;
                       Column : Natural) return Ada.Calendar.Time is
-
-      Year   : Year_Number  := Year_Number'First;
-      Month  : Month_Number := Month_Number'First;
-      Day    : Day_Number   := Day_Number'First;
-      Hours  : Natural      := 0;
-      Mins   : Natural      := 0;
-      Secs   : Natural      := 0;
-      Dt     : Duration;
-      Field  : chars_ptr    := Query.Get_Field (Column);
-
-      function Get_Number (P : in chars_ptr;
-                           Nb_Digits : in Positive) return Natural;
-
-      --  ------------------------------
-      --  Get a number composed of N digits
-      --  ------------------------------
-      function Get_Number (P : in chars_ptr;
-                           Nb_Digits : in Positive) return Natural is
-         Ptr    : chars_ptr := P;
-         Result : Natural   := 0;
-         C      : Character;
-      begin
-         for I in 1 .. Nb_Digits loop
-            C := Ptr.all;
-            if not (C >= '0' and C <= '9') then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Result := Result * 10 + Character'Pos (C) - Character'Pos ('0');
-            Ptr := Ptr + 1;
-         end loop;
-         return Result;
-      end Get_Number;
-
+      Field  : constant chars_ptr    := Query.Get_Field (Column);
    begin
-      if Field /= null then
-         declare
-            C : Character;
-            N : Natural;
-         begin
-            N := Get_Number (Field, 4);
-            if N /= 0 then
-               Year := Year_Number (N);
-            end if;
-            Field := Field + 4;
-            C := Field.all;
-            if C /= '-' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
-
-            N := Get_Number (Field, 2);
-            if N /= 0 then
-               Month := Month_Number (N);
-            end if;
-            Field := Field + 2;
-            C := Field.all;
-            if C /= '-' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
-
-            N := Get_Number (Field, 2);
-            if N /= 0 then
-               Day := Day_Number (N);
-            end if;
-            Field := Field + 2;
-            C := Field.all;
-            if C /= ' ' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
-
-            Hours := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= ':' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
-
-            Mins := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= ':' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
-
-            Secs := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= '.' and C /= ASCII.NUL then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-         end;
-      end if;
-
-      Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
-      return Ada.Calendar.Formatting.Time_Of (Year, Month, Day, Dt, False, 0);
+      return ADO.Statements.Get_Time (Field);
    end Get_Time;
 
    --  ------------------------------

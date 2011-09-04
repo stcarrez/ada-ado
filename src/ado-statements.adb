@@ -16,6 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Calendar.Formatting;
+
 with Util.Log;
 with Util.Log.Loggers;
 with System.Storage_Elements;
@@ -226,6 +228,114 @@ package body ADO.Statements is
          return Int64 (Get_Uint64 (P));
       end if;
    end Get_Int64;
+
+   --  ------------------------------
+   --  Get a time from the C string passed in <b>Value</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Time (Value  : in chars_ptr) return Ada.Calendar.Time is
+      use Ada.Calendar;
+
+      Year   : Year_Number  := Year_Number'First;
+      Month  : Month_Number := Month_Number'First;
+      Day    : Day_Number   := Day_Number'First;
+      Hours  : Natural      := 0;
+      Mins   : Natural      := 0;
+      Secs   : Natural      := 0;
+      Dt     : Duration;
+      Field  : chars_ptr    := Value;
+
+      function Get_Number (P : in chars_ptr;
+                           Nb_Digits : in Positive) return Natural;
+
+      --  ------------------------------
+      --  Get a number composed of N digits
+      --  ------------------------------
+      function Get_Number (P : in chars_ptr;
+                           Nb_Digits : in Positive) return Natural is
+         Ptr    : chars_ptr := P;
+         Result : Natural   := 0;
+         C      : Character;
+      begin
+         for I in 1 .. Nb_Digits loop
+            C := Ptr.all;
+            if not (C >= '0' and C <= '9') then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Result := Result * 10 + Character'Pos (C) - Character'Pos ('0');
+            Ptr := Ptr + 1;
+         end loop;
+         return Result;
+      end Get_Number;
+
+   begin
+      if Field /= null then
+         declare
+            C : Character;
+            N : Natural;
+         begin
+            N := Get_Number (Field, 4);
+            if N /= 0 then
+               Year := Year_Number (N);
+            end if;
+            Field := Field + 4;
+            C := Field.all;
+            if C /= '-' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            N := Get_Number (Field, 2);
+            if N /= 0 then
+               Month := Month_Number (N);
+            end if;
+            Field := Field + 2;
+            C := Field.all;
+            if C /= '-' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            N := Get_Number (Field, 2);
+            if N /= 0 then
+               Day := Day_Number (N);
+            end if;
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ' ' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Hours := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ':' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Mins := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= ':' then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+            Field := Field + 1;
+
+            Secs := Get_Number (Field, 2);
+            Field := Field + 2;
+            C := Field.all;
+            if C /= '.' and C /= ASCII.NUL then
+               raise Constraint_Error with "Invalid date format";
+            end if;
+         end;
+      end if;
+
+      Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
+      return Ada.Calendar.Formatting.Time_Of (Year, Month, Day, Dt, False, 0);
+   end Get_Time;
 
    --  ------------------------------
    --  Execute the query

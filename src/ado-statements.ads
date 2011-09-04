@@ -27,6 +27,7 @@ with ADO.Objects;
 private with Ada.Unchecked_Conversion;
 private with System;
 private with Interfaces.C;
+private with Interfaces.C.Strings;
 
 --
 --  Represents SQL statements (prepared or not) and their result upon execution
@@ -357,6 +358,9 @@ private
    function To_Chars_Ptr is
      new Ada.Unchecked_Conversion (System.Address, chars_ptr);
 
+   function To_Chars_Ptr is
+     new Ada.Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, chars_ptr);
+
    function To_Address is
      new Ada.Unchecked_Conversion (chars_ptr, System.Address);
 
@@ -368,6 +372,11 @@ private
 
    --  Get a signed 64-bit number from a C string terminated by \0
    function Get_Int64 (Str : chars_ptr) return Int64;
+
+   --  Get a time from the C string passed in <b>Value</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Time (Value  : in chars_ptr) return Ada.Calendar.Time;
 
    type Delete_Statement is new Statement with record
       Proxy : Delete_Statement_Access := null;
