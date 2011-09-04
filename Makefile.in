@@ -6,9 +6,9 @@ GNATCLEAN=gnatclean
 GPRPATH=ado.gpr
 SVN=svn
 
-distdir=ado-@ADO_VERSION@
+distdir=ada-ado-@ADO_VERSION@
 
-DIST_FILE=ado-@ADO_VERSION@.tar.gz
+DIST_FILE=ada-ado-@ADO_VERSION@.tar.gz
 
 HAVE_MYSQL=@ADO_DB_MYSQL@
 HAVE_SQLITE=@ADO_DB_SQLITE@
