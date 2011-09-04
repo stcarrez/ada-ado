@@ -179,8 +179,8 @@ package body ADO.Drivers.Sqlite is
       Log.Info ("Close connection");
 
 --        if Database.Count = 1 then
-         Result := Sqlite3_H.sqlite3_close (Database.Server);
-         Database.Server := System.Null_Address;
+--           Result := Sqlite3_H.sqlite3_close (Database.Server);
+--           Database.Server := System.Null_Address;
 --        end if;
       pragma Unreferenced (Result);
    end Close;
@@ -194,8 +194,11 @@ package body ADO.Drivers.Sqlite is
    begin
       Log.Debug ("Release connection");
 
-      Result := Sqlite3_H.sqlite3_close (Database.Server);
-      Database.Server := System.Null_Address;
+      Database.Count := Database.Count - 1;
+--        if Database.Count <= 1 then
+--           Result := Sqlite3_H.Sqlite3_Close (Database.Server);
+--        end if;
+--        Database.Server := System.Null_Address;
       pragma Unreferenced (Result);
    end Finalize;
 
@@ -208,6 +211,8 @@ package body ADO.Drivers.Sqlite is
    begin
       null;
    end Load_Schema;
+
+   DB : ADO.Drivers.Database_Connection_Access := null;
 
    --  ------------------------------
    --  Initialize the database connection manager.
@@ -227,6 +232,11 @@ package body ADO.Drivers.Sqlite is
    begin
       Log.Info ("Opening database {0}", Name);
 
+      if DB /= null then
+         Result := DB;
+         DB.Count := DB.Count + 1;
+         return;
+      end if;
       Filename := Strings.New_String (Name);
       Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Access,
                                            Flags,
@@ -241,9 +251,10 @@ package body ADO.Drivers.Sqlite is
          Database : constant Database_Connection_Access := new Database_Connection;
       begin
          Database.Server := Handle;
-         Database.Count  := 1;
+         Database.Count  := 2;
          Database.Name   := Config.Database;
          Result := Database.all'Access;
+         DB := Result;
       end;
    end Create_Connection;
 
