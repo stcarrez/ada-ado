@@ -441,8 +441,10 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    function Get_Time (Query  : in Sqlite_Query_Statement;
                       Column : in Natural) return Ada.Calendar.Time is
+      Text : constant Strings.chars_ptr
+        := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
    begin
-      return Ada.Calendar.Clock;
+      return ADO.Statements.Get_Time (ADO.Statements.To_Chars_Ptr (Text));
    end Get_Time;
 
    --  ------------------------------
