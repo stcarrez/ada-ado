@@ -17,16 +17,13 @@
 -----------------------------------------------------------------------
 
 with ADO;
-with ADO.Drivers.Mysql;
 with ADO.Schemas.Mysql;
-with ADO.Databases;
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Schemas;
 
 with Ada.Text_IO;
-with Ada.Strings.Unbounded;
-with Ada.Command_Line;
 
 with Util.Log.Loggers;
 
@@ -34,13 +31,9 @@ procedure Pschema is
 
    use ADO;
    use Ada;
-   use Ada.Strings.Unbounded;
    use ADO.Schemas;
 
-   Controller : ADO.Databases.DataSource;
    Factory    : ADO.Sessions.Factory.Session_Factory;
-
-   Verbose : Boolean;
 
 begin
    Util.Log.Loggers.Initialize ("samples.properties");
@@ -53,7 +46,7 @@ begin
    Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
 
    declare
-      DB     : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
+      DB     : constant ADO.Sessions.Master_Session := Factory.Get_Master_Session;
       Schema : ADO.Schemas.Schema_Definition;
       Iter   : Table_Cursor;
    begin
@@ -63,13 +56,13 @@ begin
       Iter := Get_Tables (Schema);
       while Has_Element (Iter) loop
          declare
-            Table : constant Table_Definition := Element (Iter);
-            CITer : Column_Cursor := Get_Columns (Table);
+            Table      : constant Table_Definition := Element (Iter);
+            Table_Iter : Column_Cursor := Get_Columns (Table);
          begin
             Ada.Text_IO.Put_Line ("create table " & Get_Name (Table) & " (");
-            while Has_Element (CIter) loop
+            while Has_Element (Table_Iter) loop
                declare
-                  Col : constant Column_Definition := Element (CIter);
+                  Col : constant Column_Definition := Element (Table_Iter);
                begin
                   Ada.Text_IO.Put ("  ");
                   Ada.Text_IO.Put (Get_Name (Col));
@@ -80,7 +73,7 @@ begin
                   end if;
                   Ada.Text_IO.Put_Line (",");
                end;
-               Next (CIter);
+               Next (Table_Iter);
             end loop;
             Ada.Text_IO.Put_Line (");");
          end;
