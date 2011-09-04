@@ -109,7 +109,7 @@ DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess conf
 configure.in Makefile.in install-sh \
 ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db \
-bin obj lib distrib test-mysql.properties test-sqlite.properties dynamo.xml
+distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
 dist:
 	-rm -rf $(distdir)
@@ -128,8 +128,9 @@ dist:
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	-rm -f $(distdir)/bin/*
-	-rm -f $(distdir)/obj/*
+	mkdir $(distdir)/bin
+	mkdir $(distdir)/obj
+	mkdir $(distdir)/lib
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
