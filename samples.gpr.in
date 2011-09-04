@@ -1,5 +1,5 @@
 with "config";
-with "../util/util";
+with "@UTIL_DIR@util";
 with "ado";
 
 project Samples is
@@ -19,23 +19,8 @@ project Samples is
    ------------
 
    package Binder renames Config.Binder;
-
-   -------------
-   -- Builder --
-   -------------
-
    package Builder renames Config.Builder;
-
-   --------------
-   -- Compiler --
-   --------------
-
    package Compiler renames Config.Compiler;
-
-   ------------
-   -- Linker --
-   ------------
-
    package Linker renames Config.Linker;
 
 end Samples;

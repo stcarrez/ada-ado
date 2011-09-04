@@ -17,16 +17,16 @@
 -----------------------------------------------------------------------
 
 with AUnit.Test_Caller;
-with AUnit.Assertions;
 with ADO.Sessions;
 with ADO.Model;
 with Regtests.Simple.Model;
 with Regtests.Comments;
-with Util.Tests;
 package body ADO.Objects.Tests is
 
    use Util.Tests;
    use type Ada.Containers.Hash_Type;
+
+   function Get_Allocate_Key (N : Identifier) return Object_Key;
 
    function Get_Allocate_Key (N : Identifier) return Object_Key is
       Result : Object_Key (Of_Type  => KEY_INTEGER,
@@ -40,7 +40,7 @@ package body ADO.Objects.Tests is
    --  Various tests on Hash and key comparison
    --  ------------------------------
    procedure Test_Key (T : in out Test) is
-      K1 : Object_Key := Get_Allocate_Key (1);
+      K1 : constant Object_Key := Get_Allocate_Key (1);
       K2 : Object_Key (Of_Type  => KEY_STRING,
                        Of_Class => Regtests.Simple.Model.USER_TABLE'Access);
       K3 : Object_Key := K1;
@@ -135,7 +135,8 @@ package body ADO.Objects.Tests is
          U2 : Regtests.Simple.Model.User_Ref;
       begin
          U2.Load (S, User.Get_Id);
-         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (U2.Get_Name), "Cannot load created object");
+         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (U2.Get_Name),
+                        "Cannot load created object");
          Assert_Equals (T, Integer (0), Integer (U2.Get_Value), "Invalid load");
          T.Assert (User.Get_Key = U2.Get_Key, "Invalid key after load");
       end;
@@ -165,7 +166,8 @@ package body ADO.Objects.Tests is
          C2.Load (S, Cmt.Get_Id);
          T.Assert (not C2.Is_Null, "Loading of object failed");
          T.Assert (Cmt.Get_Key = C2.Get_Key, "Invalid key after load");
-         T.Assert_Equals ("A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message), "Invalid message");
+         T.Assert_Equals ("A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message),
+                          "Invalid message");
 
          T.Assert (not C2.Get_User.Is_Null, "User associated with the comment should not be null");
          T.Assert (not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
@@ -181,7 +183,6 @@ package body ADO.Objects.Tests is
    --  ------------------------------
    procedure Test_Delete_Object (T : in out Test) is
       User : Regtests.Simple.Model.User_Ref;
-      Cmt  : Regtests.Comments.Comment_Ref;
    begin
       --  Create an object within a transaction.
       declare

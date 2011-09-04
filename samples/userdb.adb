@@ -1,3 +1,20 @@
+-----------------------------------------------------------------------
+--  userdb -- Example to find/create an object from the database
+--  Copyright (C) 2010, 2011 Stephane Carrez
+--  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
+--
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
+--
+--      http://www.apache.org/licenses/LICENSE-2.0
+--
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
+-----------------------------------------------------------------------
 with ADO;
 with ADO.Drivers;
 with ADO.Sessions;
@@ -6,18 +23,14 @@ with ADO.Sessions.Factory;
 with Samples.User.Model;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
-with Ada.Containers;
 
 with ADO.Statements;
-with ADO.Databases;
 with ADO.Queries;
-with ADO.Queries.Loaders;
 
 with Util.Log.Loggers;
 
 with GNAT.Command_Line;
 
-with Ada.Command_Line;
 procedure Userdb is
 
    use ADO;
@@ -31,9 +44,10 @@ procedure Userdb is
 
    User  : User_Ref;
    Users : User_Vector;
-   Verbose : Boolean;
 
    procedure List_Users (Filter : in String);
+   procedure List_User_Info;
+   procedure Initialize (File : in String);
 
    --  ------------------------------
    --  List users
@@ -67,7 +81,7 @@ procedure Userdb is
          Text_IO.Put_Line ("Count query failed...");
       end if;
       declare
-         Count : Integer := Statement.Get_Integer (0);
+         Count : constant Integer := Statement.Get_Integer (0);
       begin
          Text_IO.Put_Line ("Count: " & Integer'Image (Count));
       end;
@@ -111,19 +125,6 @@ procedure Userdb is
 
 begin
    Initialize ("samples.properties");
-   loop
-      case Getopt ("v") is
-         when ASCII.Nul =>
-            exit;
-
-         when 'v' =>
-            Verbose := True;
-
-         when others =>
-            null;
-      end case;
-   end loop;
-
    Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
 
    declare

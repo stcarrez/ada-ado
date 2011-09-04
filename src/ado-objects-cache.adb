@@ -32,7 +32,7 @@ package body ADO.Objects.Cache is
    begin
       if Object_Set.Has_Element (Pos) then
          declare
-            Current : Object_Record_Access := Object_Set.Element (Pos);
+            Current : constant Object_Record_Access := Object_Set.Element (Pos);
             Is_Zero : Boolean;
          begin
             if Current = Object then
@@ -67,12 +67,14 @@ package body ADO.Objects.Cache is
    --  ------------------------------
    function Contains (Cache : in Object_Cache;
                       Key   : in Object_Key) return Boolean is
+      pragma Unreferenced (Cache, Key);
    begin
       return False;
    end Contains;
 
    function Find (Cache : in Object_Cache;
                   Key   : in Object_Key) return Object_Record_Access is
+      pragma Unreferenced (Cache, Key);
    begin
       return null;
    end Find;
@@ -80,6 +82,7 @@ package body ADO.Objects.Cache is
    procedure Find (Cache  : in Object_Cache;
                    Object : in out Object_Ref'Class;
                    Key    : in Object_Key) is
+      pragma Unreferenced (Cache, Object, Key);
    begin
       null;
    end Find;
@@ -111,6 +114,7 @@ package body ADO.Objects.Cache is
    --  Remove all object in the cache.
    --  ------------------------------
    procedure Remove_All (Cache : in out Object_Cache) is
+      pragma Unreferenced (Cache);
    begin
       null;
    end Remove_All;
@@ -133,6 +137,7 @@ package body ADO.Objects.Cache is
    --  ------------------------------
    procedure Remove (Cache  : in out Object_Cache;
                      Object : in Object_Key) is
+      pragma Unreferenced (Cache, Object);
 --        Item : aliased Object_Record (Key_Type => Object.Of_Type);
    begin
 --        Item.Key := Object;

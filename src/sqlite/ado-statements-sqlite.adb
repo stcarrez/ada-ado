@@ -45,6 +45,9 @@ package body ADO.Statements.Sqlite is
    procedure Release_Stmt (Connection : in ADO.Drivers.Sqlite.Sqlite_Access;
                            Stmt       : in out System.Address);
 
+   procedure Prepare (Stmt  : in out Sqlite_Query_Statement;
+                      Query : in String);
+
    --  ------------------------------
    --  Releases the sqlite statement
    --  ------------------------------
@@ -52,13 +55,13 @@ package body ADO.Statements.Sqlite is
                            Stmt       : in out System.Address) is
       use System;
 
-      Result : Int;
+      Result : int;
    begin
       if Stmt /= System.Null_Address then
-         Result := Sqlite3_H.Sqlite3_Reset (Stmt);
+         Result := Sqlite3_H.sqlite3_reset (Stmt);
          ADO.Drivers.Sqlite.Check_Error (Connection, Result);
 
-         Result := Sqlite3_H.Sqlite3_Finalize (Stmt);
+         Result := Sqlite3_H.sqlite3_finalize (Stmt);
          ADO.Drivers.Sqlite.Check_Error (Connection, Result);
 
          Stmt := System.Null_Address;
@@ -176,7 +179,7 @@ package body ADO.Statements.Sqlite is
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
          Handle    : aliased System.Address;
-         Res       : Int;
+         Res       : int;
       begin
          Execute (Connection => Stmt.Connection,
                   SQL        => Sql_Query,
@@ -185,7 +188,7 @@ package body ADO.Statements.Sqlite is
          ADO.Drivers.Sqlite.Check_Error (Stmt.Connection, Res);
 
          Release_Stmt (Stmt.Connection, Handle);
-         Result := Natural (Sqlite3_H.Sqlite3_Changes (Stmt.Connection));
+         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
       end;
    end Execute;
 
@@ -227,7 +230,7 @@ package body ADO.Statements.Sqlite is
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
          Handle    : aliased System.Address;
-         Res       : Int;
+         Res       : int;
       begin
          Execute (Connection => Stmt.Connection,
                   SQL        => Sql_Query,

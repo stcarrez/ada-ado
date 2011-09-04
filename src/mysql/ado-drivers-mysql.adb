@@ -41,6 +41,7 @@ package body ADO.Drivers.Mysql is
    overriding
    function Get_Driver (Database : in Database_Connection)
                         return Driver_Access is
+      pragma Unreferenced (Database);
    begin
       return Driver'Access;
    end Get_Driver;

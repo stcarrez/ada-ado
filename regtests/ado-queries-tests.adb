@@ -16,21 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Tests;
 with Util.Test_Caller;
-with Util.Log.Loggers;
-with Util.Measures;
-with ADO.Sessions;
-with ADO.Databases;
 with ADO.Queries.Loaders;
-with Regtests;
 package body ADO.Queries.Tests is
 
    use Util.Tests;
-   use Util.Log;
-
-   --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Queries.Tests");
 
    package Caller is new Util.Test_Caller (Test);
 
@@ -64,9 +54,10 @@ package body ADO.Queries.Tests is
      new ADO.Queries.Loaders.Query (Name => "value",
                                     File => Multi_Query_File.File'Access);
 
+   pragma Warnings (Off, Simple_Query_2);
+   pragma Warnings (Off, Value_Query);
+
    procedure Test_Load_Queries (T : in out Test) is
-      D    : Query_Info;
-      Path : String := Util.Tests.Get_Path ("");
    begin
       declare
          SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0);

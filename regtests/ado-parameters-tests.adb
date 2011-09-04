@@ -16,21 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Tests;
 with Util.Test_Caller;
-with Util.Log.Loggers;
 with Util.Measures;
-with ADO.Sessions;
-with ADO.Databases;
-with ADO.Queries.Loaders;
-with Regtests;
 package body ADO.Parameters.Tests is
 
    use Util.Tests;
-   use Util.Log;
-
-   --  The logger
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Parameters.Tests");
 
    package Caller is new Util.Test_Caller (Test);
 
@@ -49,6 +39,8 @@ package body ADO.Parameters.Tests is
    --  ------------------------------
    procedure Test_Expand_Sql (T : in out Test) is
       SQL : ADO.Parameters.List;
+
+      procedure Check (Pattern : in String; Expect : in String);
 
       procedure Check (Pattern : in String; Expect : in String) is
          Result : constant String := SQL.Expand (Pattern);
@@ -85,6 +77,8 @@ package body ADO.Parameters.Tests is
    procedure Test_Expand_Error (T : in out Test) is
       SQL : ADO.Parameters.List;
 
+      procedure Check (Pattern : in String; Expect : in String);
+
       procedure Check (Pattern : in String; Expect : in String) is
          Result : constant String := SQL.Expand (Pattern);
       begin
@@ -102,6 +96,8 @@ package body ADO.Parameters.Tests is
    --  Test expand performance.
    --  ------------------------------
    procedure Test_Expand_Perf (T : in out Test) is
+      pragma Unreferenced (T);
+
       SQL : ADO.Parameters.List;
    begin
 
@@ -115,13 +111,15 @@ package body ADO.Parameters.Tests is
       end;
 
       declare
-         B : Unbounded_String := To_Unbounded_String ("select t.a, t.b, t.c, t.d, t.e, t.f "
-                                                      & "from T where t.b = 23");
+         B : constant Unbounded_String
+           := To_Unbounded_String ("select t.a, t.b, t.c, t.d, t.e, t.f "
+                                   & "from T where t.b = 23");
          T : Util.Measures.Stamp;
       begin
          for I in 1 .. 1_000 loop
             declare
                S : constant String := To_String (B);
+               pragma Unreferenced (S);
             begin
                null;
             end;
@@ -135,6 +133,7 @@ package body ADO.Parameters.Tests is
             declare
                S : constant String := SQL.Expand ("select t.a, t.b, t.c, t.d, t.e, t.f "
                                                   & "from T where t.b = 23");
+               pragma Unreferenced (S);
             begin
                null;
             end;
@@ -148,6 +147,7 @@ package body ADO.Parameters.Tests is
             declare
                S : constant String := SQL.Expand ("select t.a, t.b, t.c, t.d, t.e, t.f "
                                                   & "from T where t.b = :10");
+               pragma Unreferenced (S);
             begin
                null;
             end;
@@ -160,6 +160,7 @@ package body ADO.Parameters.Tests is
          for I in 1 .. 1_000 loop
             declare
                S : constant String := SQL.Expand (":10 :20 :30 :40 :50 :60 :70 :80 :90 :100");
+               pragma Unreferenced (S);
             begin
                null;
             end;

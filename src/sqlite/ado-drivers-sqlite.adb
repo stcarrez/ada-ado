@@ -19,8 +19,6 @@
 with Sqlite3_H;
 with Interfaces.C.Strings;
 
-with Ada.Unchecked_Deallocation;
-
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.Statements.Sqlite;
@@ -46,6 +44,7 @@ package body ADO.Drivers.Sqlite is
    overriding
    function Get_Driver (Database : in Database_Connection)
                         return Driver_Access is
+      pragma Unreferenced (Database);
    begin
       return Driver'Access;
    end Get_Driver;
@@ -58,7 +57,7 @@ package body ADO.Drivers.Sqlite is
    begin
       if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
          declare
-            Error : constant Strings.Chars_Ptr := Sqlite3_H.Sqlite3_Errmsg (Connection);
+            Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
             Msg   : constant String := Strings.Value (Error);
          begin
             Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
@@ -142,8 +141,8 @@ package body ADO.Drivers.Sqlite is
       null;
    end Rollback;
 
-   procedure Sqlite3_Free (Arg1 : Strings.Chars_Ptr);
-   pragma Import (C, Sqlite3_Free, "sqlite3_free");
+   procedure Sqlite3_Free (Arg1 : Strings.chars_ptr);
+   pragma Import (C, sqlite3_free, "sqlite3_free");
 
    procedure Execute (Database : in out Database_Connection;
                       SQL      : in Query_String) is
@@ -216,6 +215,7 @@ package body ADO.Drivers.Sqlite is
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
                                 Result : out ADO.Drivers.Database_Connection_Access) is
+      pragma Unreferenced (D);
       use Strings;
       use type System.Address;
 
@@ -228,7 +228,7 @@ package body ADO.Drivers.Sqlite is
       Log.Info ("Opening database {0}", Name);
 
       Filename := Strings.New_String (Name);
-      Status := Sqlite3_H.Sqlite3_Open_V2 (Filename, Handle'Access,
+      Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Access,
                                            Flags,
                                            Strings.Null_Ptr);
 

@@ -26,6 +26,8 @@ with ADO.Schemas.Entities;
 --  sessions.
 package ADO.Sessions.Factory is
 
+   pragma Elaborate_Body;
+
    --  ------------------------------
    --  Session factory
    --  ------------------------------

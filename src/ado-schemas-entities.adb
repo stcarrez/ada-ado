@@ -74,6 +74,8 @@ package body ADO.Schemas.Entities is
       List  : ADO.Model.Entity_Type_Vector;
       Query : ADO.SQL.Query;
 
+      procedure Process (Element : in ADO.Model.Entity_Type_Ref);
+
       procedure Process (Element : in ADO.Model.Entity_Type_Ref) is
          Name : constant Util.Strings.Name_Access := new String'(Element.Get_Name);
       begin
@@ -85,6 +87,9 @@ package body ADO.Schemas.Entities is
       for I in 0 .. List.Length - 1 loop
          List.Query_Element (Natural (I), Process'Access);
       end loop;
+   exception
+      when others =>
+         null;
    end Initialize;
 
 end ADO.Schemas.Entities;

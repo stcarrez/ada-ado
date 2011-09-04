@@ -72,6 +72,8 @@ package body ADO.Queries.Loaders is
       end if;
    end Register;
 
+   function Find_Driver (Name : in String) return ADO.Drivers.Driver_Index;
+
    function Find_Driver (Name : in String) return ADO.Drivers.Driver_Index is
    begin
       if Name'Length = 0 then
