@@ -62,6 +62,7 @@ case "${host}" in
     if test "X$MYSQL" != "X" ; then
        DB="$DB mysql"
        ADO_DB_MYSQL=True
+       MYSQL_LIBNAME="$MYSQL_LIB"
     fi
     ;;
 
