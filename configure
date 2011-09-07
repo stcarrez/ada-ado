@@ -3000,6 +3000,7 @@ done
 
     if test "X$MYSQL" != "X" ; then
        DB="$DB mysql"
+       ADO_DB_MYSQL=True
     fi
     ;;
 
