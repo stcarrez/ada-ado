@@ -5,20 +5,6 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 166
 -----------------------------------------------------------------------
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
---  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
---
---  Licensed under the Apache License, Version 2.0 (the "License");
---  you may not use this file except in compliance with the License.
---  You may obtain a copy of the License at
---
---      http://www.apache.org/licenses/LICENSE-2.0
---
---  Unless required by applicable law or agreed to in writing, software
---  distributed under the License is distributed on an "AS IS" BASIS,
---  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
---  See the License for the specific language governing permissions and
---  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 package body ADO.Model is
@@ -258,17 +244,17 @@ package body ADO.Model is
          := Session.Create_Statement (SEQUENCE_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => COL_0_1_NAME, --  NAME
+         Stmt.Save_Field (Name  => COL_0_1_NAME, --  name
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => COL_2_1_NAME, --  VALUE
+         Stmt.Save_Field (Name  => COL_2_1_NAME, --  value
                           Value => Object.Value);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => COL_3_1_NAME, --  BLOCK_SIZE
+         Stmt.Save_Field (Name  => COL_3_1_NAME, --  block_size
                           Value => Object.Block_Size);
          Object.Clear_Modified (4);
       end if;
@@ -300,13 +286,13 @@ package body ADO.Model is
       Result : Integer;
    begin
       Object.Version := 1;
-      Query.Save_Field (Name  => COL_0_1_NAME, --  NAME
+      Query.Save_Field (Name  => COL_0_1_NAME, --  name
                         Value => Object.Get_Key);
       Query.Save_Field (Name  => COL_1_1_NAME, --  version
                         Value => Object.Version);
-      Query.Save_Field (Name  => COL_2_1_NAME, --  VALUE
+      Query.Save_Field (Name  => COL_2_1_NAME, --  value
                         Value => Object.Value);
-      Query.Save_Field (Name  => COL_3_1_NAME, --  BLOCK_SIZE
+      Query.Save_Field (Name  => COL_3_1_NAME, --  block_size
                         Value => Object.Block_Size);
       Query.Execute (Result);
       if Result /= 1 then
@@ -579,7 +565,7 @@ package body ADO.Model is
          := Session.Create_Statement (ENTITY_TYPE_TABLE'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => COL_0_2_NAME, --  ID
+         Stmt.Save_Field (Name  => COL_0_2_NAME, --  id
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
@@ -607,9 +593,9 @@ package body ADO.Model is
       Result : Integer;
    begin
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name  => COL_0_2_NAME, --  ID
+      Query.Save_Field (Name  => COL_0_2_NAME, --  id
                         Value => Object.Get_Key);
-      Query.Save_Field (Name  => COL_1_2_NAME, --  NAME
+      Query.Save_Field (Name  => COL_1_2_NAME, --  name
                         Value => Object.Name);
       Query.Execute (Result);
       if Result /= 1 then

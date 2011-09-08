@@ -1,6 +1,6 @@
 /* File generated automatically by dynamo */
 /* Record representing a user */
-create table user (
+CREATE TABLE user (
   /* the user identifier */
   `ID` BIGINT NOT NULL,
   /*  */
@@ -15,8 +15,8 @@ create table user (
   `DESCRIPTION` VARCHAR(256) ,
   /* the user status */
   `STATUS` Integer ,
-  primary key (`ID`)
+  PRIMARY KEY (`ID`)
 );
-insert into entity_type (name) values
+INSERT INTO entity_type (name) VALUES
 ("user")
 ;

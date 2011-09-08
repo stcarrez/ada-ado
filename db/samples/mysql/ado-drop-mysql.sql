@@ -1,2 +1,2 @@
 /* File generated automatically by dynamo */
-drop table if exists `user`;
+DROP TABLE IF EXISTS `user`;

@@ -1,4 +1,4 @@
 /* File generated automatically by dynamo */
-drop table if exists `allocate`;
-drop table if exists `test_user`;
-drop table if exists `TEST_COMMENTS`;
+DROP TABLE IF EXISTS `allocate`;
+DROP TABLE IF EXISTS `test_user`;
+DROP TABLE IF EXISTS `TEST_COMMENTS`;

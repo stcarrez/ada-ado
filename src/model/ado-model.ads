@@ -5,20 +5,6 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 166
 -----------------------------------------------------------------------
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
---  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
---
---  Licensed under the Apache License, Version 2.0 (the "License");
---  you may not use this file except in compliance with the License.
---  You may obtain a copy of the License at
---
---      http://www.apache.org/licenses/LICENSE-2.0
---
---  Unless required by applicable law or agreed to in writing, software
---  distributed under the License is distributed on an "AS IS" BASIS,
---  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
---  See the License for the specific language governing permissions and
---  limitations under the License.
 -----------------------------------------------------------------------
 with ADO.Sessions;
 with ADO.Objects;
@@ -222,10 +208,10 @@ package ADO.Model is
 
 private
    SEQUENCE_NAME : aliased constant String := "sequence";
-   COL_0_1_NAME : aliased constant String := "NAME";
+   COL_0_1_NAME : aliased constant String := "name";
    COL_1_1_NAME : aliased constant String := "version";
-   COL_2_1_NAME : aliased constant String := "VALUE";
-   COL_3_1_NAME : aliased constant String := "BLOCK_SIZE";
+   COL_2_1_NAME : aliased constant String := "value";
+   COL_3_1_NAME : aliased constant String := "block_size";
    SEQUENCE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 4,
       Table => SEQUENCE_NAME'Access,
@@ -272,8 +258,8 @@ private
                         Impl   : out Sequence_Access;
                         Field  : in Positive);
    ENTITY_TYPE_NAME : aliased constant String := "entity_type";
-   COL_0_2_NAME : aliased constant String := "ID";
-   COL_1_2_NAME : aliased constant String := "NAME";
+   COL_0_2_NAME : aliased constant String := "id";
+   COL_1_2_NAME : aliased constant String := "name";
    ENTITY_TYPE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 2,
       Table => ENTITY_TYPE_NAME'Access,

@@ -1,33 +1,33 @@
 /* Copied from /home/ciceron/work/pam/pam/awa/ado/db/mysql/ado-mysql.sql*/
 /* File generated automatically by dynamo */
 /* Sequence generator */
-create table sequence (
+CREATE TABLE sequence (
   /* the sequence name */
-  `NAME` VARCHAR(256) NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
   /* the sequence record version */
   `version` int ,
   /* the sequence value */
-  `VALUE` BIGINT ,
+  `value` BIGINT ,
   /* the sequence block size */
-  `BLOCK_SIZE` BIGINT ,
-  primary key (`NAME`)
+  `block_size` BIGINT ,
+  PRIMARY KEY (`name`)
 );
 /* Entity types */
-create table entity_type (
+CREATE TABLE entity_type (
   /* the entity type identifier */
-  `ID` INTEGER  AUTO_INCREMENT,
+  `id` INTEGER  AUTO_INCREMENT,
   /* the entity type name (table name) */
-  `NAME` VARCHAR(256) UNIQUE NOT NULL,
-  primary key (`ID`)
+  `name` VARCHAR(256) UNIQUE NOT NULL,
+  PRIMARY KEY (`id`)
 );
-insert into entity_type (name) values
+INSERT INTO entity_type (name) VALUES
 ("sequence")
 ,("entity_type")
 ;
 /* Copied from ./db/samples/mysql/ado-mysql.sql*/
 /* File generated automatically by dynamo */
 /* Record representing a user */
-create table user (
+CREATE TABLE user (
   /* the user identifier */
   `ID` BIGINT NOT NULL,
   /*  */
@@ -42,8 +42,8 @@ create table user (
   `DESCRIPTION` VARCHAR(256) ,
   /* the user status */
   `STATUS` Integer ,
-  primary key (`ID`)
+  PRIMARY KEY (`ID`)
 );
-insert into entity_type (name) values
+INSERT INTO entity_type (name) VALUES
 ("user")
 ;

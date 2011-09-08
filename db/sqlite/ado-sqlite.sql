@@ -1,21 +1,21 @@
 /* File generated automatically by dynamo */
 /* Sequence generator */
-create table sequence (
+CREATE TABLE sequence (
   /* the sequence name */
-  `NAME` VARCHAR(256) PRIMARY KEY,
+  `name` VARCHAR(256) PRIMARY KEY,
   /* the sequence record version */
-  `version` int NOT NULL,
+  `version` int ,
   /* the sequence value */
-  `VALUE` BIGINT NOT NULL,
+  `value` BIGINT ,
   /* the sequence block size */
-  `BLOCK_SIZE` BIGINT NOT NULL
+  `block_size` BIGINT 
 );
 /* Entity types */
-create table entity_type (
+CREATE TABLE entity_type (
   /* the entity type identifier */
-  `ID` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   /* the entity type name (table name) */
-  `NAME` VARCHAR(256) UNIQUE NOT NULL
+  `name` VARCHAR(256) UNIQUE NOT NULL
 );
-insert into entity_type (name) values ("sequence");
-insert into entity_type (name) values ("entity_type");
+INSERT INTO entity_type (name) VALUES ("sequence");
+INSERT INTO entity_type (name) VALUES ("entity_type");

@@ -1,6 +1,6 @@
 /* File generated automatically by dynamo */
 /*  */
-create table TEST_COMMENTS (
+CREATE TABLE TEST_COMMENTS (
   /*  */
   `ID` INTEGER ,
   /*  */
@@ -15,10 +15,10 @@ create table TEST_COMMENTS (
   `USER_FK` INTEGER NOT NULL,
   /*  */
   `ENTITY__TYPE_FK` INTEGER NOT NULL,
-  primary key (`ID`)
+  PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
-create table test_user (
+CREATE TABLE test_user (
   /* the user id */
   `ID` BIGINT NOT NULL,
   /*  */
@@ -27,19 +27,19 @@ create table test_user (
   `VALUE` BIGINT ,
   /* the user name */
   `NAME` VARCHAR(255) ,
-  primary key (`ID`)
+  PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
-create table allocate (
+CREATE TABLE allocate (
   /* the user id */
   `ID` BIGINT NOT NULL,
   /*  */
   `object_version` int ,
   /* the sequence value */
   `NAME` VARCHAR(255) ,
-  primary key (`ID`)
+  PRIMARY KEY (`ID`)
 );
-insert into entity_type (name) values
+INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
 ,("test_user")
 ,("allocate")
