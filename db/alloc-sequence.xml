@@ -4,7 +4,7 @@
         <comment>Sequence generator</comment>
         <id name="name" type="String" unsaved-value="0">
             <comment>the sequence name</comment>
-            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(127)"/>
             <generator class="none"/>
         </id>
         <version name="version" type="int" column="version">
@@ -28,7 +28,7 @@
         </id>
         <property name="name" insert="true" update="false" unique="true">
             <comment>the entity type name (table name)</comment>
-            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(127)"/>
             <type name="java.lang.String"/>
         </property>
     </class>
