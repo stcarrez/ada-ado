@@ -75,6 +75,7 @@ test-mysql:		build create-mysql-tests
 clean:
 	$(GNATCLEAN) -q -P "$(GPRPATH)"
 	$(GNATCLEAN) -q -Ptests
+	$(GNATCLEAN) -q -Psamples
 
 # Clean root project and all imported projects too.
 clean_tree:
