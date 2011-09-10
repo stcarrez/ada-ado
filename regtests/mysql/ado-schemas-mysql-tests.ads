@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  schemas Tests -- Test loading of database schema
+--  schemas Tests -- Test loading of database schema for MySQL
 --  Copyright (C) 2009, 2010, 2011 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -18,16 +18,12 @@
 
 with AUnit.Test_Suites;
 with Util.Tests;
-package ADO.Schemas.Tests is
+package ADO.Schemas.Mysql.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 
    type Test is new Util.Tests.Test with null record;
 
-   --  Test reading the entity cache and the Find_Entity_Type operation
-   procedure Test_Find_Entity_Type (T : in out Test);
+   procedure Test_Load_Schema (T : in out Test);
 
-   --  Test calling Find_Entity_Type with an invalid table.
-   procedure Test_Find_Entity_Type_Error (T : in out Test);
-
-end ADO.Schemas.Tests;
+end ADO.Schemas.Mysql.Tests;

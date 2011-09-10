@@ -25,6 +25,10 @@ package body ADO.Testsuite is
 
    use ADO.Tests;
 
+   procedure Drivers (Suite : AUnit.Test_Suites.Access_Test_Suite);
+
+   procedure Drivers (Suite : AUnit.Test_Suites.Access_Test_Suite) is separate;
+
    Tests : aliased AUnit.Test_Suites.Test_Suite;
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -34,6 +38,7 @@ package body ADO.Testsuite is
       ADO.Objects.Tests.Add_Tests (Ret);
       ADO.Tests.Add_Tests (Ret);
       ADO.Schemas.Tests.Add_Tests (Ret);
+      Drivers (Ret);
       ADO.Queries.Tests.Add_Tests (Ret);
       return Ret;
    end Suite;

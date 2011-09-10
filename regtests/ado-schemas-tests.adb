@@ -18,10 +18,7 @@
 
 with Util.Test_Caller;
 
-with ADO.Drivers;
 with ADO.Sessions;
-with ADO.Databases;
-with ADO.Schemas.Mysql;
 with ADO.Schemas.Entities;
 with ADO.Model;
 with ADO.Objects;
@@ -36,54 +33,11 @@ package body ADO.Schemas.Tests is
 
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
    begin
-      Caller.Add_Test (Suite, "Test ADO.Schemas.Load_Schema",
-                       Test_Load_Schema'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Entities.Find_Entity_Type",
                        Test_Find_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Entities.Find_Entity_Type (error)",
                        Test_Find_Entity_Type_Error'Access);
    end Add_Tests;
-
-   procedure Test_Load_Schema (T : in out Test) is
-      use type ADO.Drivers.Driver_Access;
-
-      S   : constant ADO.Sessions.Session := Regtests.Get_Database;
-      DB  : constant ADO.Databases.Connection'Class := S.Get_Connection;
-      Dr  : constant ADO.Drivers.Driver_Access := DB.Get_Driver;
-
-      Schema : Schema_Definition;
-      Table  : Table_Definition;
-   begin
-      T.Assert (Dr /= null, "Database connection has no driver");
-      if Dr.Get_Driver_Name /= "mysql" then
-         return;
-      end if;
-
-      ADO.Schemas.Mysql.Load_Schema (DB, Schema);
-
-      Table := ADO.Schemas.Find_Table (Schema, "allocate");
-      T.Assert (Table /= null, "Table schema for test_allocate not found");
-
-      Assert_Equals (T, "allocate", Get_Name (Table));
-
-      declare
-         C : Column_Cursor := Get_Columns (Table);
-         Nb_Columns : Integer := 0;
-      begin
-         while Has_Element (C) loop
-            Nb_Columns := Nb_Columns + 1;
-            Next (C);
-         end loop;
-         Assert_Equals (T, 3, Nb_Columns, "Invalid number of columns");
-      end;
-
-      declare
-         C : constant Column_Definition := Find_Column (Table, "ID");
-      begin
-         T.Assert (C /= null, "Cannot find column 'id' in table schema");
-         Assert_Equals (T, "ID", Get_Name (C), "Invalid column name");
-      end;
-   end Test_Load_Schema;
 
    --  ------------------------------
    --  Test reading the entity cache and the Find_Entity_Type operation

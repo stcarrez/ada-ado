@@ -35,7 +35,7 @@ mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
 
 # Build executables for all mains defined by the project.
-build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads
+build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
 	$(GNATMAKE) -p -P "$(GPRPATH)"
 	$(GNATMAKE) -p -Ptests
 
@@ -50,10 +50,15 @@ autobuild:
 src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
 	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
 	          -DHAVE_SQLITE=$(HAVE_SQLITE) \
-		  src/ado-drivers-initialize.gpb src/ado-drivers-initialize.adb
+		  src/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
-	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb src/mysql/mysql-lib.ads
+	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
+
+regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
+	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
+	         -DHAVE_SQLITE=$(HAVE_SQLITE) \
+		 regtests/ado-testsuite-drivers.gpb $@
 
 # Build and run the unit tests
 test:	test-sqlite test-mysql
