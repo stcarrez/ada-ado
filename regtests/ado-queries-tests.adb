@@ -58,6 +58,10 @@ package body ADO.Queries.Tests is
    pragma Warnings (Off, Value_Query);
 
    procedure Test_Load_Queries (T : in out Test) is
+      use type ADO.Drivers.Driver_Access;
+
+      Mysql_Driver  : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("mysql");
+      Sqlite_Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("sqlite");
    begin
       declare
          SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0);
@@ -71,11 +75,13 @@ package body ADO.Queries.Tests is
          Assert_Equals (T, "select 0", SQL, "Invalid query for 'index'");
       end;
 
-      declare
-         SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, 1);
-      begin
-         Assert_Equals (T, "select 1", SQL, "Invalid query for 'index'");
-      end;
+      if Mysql_Driver /= null then
+         declare
+            SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, 1);
+         begin
+            Assert_Equals (T, "select 1", SQL, "Invalid query for 'index'");
+         end;
+      end if;
    end Test_Load_Queries;
 
 end ADO.Queries.Tests;

@@ -50,10 +50,20 @@ AC_SUBST(EXEC_PREFIX)
 ADO_LIBDIR="lib"
 AC_SUBST(ADO_LIBDIR)
 
+AC_ARG_ENABLE(mysql,
+[  --enable-mysql          build MySQL support],
+ENABLE_MYSQL=$enableval,
+ENABLE_MYSQL=yes)
+
+AC_ARG_ENABLE(sqlite,
+[  --enable-sqlite         build SQLite support],
+ENABLE_SQLITE=$enableval,
+ENABLE_SQLITE=yes)
 
 DB=""
 ADO_DB_MYSQL=False
-case "${host}" in
+if test "${ENABLE_MYSQL}" = "yes" ; then
+  case "${host}" in
   ## On Windows, the MySQL library name is libmysql
   *mingw* )
     MYSQL_LIB=mysql
@@ -75,13 +85,16 @@ case "${host}" in
        ])
     ;;
 
-esac
+  esac
+fi
 
 ADO_DB_SQLITE=False
-AC_CHECK_LIB(sqlite3,sqlite3_open,[
+if test "${ENABLE_SQLITE}" = "yes" ; then
+  AC_CHECK_LIB(sqlite3,sqlite3_open,[
     DB="$DB sqlite"
     ADO_DB_SQLITE=True
-])
+  ])
+fi
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''

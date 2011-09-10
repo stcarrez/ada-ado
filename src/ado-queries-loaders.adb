@@ -72,9 +72,9 @@ package body ADO.Queries.Loaders is
       end if;
    end Register;
 
-   function Find_Driver (Name : in String) return ADO.Drivers.Driver_Index;
+   function Find_Driver (Name : in String) return Integer;
 
-   function Find_Driver (Name : in String) return ADO.Drivers.Driver_Index is
+   function Find_Driver (Name : in String) return Integer is
    begin
       if Name'Length = 0 then
          return 0;
@@ -83,10 +83,12 @@ package body ADO.Queries.Loaders is
          Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver (Name);
       begin
          if Driver = null then
-            Log.Error ("Database driver {0} not found", Name);
-            return 0;
+            --  There is no problem to have an SQL query for unsupported drivers, but still
+            --  report some warning.
+            Log.Warn ("Database driver {0} not found", Name);
+            return -1;
          end if;
-         return Driver.Get_Driver_Index;
+         return Integer (Driver.Get_Driver_Index);
       end;
    end Find_Driver;
 
@@ -161,7 +163,7 @@ package body ADO.Queries.Loaders is
          Hash_Value : Unbounded_String;
          Query_Def  : Query_Definition_Access;
          Query      : Query_Info_Access;
-         Driver     : ADO.Drivers.Driver_Index;
+         Driver     : Integer;
       end record;
       type Query_Loader_Access is access all Query_Loader;
 
@@ -201,14 +203,16 @@ package body ADO.Queries.Loaders is
             Into.Driver := Find_Driver (Util.Beans.Objects.To_String (Value));
 
          when FIELD_SQL =>
-            if Into.Query /= null then
-               Set_Query_Pattern (Into.Query.Main_Query (Into.Driver), Value);
+            if Into.Query /= null and Into.Driver >= 0 then
+               Set_Query_Pattern (Into.Query.Main_Query (ADO.Drivers.Driver_Index (Into.Driver)),
+                                  Value);
             end if;
             Into.Driver := 0;
 
          when FIELD_SQL_COUNT =>
-            if Into.Query /= null then
-               Set_Query_Pattern (Into.Query.Count_Query (Into.Driver), Value);
+            if Into.Query /= null and Into.Driver >= 0 then
+               Set_Query_Pattern (Into.Query.Count_Query (ADO.Drivers.Driver_Index (Into.Driver)),
+                                  Value);
             end if;
             Into.Driver := 0;
 
