@@ -21,6 +21,7 @@ with Util.Strings;
 with ADO.Model;
 with ADO.Schemas;
 with ADO.Objects;
+with ADO.Parameters;
 package ADO.Sessions.Entities is
 
    --  Find the entity type object associated with the given database table.
@@ -51,5 +52,13 @@ package ADO.Sessions.Entities is
    --  Raises the No_Entity_Type exception if no such mapping exist.
    function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
                               Name    : in String) return ADO.Entity_Type;
+
+   --  Resolve the entity type associated with the database table <b>Table</b> by using
+   --  the <b<Session</b> connection object.  Then, bind the parameter identified by
+   --  <b>Name</b> in the parameter list.
+   procedure Bind_Param (Params  : in out ADO.Parameters.Abstract_List'Class;
+                         Name    : in String;
+                         Table   : in ADO.Schemas.Class_Mapping_Access;
+                         Session : in ADO.Sessions.Session'Class);
 
 end ADO.Sessions.Entities;

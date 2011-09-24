@@ -78,4 +78,18 @@ package body ADO.Sessions.Entities is
       return Find_Entity_Type (Session, Name'Unrestricted_Access);
    end Find_Entity_Type;
 
+   --  ------------------------------
+   --  Resolve the entity type associated with the database table <b>Table</b> by using
+   --  the <b<Session</b> connection object.  Then, bind the parameter identified by
+   --  <b>Name</b> in the parameter list.
+   --  ------------------------------
+   procedure Bind_Param (Params  : in out ADO.Parameters.Abstract_List'Class;
+                         Name    : in String;
+                         Table   : in ADO.Schemas.Class_Mapping_Access;
+                         Session : in ADO.Sessions.Session'Class) is
+      Value : constant Entity_Type := Find_Entity_Type (Session, Table.Table.all);
+   begin
+      Params.Bind_Param (Name, Value);
+   end Bind_Param;
+
 end ADO.Sessions.Entities;
