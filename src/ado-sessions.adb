@@ -145,9 +145,11 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         SQL : constant String := Query.Get_SQL (Database.Impl.Database.Get_Driver_Index);
+         SQL  : constant String := Query.Get_SQL (Database.Impl.Database.Get_Driver_Index);
+         Stmt : Query_Statement := Database.Impl.Database.Create_Statement (SQL);
       begin
-         return Database.Impl.Database.Create_Statement (SQL);
+         Stmt.Set_Parameters (Query);
+         return Stmt;
       end;
    end Create_Statement;
 
