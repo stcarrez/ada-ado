@@ -203,6 +203,19 @@ package body ADO.Objects is
    end Is_Null;
 
    --  ------------------------------
+   --  Check whether this object is saved in the database.
+   --  Returns True if the object was saved in the database.
+   --  ------------------------------
+   function Is_Inserted (Object : in Object_Ref'Class) return Boolean is
+   begin
+      if Object.Object = null then
+         return False;
+      else
+         return Object.Object.Is_Created;
+      end if;
+   end Is_Inserted;
+
+   --  ------------------------------
    --  Load the object from the database if it was not already loaded.
    --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
    --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.

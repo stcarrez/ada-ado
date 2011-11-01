@@ -30,6 +30,9 @@ package ADO.Objects.Tests is
 
    procedure Test_Delete_Object (T : in out Test);
 
+   --  Test Is_Inserted and Is_Null
+   procedure Test_Is_Inserted (T : in out Test);
+
    --  Add the tests in the test suite
    procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
 

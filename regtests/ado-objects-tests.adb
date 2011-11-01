@@ -221,6 +221,41 @@ package body ADO.Objects.Tests is
       end;
    end Test_Delete_Object;
 
+   --  ------------------------------
+   --  Test Is_Inserted and Is_Null
+   --  ------------------------------
+   procedure Test_Is_Inserted (T : in out Test) is
+      User : Regtests.Simple.Model.User_Ref;
+   begin
+      T.Assert (not User.Is_Inserted, "A null object should not be marked as INSERTED");
+      T.Assert (User.Is_Null, "A null object should be marked as NULL");
+
+      --  Create an object within a transaction.
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         S.Begin_Transaction;
+         User.Set_Name ("John");
+         T.Assert (not User.Is_Null, "User should not be NULL");
+         T.Assert (not User.Is_Inserted, "User was not saved and not yet inserted in database");
+
+         User.Set_Value (1);
+         User.Save (S);
+         S.Commit;
+         T.Assert (User.Is_Inserted, "After a save operation, the user should be marked INSERTED");
+         T.Assert (not User.Is_Null, "User should not be NULL");
+      end;
+
+      declare
+         S    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         John : Regtests.Simple.Model.User_Ref;
+      begin
+         John.Load (S, User.Get_Id);
+         T.Assert (John.Is_Inserted, "After a load, the object should be marked INSERTED");
+         T.Assert (not John.Is_Null, "After a load, the object should not be NULL");
+      end;
+   end Test_Is_Inserted;
+
    package Caller is new AUnit.Test_Caller (Test);
 
    --  ------------------------------
@@ -232,6 +267,7 @@ package body ADO.Objects.Tests is
       Suite.Add_Test (Caller.Create ("Test Object_Ref.Get/Set", Test_Object_Ref'Access));
       Suite.Add_Test (Caller.Create ("Test ADO.Objects.Create", Test_Create_Object'Access));
       Suite.Add_Test (Caller.Create ("Test ADO.Objects.Delete", Test_Delete_Object'Access));
+      Suite.Add_Test (Caller.Create ("Test ADO.Objects.Is_Created", Test_Is_Inserted'Access));
    end Add_Tests;
 
 end ADO.Objects.Tests;

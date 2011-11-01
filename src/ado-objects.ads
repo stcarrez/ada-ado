@@ -200,6 +200,10 @@ package ADO.Objects is
    function Is_Null (Object : in Object_Ref'Class) return Boolean;
    pragma Inline (Is_Null);
 
+   --  Check whether this object is saved in the database.
+   --  Returns True if the object was saved in the database.
+   function Is_Inserted (Object : in Object_Ref'Class) return Boolean;
+
    --  Internal method to get the object record instance and make sure it is fully loaded.
    --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
    --  database.  Raises SESSION_EXPIRED if the session associated with the object is closed.
