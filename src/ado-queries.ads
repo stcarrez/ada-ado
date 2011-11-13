@@ -45,6 +45,9 @@ package ADO.Queries is
    procedure Set_Query (Into  : in out Context;
                         Query : in Query_Definition_Access);
 
+   procedure Set_Query (Into  : in out Context;
+                        Name  : in String);
+
    --  Set the limit for the SQL query.
    procedure Set_Limit (Into  : in out Context;
                         First : in Natural;

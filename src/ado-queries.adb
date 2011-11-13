@@ -28,6 +28,12 @@ package body ADO.Queries is
       Into.Query_Def := Query;
    end Set_Query;
 
+   procedure Set_Query (Into  : in out Context;
+                        Name  : in String) is
+   begin
+      Into.Query_Def := ADO.Queries.Loaders.Find_Query (Name);
+   end Set_Query;
+
    --  ------------------------------
    --  Set the limit for the SQL query.
    --  ------------------------------

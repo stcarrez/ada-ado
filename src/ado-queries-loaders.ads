@@ -58,6 +58,9 @@ package ADO.Queries.Loaders is
    procedure Initialize (Paths : in String;
                          Load  : in Boolean);
 
+   --  Find the query identified by the given name.
+   function Find_Query (Name : in String) return Query_Definition_Access;
+
 private
 
    --  Returns True if the XML query file must be reloaded.

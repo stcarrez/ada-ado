@@ -45,6 +45,8 @@ package body ADO.Queries.Loaders is
    --  The list of query files defined by the application.
    Query_Files : Query_File_Access := null;
 
+   Query_List  : Query_Definition_Access := null;
+
    --  Convert a Time to an Unsigned_32.
    function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32;
    pragma Inline_Always (To_Unsigned_32);
@@ -292,6 +294,29 @@ package body ADO.Queries.Loaders is
          File := File.Next;
       end loop;
    end Initialize;
+
+   --  ------------------------------
+   --  Find the query identified by the given name.
+   --  ------------------------------
+   function Find_Query (Name : in String) return Query_Definition_Access is
+      File : Query_File_Access := Query_Files;
+   begin
+      while File /= null loop
+         declare
+            Query : Query_Definition_Access := File.Queries;
+         begin
+            while Query /= null loop
+               if Query.Name.all = Name then
+                  return Query;
+               end if;
+               Query := Query.Next;
+            end loop;
+         end;
+         File := File.Next;
+      end loop;
+      Log.Warn ("Query {0} not found", Name);
+      return null;
+   end Find_Query;
 
    package body Query is
    begin
