@@ -196,6 +196,7 @@ package body ADO.Queries.Loaders is
          when FIELD_QUERY_NAME =>
             Into.Query_Def  := Find_Query (Into.File.all, Util.Beans.Objects.To_String (Value));
             Into.Driver := 0;
+            Into.Query := null;
             if Into.Query_Def /= null then
                Into.Query := new Query_Info;
                Into.Query_Def.Query := Into.Query;
