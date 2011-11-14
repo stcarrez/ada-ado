@@ -450,7 +450,6 @@ package body ADO.Statements.Mysql is
    function Get_Column_Type (Query  : Mysql_Query_Statement;
                              Column : Natural)
                              return ADO.Schemas.Column_Type is
-      Old   : MYSQL_FIELD_OFFSET;
       Field : MYSQL_FIELD;
    begin
       if Query.Result = null then
@@ -460,11 +459,10 @@ package body ADO.Statements.Mysql is
          raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
       end if;
 
-      Old := Mysql_Field_Seek (Query.Result,
-                               MYSQL_FIELD_OFFSET (Column - 1));
-      pragma Unreferenced (Old);
-
-      Field := Mysql_Fetch_Fields (Query.Result);
+      Field := Mysql_Fetch_Field_Direct (Query.Result, MYSQL_FIELD_OFFSET (Column));
+      if Field = null then
+         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+      end if;
       case Field.C_Type is
          when MYSQL_TYPE_DECIMAL | MYSQL_TYPE_NEWDECIMAL =>
             return ADO.Schemas.T_DECIMAL;
