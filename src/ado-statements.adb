@@ -173,7 +173,7 @@ package body ADO.Statements is
       if not Query_Statement'Class (Query).Has_Elements then
          return 0;
       end if;
-      return Query_Statement'Class (Query).Get_Integer (1);
+      return Query_Statement'Class (Query).Get_Integer (0);
    end Get_Result_Integer;
 
    --  ------------------------------
