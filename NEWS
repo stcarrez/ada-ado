@@ -1,3 +1,6 @@
+Version 0.3.0   -
+  - Support to update database records when a field is really modified
+
 Version 0.2.0   - Aug 2011
   - Port on Windows
 

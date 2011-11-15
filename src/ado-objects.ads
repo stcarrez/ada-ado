@@ -196,6 +196,11 @@ package ADO.Objects is
    procedure Set_Field (Object : in out Object_Ref'Class;
                         Field  : in Positive);
 
+   --  Prepare the object to be modified.  If the reference is empty, an object record
+   --  instance is allocated by calling <b>Allocate</b>.
+   procedure Prepare_Modify (Object : in out Object_Ref'Class;
+                             Result : out Object_Record_Access);
+
    --  Check whether this object is initialized or not.
    function Is_Null (Object : in Object_Ref'Class) return Boolean;
    pragma Inline (Is_Null);
@@ -265,6 +270,69 @@ package ADO.Objects is
 
    function Create_Session_Proxy (S : access ADO.Sessions.Session_Record)
                                   return Session_Proxy_Access;
+
+   --  Set the object field to the new value in <b>Into</b>.  If the new value is identical,
+   --  the operation does nothing.  Otherwise, the new value <b>Value</b> is copied
+   --  to <b>Into</b> and the field identified by <b>Field</b> is marked as modified on
+   --  the object.  The <b>Set_Field_XXX</b> procedures are used by the Dynamo generated
+   --  code for the implementation of Set procedures.
+   procedure Set_Field_Unbounded_String (Object : in out Object_Record'Class;
+                                         Field  : in Positive;
+                                         Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                                         Value  : in Ada.Strings.Unbounded.Unbounded_String);
+
+   procedure Set_Field_String (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                               Value  : in String);
+
+   procedure Set_Field_Time (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out Ada.Calendar.Time;
+                             Value  : in Ada.Calendar.Time);
+
+   procedure Set_Field_Time (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out ADO.Nullable_Time;
+                             Value  : in ADO.Nullable_Time);
+
+   procedure Set_Field_Integer (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Integer;
+                                Value  : in Integer);
+
+   procedure Set_Field_Boolean (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Boolean;
+                                Value  : in Boolean);
+
+   procedure Set_Field_Object (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out Object_Ref'Class;
+                               Value  : in Object_Ref'Class);
+
+   procedure Set_Field_Identifier (Object : in out Object_Record'Class;
+                                   Field  : in Positive;
+                                   Into   : in out ADO.Identifier;
+                                   Value  : in ADO.Identifier);
+
+   procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
+                                    Field  : in Positive;
+                                    Into   : in out ADO.Entity_Type;
+                                    Value  : in ADO.Entity_Type);
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in ADO.Identifier);
+
+   generic
+      type T is private;
+   procedure Set_Field_Operation (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Into   : in out T;
+                                  Value  : in T);
+   --  SCz 2011-11-15: ??? setting the Inline_Always pragma crashes gcc 4.4;
+   --     pragma Inline_Always (Set_Field_Operation);
 
 private
 

@@ -195,6 +195,22 @@ package body ADO.Objects is
    end Set_Field;
 
    --  ------------------------------
+   --  Prepare the object to be modified.  If the reference is empty, an object record
+   --  instance is allocated by calling <b>Allocate</b>.
+   --  ------------------------------
+   procedure Prepare_Modify (Object : in out Object_Ref'Class;
+                             Result : out Object_Record_Access) is
+   begin
+      if Object.Object = null then
+         Object.Allocate;
+         Object.Object.Is_Loaded := True;
+      elsif not Object.Object.Is_Loaded then
+         Object.Lazy_Load;
+      end if;
+      Result := Object.Object;
+   end Prepare_Modify;
+
+   --  ------------------------------
    --  Check whether this object is initialized or not.
    --  ------------------------------
    function Is_Null (Object : in Object_Ref'Class) return Boolean is
@@ -453,5 +469,146 @@ package body ADO.Objects is
       Result.Session := S;
       return Result;
    end Create_Session_Proxy;
+
+   --  ------------------------------
+   --  Set the object field to the new value in <b>Into</b>.  If the new value is identical,
+   --  the operation does nothing.  Otherwise, the new value <b>Value</b> is copied
+   --  to <b>Into</b> and the field identified by <b>Field</b> is marked as modified on
+   --  the object.
+   --  ------------------------------
+   procedure Set_Field_Unbounded_String (Object : in out Object_Record'Class;
+                                         Field  : in Positive;
+                                         Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                                         Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Unbounded_String;
+
+   procedure Set_Field_String (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                               Value  : in String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Into /= Value then
+         Ada.Strings.Unbounded.Set_Unbounded_String (Into, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_String;
+
+   procedure Set_Field_Time (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out Ada.Calendar.Time;
+                             Value  : in Ada.Calendar.Time) is
+      use Ada.Calendar;
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Time;
+
+   procedure Set_Field_Time (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out ADO.Nullable_Time;
+                             Value  : in ADO.Nullable_Time) is
+      use Ada.Calendar;
+   begin
+      if Into.Is_Null then
+         if not Value.Is_Null then
+            Into := Value;
+            Object.Modified (Field) := True;
+         end if;
+      elsif Value.Is_Null then
+         Into.Is_Null := True;
+         Object.Modified (Field) := True;
+      elsif Into.Value /= Value.Value then
+         Into.Value := Value.Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Time;
+
+   procedure Set_Field_Integer (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Integer;
+                                Value  : in Integer) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Integer;
+
+   procedure Set_Field_Boolean (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Boolean;
+                                Value  : in Boolean) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Boolean;
+
+   procedure Set_Field_Object (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out Object_Ref'Class;
+                               Value  : in Object_Ref'Class) is
+   begin
+      if Into.Object /= Value.Object then
+         Set_Object (Into, Value.Object);
+         if Into.Object /= null then
+            Util.Concurrent.Counters.Increment (Into.Object.Counter);
+         end if;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Object;
+
+   procedure Set_Field_Identifier (Object : in out Object_Record'Class;
+                                   Field  : in Positive;
+                                   Into   : in out ADO.Identifier;
+                                   Value  : in ADO.Identifier) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Identifier;
+
+   procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
+                                    Field  : in Positive;
+                                    Into   : in out ADO.Entity_Type;
+                                    Value  : in ADO.Entity_Type) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Entity_Type;
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in ADO.Identifier) is
+   begin
+      if Object.Get_Key_Value /= Value then
+         Set_Key_Value (Object, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Key_Value;
+
+   procedure Set_Field_Operation (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Into   : in out T;
+                                  Value  : in T) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Operation;
 
 end ADO.Objects;
