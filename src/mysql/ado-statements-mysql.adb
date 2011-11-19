@@ -157,10 +157,13 @@ package body ADO.Statements.Mysql is
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
          Check_Error (Stmt.Connection, Res);
-
-         Res2 := Mysql_Affected_Rows (Stmt.Connection);
-         Log.Info ("Update: {0}", My_Ulonglong'Image (Res2));
-         Result := Integer (Res2);
+         if Res = 0 then
+            Res2 := Mysql_Affected_Rows (Stmt.Connection);
+            Log.Info ("Update: {0}", My_Ulonglong'Image (Res2));
+            Result := Integer (Res2);
+         else
+            Result := -1;
+         end if;
       end;
    end Execute;
 
