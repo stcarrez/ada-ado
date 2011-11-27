@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Caller;
+with Util.Test_Caller;
 with ADO.Sessions;
 with ADO.Model;
 with Regtests.Simple.Model;
@@ -256,18 +256,18 @@ package body ADO.Objects.Tests is
       end;
    end Test_Is_Inserted;
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
    --  ------------------------------
    --  Add the tests in the test suite
    --  ------------------------------
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
-      Suite.Add_Test (Caller.Create ("Test ADO.Objects.Hash", Test_Key'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Get/Set", Test_Object_Ref'Access));
-      Suite.Add_Test (Caller.Create ("Test ADO.Objects.Create", Test_Create_Object'Access));
-      Suite.Add_Test (Caller.Create ("Test ADO.Objects.Delete", Test_Delete_Object'Access));
-      Suite.Add_Test (Caller.Create ("Test ADO.Objects.Is_Created", Test_Is_Inserted'Access));
+      Caller.Add_Test (Suite, "Test ADO.Objects.Hash", Test_Key'Access);
+      Caller.Add_Test (Suite, "Test Object_Ref.Get/Set", Test_Object_Ref'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects.Create", Test_Create_Object'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects.Delete", Test_Delete_Object'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects.Is_Created", Test_Is_Inserted'Access);
    end Add_Tests;
 
 end ADO.Objects.Tests;

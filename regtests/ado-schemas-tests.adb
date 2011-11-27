@@ -31,7 +31,7 @@ package body ADO.Schemas.Tests is
 
    package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test ADO.Schemas.Entities.Find_Entity_Type",
                        Test_Find_Entity_Type'Access);
@@ -89,6 +89,7 @@ package body ADO.Schemas.Tests is
    begin
       declare
          R : ADO.Entity_Type;
+         pragma Unreferenced (R);
       begin
          R := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.USER_TABLE'Access);
@@ -101,6 +102,7 @@ package body ADO.Schemas.Tests is
 
       declare
          R   : ADO.Model.Entity_Type_Ref;
+         pragma Unreferenced (R);
       begin
          R := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.USER_TABLE'Access);

@@ -16,14 +16,14 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Suites;
+with Util.Tests;
 #if HAVE_MYSQL
 with ADO.Schemas.Mysql.Tests;
 #end if;
 
 separate (ADO.Testsuite)
 
-procedure Drivers (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+procedure Drivers (Suite : in Util.Tests.Access_Test_Suite) is
 
 begin
 #if HAVE_MYSQL

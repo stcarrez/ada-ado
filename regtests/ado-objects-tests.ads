@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with AUnit.Test_Suites;
 with Util.Tests;
 package ADO.Objects.Tests is
 
@@ -34,6 +33,6 @@ package ADO.Objects.Tests is
    procedure Test_Is_Inserted (T : in out Test);
 
    --  Add the tests in the test suite
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite);
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
 end ADO.Objects.Tests;

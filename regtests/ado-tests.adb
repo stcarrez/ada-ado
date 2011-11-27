@@ -17,8 +17,6 @@
 -----------------------------------------------------------------------
 
 with Ada.Exceptions;
-with AUnit;
-with AUnit.Test_Caller;
 
 with ADO.Statements;
 with ADO.Objects;
@@ -29,6 +27,7 @@ with Regtests.Simple.Model;
 with Util.Measures;
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Test_Caller;
 
 package body ADO.Tests is
 
@@ -40,7 +39,7 @@ package body ADO.Tests is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Tests");
 
-   package Caller is new AUnit.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test);
 
    procedure Fail (T : in Test; Message : in String);
    procedure Assert_Has_Message (T : in Test;
@@ -231,18 +230,18 @@ package body ADO.Tests is
       T.Assert (Result > 100, "Too few rows were deleted");
    end Test_Delete_All;
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Load", Test_Load'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Save", Test_Create_Load'Access));
-      Suite.Add_Test (Caller.Create ("Test Master_Connection init error", Test_Not_Open'Access));
-      Suite.Add_Test (Caller.Create ("Test Sequences.Factory", Test_Allocate'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Save/Create/Update",
-        Test_Create_Save'Access));
-      Suite.Add_Test (Caller.Create ("Test Object_Ref.Create (DB Insert)",
-        Test_Perf_Create_Save'Access));
-      Suite.Add_Test (Caller.Create ("Test Statement.Delete_Statement (delete all)",
-        Test_Delete_All'Access));
+      Caller.Add_Test (Suite, "Test Object_Ref.Load", Test_Load'Access);
+      Caller.Add_Test (Suite, "Test Object_Ref.Save", Test_Create_Load'Access);
+      Caller.Add_Test (Suite, "Test Master_Connection init error", Test_Not_Open'Access);
+      Caller.Add_Test (Suite, "Test Sequences.Factory", Test_Allocate'Access);
+      Caller.Add_Test (Suite, "Test Object_Ref.Save/Create/Update",
+                       Test_Create_Save'Access);
+      Caller.Add_Test (Suite, "Test Object_Ref.Create (DB Insert)",
+                       Test_Perf_Create_Save'Access);
+      Caller.Add_Test (Suite, "Test Statement.Delete_Statement (delete all)",
+                       Test_Delete_All'Access);
    end Add_Tests;
 
 end ADO.Tests;

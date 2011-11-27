@@ -25,14 +25,14 @@ package body ADO.Testsuite is
 
    use ADO.Tests;
 
-   procedure Drivers (Suite : AUnit.Test_Suites.Access_Test_Suite);
+   procedure Drivers (Suite : in Util.Tests.Access_Test_Suite);
 
-   procedure Drivers (Suite : AUnit.Test_Suites.Access_Test_Suite) is separate;
+   procedure Drivers (Suite : in Util.Tests.Access_Test_Suite) is separate;
 
-   Tests : aliased AUnit.Test_Suites.Test_Suite;
+   Tests : aliased Util.Tests.Test_Suite;
 
-   function Suite return AUnit.Test_Suites.Access_Test_Suite is
-      Ret : constant AUnit.Test_Suites.Access_Test_Suite := Tests'Access;
+   function Suite return Util.Tests.Access_Test_Suite is
+      Ret : constant Util.Tests.Access_Test_Suite := Tests'Access;
    begin
       ADO.Parameters.Tests.Add_Tests (Ret);
       ADO.Objects.Tests.Add_Tests (Ret);

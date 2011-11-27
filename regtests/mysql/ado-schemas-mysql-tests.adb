@@ -30,7 +30,7 @@ package body ADO.Schemas.Mysql.Tests is
 
    package Caller is new Util.Test_Caller (Test);
 
-   procedure Add_Tests (Suite : AUnit.Test_Suites.Access_Test_Suite) is
+   procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test ADO.Schemas.Load_Schema",
                        Test_Load_Schema'Access);
