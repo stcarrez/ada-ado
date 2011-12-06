@@ -22,7 +22,7 @@ package body ADO.Queries.Tests is
 
    use Util.Tests;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "ADO.Queries");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

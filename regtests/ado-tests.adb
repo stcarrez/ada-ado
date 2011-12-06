@@ -39,7 +39,7 @@ package body ADO.Tests is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Tests");
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "ADO");
 
    procedure Fail (T : in Test; Message : in String);
    procedure Assert_Has_Message (T : in Test;

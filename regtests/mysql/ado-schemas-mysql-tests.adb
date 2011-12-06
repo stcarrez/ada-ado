@@ -28,7 +28,7 @@ package body ADO.Schemas.Mysql.Tests is
 
    use Util.Tests;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "ADO.Schemas.MySQL");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin

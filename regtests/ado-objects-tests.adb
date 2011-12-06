@@ -256,7 +256,7 @@ package body ADO.Objects.Tests is
       end;
    end Test_Is_Inserted;
 
-   package Caller is new Util.Test_Caller (Test);
+   package Caller is new Util.Test_Caller (Test, "ADO.Objects");
 
    --  ------------------------------
    --  Add the tests in the test suite
