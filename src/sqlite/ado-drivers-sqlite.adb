@@ -152,6 +152,8 @@ package body ADO.Drivers.Sqlite is
       Result    : int;
       Error_Msg : Strings.chars_ptr;
    begin
+      Log.Debug ("Execute: {0}", SQL);
+
       for Retry in 1 .. 100 loop
          Result := Sqlite3_H.sqlite3_exec (Database.Server, SQL_Stat, No_Callback,
                                            System.Null_Address, Error_Msg'Address);
@@ -229,6 +231,7 @@ package body ADO.Drivers.Sqlite is
       Status   : int;
       Handle   : aliased System.Address;
       Flags    : constant int := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
+
    begin
       Log.Info ("Opening database {0}", Name);
 
@@ -249,10 +252,27 @@ package body ADO.Drivers.Sqlite is
 
       declare
          Database : constant Database_Connection_Access := new Database_Connection;
+
+         procedure Configure (Name, Item : in Util.Properties.Value);
+
+         procedure Configure (Name, Item : in Util.Properties.Value) is
+            SQL : constant String := "PRAGMA " & To_String (Name) & "=" & To_String (Item);
+         begin
+            Database.Execute (SQL);
+         end Configure;
+
       begin
          Database.Server := Handle;
          Database.Count  := 2;
          Database.Name   := Config.Database;
+
+         --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
+         --  Typical configuration includes:
+         --    synchronous=OFF
+         --    temp_store=MEMORY
+         --    encoding='UTF-8'
+         Config.Properties.Iterate (Process => Configure'Access);
+
          Result := Database.all'Access;
          DB := Result;
       end;
