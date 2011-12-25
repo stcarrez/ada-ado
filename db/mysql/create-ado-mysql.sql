@@ -1,5 +1,13 @@
-/* Copied from /home/ciceron/work/pam/pam/awa/ado/db/mysql/ado-mysql.sql*/
+/* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
+/* Entity types */
+CREATE TABLE entity_type (
+  /* the entity type identifier */
+  `id` INTEGER  AUTO_INCREMENT,
+  /* the entity type name (table name) */
+  `name` VARCHAR(127) UNIQUE NOT NULL,
+  PRIMARY KEY (`id`)
+);
 /* Sequence generator */
 CREATE TABLE sequence (
   /* the sequence name */
@@ -12,15 +20,7 @@ CREATE TABLE sequence (
   `block_size` BIGINT ,
   PRIMARY KEY (`name`)
 );
-/* Entity types */
-CREATE TABLE entity_type (
-  /* the entity type identifier */
-  `id` INTEGER  AUTO_INCREMENT,
-  /* the entity type name (table name) */
-  `name` VARCHAR(127) UNIQUE NOT NULL,
-  PRIMARY KEY (`id`)
-);
 INSERT INTO entity_type (name) VALUES
-("sequence")
-,("entity_type")
+("entity_type")
+,("sequence")
 ;

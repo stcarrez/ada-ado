@@ -1,5 +1,13 @@
-/* Copied from /home/ciceron/work/pam/pam/awa/ado/db/mysql/ado-mysql.sql*/
+/* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
+/* Entity types */
+CREATE TABLE entity_type (
+  /* the entity type identifier */
+  `id` INTEGER  AUTO_INCREMENT,
+  /* the entity type name (table name) */
+  `name` VARCHAR(127) UNIQUE NOT NULL,
+  PRIMARY KEY (`id`)
+);
 /* Sequence generator */
 CREATE TABLE sequence (
   /* the sequence name */
@@ -12,19 +20,11 @@ CREATE TABLE sequence (
   `block_size` BIGINT ,
   PRIMARY KEY (`name`)
 );
-/* Entity types */
-CREATE TABLE entity_type (
-  /* the entity type identifier */
-  `id` INTEGER  AUTO_INCREMENT,
-  /* the entity type name (table name) */
-  `name` VARCHAR(127) UNIQUE NOT NULL,
-  PRIMARY KEY (`id`)
-);
 INSERT INTO entity_type (name) VALUES
-("sequence")
-,("entity_type")
+("entity_type")
+,("sequence")
 ;
-/* Copied from ./db/regtests/mysql/ado-mysql.sql*/
+/* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
 /*  */
 CREATE TABLE TEST_COMMENTS (
@@ -45,18 +45,6 @@ CREATE TABLE TEST_COMMENTS (
   PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
-CREATE TABLE test_user (
-  /* the user id */
-  `ID` BIGINT NOT NULL,
-  /*  */
-  `object_version` int ,
-  /* the sequence value */
-  `VALUE` BIGINT ,
-  /* the user name */
-  `NAME` VARCHAR(255) ,
-  PRIMARY KEY (`ID`)
-);
-/* Record representing a user */
 CREATE TABLE allocate (
   /* the user id */
   `ID` BIGINT NOT NULL,
@@ -66,8 +54,22 @@ CREATE TABLE allocate (
   `NAME` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
 );
+/* Record representing a user */
+CREATE TABLE test_user (
+  /* the user id */
+  `ID` BIGINT NOT NULL,
+  /*  */
+  `object_version` int ,
+  /* the sequence value */
+  `VALUE` BIGINT ,
+  /* the user name */
+  `NAME` VARCHAR(255) ,
+  /* the user name */
+  `select` VARCHAR(255) ,
+  PRIMARY KEY (`ID`)
+);
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
-,("test_user")
 ,("allocate")
+,("test_user")
 ;

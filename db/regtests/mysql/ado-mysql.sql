@@ -18,18 +18,6 @@ CREATE TABLE TEST_COMMENTS (
   PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
-CREATE TABLE test_user (
-  /* the user id */
-  `ID` BIGINT NOT NULL,
-  /*  */
-  `object_version` int ,
-  /* the sequence value */
-  `VALUE` BIGINT ,
-  /* the user name */
-  `NAME` VARCHAR(255) ,
-  PRIMARY KEY (`ID`)
-);
-/* Record representing a user */
 CREATE TABLE allocate (
   /* the user id */
   `ID` BIGINT NOT NULL,
@@ -39,8 +27,22 @@ CREATE TABLE allocate (
   `NAME` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
 );
+/* Record representing a user */
+CREATE TABLE test_user (
+  /* the user id */
+  `ID` BIGINT NOT NULL,
+  /*  */
+  `object_version` int ,
+  /* the sequence value */
+  `VALUE` BIGINT ,
+  /* the user name */
+  `NAME` VARCHAR(255) ,
+  /* the user name */
+  `select` VARCHAR(255) ,
+  PRIMARY KEY (`ID`)
+);
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
-,("test_user")
 ,("allocate")
+,("test_user")
 ;

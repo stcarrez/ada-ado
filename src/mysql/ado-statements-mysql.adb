@@ -23,6 +23,7 @@ with Util.Log.Loggers;
 with System.Storage_Elements;
 with Interfaces.C;
 with Mysql.Com;  use Mysql.Com;
+with Mysql.Perfect_Hash; use Mysql;
 with ADO.C;
 package body ADO.Statements.Mysql is
 
@@ -32,6 +33,18 @@ package body ADO.Statements.Mysql is
    use type ADO.Schemas.Class_Mapping_Access;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
+   type Dialect is new ADO.SQL.Dialect with null record;
+
+   --  Check if the string is a reserved keyword.
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean;
+
+   --  Get the quote character to escape an identifier.
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character;
+
+   Mysql_Dialect : aliased Dialect;
 
    --  Execute the SQL query on the given mysql connection.
    --  Returns the query execution status
@@ -42,6 +55,27 @@ package body ADO.Statements.Mysql is
    procedure Check_Error (Connection : in Mysql_Access;
                           Result     : in int);
    pragma Inline (Check_Error);
+
+   --  ------------------------------
+   --  Check if the string is a reserved keyword.
+   --  ------------------------------
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean is
+      pragma Unreferenced (D);
+   begin
+      return Perfect_Hash.Is_Keyword (Name);
+   end Is_Reserved;
+
+   --  ------------------------------
+   --  Get the quote character to escape an identifier.
+   --  ------------------------------
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character is
+      pragma Unreferenced (D);
+   begin
+      return '`';
+   end Get_Identifier_Quote;
 
    --  ------------------------------
    --  Check for an error after executing a mysql statement.
@@ -116,6 +150,7 @@ package body ADO.Statements.Mysql is
       Result.Connection := Database;
       Result.Table      := Table;
       Result.Query      := Result.Delete_Query'Access;
+      Result.Delete_Query.Set_Dialect (Mysql_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
 
@@ -179,6 +214,7 @@ package body ADO.Statements.Mysql is
       Result.Table      := Table;
       Result.Update     := Result.This_Query'Access;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Mysql_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
 
@@ -228,6 +264,7 @@ package body ADO.Statements.Mysql is
       Result.Connection := Database;
       Result.Table  := Table;
       Result.Update := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Mysql_Dialect'Access);
       ADO.SQL.Set_Insert_Mode (Result.This_Query);
       return Result.all'Access;
    end Create_Statement;
@@ -546,6 +583,7 @@ package body ADO.Statements.Mysql is
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Mysql_Dialect'Access);
       if Table /= null then
          ADO.SQL.Append (Target => Result.This_Query.SQL, SQL => "SELECT ");
          for I in Table.Members'Range loop
@@ -571,6 +609,7 @@ package body ADO.Statements.Mysql is
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Mysql_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
 

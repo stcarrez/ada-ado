@@ -29,12 +29,10 @@ with Ada.Calendar;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
+with Util.Beans.Basic.Lists;
 with ADO.Model;
 with Regtests.Simple.Model;
 package Regtests.Comments is
-   --  --------------------
-   --  
-   --  --------------------
    --  Create an object key for Comment.
    function Comment_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
    --  Create an object key for Comment from a string.
@@ -145,7 +143,8 @@ package Regtests.Comments is
    procedure Allocate (Object : in out Comment_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Comment_Ref) return Comment_Ref;
+   procedure Copy (Object : in Comment_Ref;
+                   Into   : in out Comment_Ref);
 
    package Comment_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -216,6 +215,5 @@ private
    procedure Delete (Object  : in out Comment_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out Comment_Ref'Class;
-                        Impl   : out Comment_Access;
-                        Field  : in Positive);
+                        Impl   : out Comment_Access);
 end Regtests.Comments;

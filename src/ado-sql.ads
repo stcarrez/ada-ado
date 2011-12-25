@@ -129,6 +129,10 @@ package ADO.SQL is
    overriding
    procedure Clear (Target : in out Query);
 
+   --  Set the SQL dialect description object.
+   procedure Set_Dialect (Target : in out Query;
+                          D      : in Dialect_Access);
+
    procedure Set_Filter (Target : in out Query;
                          Filter : in String);
 
@@ -161,6 +165,10 @@ package ADO.SQL is
    --  and <i>insert</i> or an <i>update</i> statement.
    type Update_Query is new Query with private;
    type Update_Query_Access is access all Update_Query'Class;
+
+   --  Set the SQL dialect description object.
+   procedure Set_Dialect (Target : in out Update_Query;
+                          D      : in Dialect_Access);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.

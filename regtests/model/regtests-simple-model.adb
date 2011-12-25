@@ -46,11 +46,11 @@ package body Regtests.Simple.Model is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out User_Ref'Class;
-                        Impl   : out User_Access;
-                        Field  : in Positive) is
+                        Impl   : out User_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := User_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := User_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out User_Ref) is
@@ -66,11 +66,11 @@ package body Regtests.Simple.Model is
    --  Data object: User
    -- ----------------------------------------
    procedure Set_Id (Object : in out User_Ref;
-                      Value  : in ADO.Identifier) is
+                     Value  : in ADO.Identifier) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
    function Get_Id (Object : in User_Ref)
                   return ADO.Identifier is
@@ -85,11 +85,11 @@ package body Regtests.Simple.Model is
       return Impl.Version;
    end Get_Version;
    procedure Set_Value (Object : in out User_Ref;
-                         Value  : in ADO.Identifier) is
+                        Value  : in ADO.Identifier) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 3);
-      Impl.Value := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Identifier (Impl.all, 3, Impl.Value, Value);
    end Set_Value;
    function Get_Value (Object : in User_Ref)
                   return ADO.Identifier is
@@ -99,15 +99,17 @@ package body Regtests.Simple.Model is
    end Get_Value;
    procedure Set_Name (Object : in out User_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Name (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Name;
-   procedure Set_Name (Object : in out User_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 4);
-      Impl.Name := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 4, Impl.Name, Value);
+   end Set_Name;
+   procedure Set_Name (Object : in out User_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 4, Impl.Name, Value);
    end Set_Name;
    function Get_Name (Object : in User_Ref)
                  return String is
@@ -120,8 +122,34 @@ package body Regtests.Simple.Model is
    begin
       return Impl.Name;
    end Get_Name;
+   procedure Set_Select_Name (Object : in out User_Ref;
+                               Value : in String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 5, Impl.Select_Name, Value);
+   end Set_Select_Name;
+   procedure Set_Select_Name (Object : in out User_Ref;
+                              Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 5, Impl.Select_Name, Value);
+   end Set_Select_Name;
+   function Get_Select_Name (Object : in User_Ref)
+                 return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (Object.Get_Select_Name);
+   end Get_Select_Name;
+   function Get_Select_Name (Object : in User_Ref)
+                  return Ada.Strings.Unbounded.Unbounded_String is
+      Impl : constant User_Access := User_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Select_Name;
+   end Get_Select_Name;
    --  Copy of the object.
-   function Copy (Object : User_Ref) return User_Ref is
+   procedure Copy (Object : in User_Ref;
+                   Into   : in out User_Ref) is
       Result : User_Ref;
    begin
       if not Object.Is_Null then
@@ -136,9 +164,10 @@ package body Regtests.Simple.Model is
             Copy.Version := Impl.Version;
             Copy.Value := Impl.Value;
             Copy.Name := Impl.Name;
+            Copy.Select_Name := Impl.Select_Name;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out User_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -270,6 +299,11 @@ package body Regtests.Simple.Model is
                           Value => Object.Name);
          Object.Clear_Modified (4);
       end if;
+      if Object.Is_Modified (5) then
+         Stmt.Save_Field (Name  => COL_4_1_NAME, --  select
+                          Value => Object.Select_Name);
+         Object.Clear_Modified (5);
+      end if;
       if Stmt.Has_Save_Fields then
          Object.Version := Object.Version + 1;
          Stmt.Save_Field (Name  => "version",
@@ -282,10 +316,10 @@ package body Regtests.Simple.Model is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
+               else
+                  raise ADO.Objects.LAZY_LOCK;
                end if;
             end if;
          end;
@@ -307,6 +341,8 @@ package body Regtests.Simple.Model is
                         Value => Object.Value);
       Query.Save_Field (Name  => COL_3_1_NAME, --  NAME
                         Value => Object.Name);
+      Query.Save_Field (Name  => COL_4_1_NAME, --  select
+                        Value => Object.Select_Name);
       Query.Execute (Result);
       if Result /= 1 then
          raise ADO.Objects.INSERT_ERROR;
@@ -324,9 +360,13 @@ package body Regtests.Simple.Model is
    end Delete;
    function Get_Value (Item : in User_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access User_Impl
-         := User_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access User_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := User_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
@@ -336,7 +376,10 @@ package body Regtests.Simple.Model is
       if Name = "name" then
          return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      if Name = "select_name" then
+         return Util.Beans.Objects.To_Object (Impl.Select_Name);
+      end if;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out User_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -369,6 +412,7 @@ package body Regtests.Simple.Model is
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Value := Stmt.Get_Identifier (2);
       Object.Name := Stmt.Get_Unbounded_String (3);
+      Object.Select_Name := Stmt.Get_Unbounded_String (4);
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
    end Load;
@@ -391,11 +435,11 @@ package body Regtests.Simple.Model is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out Allocate_Ref'Class;
-                        Impl   : out Allocate_Access;
-                        Field  : in Positive) is
+                        Impl   : out Allocate_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := Allocate_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := Allocate_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Allocate_Ref) is
@@ -410,11 +454,11 @@ package body Regtests.Simple.Model is
    --  Data object: Allocate
    -- ----------------------------------------
    procedure Set_Id (Object : in out Allocate_Ref;
-                      Value  : in ADO.Identifier) is
+                     Value  : in ADO.Identifier) is
       Impl : Allocate_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
    function Get_Id (Object : in Allocate_Ref)
                   return ADO.Identifier is
@@ -430,15 +474,17 @@ package body Regtests.Simple.Model is
    end Get_Object_Version;
    procedure Set_Name (Object : in out Allocate_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Name (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Name;
-   procedure Set_Name (Object : in out Allocate_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : Allocate_Access;
    begin
-      Set_Field (Object, Impl, 3);
-      Impl.Name := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 3, Impl.Name, Value);
+   end Set_Name;
+   procedure Set_Name (Object : in out Allocate_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : Allocate_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 3, Impl.Name, Value);
    end Set_Name;
    function Get_Name (Object : in Allocate_Ref)
                  return String is
@@ -452,7 +498,8 @@ package body Regtests.Simple.Model is
       return Impl.Name;
    end Get_Name;
    --  Copy of the object.
-   function Copy (Object : Allocate_Ref) return Allocate_Ref is
+   procedure Copy (Object : in Allocate_Ref;
+                   Into   : in out Allocate_Ref) is
       Result : Allocate_Ref;
    begin
       if not Object.Is_Null then
@@ -468,7 +515,7 @@ package body Regtests.Simple.Model is
             Copy.Name := Impl.Name;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out Allocate_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -607,10 +654,10 @@ package body Regtests.Simple.Model is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
+               else
+                  raise ADO.Objects.LAZY_LOCK;
                end if;
             end if;
          end;
@@ -647,16 +694,20 @@ package body Regtests.Simple.Model is
    end Delete;
    function Get_Value (Item : in Allocate_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Allocate_Impl
-         := Allocate_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access Allocate_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := Allocate_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
          return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out Allocate_Vector;
                    Session : in out ADO.Sessions.Session'Class;

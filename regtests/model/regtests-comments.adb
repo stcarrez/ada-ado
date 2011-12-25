@@ -47,11 +47,11 @@ package body Regtests.Comments is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out Comment_Ref'Class;
-                        Impl   : out Comment_Access;
-                        Field  : in Positive) is
+                        Impl   : out Comment_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := Comment_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := Comment_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Comment_Ref) is
@@ -68,11 +68,11 @@ package body Regtests.Comments is
    --  Data object: Comment
    -- ----------------------------------------
    procedure Set_Id (Object : in out Comment_Ref;
-                      Value  : in ADO.Identifier) is
+                     Value  : in ADO.Identifier) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
    function Get_Id (Object : in Comment_Ref)
                   return ADO.Identifier is
@@ -87,11 +87,11 @@ package body Regtests.Comments is
       return Impl.Version;
    end Get_Version;
    procedure Set_Date (Object : in out Comment_Ref;
-                        Value  : in Ada.Calendar.Time) is
+                       Value  : in Ada.Calendar.Time) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 3);
-      Impl.Date := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Time (Impl.all, 3, Impl.Date, Value);
    end Set_Date;
    function Get_Date (Object : in Comment_Ref)
                   return Ada.Calendar.Time is
@@ -101,15 +101,17 @@ package body Regtests.Comments is
    end Get_Date;
    procedure Set_Message (Object : in out Comment_Ref;
                            Value : in String) is
-   begin
-      Object.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Message;
-   procedure Set_Message (Object : in out Comment_Ref;
-                           Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 4);
-      Impl.Message := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 4, Impl.Message, Value);
+   end Set_Message;
+   procedure Set_Message (Object : in out Comment_Ref;
+                          Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : Comment_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 4, Impl.Message, Value);
    end Set_Message;
    function Get_Message (Object : in Comment_Ref)
                  return String is
@@ -123,11 +125,12 @@ package body Regtests.Comments is
       return Impl.Message;
    end Get_Message;
    procedure Set_Entity_Id (Object : in out Comment_Ref;
-                             Value  : in Integer) is
+                            Value  : in Integer) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 5);
-      Impl.Entity_Id := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Integer (Impl.all, 5, Impl.Entity_Id, Value);
+      ADO.Objects.Set_Field_Integer (Impl.all, 5, Impl.Entity_Id, Value);
    end Set_Entity_Id;
    function Get_Entity_Id (Object : in Comment_Ref)
                   return Integer is
@@ -136,11 +139,11 @@ package body Regtests.Comments is
       return Impl.Entity_Id;
    end Get_Entity_Id;
    procedure Set_User (Object : in out Comment_Ref;
-                        Value  : in Regtests.Simple.Model.User_Ref'Class) is
+                       Value  : in Regtests.Simple.Model.User_Ref'Class) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 6);
-      Impl.User := Regtests.Simple.Model.User_Ref (Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Object (Impl.all, 6, Impl.User, Value);
    end Set_User;
    function Get_User (Object : in Comment_Ref)
                   return Regtests.Simple.Model.User_Ref'Class is
@@ -149,11 +152,11 @@ package body Regtests.Comments is
       return Impl.User;
    end Get_User;
    procedure Set_Entity_Type (Object : in out Comment_Ref;
-                               Value  : in ADO.Model.Entity_Type_Ref'Class) is
+                              Value  : in ADO.Model.Entity_Type_Ref'Class) is
       Impl : Comment_Access;
    begin
-      Set_Field (Object, Impl, 7);
-      Impl.Entity_Type := ADO.Model.Entity_Type_Ref (Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Object (Impl.all, 7, Impl.Entity_Type, Value);
    end Set_Entity_Type;
    function Get_Entity_Type (Object : in Comment_Ref)
                   return ADO.Model.Entity_Type_Ref'Class is
@@ -162,7 +165,8 @@ package body Regtests.Comments is
       return Impl.Entity_Type;
    end Get_Entity_Type;
    --  Copy of the object.
-   function Copy (Object : Comment_Ref) return Comment_Ref is
+   procedure Copy (Object : in Comment_Ref;
+                   Into   : in out Comment_Ref) is
       Result : Comment_Ref;
    begin
       if not Object.Is_Null then
@@ -182,7 +186,7 @@ package body Regtests.Comments is
             Copy.Entity_Type := Impl.Entity_Type;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out Comment_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -341,10 +345,10 @@ package body Regtests.Comments is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
+               else
+                  raise ADO.Objects.LAZY_LOCK;
                end if;
             end if;
          end;
@@ -389,9 +393,13 @@ package body Regtests.Comments is
    end Delete;
    function Get_Value (Item : in Comment_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Comment_Impl
-         := Comment_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access Comment_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := Comment_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
@@ -404,7 +412,7 @@ package body Regtests.Comments is
       if Name = "entity_Id" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Entity_Id));
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out Comment_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -436,6 +444,7 @@ package body Regtests.Comments is
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Date := Stmt.Get_Time (2);
       Object.Message := Stmt.Get_Unbounded_String (3);
+      Object.Entity_Id := Stmt.Get_Integer (4);
       if not Stmt.Is_Null (5) then
           Object.User.Set_Key_Value (Stmt.Get_Identifier (5), Session);
       end if;

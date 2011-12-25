@@ -28,6 +28,7 @@ with ADO.Schemas;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
+with Util.Beans.Basic.Lists;
 package ADO.Model is
    --  --------------------
    --  Sequence generator
@@ -118,7 +119,8 @@ package ADO.Model is
    procedure Allocate (Object : in out Sequence_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Sequence_Ref) return Sequence_Ref;
+   procedure Copy (Object : in Sequence_Ref;
+                   Into   : in out Sequence_Ref);
 
    package Sequence_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -207,7 +209,8 @@ package ADO.Model is
    procedure Allocate (Object : in out Entity_Type_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Entity_Type_Ref) return Entity_Type_Ref;
+   procedure Copy (Object : in Entity_Type_Ref;
+                   Into   : in out Entity_Type_Ref);
 
    package Entity_Type_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -269,8 +272,7 @@ private
    procedure Delete (Object  : in out Sequence_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out Sequence_Ref'Class;
-                        Impl   : out Sequence_Access;
-                        Field  : in Positive);
+                        Impl   : out Sequence_Access);
    ENTITY_TYPE_NAME : aliased constant String := "entity_type";
    COL_0_2_NAME : aliased constant String := "id";
    COL_1_2_NAME : aliased constant String := "name";
@@ -313,6 +315,5 @@ private
    procedure Delete (Object  : in out Entity_Type_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out Entity_Type_Ref'Class;
-                        Impl   : out Entity_Type_Access;
-                        Field  : in Positive);
+                        Impl   : out Entity_Type_Access);
 end ADO.Model;

@@ -133,6 +133,9 @@ package ADO.Objects is
    procedure Set_Key_Value (Ref   : in out Object_Record'Class;
                             Value : in Ada.Strings.Unbounded.Unbounded_String);
 
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
+                            Value : in String);
+
    --  Get the table name associated with the object record.
    function Get_Table_Name (Ref : in Object_Record'Class) return Util.Strings.Name_Access;
 
@@ -324,6 +327,14 @@ package ADO.Objects is
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
                                   Field  : in Positive;
                                   Value  : in ADO.Identifier);
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in String);
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in Ada.Strings.Unbounded.Unbounded_String);
 
    generic
       type T is private;

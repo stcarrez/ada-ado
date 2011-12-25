@@ -211,6 +211,17 @@ package body ADO.SQL is
       Target.SQL.Clear;
    end Clear;
 
+   --  --------------------
+   --  Set the SQL dialect description object.
+   --  --------------------
+   procedure Set_Dialect (Target : in out Query;
+                          D      : in Dialect_Access) is
+   begin
+      Set_Dialect (Target.SQL, D);
+      Set_Dialect (Target.Filter, D);
+      Set_Dialect (Target.Join, D);
+   end Set_Dialect;
+
    procedure Set_Filter (Target : in out Query;
                          Filter : in String) is
    begin
@@ -302,6 +313,17 @@ package body ADO.SQL is
       end if;
       Append (Target => Update.Fields, SQL => "?");
    end Add_Field;
+
+   --  ------------------------------
+   --  Set the SQL dialect description object.
+   --  ------------------------------
+   procedure Set_Dialect (Target : in out Update_Query;
+                          D      : in Dialect_Access) is
+   begin
+      Target.Set_Fields.Set_Dialect (D);
+      Target.Fields.Set_Dialect (D);
+      Query (Target).Set_Dialect (D);
+   end Set_Dialect;
 
    --  ------------------------------
    --  Prepare the update/insert query to save the table field

@@ -399,6 +399,12 @@ package body ADO.Objects is
       Ref.Key.Str    := Value;
    end Set_Key_Value;
 
+   procedure Set_Key_Value (Ref   : in out Object_Record'Class;
+                            Value : in String) is
+   begin
+      Ref.Key.Str    := Ada.Strings.Unbounded.To_Unbounded_String (Value);
+   end Set_Key_Value;
+
    --  ------------------------------
    --  Get the table name associated with the object record.
    --  ------------------------------
@@ -595,6 +601,28 @@ package body ADO.Objects is
                                   Value  : in ADO.Identifier) is
    begin
       if Object.Get_Key_Value /= Value then
+         Set_Key_Value (Object, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Key_Value;
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Object.Key.Str /= Value then
+         Set_Key_Value (Object, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Key_Value;
+
+   procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
+                                  Field  : in Positive;
+                                  Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Object.Key.Str /= Value then
          Set_Key_Value (Object, Value);
          Object.Modified (Field) := True;
       end if;

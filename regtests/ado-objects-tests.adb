@@ -90,8 +90,9 @@ package body ADO.Objects.Tests is
          T.Assert (Obj1 /= Null_Obj, "Object is not identical as the null object");
          declare
             Obj2 : constant Regtests.Simple.Model.User_Ref := Obj1;
-            Obj3 : Regtests.Simple.Model.User_Ref := Obj1.Copy;
+            Obj3 : Regtests.Simple.Model.User_Ref;
          begin
+            Obj1.Copy (Obj3);
             Obj3.Set_Id (2);
             --  Check the copy
             T.Assert (Obj2.Get_Name = "User name", "Object_Ref.Copy invalid copy");

@@ -28,6 +28,7 @@ with ADO.Schemas;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
+with Util.Beans.Basic.Lists;
 package Regtests.Simple.Model is
    --  --------------------
    --  Record representing a user
@@ -74,6 +75,18 @@ package Regtests.Simple.Model is
    function Get_Name (Object : in User_Ref)
                  return String;
 
+   --  Set the user name
+   procedure Set_Select_Name (Object : in out User_Ref;
+                              Value  : in Ada.Strings.Unbounded.Unbounded_String);
+   procedure Set_Select_Name (Object : in out User_Ref;
+                              Value : in String);
+
+   --  Get the user name
+   function Get_Select_Name (Object : in User_Ref)
+                 return Ada.Strings.Unbounded.Unbounded_String;
+   function Get_Select_Name (Object : in User_Ref)
+                 return String;
+
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
    procedure Load (Object  : in out User_Ref;
@@ -118,7 +131,8 @@ package Regtests.Simple.Model is
    procedure Allocate (Object : in out User_Ref);
 
    --  Copy of the object.
-   function Copy (Object : User_Ref) return User_Ref;
+   procedure Copy (Object : in User_Ref;
+                   Into   : in out User_Ref);
 
    package User_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -210,7 +224,8 @@ package Regtests.Simple.Model is
    procedure Allocate (Object : in out Allocate_Ref);
 
    --  Copy of the object.
-   function Copy (Object : Allocate_Ref) return Allocate_Ref;
+   procedure Copy (Object : in Allocate_Ref;
+                   Into   : in out Allocate_Ref);
 
    package Allocate_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -229,14 +244,16 @@ private
    COL_1_1_NAME : aliased constant String := "object_version";
    COL_2_1_NAME : aliased constant String := "VALUE";
    COL_3_1_NAME : aliased constant String := "NAME";
+   COL_4_1_NAME : aliased constant String := "select";
    USER_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 4,
+     (Count => 5,
       Table => USER_NAME'Access,
       Members => (
          COL_0_1_NAME'Access,
          COL_1_1_NAME'Access,
          COL_2_1_NAME'Access,
-         COL_3_1_NAME'Access
+         COL_3_1_NAME'Access,
+         COL_4_1_NAME'Access
 )
      );
    Null_User : constant User_Ref
@@ -248,6 +265,7 @@ private
        Version : Integer;
        Value : ADO.Identifier;
        Name : Ada.Strings.Unbounded.Unbounded_String;
+       Select_Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
    type User_Access is access all User_Impl;
    overriding
@@ -272,8 +290,7 @@ private
    procedure Delete (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out User_Ref'Class;
-                        Impl   : out User_Access;
-                        Field  : in Positive);
+                        Impl   : out User_Access);
    ALLOCATE_NAME : aliased constant String := "allocate";
    COL_0_2_NAME : aliased constant String := "ID";
    COL_1_2_NAME : aliased constant String := "object_version";
@@ -319,6 +336,5 @@ private
    procedure Delete (Object  : in out Allocate_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out Allocate_Ref'Class;
-                        Impl   : out Allocate_Access;
-                        Field  : in Positive);
+                        Impl   : out Allocate_Access);
 end Regtests.Simple.Model;

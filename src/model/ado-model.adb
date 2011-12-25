@@ -46,11 +46,11 @@ package body ADO.Model is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out Sequence_Ref'Class;
-                        Impl   : out Sequence_Access;
-                        Field  : in Positive) is
+                        Impl   : out Sequence_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := Sequence_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := Sequence_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Sequence_Ref) is
@@ -68,15 +68,17 @@ package body ADO.Model is
    -- ----------------------------------------
    procedure Set_Name (Object : in out Sequence_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Name (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Name;
-   procedure Set_Name (Object : in out Sequence_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : Sequence_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
+   end Set_Name;
+   procedure Set_Name (Object : in out Sequence_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : Sequence_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Name;
    function Get_Name (Object : in Sequence_Ref)
                  return String is
@@ -96,11 +98,11 @@ package body ADO.Model is
       return Impl.Version;
    end Get_Version;
    procedure Set_Value (Object : in out Sequence_Ref;
-                         Value  : in ADO.Identifier) is
+                        Value  : in ADO.Identifier) is
       Impl : Sequence_Access;
    begin
-      Set_Field (Object, Impl, 3);
-      Impl.Value := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Identifier (Impl.all, 3, Impl.Value, Value);
    end Set_Value;
    function Get_Value (Object : in Sequence_Ref)
                   return ADO.Identifier is
@@ -109,11 +111,11 @@ package body ADO.Model is
       return Impl.Value;
    end Get_Value;
    procedure Set_Block_Size (Object : in out Sequence_Ref;
-                              Value  : in ADO.Identifier) is
+                             Value  : in ADO.Identifier) is
       Impl : Sequence_Access;
    begin
-      Set_Field (Object, Impl, 4);
-      Impl.Block_Size := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Identifier (Impl.all, 4, Impl.Block_Size, Value);
    end Set_Block_Size;
    function Get_Block_Size (Object : in Sequence_Ref)
                   return ADO.Identifier is
@@ -122,7 +124,8 @@ package body ADO.Model is
       return Impl.Block_Size;
    end Get_Block_Size;
    --  Copy of the object.
-   function Copy (Object : Sequence_Ref) return Sequence_Ref is
+   procedure Copy (Object : in Sequence_Ref;
+                   Into   : in out Sequence_Ref) is
       Result : Sequence_Ref;
    begin
       if not Object.Is_Null then
@@ -140,7 +143,7 @@ package body ADO.Model is
             Copy.Block_Size := Impl.Block_Size;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out Sequence_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -284,10 +287,10 @@ package body ADO.Model is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
+               else
+                  raise ADO.Objects.LAZY_LOCK;
                end if;
             end if;
          end;
@@ -325,9 +328,13 @@ package body ADO.Model is
    end Delete;
    function Get_Value (Item : in Sequence_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Sequence_Impl
-         := Sequence_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access Sequence_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := Sequence_Impl (Obj.all)'Access;
       if Name = "name" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
@@ -337,7 +344,7 @@ package body ADO.Model is
       if Name = "block_size" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Block_Size));
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out Sequence_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -392,11 +399,11 @@ package body ADO.Model is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out Entity_Type_Ref'Class;
-                        Impl   : out Entity_Type_Access;
-                        Field  : in Positive) is
+                        Impl   : out Entity_Type_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := Entity_Type_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := Entity_Type_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Entity_Type_Ref) is
@@ -410,11 +417,11 @@ package body ADO.Model is
    --  Data object: Entity_Type
    -- ----------------------------------------
    procedure Set_Id (Object : in out Entity_Type_Ref;
-                      Value  : in ADO.Identifier) is
+                     Value  : in ADO.Identifier) is
       Impl : Entity_Type_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
    function Get_Id (Object : in Entity_Type_Ref)
                   return ADO.Identifier is
@@ -424,15 +431,17 @@ package body ADO.Model is
    end Get_Id;
    procedure Set_Name (Object : in out Entity_Type_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Name (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Name;
-   procedure Set_Name (Object : in out Entity_Type_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : Entity_Type_Access;
    begin
-      Set_Field (Object, Impl, 2);
-      Impl.Name := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 2, Impl.Name, Value);
+   end Set_Name;
+   procedure Set_Name (Object : in out Entity_Type_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : Entity_Type_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 2, Impl.Name, Value);
    end Set_Name;
    function Get_Name (Object : in Entity_Type_Ref)
                  return String is
@@ -446,7 +455,8 @@ package body ADO.Model is
       return Impl.Name;
    end Get_Name;
    --  Copy of the object.
-   function Copy (Object : Entity_Type_Ref) return Entity_Type_Ref is
+   procedure Copy (Object : in Entity_Type_Ref;
+                   Into   : in out Entity_Type_Ref) is
       Result : Entity_Type_Ref;
    begin
       if not Object.Is_Null then
@@ -461,7 +471,7 @@ package body ADO.Model is
             Copy.Name := Impl.Name;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out Entity_Type_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -591,9 +601,7 @@ package body ADO.Model is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
                end if;
             end if;
@@ -628,16 +636,20 @@ package body ADO.Model is
    end Delete;
    function Get_Value (Item : in Entity_Type_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access Entity_Type_Impl
-         := Entity_Type_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access Entity_Type_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := Entity_Type_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
       if Name = "name" then
          return Util.Beans.Objects.To_Object (Impl.Name);
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out Entity_Type_Vector;
                    Session : in out ADO.Sessions.Session'Class;

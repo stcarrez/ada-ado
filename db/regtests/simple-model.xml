@@ -17,6 +17,10 @@
             <comment>the user name</comment>
             <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(255)"/>
         </property>
+        <property name="select_name" type="String">
+            <comment>the user name</comment>
+            <column name="select" not-null="false" unique="false" sql-type="VARCHAR(255)"/>
+        </property>
     </class>
 
     <class name="Regtests.Simple.Model.Allocate" table="allocate"
