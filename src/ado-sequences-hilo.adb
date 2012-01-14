@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -97,7 +97,7 @@ package body ADO.Sequences.Hilo is
                   Seq_Block.Set_Name (Name);
                   Seq_Block.Set_Block_Size (Gen.Block_Size);
                   Seq_Block.Set_Value (Value + Seq_Block.Get_Block_Size);
-                  Seq_Block.Save (DB);
+                  Seq_Block.Create (DB);
                end if;
                DB.Commit;
 

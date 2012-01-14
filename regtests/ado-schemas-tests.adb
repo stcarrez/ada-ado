@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Test_Caller;
 
 with ADO.Sessions;
 with ADO.Schemas.Entities;
-with ADO.Model;
 with ADO.Objects;
 
 with Regtests;
@@ -43,8 +42,6 @@ package body ADO.Schemas.Tests is
    --  Test reading the entity cache and the Find_Entity_Type operation
    --  ------------------------------
    procedure Test_Find_Entity_Type (T : in out Test) is
-      use type ADO.Model.Entity_Type_Ref;
-
       S   : ADO.Sessions.Session := Regtests.Get_Database;
       C   : ADO.Schemas.Entities.Entity_Cache;
    begin
@@ -52,12 +49,12 @@ package body ADO.Schemas.Tests is
                                        Session => S);
 
       declare
-         T1 : constant ADO.Model.Entity_Type_Ref
-           := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.USER_TABLE'Access);
-         T2 : constant ADO.Model.Entity_Type_Ref
-           := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
+--           T1 : constant ADO.Model.Entity_Type_Ref
+--             := Entities.Find_Entity_Type (Cache => C,
+--                                           Table => Regtests.Simple.Model.USER_TABLE'Access);
+--           T2 : constant ADO.Model.Entity_Type_Ref
+--             := Entities.Find_Entity_Type (Cache => C,
+--                                           Table => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
 
          T4 : constant ADO.Entity_Type
            := Entities.Find_Entity_Type (Cache => C,
@@ -66,18 +63,18 @@ package body ADO.Schemas.Tests is
            := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.USER_TABLE'Access);
       begin
-         T.Assert (not ADO.Objects.Is_Null (T1), "Find_Entity_Type returned a null value");
-         T.Assert (not ADO.Objects.Is_Null (T2), "Find_Entity_Type returned a null value");
+--           T.Assert (not ADO.Objects.Is_Null (T1), "Find_Entity_Type returned a null value");
+--           T.Assert (not ADO.Objects.Is_Null (T2), "Find_Entity_Type returned a null value");
 
-         T.Assert (T1 /= T2, "Two distinct tables have different entity types");
-         T.Assert (T1.Get_Id > 0, "T1.Id must be positive");
-         T.Assert (T2.Get_Id > 0, "T2.Id must be positive");
-         T.Assert (T1.Get_Id /= T2.Get_Id, "Two distinct tables have different ids");
-
-         Assert_Equals (T, Integer (T2.Get_Id), Integer (T4),
-                        "Invalid entity type for allocate_table");
-         Assert_Equals (T, Integer (T1.Get_Id), Integer (T5),
-                        "Invalid entity type for user_table");
+         T.Assert (T4 /= T5, "Two distinct tables have different entity types");
+         T.Assert (T4 > 0, "T1.Id must be positive");
+         T.Assert (T5 > 0, "T2.Id must be positive");
+--           T.Assert (T1.Get_Id /= T2.Get_Id, "Two distinct tables have different ids");
+--
+--           Assert_Equals (T, Integer (T2.Get_Id), Integer (T4),
+--                          "Invalid entity type for allocate_table");
+--           Assert_Equals (T, Integer (T1.Get_Id), Integer (T5),
+--                          "Invalid entity type for user_table");
       end;
    end Test_Find_Entity_Type;
 
@@ -89,19 +86,6 @@ package body ADO.Schemas.Tests is
    begin
       declare
          R : ADO.Entity_Type;
-         pragma Unreferenced (R);
-      begin
-         R := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.USER_TABLE'Access);
-         T.Assert (False, "Find_Entity_Type did not raise the No_Entity_Type exception");
-
-      exception
-         when ADO.Schemas.Entities.No_Entity_Type =>
-            null;
-      end;
-
-      declare
-         R   : ADO.Model.Entity_Type_Ref;
          pragma Unreferenced (R);
       begin
          R := Entities.Find_Entity_Type (Cache => C,

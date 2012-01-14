@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-entities -- Entity types cache
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Ada.Containers;
 with Ada.Containers.Hashed_Maps;
 with Util.Strings;
-with ADO.Model;
 with ADO.Sessions;
 package ADO.Schemas.Entities is
 
@@ -27,11 +26,6 @@ package ADO.Schemas.Entities is
 
    --  The entity cache maintains a static cache of database entities.
    type Entity_Cache is private;
-
-   --  Find the entity type object associated with the given database table.
-   --  Raises the No_Entity_Type exception if no such mapping exist.
-   function Find_Entity_Type (Cache : in Entity_Cache;
-                              Table : in Class_Mapping_Access) return ADO.Model.Entity_Type_Ref;
 
    --  Find the entity type index associated with the given database table.
    --  Raises the No_Entity_Type exception if no such mapping exist.
@@ -51,10 +45,9 @@ private
 
    package Entity_Map is new
      Ada.Containers.Hashed_Maps (Key_Type        => Util.Strings.Name_Access,
-                                 Element_Type    => ADO.Model.Entity_Type_Ref,
+                                 Element_Type    => ADO.Entity_Type,
                                  Hash            => Util.Strings.Hash,
-                                 Equivalent_Keys => Util.Strings.Equivalent_Keys,
-                                 "="             => ADO.Model."=");
+                                 Equivalent_Keys => Util.Strings.Equivalent_Keys);
 
    type Entity_Cache is record
       Entities : Entity_Map.Map;

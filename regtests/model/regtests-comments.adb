@@ -61,6 +61,7 @@ package body Regtests.Comments is
       Impl.Version := 0;
       Impl.Date := ADO.DEFAULT_TIME;
       Impl.Entity_Id := 0;
+      Impl.Entity_Type := 0;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
@@ -152,14 +153,14 @@ package body Regtests.Comments is
       return Impl.User;
    end Get_User;
    procedure Set_Entity_Type (Object : in out Comment_Ref;
-                              Value  : in ADO.Model.Entity_Type_Ref'Class) is
+                              Value  : in ADO.Entity_Type) is
       Impl : Comment_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Object (Impl.all, 7, Impl.Entity_Type, Value);
+      ADO.Objects.Set_Field_Entity_Type (Impl.all, 7, Impl.Entity_Type, Value);
    end Set_Entity_Type;
    function Get_Entity_Type (Object : in Comment_Ref)
-                  return ADO.Model.Entity_Type_Ref'Class is
+                  return ADO.Entity_Type is
       Impl : constant Comment_Access := Comment_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Entity_Type;
@@ -412,6 +413,9 @@ package body Regtests.Comments is
       if Name = "entity_Id" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Entity_Id));
       end if;
+      if Name = "entity_Type" then
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Entity_Type));
+      end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out Comment_Vector;
@@ -448,9 +452,7 @@ package body Regtests.Comments is
       if not Stmt.Is_Null (5) then
           Object.User.Set_Key_Value (Stmt.Get_Identifier (5), Session);
       end if;
-      if not Stmt.Is_Null (6) then
-          Object.Entity_Type.Set_Key_Value (Stmt.Get_Identifier (6), Session);
-      end if;
+      Object.Entity_Type := ADO.Entity_Type (Stmt.Get_Integer (6));
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
    end Load;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions-entities -- Find entity types
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,23 +25,11 @@ package body ADO.Sessions.Entities is
    --  ------------------------------
    function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
                               Object  : in ADO.Objects.Object_Key)
-                              return ADO.Model.Entity_Type_Ref is
+                              return ADO.Entity_Type is
    begin
       Check_Session (Session);
       return ADO.Schemas.Entities.Find_Entity_Type (Session.Impl.Entities.all,
                                                     Object.Of_Class);
-   end Find_Entity_Type;
-
-   --  ------------------------------
-   --  Find the entity type object associated with the given database table.
-   --  Raises the No_Entity_Type exception if no such mapping exist.
-   --  ------------------------------
-   function Find_Entity_Type (Session : in ADO.Sessions.Session'Class;
-                              Table   : in ADO.Schemas.Class_Mapping_Access)
-                              return ADO.Model.Entity_Type_Ref is
-   begin
-      Check_Session (Session);
-      return ADO.Schemas.Entities.Find_Entity_Type (Session.Impl.Entities.all, Table);
    end Find_Entity_Type;
 
    --  ------------------------------

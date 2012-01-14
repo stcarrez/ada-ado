@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hibernate-mapping default-cascade="none">
-    <class name="ADO.Model.Sequence" table="sequence" dynamic-insert="true" dynamic-update="true">
+    <class name="ADO.Model.Sequence" table="sequence" dynamic-insert="true" dynamic-update="true"
+           model="">
         <comment>Sequence generator</comment>
         <id name="name" type="String" unsaved-value="0">
             <comment>the sequence name</comment>
@@ -19,18 +20,4 @@
             <column name="block_size" not-null="false" unique="false" sql-type="BIGINT"/>
         </property>
     </class>
-    <class name="ADO.Model.Entity_Type" table="entity_type" dynamic-insert="true" dynamic-update="true">
-        <comment>Entity types</comment>
-        <id name="id" type="ADO.Identifier" unsaved-value="null">
-            <comment>the entity type identifier</comment>
-            <column name="id" sql-type="INTEGER"/>
-            <generator class="increment"/>
-        </id>
-        <property name="name" insert="true" update="false" unique="true">
-            <comment>the entity type name (table name)</comment>
-            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(127)"/>
-            <type name="java.lang.String"/>
-        </property>
-    </class>
-
 </hibernate-mapping>

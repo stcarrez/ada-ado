@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 
 with Util.Test_Caller;
 with ADO.Sessions;
-with ADO.Model;
 with Regtests.Simple.Model;
 with Regtests.Comments;
 package body ADO.Objects.Tests is
@@ -145,15 +144,12 @@ package body ADO.Objects.Tests is
       --  Create a comment for the user.
       declare
          S  : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-         E  : ADO.Model.Entity_Type_Ref;
       begin
          S.Begin_Transaction;
-         E.Load (Session => S,
-                 Id      => 1);
          Cmt.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String ("A comment from Joe"));
          Cmt.Set_User (User);
          Cmt.Set_Entity_Id (2);
-         Cmt.Set_Entity_Type (E);
+         Cmt.Set_Entity_Type (1);
          Cmt.Set_Date (ADO.DEFAULT_TIME);
          Cmt.Save (S);
          S.Commit;
@@ -171,7 +167,7 @@ package body ADO.Objects.Tests is
                           "Invalid message");
 
          T.Assert (not C2.Get_User.Is_Null, "User associated with the comment should not be null");
-         T.Assert (not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
+--           T.Assert (not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
 
          --  Check that we can access the user name (lazy load)
          Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (C2.Get_User.Get_Name),

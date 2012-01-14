@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-entities -- Entity types cache
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,26 +19,13 @@
 with Util.Log.Loggers;
 
 with ADO.SQL;
+with ADO.Statements;
+with ADO.Model;
 package body ADO.Schemas.Entities is
 
    use Util.Log;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Schemas.Entities");
-
-   --  ------------------------------
-   --  Find the entity type object associated with the given database table.
-   --  Raises the No_Entity_Type exception if no such mapping exist.
-   --  ------------------------------
-   function Find_Entity_Type (Cache : in Entity_Cache;
-                              Table : in Class_Mapping_Access) return ADO.Model.Entity_Type_Ref is
-      Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Table.Table);
-   begin
-      if not Entity_Map.Has_Element (Pos) then
-         Log.Error ("No entity type associated with table {0}", Table.Table.all);
-         raise No_Entity_Type with "No entity type associated with table " & Table.Table.all;
-      end if;
-      return Entity_Map.Element (Pos);
-   end Find_Entity_Type;
 
    --  ------------------------------
    --  Find the entity type index associated with the given database table.
@@ -62,7 +49,7 @@ package body ADO.Schemas.Entities is
          Log.Error ("No entity type associated with table {0}", Name.all);
          raise No_Entity_Type with "No entity type associated with table " & Name.all;
       end if;
-      return Entity_Type (Entity_Map.Element (Pos).Get_Id);
+      return Entity_Type (Entity_Map.Element (Pos));
    end Find_Entity_Type;
 
    --  ------------------------------
@@ -71,22 +58,24 @@ package body ADO.Schemas.Entities is
    procedure Initialize (Cache   : in out Entity_Cache;
                          Session : in out ADO.Sessions.Session'Class) is
       use type Ada.Containers.Count_Type;
-      List  : ADO.Model.Entity_Type_Vector;
+
       Query : ADO.SQL.Query;
-
-      procedure Process (Element : in ADO.Model.Entity_Type_Ref);
-
-      procedure Process (Element : in ADO.Model.Entity_Type_Ref) is
-         Name : constant Util.Strings.Name_Access := new String'(Element.Get_Name);
-      begin
-         Cache.Entities.Insert (Key => Name, New_Item => Element);
-      end Process;
-
+      Stmt : ADO.Statements.Query_Statement
+        := Session.Create_Statement (ADO.Model.ENTITY_TYPE_TABLE'Access);
    begin
-      ADO.Model.List (List, Session, Query);
-      for I in 0 .. List.Length - 1 loop
-         List.Query_Element (Natural (I), Process'Access);
+      Stmt.Set_Parameters (Query);
+      Stmt.Execute;
+      while Stmt.Has_Elements loop
+         declare
+            Id   : constant ADO.Entity_Type := ADO.Entity_Type (Stmt.Get_Integer (0));
+            S    : constant String := Stmt.Get_String (1);
+            Name : constant Util.Strings.Name_Access := new String'(S);
+         begin
+            Cache.Entities.Insert (Key => Name, New_Item => Id);
+         end;
+         Stmt.Next;
       end loop;
+
    exception
       when others =>
          null;
