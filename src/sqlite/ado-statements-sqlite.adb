@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database connections
---  Copyright (C) 2009, 2010, 2011 Free Software Foundation, Inc.
+--  Copyright (C) 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  This file is part of ADO.
@@ -21,6 +21,7 @@
 --  Boston, MA 02111-1307, USA.
 -----------------------------------------------------------------------
 with Sqlite3_H;
+with Sqlite3_H.Perfect_Hash;
 
 with Interfaces.C.Strings;
 
@@ -36,6 +37,19 @@ package body ADO.Statements.Sqlite is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Sqlite");
 
+   type Dialect is new ADO.SQL.Dialect with null record;
+
+   --  Check if the string is a reserved keyword.
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean;
+
+   --  Get the quote character to escape an identifier.
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character;
+
+   Sqlite_Dialect : aliased Dialect;
+
    procedure Execute (Connection : in ADO.Drivers.Sqlite.Sqlite_Access;
                       SQL        : in String;
                       Result     : out int;
@@ -47,6 +61,27 @@ package body ADO.Statements.Sqlite is
 
    procedure Prepare (Stmt  : in out Sqlite_Query_Statement;
                       Query : in String);
+
+   --  ------------------------------
+   --  Check if the string is a reserved keyword.
+   --  ------------------------------
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean is
+      pragma Unreferenced (D);
+   begin
+      return Sqlite3_H.Perfect_Hash.Is_Keyword (Name);
+   end Is_Reserved;
+
+   --  ------------------------------
+   --  Get the quote character to escape an identifier.
+   --  ------------------------------
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character is
+      pragma Unreferenced (D);
+   begin
+      return '`';
+   end Get_Identifier_Quote;
 
    --  ------------------------------
    --  Releases the sqlite statement
@@ -116,6 +151,7 @@ package body ADO.Statements.Sqlite is
       Result.Connection := Database;
       Result.Table      := Table;
       Result.Query      := Result.Delete_Query'Access;
+      Result.Delete_Query.Set_Dialect (Sqlite_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
 
@@ -204,6 +240,7 @@ package body ADO.Statements.Sqlite is
       Result.Table      := Table;
       Result.Update     := Result.This_Query'Access;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Sqlite_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
 
@@ -254,6 +291,7 @@ package body ADO.Statements.Sqlite is
       Result.Connection := Database;
       Result.Table  := Table;
       Result.Update := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Sqlite_Dialect'Access);
       ADO.SQL.Set_Insert_Mode (Result.This_Query);
       return Result.all'Access;
    end Create_Statement;
@@ -497,6 +535,7 @@ package body ADO.Statements.Sqlite is
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Sqlite_Dialect'Access);
       if Table /= null then
          ADO.SQL.Append (Target => Result.This_Query.SQL, SQL => "SELECT ");
          for I in Table.Members'Range loop
