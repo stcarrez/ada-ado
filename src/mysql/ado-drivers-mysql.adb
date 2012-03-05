@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -239,11 +239,14 @@ package body ADO.Drivers.Mysql is
    --  Initialize the Mysql driver.
    --  ------------------------------
    procedure Initialize is
+      use type Util.Strings.Name_Access;
    begin
       Log.Debug ("Initializing mysql driver");
 
-      Driver.Name := Driver_Name'Access;
-      Register (Driver'Access);
+      if Driver.Name = null then
+         Driver.Name := Driver_Name'Access;
+         Register (Driver'Access);
+      end if;
    end Initialize;
 
    --  ------------------------------

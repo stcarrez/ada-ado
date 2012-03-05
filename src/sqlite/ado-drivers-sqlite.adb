@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -282,9 +282,14 @@ package body ADO.Drivers.Sqlite is
    --  Initialize the SQLite driver.
    --  ------------------------------
    procedure Initialize is
+      use type Util.Strings.Name_Access;
    begin
-      Driver.Name := Driver_Name'Access;
-      Register (Driver'Access);
+      Log.Debug ("Initializing sqlite driver");
+
+      if Driver.Name = null then
+         Driver.Name := Driver_Name'Access;
+         Register (Driver'Access);
+      end if;
    end Initialize;
 
 end ADO.Drivers.Sqlite;
