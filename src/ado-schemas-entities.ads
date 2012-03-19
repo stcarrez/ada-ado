@@ -17,8 +17,8 @@
 -----------------------------------------------------------------------
 
 with Ada.Containers;
-with Ada.Containers.Hashed_Maps;
-with Util.Strings;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Strings.Hash;
 with ADO.Sessions;
 package ADO.Schemas.Entities is
 
@@ -44,10 +44,10 @@ package ADO.Schemas.Entities is
 private
 
    package Entity_Map is new
-     Ada.Containers.Hashed_Maps (Key_Type        => Util.Strings.Name_Access,
-                                 Element_Type    => ADO.Entity_Type,
-                                 Hash            => Util.Strings.Hash,
-                                 Equivalent_Keys => Util.Strings.Equivalent_Keys);
+     Ada.Containers.Indefinite_Hashed_Maps (Key_Type        => String,
+                                            Element_Type    => ADO.Entity_Type,
+                                            Hash            => Ada.Strings.Hash,
+                                            Equivalent_Keys => "=");
 
    type Entity_Cache is record
       Entities : Entity_Map.Map;

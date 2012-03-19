@@ -43,7 +43,7 @@ package body ADO.Schemas.Entities is
    --  ------------------------------
    function Find_Entity_Type (Cache : in Entity_Cache;
                               Name  : in Util.Strings.Name_Access) return ADO.Entity_Type is
-      Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Name);
+      Pos : constant Entity_Map.Cursor := Cache.Entities.Find (Name.all);
    begin
       if not Entity_Map.Has_Element (Pos) then
          Log.Error ("No entity type associated with table {0}", Name.all);
@@ -60,7 +60,7 @@ package body ADO.Schemas.Entities is
       use type Ada.Containers.Count_Type;
 
       Query : ADO.SQL.Query;
-      Stmt : ADO.Statements.Query_Statement
+      Stmt  : ADO.Statements.Query_Statement
         := Session.Create_Statement (ADO.Model.ENTITY_TYPE_TABLE'Access);
    begin
       Stmt.Set_Parameters (Query);
@@ -68,8 +68,7 @@ package body ADO.Schemas.Entities is
       while Stmt.Has_Elements loop
          declare
             Id   : constant ADO.Entity_Type := ADO.Entity_Type (Stmt.Get_Integer (0));
-            S    : constant String := Stmt.Get_String (1);
-            Name : constant Util.Strings.Name_Access := new String'(S);
+            Name : constant String := Stmt.Get_String (1);
          begin
             Cache.Entities.Insert (Key => Name, New_Item => Id);
          end;
