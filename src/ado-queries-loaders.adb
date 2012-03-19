@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ with Interfaces;
 
 with Ada.IO_Exceptions;
 with Ada.Directories;
+with Ada.Unchecked_Deallocation;
 
 with Util.Files;
 with Util.Log.Loggers;
@@ -278,15 +279,20 @@ package body ADO.Queries.Loaders is
    --  ------------------------------
    procedure Initialize (Paths : in String;
                          Load  : in Boolean) is
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Object => String,
+                                         Name   => Ada.Strings.Unbounded.String_Access);
+
       File : Query_File_Access := Query_Files;
    begin
       Log.Info ("Initializing query search paths to {0}", Paths);
 
       while File /= null loop
          declare
-            Path : constant String := Util.Files.Find_File_Path (Name  => File.Path.all,
+            Path : constant String := Util.Files.Find_File_Path (Name  => File.Name.all,
                                                                  Paths => Paths);
          begin
+            Free (File.Path);
             File.Path := new String '(Path);
             if Load then
                Read_Query (File);

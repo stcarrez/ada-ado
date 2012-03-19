@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,8 @@ package ADO.Queries.Loaders is
    package File is
       Name : aliased constant String := Path;
       Hash : aliased constant String := Sha1;
-      File : aliased Query_File := Query_File '(Path          => Name'Access,
+      File : aliased Query_File := Query_File '(Name          => Name'Access,
+                                                Path          => null,
                                                 Sha1_Map      => Hash'Access,
                                                 Next_Check    => 0,
                                                 Last_Modified => 0,

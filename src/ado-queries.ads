@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,7 +103,10 @@ package ADO.Queries is
    --  package elaboration).
    type Query_File is limited record
       --  Query relative path name
-      Path          : Util.Strings.Name_Access;
+      Name          : Util.Strings.Name_Access;
+
+      --  Query absolute path name (after path resolution).
+      Path          : Ada.Strings.Unbounded.String_Access;
 
       --  The SHA1 hash of the query map section.
       Sha1_Map      : Util.Strings.Name_Access;
