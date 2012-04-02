@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Util.Test_Caller;
+with Util.Properties;
+
 with ADO.Queries.Loaders;
 package body ADO.Queries.Tests is
 
@@ -62,7 +64,12 @@ package body ADO.Queries.Tests is
 
       Mysql_Driver  : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("mysql");
       Sqlite_Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("sqlite");
+      Props         : Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
+      --  Configure the XML query loader.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
+                                      Props.Get ("ado.queries.load", "false") = "true");
+      
       declare
          SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0);
       begin
