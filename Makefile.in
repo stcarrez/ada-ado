@@ -65,11 +65,11 @@ test:	test-sqlite test-mysql
 
 test-sqlite:		build regtests.db
 	test T${HAVE_SQLITE} = TFalse || \
-	bin/ado_harness -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
+	-bin/ado_harness -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
 
 test-mysql:		build create-mysql-tests
 	test T${HAVE_MYSQL} = TFalse || \
-	bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
+	-bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
 
 # Clean the root project of all build products.
 clean:
