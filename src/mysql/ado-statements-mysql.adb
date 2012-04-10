@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,12 @@
 
 with Interfaces.C.Strings;
 with Ada.Unchecked_Conversion;
+with Ada.Streams;
+
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Streams.Buffered;
+
 with System.Storage_Elements;
 with Interfaces.C;
 with Mysql.Com;  use Mysql.Com;
@@ -467,6 +471,30 @@ package body ADO.Statements.Mysql is
    begin
       return To_String (Query.Get_Unbounded_String (Column));
    end Get_String;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Blob</b> reference.
+   --  ------------------------------
+   overriding
+   function Get_Blob (Query  : in Mysql_Query_Statement;
+                      Column : in Natural) return ADO.Blob_Ref is
+      Data   : ADO.Blob_Ref;
+      Field  : chars_ptr := Query.Get_Field (Column);
+      Blob   : Util.Streams.Buffered.Buffer_Access;
+      Lengths : System_Access;
+   begin
+      if Field /= null then
+         Lengths := Mysql_Fetch_Lengths (Query.Result);
+         Blob := new Ada.Streams.Stream_Element_Array (1 .. Length);
+         Data := ADO.Blob_References.Create (Blob);
+         for I in 1 .. Length loop
+            Blob (I) := Character'Pos (Field.all);
+            Field := Field + 1;
+         end loop;
+      end if;
+      return Data;
+   end Get_Blob;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and

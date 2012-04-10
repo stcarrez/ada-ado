@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,6 +125,12 @@ package ADO.Statements.Mysql is
    overriding
    function Get_String (Query  : Mysql_Query_Statement;
                         Column : Natural) return String;
+
+   --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Blob</b> reference.
+   overriding
+   function Get_Blob (Query  : in Mysql_Query_Statement;
+                      Column : in Natural) return ADO.Blob_Ref;
 
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Time</b>.

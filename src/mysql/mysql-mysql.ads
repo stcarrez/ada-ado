@@ -813,7 +813,7 @@ package Mysql.Mysql is
    function Mysql_Fetch_Row (arg1 : MYSQL_RES) return System_Access; --  MYSQL_ROW;  -- /usr/include/mysql/mysql.h:540:19
    pragma Import (Stdcall, Mysql_Fetch_Row, "mysql_fetch_row");
 
-   function mysql_fetch_lengths (arg1 : MYSQL_RES) return access unsigned_long;  -- /usr/include/mysql/mysql.h:541:25
+   function mysql_fetch_lengths (arg1 : MYSQL_RES) return System_Access;  -- /usr/include/mysql/mysql.h:541:25
    pragma Import (Stdcall, mysql_fetch_lengths, "mysql_fetch_lengths");
 
    function mysql_fetch_field (arg1 : MYSQL_RES) return MYSQL_FIELD;  -- /usr/include/mysql/mysql.h:542:23

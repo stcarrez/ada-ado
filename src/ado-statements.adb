@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -510,6 +510,20 @@ package body ADO.Statements is
          return Query.Proxy.Get_String (Column);
       end if;
    end Get_String;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Blob</b> reference.
+   --  ------------------------------
+   function Get_Blob (Query  : in Query_Statement;
+                      Column : in Natural) return ADO.Blob_Ref is
+   begin
+      if Query.Proxy = null then
+         return Empty : ADO.Blob_Ref;
+      else
+         return Query.Proxy.Get_Blob (Column);
+      end if;
+   end Get_Blob;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
