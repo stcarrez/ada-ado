@@ -304,6 +304,12 @@ package ADO.Statements is
                          Value  : in ADO.Objects.Object_Ref'Class);
 
    --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in ADO.Blob_Ref);
+
+   --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to NULL.
    procedure Save_Null_Field (Update : in out Update_Statement;
                               Name   : in String);

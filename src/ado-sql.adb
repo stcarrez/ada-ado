@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO SQL -- Basic SQL Generation
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -416,6 +416,18 @@ package body ADO.SQL is
    procedure Save_Field (Update : in out Update_Query;
                          Name   : in String;
                          Value  : in Unbounded_String) is
+   begin
+      Update.Add_Field (Name => Name);
+      Update_Query'Class (Update).Bind_Param (Position => Update.Pos, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Query;
+                         Name   : in String;
+                         Value  : in ADO.Blob_Ref) is
    begin
       Update.Add_Field (Name => Name);
       Update_Query'Class (Update).Bind_Param (Position => Update.Pos, Value => Value);

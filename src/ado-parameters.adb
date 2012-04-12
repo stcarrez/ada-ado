@@ -111,6 +111,17 @@ package body ADO.Parameters is
 
    procedure Bind_Param (Params : in out Abstract_List;
                          Name  : in String;
+                         Value : in ADO.Blob_Ref) is
+   begin
+      Abstract_List'Class (Params).
+        Add_Parameter (Parameter '(T        => T_BLOB,
+                                   Name     => To_Unbounded_String (Name),
+                                   Position => 0,
+                                   Data     => Value));
+   end Bind_Param;
+
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name  : in String;
                          Value : in Unbounded_String) is
       Param : constant Parameter := Parameter '(T => T_STRING, Name => +(Name),
                                                 Position => 0, Str => Value);
@@ -232,6 +243,20 @@ package body ADO.Parameters is
                                    Name     => Null_Unbounded_String,
                                    Position => Position,
                                    Time     => Value);
+   begin
+      if Position = 0 then
+         P.Position := Abstract_List'Class (Params).Length + 1;
+      end if;
+      Abstract_List'Class (Params).Add_Parameter (P);
+   end Bind_Param;
+
+   procedure Bind_Param (Params   : in out Abstract_List;
+                         Position : in Natural;
+                         Value    : in ADO.Blob_Ref) is
+      P : Parameter := Parameter '(T        => T_BLOB,
+                                   Name     => Null_Unbounded_String,
+                                   Position => Position,
+                                   Data     => Value);
    begin
       if Position = 0 then
          P.Position := Abstract_List'Class (Params).Length + 1;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ package ADO.Parameters is
    type Token is new String;
 
    type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_DATE, T_LONG_INTEGER,
-                           T_INTEGER, T_BOOLEAN);
+                           T_INTEGER, T_BOOLEAN, T_BLOB);
 
    type Parameter (T : Parameter_Type := T_NULL) is record
       Name     : Unbounded_String;
@@ -50,6 +50,9 @@ package ADO.Parameters is
 
          when T_DATE =>
             Time : Ada.Calendar.Time;
+
+         when T_BLOB =>
+            Data : ADO.Blob_Ref;
 
          when others =>
             Str : Unbounded_String;
@@ -111,6 +114,9 @@ package ADO.Parameters is
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in Token);
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
+                         Value  : in ADO.Blob_Ref);
 
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
@@ -136,6 +142,9 @@ package ADO.Parameters is
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
                          Value    : in Ada.Calendar.Time);
+   procedure Bind_Param (Params   : in out Abstract_List;
+                         Position : in Natural;
+                         Value    : in ADO.Blob_Ref);
    procedure Bind_Null_Param (Params   : in out Abstract_List;
                               Position : in Natural);
    procedure Bind_Null_Param (Params   : in out Abstract_List;
