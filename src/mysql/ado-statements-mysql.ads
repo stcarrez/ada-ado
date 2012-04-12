@@ -184,6 +184,13 @@ private
    function Get_Field (Query  : Mysql_Query_Statement'Class;
                        Column : Natural) return chars_ptr;
 
+   --  Get a column field length.
+   --  If the query was not executed, raises Invalid_Statement
+   --  If the column is out of bound, raises Constraint_Error
+   --  ------------------------------
+   function Get_Field_Length (Query  : in Mysql_Query_Statement'Class;
+                              Column : in Natural) return Natural;
+
    type Mysql_Delete_Statement is new Delete_Statement with record
       Connection   : Mysql_Access;
       Table        : ADO.Schemas.Class_Mapping_Access;

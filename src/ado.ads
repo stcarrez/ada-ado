@@ -17,10 +17,10 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Unbounded;
+with Ada.Streams;
 with Ada.Calendar;
 
 with Util.Refs;
-with Util.Streams.Buffered;
 package ADO is
 
    type Int64 is range -2**63 .. 2**63 - 1;
@@ -82,13 +82,19 @@ package ADO is
    --  in an <b>Ada.Streams.Stream_Element_Array</b> pointed to by the <b>Data</b> member.
    --  The query statement and bind parameter will use a <b>Blob_Ref</b> which represents
    --  a reference to the blob data.  This is intended to minimize data copy.
-   type Blob is new Util.Refs.Ref_Entity with record
-      Data : Util.Streams.Buffered.Buffer_Access := null;
+   type Blob (Len : Ada.Streams.Stream_Element_Offset) is new Util.Refs.Ref_Entity with record
+      Data : Ada.Streams.Stream_Element_Array (1 .. Len);
    end record;
    type Blob_Access is access all Blob;
 
-   package Blob_References is new Util.Refs.References (Blob, Blob_Access);
+   package Blob_References is new Util.Refs.Indefinite_References (Blob, Blob_Access);
    subtype Blob_Ref is Blob_References.Ref;
+
+   --  Create a blob with an allocated buffer of <b>Size</b> bytes.
+   function Create_Blob (Size : in Natural) return Blob_Ref;
+
+   --  Create a blob initialized with the given data buffer.
+   function Create_Blob (Data : in Ada.Streams.Stream_Element_Array) return Blob_Ref;
 
 private
 

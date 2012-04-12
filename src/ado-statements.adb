@@ -338,6 +338,27 @@ package body ADO.Statements is
    end Get_Time;
 
    --  ------------------------------
+   --  Create a blob initialized with the given data buffer pointed to by <b>Data</b>
+   --  and which contains <b>Size</b> bytes.
+   --  ------------------------------
+   function Get_Blob (Data : in chars_ptr;
+                      Size : in Natural) return Blob_Ref is
+      use Util.Refs;
+      use Ada.Streams;
+
+      B :  constant Blob_Access := new Blob '(Ref_Entity with
+                                              Len    => Stream_Element_Offset (Size),
+                                              others => <>);
+      P : chars_ptr := Data;
+   begin
+      for I in 1 .. Stream_Element_Offset (Size) loop
+         B.Data (I) := Character'Pos (P.all);
+         P := P + 1;
+      end loop;
+      return Blob_References.Create (B);
+   end Get_Blob;
+
+   --  ------------------------------
    --  Execute the query
    --  ------------------------------
    overriding

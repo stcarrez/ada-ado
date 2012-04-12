@@ -383,6 +383,11 @@ private
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    function Get_Time (Value  : in chars_ptr) return Ada.Calendar.Time;
 
+   --  Create a blob initialized with the given data buffer pointed to by <b>Data</b>
+   --  and which contains <b>Size</b> bytes.
+   function Get_Blob (Data : in chars_ptr;
+                      Size : in Natural) return Blob_Ref;
+
    type Delete_Statement is new Statement with record
       Proxy : Delete_Statement_Access := null;
       Ref_Counter : Natural := 0;

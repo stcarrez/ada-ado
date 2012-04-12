@@ -18,11 +18,9 @@
 
 with Interfaces.C.Strings;
 with Ada.Unchecked_Conversion;
-with Ada.Streams;
 
 with Util.Log;
 with Util.Log.Loggers;
-with Util.Streams.Buffered;
 
 with System.Storage_Elements;
 with Interfaces.C;
@@ -277,11 +275,16 @@ package body ADO.Statements.Mysql is
    --  Query statement for MySQL
    --  ------------------------------
 
+   type Unsigned_Long_Ptr is access all unsigned_long;
+
    function To_System_Access is
      new Ada.Unchecked_Conversion (System.Address, System_Access);
 
    function To_Address is
      new Ada.Unchecked_Conversion (System_Access, System.Address);
+
+   function To_Unsigned_Long_Ptr is
+     new Ada.Unchecked_Conversion (System_Access, Unsigned_Long_Ptr);
 
    function "+" (Left : System_Access; Right : Size_T) return System_Access;
    pragma Inline_Always ("+");
@@ -296,8 +299,8 @@ package body ADO.Statements.Mysql is
    --  If the query was not executed, raises Invalid_Statement
    --  If the column is out of bound, raises Constraint_Error
    --  ------------------------------
-   function Get_Field (Query  : Mysql_Query_Statement'Class;
-                       Column : Natural) return chars_ptr is
+   function Get_Field (Query  : in Mysql_Query_Statement'Class;
+                       Column : in Natural) return chars_ptr is
       use System;
 
       R : System_Access;
@@ -311,6 +314,28 @@ package body ADO.Statements.Mysql is
       R := Query.Row + Size_T (Column * (R'Size / 8));
       return To_Chars_Ptr (R.all);
    end Get_Field;
+
+   --  ------------------------------
+   --  Get a column field length.
+   --  If the query was not executed, raises Invalid_Statement
+   --  If the column is out of bound, raises Constraint_Error
+   --  ------------------------------
+   function Get_Field_Length (Query  : in Mysql_Query_Statement'Class;
+                              Column : in Natural) return Natural is
+      use System;
+
+      R : System_Access;
+   begin
+      if Query.Row = null then
+         raise Invalid_Statement with "Null statement";
+      end if;
+      if Column > Query.Max_Column then
+         raise Constraint_Error with "Invalid column";
+      end if;
+      R := mysql_fetch_lengths (Query.Result);
+      R := R + Size_T (Column * (R'Size / 8));
+      return Natural (To_Unsigned_Long_Ptr (R).all);
+   end Get_Field_Length;
 
    --  ------------------------------
    --  Execute the query
@@ -479,21 +504,14 @@ package body ADO.Statements.Mysql is
    overriding
    function Get_Blob (Query  : in Mysql_Query_Statement;
                       Column : in Natural) return ADO.Blob_Ref is
-      Data   : ADO.Blob_Ref;
-      Field  : chars_ptr := Query.Get_Field (Column);
-      Blob   : Util.Streams.Buffered.Buffer_Access;
-      Lengths : System_Access;
+      Field   : constant chars_ptr := Query.Get_Field (Column);
    begin
       if Field /= null then
-         Lengths := Mysql_Fetch_Lengths (Query.Result);
-         Blob := new Ada.Streams.Stream_Element_Array (1 .. Length);
-         Data := ADO.Blob_References.Create (Blob);
-         for I in 1 .. Length loop
-            Blob (I) := Character'Pos (Field.all);
-            Field := Field + 1;
-         end loop;
+         return Get_Blob (Size => Query.Get_Field_Length (Column),
+                          Data => Field);
+      else
+         return Create_Blob (0);
       end if;
-      return Data;
    end Get_Blob;
 
    --  ------------------------------
