@@ -24,6 +24,7 @@ with ADO.Sessions;
 with Regtests;
 
 with Regtests.Simple.Model;
+with Regtests.Images.Model;
 with Util.Measures;
 with Util.Log;
 with Util.Log.Loggers;
@@ -230,6 +231,25 @@ package body ADO.Tests is
       T.Assert (Result > 100, "Too few rows were deleted");
    end Test_Delete_All;
 
+   --  ------------------------------
+   --  Test blob insert.
+   --  ------------------------------
+   procedure Test_Blob (T : in out Test) is
+      use ADO.Objects;
+
+      DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Img  : Regtests.Images.Model.Image_Ref;
+      Data : ADO.Blob_Ref := ADO.Create_Blob (1000);
+   begin
+      for I in 1 .. 1000 loop
+         Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos (I mod 255);
+      end loop;
+      DB.Begin_Transaction;
+      Img.Set_Image (Data);
+      Img.Save (DB);
+      DB.Commit;
+   end Test_Blob;
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test Object_Ref.Load", Test_Load'Access);
@@ -242,6 +262,8 @@ package body ADO.Tests is
                        Test_Perf_Create_Save'Access);
       Caller.Add_Test (Suite, "Test Statement.Delete_Statement (delete all)",
                        Test_Delete_All'Access);
+      Caller.Add_Test (Suite, "Test insert blob",
+                       Test_Blob'Access);
    end Add_Tests;
 
 end ADO.Tests;
