@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -595,6 +595,17 @@ package body ADO.Objects is
          Object.Modified (Field) := True;
       end if;
    end Set_Field_Entity_Type;
+
+   procedure Set_Field_Blob (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out ADO.Blob_Ref;
+                             Value  : in ADO.Blob_Ref) is
+   begin
+      if Value.Value /= Into.Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Blob;
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
                                   Field  : in Positive;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -323,6 +323,11 @@ package ADO.Objects is
                                     Field  : in Positive;
                                     Into   : in out ADO.Entity_Type;
                                     Value  : in ADO.Entity_Type);
+
+   procedure Set_Field_Blob (Object : in out Object_Record'Class;
+                             Field  : in Positive;
+                             Into   : in out ADO.Blob_Ref;
+                             Value  : in ADO.Blob_Ref);
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
                                   Field  : in Positive;
