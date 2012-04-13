@@ -1,12 +1,5 @@
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
-/* Entity types */
-CREATE TABLE entity_type (
-  /* the entity type identifier */
-  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  /* the entity type name (table name) */
-  `name` VARCHAR(127) UNIQUE NOT NULL
-);
 /* Sequence generator */
 CREATE TABLE sequence (
   /* the sequence name */
@@ -18,7 +11,6 @@ CREATE TABLE sequence (
   /* the sequence block size */
   `block_size` BIGINT 
 );
-INSERT INTO entity_type (name) VALUES ("entity_type");
 INSERT INTO entity_type (name) VALUES ("sequence");
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
@@ -48,6 +40,17 @@ CREATE TABLE allocate (
   /* the sequence value */
   `NAME` VARCHAR(255) 
 );
+/*  */
+CREATE TABLE test_image (
+  /*  */
+  `id` INTEGER PRIMARY KEY,
+  /*  */
+  `version` int ,
+  /* the message creation date */
+  `create_date` DATETIME NOT NULL,
+  /*  */
+  `image` BLOB NOT NULL
+);
 /* Record representing a user */
 CREATE TABLE test_user (
   /* the user id */
@@ -63,4 +66,5 @@ CREATE TABLE test_user (
 );
 INSERT INTO entity_type (name) VALUES ("TEST_COMMENTS");
 INSERT INTO entity_type (name) VALUES ("allocate");
+INSERT INTO entity_type (name) VALUES ("test_image");
 INSERT INTO entity_type (name) VALUES ("test_user");

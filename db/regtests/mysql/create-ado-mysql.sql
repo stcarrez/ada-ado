@@ -54,6 +54,18 @@ CREATE TABLE allocate (
   `NAME` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
 );
+/*  */
+CREATE TABLE test_image (
+  /*  */
+  `id` INTEGER ,
+  /*  */
+  `version` int ,
+  /* the message creation date */
+  `create_date` DATETIME NOT NULL,
+  /*  */
+  `image` BLOB NOT NULL,
+  PRIMARY KEY (`id`)
+);
 /* Record representing a user */
 CREATE TABLE test_user (
   /* the user id */
@@ -71,5 +83,6 @@ CREATE TABLE test_user (
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
 ,("allocate")
+,("test_image")
 ,("test_user")
 ;
