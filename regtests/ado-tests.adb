@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Ada.Exceptions;
+with Ada.Calendar;
 
 with ADO.Statements;
 with ADO.Objects;
@@ -25,6 +26,8 @@ with Regtests;
 
 with Regtests.Simple.Model;
 with Regtests.Images.Model;
+
+with Util.Assertions;
 with Util.Measures;
 with Util.Log;
 with Util.Log.Loggers;
@@ -236,18 +239,36 @@ package body ADO.Tests is
    --  ------------------------------
    procedure Test_Blob (T : in out Test) is
       use ADO.Objects;
+      use Ada.Streams;
+
+      procedure Assert_Equals is
+        new Util.Assertions.Assert_Equals_T (Ada.Streams.Stream_Element);
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Img  : Regtests.Images.Model.Image_Ref;
-      Data : ADO.Blob_Ref := ADO.Create_Blob (1000);
+      Data : constant ADO.Blob_Ref := ADO.Create_Blob (8192);
+      Img2 : Regtests.Images.Model.Image_Ref;
    begin
-      for I in 1 .. 1000 loop
+      for I in 1 .. 8192 loop
          Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos (I mod 255);
       end loop;
       DB.Begin_Transaction;
       Img.Set_Image (Data);
+      Img.Set_Create_Date (Ada.Calendar.Clock);
       Img.Save (DB);
       DB.Commit;
+
+      --  Check that we can load the image and the blob.
+      Img2.Load (DB, Img.Get_Id);
+      T.Assert (Img2.Get_Image.Is_Null = False, "No image blob loaded");
+
+      --  And verify that the blob data matches what we inserted.
+      Util.Tests.Assert_Equals (T, 8192, Integer (Img2.Get_Image.Value.Len),
+                                "Invalid blob length");
+      for I in 1 .. Data.Value.Len loop
+         Assert_Equals (T, Data.Value.Data (I), Img2.Get_Image.Value.Data (I),
+                        "Invalid blob content at " & Stream_Element_Offset'Image (I));
+      end loop;
    end Test_Blob;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
