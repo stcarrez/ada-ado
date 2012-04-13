@@ -30,6 +30,7 @@ with ADO.Queries.Loaders;
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
+with Util.Beans.Basic.Lists;
 package Samples.User.Model is
    --  --------------------
    --  Record representing a user
@@ -156,7 +157,8 @@ package Samples.User.Model is
    procedure Allocate (Object : in out User_Ref);
 
    --  Copy of the object.
-   function Copy (Object : User_Ref) return User_Ref;
+   procedure Copy (Object : in User_Ref;
+                   Into   : in out User_Ref);
 
    package User_Vectors is
       new Ada.Containers.Vectors (Index_Type   => Natural,
@@ -187,8 +189,10 @@ package Samples.User.Model is
       new Ada.Containers.Vectors (Index_Type   => Natural,
                                   Element_Type => User_Info,
                                   "="          => "=");
+
    subtype User_Info_Vector is User_Info_Vectors.Vector;
 
+   --  Run the query controlled by <b>Context</b> and append the list in <b>Object</b>.
    procedure List (Object  : in out User_Info_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Context : in out ADO.Queries.Context'Class);
@@ -256,8 +260,7 @@ private
    procedure Delete (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
    procedure Set_Field (Object : in out User_Ref'Class;
-                        Impl   : out User_Access;
-                        Field  : in Positive);
+                        Impl   : out User_Access);
 
    package File_Userinfo is
       new ADO.Queries.Loaders.File (Path => "user-list.xml",

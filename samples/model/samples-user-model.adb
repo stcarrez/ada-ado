@@ -46,11 +46,11 @@ package body Samples.User.Model is
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
    procedure Set_Field (Object : in out User_Ref'Class;
-                        Impl   : out User_Access;
-                        Field  : in Positive) is
+                        Impl   : out User_Access) is
+      Result : ADO.Objects.Object_Record_Access;
    begin
-      Object.Set_Field (Field);
-      Impl := User_Impl (Object.Get_Object.all)'Access;
+      Object.Prepare_Modify (Result);
+      Impl := User_Impl (Result.all)'Access;
    end Set_Field;
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out User_Ref) is
@@ -66,11 +66,11 @@ package body Samples.User.Model is
    --  Data object: User
    -- ----------------------------------------
    procedure Set_Id (Object : in out User_Ref;
-                      Value  : in ADO.Identifier) is
+                     Value  : in ADO.Identifier) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 1);
-      ADO.Objects.Set_Key_Value (Impl.all, Value);
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
    function Get_Id (Object : in User_Ref)
                   return ADO.Identifier is
@@ -86,15 +86,17 @@ package body Samples.User.Model is
    end Get_Version;
    procedure Set_Name (Object : in out User_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Name (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Name;
-   procedure Set_Name (Object : in out User_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 3);
-      Impl.Name := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 3, Impl.Name, Value);
+   end Set_Name;
+   procedure Set_Name (Object : in out User_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 3, Impl.Name, Value);
    end Set_Name;
    function Get_Name (Object : in User_Ref)
                  return String is
@@ -109,15 +111,17 @@ package body Samples.User.Model is
    end Get_Name;
    procedure Set_Email (Object : in out User_Ref;
                          Value : in String) is
-   begin
-      Object.Set_Email (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Email;
-   procedure Set_Email (Object : in out User_Ref;
-                         Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 4);
-      Impl.Email := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 4, Impl.Email, Value);
+   end Set_Email;
+   procedure Set_Email (Object : in out User_Ref;
+                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 4, Impl.Email, Value);
    end Set_Email;
    function Get_Email (Object : in User_Ref)
                  return String is
@@ -132,15 +136,17 @@ package body Samples.User.Model is
    end Get_Email;
    procedure Set_Date (Object : in out User_Ref;
                         Value : in String) is
-   begin
-      Object.Set_Date (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Date;
-   procedure Set_Date (Object : in out User_Ref;
-                        Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 5);
-      Impl.Date := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 5, Impl.Date, Value);
+   end Set_Date;
+   procedure Set_Date (Object : in out User_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 5, Impl.Date, Value);
    end Set_Date;
    function Get_Date (Object : in User_Ref)
                  return String is
@@ -155,15 +161,17 @@ package body Samples.User.Model is
    end Get_Date;
    procedure Set_Description (Object : in out User_Ref;
                                Value : in String) is
-   begin
-      Object.Set_Description (Ada.Strings.Unbounded.To_Unbounded_String (Value));
-   end Set_Description;
-   procedure Set_Description (Object : in out User_Ref;
-                               Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 6);
-      Impl.Description := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_String (Impl.all, 6, Impl.Description, Value);
+   end Set_Description;
+   procedure Set_Description (Object : in out User_Ref;
+                              Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : User_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 6, Impl.Description, Value);
    end Set_Description;
    function Get_Description (Object : in User_Ref)
                  return String is
@@ -177,11 +185,12 @@ package body Samples.User.Model is
       return Impl.Description;
    end Get_Description;
    procedure Set_Status (Object : in out User_Ref;
-                          Value  : in Integer) is
+                         Value  : in Integer) is
       Impl : User_Access;
    begin
-      Set_Field (Object, Impl, 7);
-      Impl.Status := Value;
+      Set_Field (Object, Impl);
+      ADO.Objects.Set_Field_Integer (Impl.all, 7, Impl.Status, Value);
+      ADO.Objects.Set_Field_Integer (Impl.all, 7, Impl.Status, Value);
    end Set_Status;
    function Get_Status (Object : in User_Ref)
                   return Integer is
@@ -190,7 +199,8 @@ package body Samples.User.Model is
       return Impl.Status;
    end Get_Status;
    --  Copy of the object.
-   function Copy (Object : User_Ref) return User_Ref is
+   procedure Copy (Object : in User_Ref;
+                   Into   : in out User_Ref) is
       Result : User_Ref;
    begin
       if not Object.Is_Null then
@@ -210,7 +220,7 @@ package body Samples.User.Model is
             Copy.Status := Impl.Status;
          end;
       end if;
-      return Result;
+      Into := Result;
    end Copy;
    procedure Find (Object  : in out User_Ref;
                    Session : in out ADO.Sessions.Session'Class;
@@ -369,10 +379,10 @@ package body Samples.User.Model is
          begin
             Stmt.Execute (Result);
             if Result /= 1 then
-               if Result = 0 then
-                  raise ADO.Objects.LAZY_LOCK;
-               else
+               if Result /= 0 then
                   raise ADO.Objects.UPDATE_ERROR;
+               else
+                  raise ADO.Objects.LAZY_LOCK;
                end if;
             end if;
          end;
@@ -417,9 +427,13 @@ package body Samples.User.Model is
    end Delete;
    function Get_Value (Item : in User_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Impl : constant access User_Impl
-         := User_Impl (Item.Get_Load_Object.all)'Access;
+      Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
+      Impl : access User_Impl;
    begin
+      if Obj = null then
+         return Util.Beans.Objects.Null_Object;
+      end if;
+      Impl := User_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       end if;
@@ -438,7 +452,7 @@ package body Samples.User.Model is
       if Name = "status" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Status));
       end if;
-      raise ADO.Objects.NOT_FOUND;
+      return Util.Beans.Objects.Null_Object;
    end Get_Value;
    procedure List (Object  : in out User_Vector;
                    Session : in out ADO.Sessions.Session'Class;
@@ -473,6 +487,7 @@ package body Samples.User.Model is
       Object.Email := Stmt.Get_Unbounded_String (3);
       Object.Date := Stmt.Get_Unbounded_String (4);
       Object.Description := Stmt.Get_Unbounded_String (5);
+      Object.Status := Stmt.Get_Integer (6);
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
    end Load;
