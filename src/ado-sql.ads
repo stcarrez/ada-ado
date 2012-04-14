@@ -21,6 +21,7 @@ with Ada.Calendar;
 
 with Util.Strings;
 with ADO.Parameters;
+with ADO.Drivers.Dialects;
 
 --  Utilities for creating SQL queries and statements.
 package ADO.SQL is
@@ -29,31 +30,6 @@ package ADO.SQL is
 
    function Escape (Str : in Unbounded_String) return String;
    function Escape (Str : in String) return String;
-
-   type Keyword_Array is array (Natural range <>) of Util.Strings.Name_Access;
-
-   --  --------------------
-   --  SQL Dialect
-   --  --------------------
-   --  The <b>Dialect</b> defines the specific characteristics that must be
-   --  taken into account when building the SQL statement.  This includes:
-   --  <ul>
-   --    <li>The definition of reserved keywords that must be escaped</li>
-   --    <li>How to escape those keywords</li>
-   --  </ul>
-   type Dialect is tagged private;
-   type Dialect_Access is access all Dialect'Class;
-
-   --  Check if the string is a reserved keyword.
-   function Is_Reserved (D    : Dialect;
-                         Name : String) return Boolean;
-
-   --  Add a set of keywords to be escaped.
-   procedure Add_Keywords (D        : in out Dialect;
-                           Keywords : in Keyword_Array);
-
-   --  Get the quote character to escape an identifier.
-   function Get_Identifier_Quote (D : in Dialect) return Character;
 
    --  --------------------
    --  Buffer
@@ -101,11 +77,11 @@ package ADO.SQL is
    function To_String (From : in Buffer) return String;
 
    --  Get the SQL dialect description object.
-   function Get_Dialect (From : in Buffer) return Dialect_Access;
+   function Get_Dialect (From : in Buffer) return ADO.Drivers.Dialects.Dialect_Access;
 
    --  Get the SQL dialect description object.
    procedure Set_Dialect (Target : in out Buffer;
-                          D      : in Dialect_Access);
+                          D      : in ADO.Drivers.Dialects.Dialect_Access);
 
    --  --------------------
    --  Query
@@ -131,7 +107,7 @@ package ADO.SQL is
 
    --  Set the SQL dialect description object.
    procedure Set_Dialect (Target : in out Query;
-                          D      : in Dialect_Access);
+                          D      : in ADO.Drivers.Dialects.Dialect_Access);
 
    procedure Set_Filter (Target : in out Query;
                          Filter : in String);
@@ -168,7 +144,7 @@ package ADO.SQL is
 
    --  Set the SQL dialect description object.
    procedure Set_Dialect (Target : in out Update_Query;
-                          D      : in Dialect_Access);
+                          D      : in ADO.Drivers.Dialects.Dialect_Access);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
@@ -241,7 +217,7 @@ private
 
    type Buffer is new ADO.Parameters.List with record
       Buf     : Unbounded_String;
-      Dialect : Dialect_Access;
+      Dialect : ADO.Drivers.Dialects.Dialect_Access;
    end record;
 
    type Update_Query is new Query with record
