@@ -22,6 +22,8 @@ with Ada.IO_Exceptions;
 with Ada.Directories;
 with Ada.Unchecked_Deallocation;
 
+with ADO.Drivers.Connections;
+
 with Util.Files;
 with Util.Log.Loggers;
 with Util.Beans.Objects;
@@ -30,7 +32,7 @@ with Util.Serialize.Mappers.Record_Mapper;
 package body ADO.Queries.Loaders is
 
    use Util.Log;
-   use ADO.Drivers;
+   use ADO.Drivers.Connections;
    use Interfaces;
    use Ada.Calendar;
 
@@ -83,7 +85,7 @@ package body ADO.Queries.Loaders is
          return 0;
       end if;
       declare
-         Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver (Name);
+         Driver : constant Drivers.Connections.Driver_Access := Drivers.Connections.Get_Driver (Name);
       begin
          if Driver = null then
             --  There is no problem to have an SQL query for unsupported drivers, but still

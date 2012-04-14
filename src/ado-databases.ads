@@ -20,7 +20,7 @@ with Ada.Finalization;
 
 with ADO.Statements;
 with ADO.Schemas;
-with ADO.Drivers;
+with ADO.Drivers.Connections;
 
 package ADO.Databases is
 
@@ -70,7 +70,7 @@ package ADO.Databases is
                           Schema   : out ADO.Schemas.Schema_Definition);
 
    --  Get the database driver which manages this connection.
-   function Get_Driver (Database : in Connection) return ADO.Drivers.Driver_Access;
+   function Get_Driver (Database : in Connection) return ADO.Drivers.Connections.Driver_Access;
 
    --  Get the database driver index.
    function Get_Driver_Index (Database : in Connection) return ADO.Drivers.Driver_Index;
@@ -121,7 +121,7 @@ package ADO.Databases is
    --  It contains the configuration properties to define which database driver must
    --  be used and which connection parameters the driver has to use to establish
    --  the connection.
-   type DataSource is new ADO.Drivers.Configuration with private;
+   type DataSource is new ADO.Drivers.Connections.Configuration with private;
    type DataSource_Access is access all DataSource'Class;
 
    --  Attempts to establish a connection with the data source
@@ -166,7 +166,7 @@ package ADO.Databases is
 private
 
    type Connection is new Ada.Finalization.Controlled with record
-      Impl : ADO.Drivers.Database_Connection_Access := null;
+      Impl : ADO.Drivers.Connections.Database_Connection_Access := null;
    end record;
 
    --  Adjust the connection reference counter
@@ -179,7 +179,7 @@ private
 
    type Master_Connection is new Connection with null record;
 
-   type DataSource is new ADO.Drivers.Configuration with null record;
+   type DataSource is new ADO.Drivers.Connections.Configuration with null record;
 
    type Replicated_DataSource is new DataSource with record
       Master : DataSource_Access := null;

@@ -26,6 +26,7 @@ package body ADO.Databases is
 
    use Util.Log;
    use ADO.Drivers;
+   use type ADO.Drivers.Connections.Database_Connection_Access;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases");
 
@@ -81,7 +82,7 @@ package body ADO.Databases is
    --  ------------------------------
    --  Get the database driver which manages this connection.
    --  ------------------------------
-   function Get_Driver (Database : in Connection) return ADO.Drivers.Driver_Access is
+   function Get_Driver (Database : in Connection) return ADO.Drivers.Connections.Driver_Access is
    begin
       if Database.Impl = null then
          Log.Error ("Database implementation is not initialized");
@@ -94,7 +95,7 @@ package body ADO.Databases is
    --  Get the database driver index.
    --  ------------------------------
    function Get_Driver_Index (Database : in Connection) return ADO.Drivers.Driver_Index is
-      Driver : constant ADO.Drivers.Driver_Access := Database.Get_Driver;
+      Driver : constant ADO.Drivers.Connections.Driver_Access := Database.Get_Driver;
    begin
       return Driver.Get_Driver_Index;
    end Get_Driver_Index;
@@ -230,8 +231,8 @@ package body ADO.Databases is
    procedure Finalize (Object : in out Connection) is
 
       procedure Free is new
-        Ada.Unchecked_Deallocation (Object => Database_Connection'Class,
-                                    Name   => Database_Connection_Access);
+        Ada.Unchecked_Deallocation (Object => ADO.Drivers.Connections.Database_Connection'Class,
+                                    Name   => ADO.Drivers.Connections.Database_Connection_Access);
 
    begin
       if Object.Impl /= null then
@@ -250,7 +251,7 @@ package body ADO.Databases is
    --  ------------------------------
    function Get_Connection (Controller : in DataSource)
                            return Master_Connection'Class is
-      Connection : ADO.Drivers.Database_Connection_Access;
+      Connection : ADO.Drivers.Connections.Database_Connection_Access;
    begin
       Log.Info ("Get master connection from data-source");
 
