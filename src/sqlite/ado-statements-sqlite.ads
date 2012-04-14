@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with System;
-with ADO.Drivers.Sqlite;
+with ADO.Drivers.Connections.Sqlite;
 package ADO.Statements.Sqlite is
 
    type Handle is null record;
@@ -34,7 +34,7 @@ package ADO.Statements.Sqlite is
                       Result : out Natural);
 
    --  Create the delete statement
-   function Create_Statement (Database : in ADO.Drivers.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access;
 
@@ -54,7 +54,7 @@ package ADO.Statements.Sqlite is
                       Result : out Integer);
 
    --  Create an update statement
-   function Create_Statement (Database : in ADO.Drivers.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access;
 
@@ -70,7 +70,7 @@ package ADO.Statements.Sqlite is
                       Result : out Integer);
 
    --  Create an insert statement.
-   function Create_Statement (Database : in ADO.Drivers.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access;
 
@@ -126,6 +126,12 @@ package ADO.Statements.Sqlite is
                         Column : Natural) return String;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Blob</b> reference.
+   overriding
+   function Get_Blob (Query  : in Sqlite_Query_Statement;
+                      Column : in Natural) return ADO.Blob_Ref;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Time</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -144,12 +150,12 @@ package ADO.Statements.Sqlite is
    procedure Finalize (Query : in out Sqlite_Query_Statement);
 
    --  Create the query statement.
-   function Create_Statement (Database : in ADO.Drivers.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access;
 
    --  Create the query statement.
-   function Create_Statement (Database : in ADO.Drivers.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Query    : in String)
                               return Query_Statement_Access;
 
@@ -158,27 +164,27 @@ private
 
    type Sqlite_Query_Statement is new Query_Statement with record
       This_Query : aliased ADO.SQL.Query;
-      Connection : ADO.Drivers.Sqlite.Sqlite_Access;
-      Stmt       : ADO.Drivers.Sqlite.Sqlite_Access := System.Null_Address;
+      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+      Stmt       : ADO.Drivers.Connections.Sqlite.Sqlite_Access := System.Null_Address;
       Counter    : Natural := 1;
       Status     : State := DONE;
       Max_Column : Natural;
    end record;
 
    type Sqlite_Delete_Statement is new Delete_Statement with record
-      Connection   : ADO.Drivers.Sqlite.Sqlite_Access;
+      Connection   : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
       Table        : ADO.Schemas.Class_Mapping_Access;
       Delete_Query : aliased ADO.SQL.Query;
    end record;
 
    type Sqlite_Update_Statement is new Update_Statement with record
-      Connection : ADO.Drivers.Sqlite.Sqlite_Access;
+      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
       This_Query : aliased ADO.SQL.Update_Query;
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
 
    type Sqlite_Insert_Statement is new Insert_Statement with record
-      Connection : ADO.Drivers.Sqlite.Sqlite_Access;
+      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
       This_Query : aliased ADO.SQL.Update_Query;
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;

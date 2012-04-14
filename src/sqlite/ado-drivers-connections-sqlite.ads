@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 
 with System;
 with Interfaces.C;
-package ADO.Drivers.Sqlite is
+package ADO.Drivers.Connections.Sqlite is
 
    subtype Sqlite_Access is System.Address;
 
@@ -35,7 +35,7 @@ package ADO.Drivers.Sqlite is
 private
 
    --  Database connection implementation
-   type Database_Connection is new ADO.Drivers.Database_Connection with record
+   type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
       Server : aliased Sqlite_Access;
       Name   : Unbounded_String;
    end record;
@@ -102,12 +102,12 @@ private
    procedure Execute (Database : in out Database_Connection;
                       SQL : in Query_String);
 
-   type Sqlite_Driver is new ADO.Drivers.Driver with null record;
+   type Sqlite_Driver is new ADO.Drivers.Connections.Driver with null record;
 
    --  Create a new SQLite connection using the configuration parameters.
    overriding
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Database_Connection_Access);
+                                Result : out ADO.Drivers.Connections.Database_Connection_Access);
 
-end ADO.Drivers.Sqlite;
+end ADO.Drivers.Connections.Sqlite;

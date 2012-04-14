@@ -18,7 +18,7 @@
 
 with Mysql.Mysql; use Mysql.Mysql;
 
-package ADO.Drivers.Mysql is
+package ADO.Drivers.Connections.Mysql is
 
    type Mysql_Driver is limited private;
 
@@ -32,14 +32,14 @@ private
                                 Config : in Configuration'Class;
                                 Result : out Database_Connection_Access);
 
-   type Mysql_Driver is new ADO.Drivers.Driver with null record;
+   type Mysql_Driver is new ADO.Drivers.Connections.Driver with null record;
 
    --  Deletes the Mysql driver.
    overriding
    procedure Finalize (D : in out Mysql_Driver);
 
    --  Database connection implementation
-   type Database_Connection is new ADO.Drivers.Database_Connection with record
+   type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
       Name        : Unbounded_String := Null_Unbounded_String;
       Server_Name : Unbounded_String := Null_Unbounded_String;
       Login_Name  : Unbounded_String := Null_Unbounded_String;
@@ -114,4 +114,4 @@ private
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
-end ADO.Drivers.Mysql;
+end ADO.Drivers.Connections.Mysql;

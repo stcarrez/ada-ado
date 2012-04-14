@@ -23,7 +23,7 @@ with Util.Log;
 with Util.Log.Loggers;
 with ADO.Statements.Sqlite;
 
-package body ADO.Drivers.Sqlite is
+package body ADO.Drivers.Connections.Sqlite is
 
    use Util.Log;
    use ADO.Statements.Sqlite;
@@ -176,6 +176,7 @@ package body ADO.Drivers.Sqlite is
    --  ------------------------------
    overriding
    procedure Close (Database : in out Database_Connection) is
+      pragma Unreferenced (Database);
       Result : int;
    begin
       Log.Info ("Close connection");
@@ -214,14 +215,14 @@ package body ADO.Drivers.Sqlite is
       null;
    end Load_Schema;
 
-   DB : ADO.Drivers.Database_Connection_Access := null;
+   DB : ADO.Drivers.Connections.Database_Connection_Access := null;
 
    --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Database_Connection_Access) is
+                                Result : out ADO.Drivers.Connections.Database_Connection_Access) is
       pragma Unreferenced (D);
       use Strings;
       use type System.Address;
@@ -292,4 +293,4 @@ package body ADO.Drivers.Sqlite is
       end if;
    end Initialize;
 
-end ADO.Drivers.Sqlite;
+end ADO.Drivers.Connections.Sqlite;

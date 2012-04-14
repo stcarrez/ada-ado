@@ -27,6 +27,7 @@ with Interfaces.C;
 with Mysql.Com;  use Mysql.Com;
 with Mysql.Perfect_Hash; use Mysql;
 with ADO.C;
+with ADO.Drivers.Dialects;
 package body ADO.Statements.Mysql is
 
    use Util.Log;
@@ -35,7 +36,7 @@ package body ADO.Statements.Mysql is
    use type ADO.Schemas.Class_Mapping_Access;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
-   type Dialect is new ADO.SQL.Dialect with null record;
+   type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
 
    --  Check if the string is a reserved keyword.
    overriding

@@ -22,7 +22,7 @@ with Util.Log.Loggers;
 with ADO.Statements.Mysql;
 with ADO.C;
 with Mysql.Lib; use Mysql.Lib;
-package body ADO.Drivers.Mysql is
+package body ADO.Drivers.Connections.Mysql is
 
    use ADO.Statements.Mysql;
    use Util.Log;
@@ -40,7 +40,7 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    overriding
    function Get_Driver (Database : in Database_Connection)
-                        return Driver_Access is
+                        return ADO.Drivers.Connections.Driver_Access is
       pragma Unreferenced (Database);
    begin
       return Driver'Access;
@@ -189,7 +189,7 @@ package body ADO.Drivers.Mysql is
    --  ------------------------------
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Database_Connection_Access) is
+                                Result : out ADO.Drivers.Connections.Database_Connection_Access) is
 
       pragma Unreferenced (D);
 
@@ -261,4 +261,4 @@ package body ADO.Drivers.Mysql is
       mysql_server_end;
    end Finalize;
 
-end ADO.Drivers.Mysql;
+end ADO.Drivers.Connections.Mysql;
