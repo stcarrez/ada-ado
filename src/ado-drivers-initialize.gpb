@@ -17,10 +17,10 @@
 -----------------------------------------------------------------------
 
 #if HAVE_MYSQL
-with ADO.Drivers.Mysql;
+with ADO.Drivers.Connections.Mysql;
 #end if;
 #if HAVE_SQLITE
-with ADO.Drivers.Sqlite;
+with ADO.Drivers.Connections.Sqlite;
 #end if;
 
 separate (ADO.Drivers)
@@ -29,9 +29,9 @@ procedure Initialize is
 
 begin
 #if HAVE_MYSQL
-   ADO.Drivers.Mysql.Initialize;
+   ADO.Drivers.Connections.Mysql.Initialize;
 #end if;
 #if HAVE_SQLITE
-   ADO.Drivers.Sqlite.Initialize;
+   ADO.Drivers.Connections.Sqlite.Initialize;
 #end if;
 end Initialize;
