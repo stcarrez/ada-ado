@@ -2,6 +2,7 @@ Version 0.3.0   -
   - Support to update database records when a field is really modified
   - Customize the SQLite database connection by using SQLite PRAGMAs
   - Escape MySQL or SQLite reserved keywords
+  - Support for blob type
 
 Version 0.2.0   - Aug 2011
   - Port on Windows
