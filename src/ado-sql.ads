@@ -76,13 +76,6 @@ package ADO.SQL is
    --  Get the SQL string that was accumulated in the buffer.
    function To_String (From : in Buffer) return String;
 
-   --  Get the SQL dialect description object.
-   function Get_Dialect (From : in Buffer) return ADO.Drivers.Dialects.Dialect_Access;
-
-   --  Get the SQL dialect description object.
-   procedure Set_Dialect (Target : in out Buffer;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access);
-
    --  --------------------
    --  Query
    --  --------------------
@@ -217,7 +210,7 @@ private
 
    type Buffer is new ADO.Parameters.List with record
       Buf     : Unbounded_String;
-      Dialect : ADO.Drivers.Dialects.Dialect_Access;
+--        Dialect : ADO.Drivers.Dialects.Dialect_Access;
    end record;
 
    type Update_Query is new Query with record

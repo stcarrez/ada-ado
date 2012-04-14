@@ -21,6 +21,8 @@ with Ada.Finalization;
 with Ada.Calendar;
 with Ada.Containers.Indefinite_Vectors;
 
+with ADO.Drivers.Dialects;
+
 --  Defines a list of parameters for an SQL statement.
 --
 package ADO.Parameters is
@@ -63,6 +65,13 @@ package ADO.Parameters is
 
    type Abstract_List is abstract new Ada.Finalization.Controlled with private;
    type Abstract_List_Access is access all Abstract_List'Class;
+
+   --  Set the SQL dialect description object.
+   procedure Set_Dialect (Params : in out Abstract_List;
+                          D      : in ADO.Drivers.Dialects.Dialect_Access);
+
+   --  Get the SQL dialect description object.
+   function Get_Dialect (From : in Abstract_List) return ADO.Drivers.Dialects.Dialect_Access;
 
    --  Add the parameter in the list.
    procedure Add_Parameter (Params : in out Abstract_List;
@@ -213,7 +222,9 @@ private
      new Ada.Containers.Indefinite_Vectors (Index_Type   => Positive,
                                             Element_Type => Parameter);
 
-   type Abstract_List is abstract new Ada.Finalization.Controlled with null record;
+   type Abstract_List is abstract new Ada.Finalization.Controlled with record
+      Dialect : ADO.Drivers.Dialects.Dialect_Access := null;
+   end record;
 
    type List is new Abstract_List with record
       Params : Parameter_Vectors.Vector;

@@ -43,6 +43,19 @@ package body ADO.Statements.Mysql is
    function Is_Reserved (D    : in Dialect;
                          Name : in String) return Boolean;
 
+   --  Append the item in the buffer escaping some characters if necessary.
+   --  The default implementation only escapes the single quote ' by doubling them.
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in String);
+
+   --  Append the item in the buffer escaping some characters if necessary
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in ADO.Blob_Ref);
+
    --  Get the quote character to escape an identifier.
    overriding
    function Get_Identifier_Quote (D : in Dialect) return Character;
@@ -79,6 +92,82 @@ package body ADO.Statements.Mysql is
    begin
       return '`';
    end Get_Identifier_Quote;
+
+   --  ------------------------------
+   --  Append the item in the buffer escaping some characters if necessary.
+   --  The default implementation only escapes the single quote ' by doubling them.
+   --  ------------------------------
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in String) is
+      pragma Unreferenced (D);
+
+      C  : Character;
+   begin
+      for I in Item'Range loop
+         C := Item (I);
+         case C is
+            when ASCII.NUL =>
+               Append (Buffer, '\');
+               Append (Buffer, '0');
+
+            when ASCII.CR =>
+               Append (Buffer, '\');
+               Append (Buffer, 'r');
+
+            when ASCII.LF =>
+               Append (Buffer, '\');
+               Append (Buffer, 'n');
+
+            when '\' | ''' | '"' =>
+               Append (Buffer, '\');
+               Append (Buffer, C);
+
+            when others =>
+               Append (Buffer, C);
+
+         end case;
+      end loop;
+   end Escape_Sql;
+
+   --  ------------------------------
+   --  Append the item in the buffer escaping some characters if necessary
+   --  ------------------------------
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in ADO.Blob_Ref) is
+      pragma Unreferenced (D);
+      use type Ada.Streams.Stream_Element;
+
+      C    : Ada.Streams.Stream_Element;
+      Blob : constant ADO.Blob_Access := Item.Value;
+   begin
+      for I in Blob.Data'Range loop
+         C := Blob.Data (I);
+         case C is
+            when Character'Pos (ASCII.NUL) =>
+               Append (Buffer, '\');
+               Append (Buffer, '0');
+
+            when Character'Pos (ASCII.CR) =>
+               Append (Buffer, '\');
+               Append (Buffer, 'r');
+
+            when Character'Pos (ASCII.LF) =>
+               Append (Buffer, '\');
+               Append (Buffer, 'n');
+
+            when Character'Pos ('\') | Character'Pos (''') | Character'Pos ('"') =>
+               Append (Buffer, '\');
+               Append (Buffer, Character'Val (C));
+
+            when others =>
+               Append (Buffer, Character'Val (C));
+         end case;
+      end loop;
+   end Escape_Sql;
 
    --  ------------------------------
    --  Check for an error after executing a mysql statement.

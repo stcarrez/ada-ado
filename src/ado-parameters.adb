@@ -28,6 +28,23 @@ package body ADO.Parameters is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Parameters");
 
+   --  --------------------
+   --  Set the SQL dialect description object.
+   --  --------------------
+   procedure Set_Dialect (Params : in out Abstract_List;
+                          D      : in ADO.Drivers.Dialects.Dialect_Access) is
+   begin
+      Params.Dialect := D;
+   end Set_Dialect;
+
+   --  --------------------
+   --  Get the SQL dialect description object.
+   --  --------------------
+   function Get_Dialect (From : in Abstract_List) return ADO.Drivers.Dialects.Dialect_Access is
+   begin
+      return From.Dialect;
+   end Get_Dialect;
+
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in Boolean) is
@@ -387,12 +404,6 @@ package body ADO.Parameters is
                     SQL    : in String) return String is
       use ADO.Parameters;
 
-      --  Append the item in the buffer escaping some characters if necessary
-      procedure Escape_Sql (Buffer : in out Unbounded_String;
-                            Item   : in String);
-      procedure Escape_Sql (Buffer : in out Unbounded_String;
-                            Item   : in ADO.Blob_Ref);
-
       --  Format and append the date to the buffer.
       procedure Append_Date (Buffer : in out Unbounded_String;
                              Time   : in Ada.Calendar.Time);
@@ -405,58 +416,6 @@ package body ADO.Parameters is
 
       --  Find and replace the parameter at the given index.
       procedure Replace_Parameter (Position : in Natural);
-
-      --  ------------------------------
-      --  Append the item in the buffer escaping some characters if necessary
-      --  ------------------------------
-      procedure Escape_Sql (Buffer : in out Unbounded_String;
-                            Item   : in String) is
-         C  : Character;
-      begin
-         for I in Item'Range loop
-            C := Item (I);
-            if C = '\' or C = ASCII.CR or C = ''' or C = ''' then
---                 Append (Buffer, '\');
-               Append (Buffer, ''');
-            end if;
-            Append (Buffer, C);
-         end loop;
-      end Escape_Sql;
-
-      --  ------------------------------
-      --  Append the item in the buffer escaping some characters if necessary
-      --  ------------------------------
-      procedure Escape_Sql (Buffer : in out Unbounded_String;
-                            Item   : in ADO.Blob_Ref) is
-         use type Ada.Streams.Stream_Element;
-
-         C  : Ada.Streams.Stream_Element;
-         D  : constant ADO.Blob_Access := Item.Value;
-      begin
-         for I in D.Data'Range loop
-            C := D.Data (I);
-            case C is
-               when Character'Pos (ASCII.NUL) =>
-                  Append (Buffer, '\');
-                  Append (Buffer, '0');
-
-               when Character'Pos (ASCII.CR) =>
-                  Append (Buffer, '\');
-                  Append (Buffer, 'r');
-
-               when Character'Pos (ASCII.LF) =>
-                  Append (Buffer, '\');
-                  Append (Buffer, 'n');
-
-               when Character'Pos ('\') | Character'Pos (''') | Character'Pos ('"') =>
-                  Append (Buffer, '\');
-                  Append (Buffer, Character'Val (C));
-
-               when others =>
-                  Append (Buffer, Character'Val (C));
-            end case;
-         end loop;
-      end Escape_Sql;
 
       --  ------------------------------
       --  Format and append the date to the buffer.
@@ -502,12 +461,12 @@ package body ADO.Parameters is
 
             when T_BLOB =>
                Append (Buffer, ''');
-               Escape_Sql (Buffer, Param.Data);
+               Params.Dialect.Escape_Sql (Buffer, Param.Data);
                Append (Buffer, ''');
 
             when others =>
                Append (Buffer, ''');
-               Escape_Sql (Buffer, Param.Str);
+               Params.Dialect.Escape_Sql (Buffer, Param.Str);
                Append (Buffer, ''');
          end case;
       end Replace_Parameter;

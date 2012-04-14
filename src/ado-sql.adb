@@ -77,10 +77,11 @@ package body ADO.SQL is
    procedure Append_Name (Target : in out Buffer;
                           Name   : in String) is
       use type ADO.Drivers.Dialects.Dialect_Access;
+      Dialect : constant ADO.Drivers.Dialects.Dialect_Access := Target.Get_Dialect;
    begin
-      if Target.Dialect /= null and then Target.Dialect.Is_Reserved (Name) then
+      if Dialect /= null and then Dialect.Is_Reserved (Name) then
          declare
-            Quote : constant Character := Target.Dialect.Get_Identifier_Quote;
+            Quote : constant Character := Dialect.Get_Identifier_Quote;
          begin
             Append (Target.Buf, Quote);
             Append (Target.Buf, Name);
@@ -150,23 +151,6 @@ package body ADO.SQL is
    end To_String;
 
    --  --------------------
-   --  Get the SQL dialect description object.
-   --  --------------------
-   function Get_Dialect (From : in Buffer) return ADO.Drivers.Dialects.Dialect_Access is
-   begin
-      return From.Dialect;
-   end Get_Dialect;
-
-   --  --------------------
-   --  Get the SQL dialect description object.
-   --  --------------------
-   procedure Set_Dialect (Target : in out Buffer;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access) is
-   begin
-      Target.Dialect := D;
-   end Set_Dialect;
-
-   --  --------------------
    --  Clear the query object.
    --  --------------------
    overriding
@@ -184,6 +168,7 @@ package body ADO.SQL is
    procedure Set_Dialect (Target : in out Query;
                           D      : in ADO.Drivers.Dialects.Dialect_Access) is
    begin
+      ADO.Parameters.Abstract_List (Target).Set_Dialect (D);
       Set_Dialect (Target.SQL, D);
       Set_Dialect (Target.Filter, D);
       Set_Dialect (Target.Join, D);
