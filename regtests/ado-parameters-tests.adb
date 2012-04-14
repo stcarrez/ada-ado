@@ -139,6 +139,7 @@ package body ADO.Parameters.Tests is
    --  ------------------------------
    procedure Test_Expand_Sql (T : in out Test) is
       SQL : ADO.Parameters.List;
+      D   : aliased ADO.Drivers.Dialects.Dialect;
 
       procedure Check (Pattern : in String; Expect : in String);
 
@@ -149,6 +150,7 @@ package body ADO.Parameters.Tests is
       end Check;
 
    begin
+      SQL.Set_Dialect (D'Unchecked_Access);
       SQL.Bind_Param (1, "select '");
       SQL.Bind_Param (2, "from");
       SQL.Bind_Param ("user_id", String '("23"));
@@ -158,17 +160,17 @@ package body ADO.Parameters.Tests is
       SQL.Bind_Param ("_date", Ada.Calendar.Clock);
       SQL.Bind_Null_Param ("_null");
 
-      Check ("?", "'select \''");
+      Check ("?", "'select '''");
       Check (":2", "'from'");
       Check (":6", "0");
       Check (":user_id", "'23'");
       Check (":bool", "1");
       Check (":_null", "NULL");
 
-      Check ("select :1 :2 :3 :4 :5 :6", "select 'select \'' 'from' '23' 44 1 0");
-      Check ("select ? ? ? ? ? ?", "select 'select \'' 'from' '23' 44 1 0");
+      Check ("select :1 :2 :3 :4 :5 :6", "select 'select ''' 'from' '23' 44 1 0");
+      Check ("select ? ? ? ? ? ?", "select 'select ''' 'from' '23' 44 1 0");
       Check ("select ? :2 :user_id :object_23_identifier :bool :6",
-             "select 'select \'' 'from' '23' 44 1 0");
+             "select 'select ''' 'from' '23' 44 1 0");
    end Test_Expand_Sql;
 
    --  ------------------------------
@@ -237,8 +239,9 @@ package body ADO.Parameters.Tests is
       pragma Unreferenced (T);
 
       SQL : ADO.Parameters.List;
+      D   : aliased ADO.Drivers.Dialects.Dialect;
    begin
-
+      SQL.Set_Dialect (D'Unchecked_Access);
       declare
          T : Util.Measures.Stamp;
       begin

@@ -246,7 +246,7 @@ package body ADO.Tests is
       Usr2 : Regtests.Simple.Model.User_Ref;
       Name : Unbounded_String;
    begin
-      for I in 20 .. 127 loop
+      for I in 1 .. 127 loop
          Append (Name, Character'Val (I));
       end loop;
       Append (Name, ' ');
@@ -276,7 +276,7 @@ package body ADO.Tests is
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Img  : Regtests.Images.Model.Image_Ref;
-      Size : constant Natural := 10;
+      Size : constant Natural := 100;
       Data : constant ADO.Blob_Ref := ADO.Create_Blob (Size);
       Img2 : Regtests.Images.Model.Image_Ref;
    begin
