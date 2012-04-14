@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema for MySQL
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 with Util.Test_Caller;
 
 with ADO.Drivers;
+with ADO.Drivers.Connections;
 with ADO.Sessions;
 with ADO.Databases;
 with ADO.Schemas.Mysql;
@@ -37,11 +38,11 @@ package body ADO.Schemas.Mysql.Tests is
    end Add_Tests;
 
    procedure Test_Load_Schema (T : in out Test) is
-      use type ADO.Drivers.Driver_Access;
+      use type ADO.Drivers.Connections.Driver_Access;
 
       S   : constant ADO.Sessions.Session := Regtests.Get_Database;
       DB  : constant ADO.Databases.Connection'Class := S.Get_Connection;
-      Dr  : constant ADO.Drivers.Driver_Access := DB.Get_Driver;
+      Dr  : constant ADO.Drivers.Connections.Driver_Access := DB.Get_Driver;
 
       Schema : Schema_Definition;
       Table  : Table_Definition;

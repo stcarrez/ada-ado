@@ -37,7 +37,7 @@ package Regtests is
    function Get_Master_Database return ADO.Sessions.Master_Session;
 
    -- ------------------------------
-   -- Initialize the test database
+   --  Initialize the test database
    -- ------------------------------
    procedure Initialize (Name : in String);
 

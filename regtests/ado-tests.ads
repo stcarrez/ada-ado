@@ -41,6 +41,9 @@ package ADO.Tests is
    procedure Test_Perf_Create_Save (T : in out Test);
    procedure Test_Delete_All (T : in out Test);
 
+   --  Test string insert.
+   procedure Test_String (T : in out Test);
+
    --  Test blob insert.
    procedure Test_Blob (T : in out Test);
 

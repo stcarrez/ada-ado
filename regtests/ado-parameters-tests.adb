@@ -22,6 +22,79 @@ package body ADO.Parameters.Tests is
 
    use Util.Tests;
 
+   --  Test the Add_Param operation for various types.
+   generic
+      type T (<>) is private;
+      with procedure Add_Param (L : in out ADO.Parameters.Abstract_List;
+                                V : in T) is <>;
+      Value : T;
+      Name  : String;
+   procedure Test_Add_Param_T (Tst   : in out Test);
+
+   --  Test the Bind_Param operation for various types.
+   generic
+      type T (<>) is private;
+      with procedure Bind_Param (L : in out ADO.Parameters.Abstract_List;
+                                 N : in String;
+                                 V : in T) is <>;
+      Value : T;
+      Name  : String;
+   procedure Test_Bind_Param_T (Tst   : in out Test);
+
+   --  Test the Add_Param operation for various types.
+   procedure Test_Add_Param_T (Tst   : in out Test) is
+      Count : constant Positive := 100;
+      SQL   : ADO.Parameters.List;
+      S     : Util.Measures.Stamp;
+   begin
+      for I in 1 .. Count loop
+         Add_Param (ADO.Parameters.Abstract_List (SQL), Value);
+      end loop;
+      Util.Measures.Report (S, "Add_Param " & Name & "(" & Positive'Image (Count) & " calls)");
+      Util.Tests.Assert_Equals (Tst, Count, SQL.Length, "Invalid param list for " & Name);
+   end Test_Add_Param_T;
+
+   --  Test the Bind_Param operation for various types.
+   procedure Test_Bind_Param_T (Tst   : in out Test) is
+      Count : constant Positive := 100;
+      SQL   : ADO.Parameters.List;
+      S     : Util.Measures.Stamp;
+   begin
+      for I in 1 .. Count loop
+         Bind_Param (ADO.Parameters.Abstract_List (SQL), "a_parameter_name", Value);
+      end loop;
+      Util.Measures.Report (S, "Bind_Param " & Name & "(" & Positive'Image (Count) & " calls)");
+      Util.Tests.Assert_Equals (Tst, Count, SQL.Length, "Invalid param list for " & Name);
+   end Test_Bind_Param_T;
+
+   procedure Test_Add_Param_Integer is
+     new Test_Add_Param_T (Integer, Add_Param, 10, "Integer");
+   procedure Test_Add_Param_Identifier is
+     new Test_Add_Param_T (Identifier, Add_Param, 100, "Identifier");
+   procedure Test_Add_Param_Boolean is
+     new Test_Add_Param_T (Boolean, Add_Param, False, "Boolean");
+   procedure Test_Add_Param_String is
+     new Test_Add_Param_T (String, Add_Param, "0123456789ABCDEF", "String");
+   procedure Test_Add_Param_Calendar is
+     new Test_Add_Param_T (Ada.Calendar.Time, Add_Param, Ada.Calendar.Clock, "Time");
+   procedure Test_Add_Param_Unbounded_String is
+     new Test_Add_Param_T (Unbounded_String, Add_Param, To_Unbounded_String ("0123456789ABCDEF"),
+                           "Unbounded_String");
+
+   procedure Test_Bind_Param_Integer is
+     new Test_Bind_Param_T (Integer, Bind_Param, 10, "Integer");
+   procedure Test_Bind_Param_Identifier is
+     new Test_Bind_Param_T (Identifier, Bind_Param, 100, "Identifier");
+   procedure Test_Bind_Param_Boolean is
+     new Test_Bind_Param_T (Boolean, Bind_Param, False, "Boolean");
+   procedure Test_Bind_Param_String is
+     new Test_Bind_Param_T (String, Bind_Param, "0123456789ABCDEF", "String");
+   procedure Test_Bind_Param_Calendar is
+     new Test_Bind_Param_T (Ada.Calendar.Time, Bind_Param, Ada.Calendar.Clock, "Time");
+   procedure Test_Bind_Param_Unbounded_String is
+     new Test_Bind_Param_T (Unbounded_String, Bind_Param, To_Unbounded_String ("0123456789ABCDEF"),
+                           "Unbounded_String");
+
    package Caller is new Util.Test_Caller (Test, "ADO.Parameters");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -32,6 +105,33 @@ package body ADO.Parameters.Tests is
                        Test_Expand_Error'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Expand (perf)",
                        Test_Expand_Perf'Access);
+
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Boolean)",
+                       Test_Add_Param_Boolean'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Integer)",
+                       Test_Add_Param_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Identifier)",
+                       Test_Add_Param_Identifier'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Calendar)",
+                       Test_Add_Param_Calendar'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (String)",
+                       Test_Add_Param_String'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Unbounded_String)",
+                       Test_Add_Param_Unbounded_String'Access);
+
+
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Boolean)",
+                       Test_Bind_Param_Boolean'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Integer)",
+                       Test_Bind_Param_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Identifier)",
+                       Test_Bind_Param_Identifier'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Calendar)",
+                       Test_Bind_Param_Calendar'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (String)",
+                       Test_Bind_Param_String'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Unbounded_String)",
+                       Test_Bind_Param_Unbounded_String'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -91,6 +191,44 @@ package body ADO.Parameters.Tests is
       Check (":name", "");
       Check ("select :", "select :");
    end Test_Expand_Error;
+
+   --  ------------------------------
+   --  Test bind_param and its performance.
+   --  ------------------------------
+   procedure Test_Bind_Param (T : in out Test) is
+      Count : constant Positive := 10;
+   begin
+      declare
+         SQL : ADO.Parameters.List;
+         S   : Util.Measures.Stamp;
+      begin
+         for I in 1 .. Count loop
+            SQL.Add_Param (False);
+         end loop;
+         Util.Measures.Report (S, "Add_Param boolean (1000 calls)");
+         Util.Tests.Assert_Equals (T, Count, SQL.Length, "Invalid param list");
+      end;
+      declare
+         SQL : ADO.Parameters.List;
+         S   : Util.Measures.Stamp;
+      begin
+         for I in 1 .. Count loop
+            SQL.Add_Param (Long_Long_Integer (10));
+         end loop;
+         Util.Measures.Report (S, "Add_Param integer (1000 calls)");
+         Util.Tests.Assert_Equals (T, Count, SQL.Length, "Invalid param list");
+      end;
+      declare
+         SQL : ADO.Parameters.List;
+         S   : Util.Measures.Stamp;
+      begin
+         for I in 1 .. Count loop
+            SQL.Add_Param ("0123456789ABCDEF");
+         end loop;
+         Util.Measures.Report (S, "Add_Param string (1000 calls)");
+         Util.Tests.Assert_Equals (T, Count, SQL.Length, "Invalid param list");
+      end;
+   end Test_Bind_Param;
 
    --  ------------------------------
    --  Test expand performance.

@@ -235,6 +235,36 @@ package body ADO.Tests is
    end Test_Delete_All;
 
    --  ------------------------------
+   --  Test string insert.
+   --  ------------------------------
+   procedure Test_String (T : in out Test) is
+      use ADO.Objects;
+      use Ada.Strings.Unbounded;
+
+      DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      User : Regtests.Simple.Model.User_Ref;
+      Usr2 : Regtests.Simple.Model.User_Ref;
+      Name : Unbounded_String;
+   begin
+      for I in 20 .. 127 loop
+         Append (Name, Character'Val (I));
+      end loop;
+      Append (Name, ' ');
+      Append (Name, ' ');
+      Append (Name, ' ');
+      Append (Name, ' ');
+      DB.Begin_Transaction;
+      User.Set_Name (Name);
+      User.Save (DB);
+      DB.Commit;
+
+      --  Check that we can load the image and the blob.
+      Usr2.Load (DB, User.Get_Id);
+      Util.Tests.Assert_Equals (T, To_String (Name), String '(Usr2.Get_Name),
+                                "Invalid name inserted for user");
+   end Test_String;
+
+   --  ------------------------------
    --  Test blob insert.
    --  ------------------------------
    procedure Test_Blob (T : in out Test) is
@@ -246,11 +276,12 @@ package body ADO.Tests is
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Img  : Regtests.Images.Model.Image_Ref;
-      Data : constant ADO.Blob_Ref := ADO.Create_Blob (8192);
+      Size : constant Natural := 10;
+      Data : constant ADO.Blob_Ref := ADO.Create_Blob (Size);
       Img2 : Regtests.Images.Model.Image_Ref;
    begin
-      for I in 1 .. 8192 loop
-         Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos (I mod 255);
+      for I in 1 .. Size loop
+         Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos (64 + I mod 255);
       end loop;
       DB.Begin_Transaction;
       Img.Set_Image (Data);
@@ -263,7 +294,7 @@ package body ADO.Tests is
       T.Assert (Img2.Get_Image.Is_Null = False, "No image blob loaded");
 
       --  And verify that the blob data matches what we inserted.
-      Util.Tests.Assert_Equals (T, 8192, Integer (Img2.Get_Image.Value.Len),
+      Util.Tests.Assert_Equals (T, Size, Integer (Img2.Get_Image.Value.Len),
                                 "Invalid blob length");
       for I in 1 .. Data.Value.Len loop
          Assert_Equals (T, Data.Value.Data (I), Img2.Get_Image.Value.Data (I),
@@ -283,6 +314,8 @@ package body ADO.Tests is
                        Test_Perf_Create_Save'Access);
       Caller.Add_Test (Suite, "Test Statement.Delete_Statement (delete all)",
                        Test_Delete_All'Access);
+      Caller.Add_Test (Suite, "Test insert string",
+                       Test_String'Access);
       Caller.Add_Test (Suite, "Test insert blob",
                        Test_Blob'Access);
    end Add_Tests;

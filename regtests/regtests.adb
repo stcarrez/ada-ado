@@ -47,9 +47,9 @@ package body Regtests is
       return Factory.Get_Master_Session;
    end Get_Master_Database;
 
-   -- ------------------------------
-   -- Initialize the test database
-   -- ------------------------------
+   --  ------------------------------
+   --  Initialize the test database
+   --  ------------------------------
    procedure Initialize (Name : in String) is
    begin
       Controller.Set_Connection (Name);

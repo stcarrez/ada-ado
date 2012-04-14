@@ -19,6 +19,7 @@
 with Util.Test_Caller;
 with Util.Properties;
 
+with ADO.Drivers.Connections;
 with ADO.Queries.Loaders;
 package body ADO.Queries.Tests is
 
@@ -60,16 +61,16 @@ package body ADO.Queries.Tests is
    pragma Warnings (Off, Value_Query);
 
    procedure Test_Load_Queries (T : in out Test) is
-      use type ADO.Drivers.Driver_Access;
+      use ADO.Drivers.Connections;
 
-      Mysql_Driver  : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("mysql");
-      Sqlite_Driver : constant ADO.Drivers.Driver_Access := ADO.Drivers.Get_Driver ("sqlite");
+      Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
       Props         : Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
                                       Props.Get ("ado.queries.load", "false") = "true");
-      
+
       declare
          SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0);
       begin
