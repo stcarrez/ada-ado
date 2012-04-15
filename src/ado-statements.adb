@@ -450,6 +450,18 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Integer</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Natural (Query  : in Query_Statement;
+                         Column : in Natural) return Natural is
+   begin
+      return Natural (Query.Get_Integer (Column));
+   end Get_Natural;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Nullable_Integer</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.

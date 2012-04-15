@@ -157,6 +157,13 @@ package ADO.Statements is
                          Column : Natural) return Integer;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Integer</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Natural (Query  : in Query_Statement;
+                         Column : in Natural) return Natural;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Nullable_Integer</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.

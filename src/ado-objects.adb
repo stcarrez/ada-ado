@@ -549,6 +549,28 @@ package body ADO.Objects is
       end if;
    end Set_Field_Integer;
 
+   procedure Set_Field_Natural (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Natural;
+                                Value  : in Natural) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Natural;
+
+   procedure Set_Field_Positive (Object : in out Object_Record'Class;
+                                 Field  : in Positive;
+                                 Into   : in out Positive;
+                                 Value  : in Positive) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Positive;
+
    procedure Set_Field_Boolean (Object : in out Object_Record'Class;
                                 Field  : in Positive;
                                 Into   : in out Boolean;

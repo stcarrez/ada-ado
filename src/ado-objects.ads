@@ -304,6 +304,16 @@ package ADO.Objects is
                                 Into   : in out Integer;
                                 Value  : in Integer);
 
+   procedure Set_Field_Natural (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out Natural;
+                                Value  : in Natural);
+
+   procedure Set_Field_Positive (Object : in out Object_Record'Class;
+                                 Field  : in Positive;
+                                 Into   : in out Positive;
+                                 Value  : in Positive);
+
    procedure Set_Field_Boolean (Object : in out Object_Record'Class;
                                 Field  : in Positive;
                                 Into   : in out Boolean;
