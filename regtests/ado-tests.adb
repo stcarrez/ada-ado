@@ -281,7 +281,7 @@ package body ADO.Tests is
       Img2 : Regtests.Images.Model.Image_Ref;
    begin
       for I in 1 .. Size loop
-         Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos (64 + I mod 255);
+         Data.Value.Data (Ada.Streams.Stream_Element_Offset (I)) := Integer'Pos ((64 + I) mod 255);
       end loop;
       DB.Begin_Transaction;
       Img.Set_Image (Data);
