@@ -458,7 +458,6 @@ package body ADO.Statements.Mysql is
             begin
                Log.Error ("Query failed: '{0}'", Expanded_Query);
                Log.Error ("  with error: '{0}'", Message);
-               Log.Info ("         SQL: '{0}'", Expanded_Query);
                raise Invalid_Statement with "Query failed: " & Message;
             end;
          end if;
