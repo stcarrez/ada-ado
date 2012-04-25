@@ -153,5 +153,5 @@ AC_MSG_RESULT(${UTIL_DIR})
 AC_SUBST(UTIL_DIR)
 
 AC_OUTPUT(
-Makefile ado.gpr tests.gpr samples.gpr
+Makefile ado.gpr tests.gpr samples.gpr distrib/ado.gpr
 )

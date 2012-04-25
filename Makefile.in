@@ -1,12 +1,24 @@
+## The type of library we want to build. Possible values:
+##   relocatable
+##   static
+LIBRARY_TYPE=static
+
 # You may edit this makefile as long as you keep these original 
 # target names defined.
 MODE=debug
+GNATMAKE=@GNATMAKE@
 GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
 GNATCLEAN=gnatclean
-GPRPATH=ado.gpr
 SVN=svn
+INSTALL=@INSTALL@
+
+GPRPATH=ado.gpr
+
+version=@ADO_VERSION@
 
 distdir=ada-ado-@ADO_VERSION@
+
+BUILDS_SHARED=@BUILDS_SHARED@
 
 DIST_FILE=ada-ado-@ADO_VERSION@.tar.gz
 
@@ -15,8 +27,18 @@ HAVE_SQLITE=@ADO_DB_SQLITE@
 
 MYSQL_LIBNAME=@MYSQL_LIBNAME@
 
+LN_S=@LN_S@
 MKDIR=mkdir
 CP=cp
+LN=ln -s
+
+ifeq (${OS},Windows_NT)
+LIBEXT=dll
+LIBVER=dll
+else
+LIBEXT=so
+LIBVER=so.$(version)
+endif
 
 srcdir = .
 top_srcdir = @top_srcdir@
@@ -29,15 +51,31 @@ dynamodir=${prefix}/share/dynamo
 includedir=${prefix}/share/ada/adainclude
 projectdir=${prefix}/share/ada/adainclude
 libdir=${prefix}/lib
-alidir=${prefix}/share/ada/adainclude
+alidir=${libdir}/ada/adalib/
+
+MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=4
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
 
+ifeq (${BUILDS_SHARED},yes)
+all:     static shared
+install: install_static install_shared
+else
+all:     static
+install: install_static
+endif
+
 # Build executables for all mains defined by the project.
 build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
-	$(GNATMAKE) -p -P "$(GPRPATH)"
-	$(GNATMAKE) -p -Ptests
+	$(GNATMAKE) -m -p -P "$(GPRPATH)" $(MAKE_ARGS)
+	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
+
+static:
+	$(MAKE) LIBRARY_TYPE=static build
+
+shared:
+	$(MAKE) LIBRARY_TYPE=relocatable build
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -73,9 +111,10 @@ test-mysql:		build create-mysql-tests
 
 # Clean the root project of all build products.
 clean:
-	$(GNATCLEAN) -q -P "$(GPRPATH)"
-	$(GNATCLEAN) -q -Ptests
-	$(GNATCLEAN) -q -Psamples
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=static
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
+	-$(GNATCLEAN) -q -Ptests
+	-$(GNATCLEAN) -q -Psamples
 
 # Clean root project and all imported projects too.
 clean_tree:
@@ -145,10 +184,16 @@ dist:
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
 
-install:
+install_static:
+	$(MAKE) LIBRARY_TYPE=static install_lib
+
+install_shared:
+	$(MAKE) LIBRARY_TYPE=relocatable install_lib
+
+install_lib:
 	$(MKDIR) -p ${includedir}/ado
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/ado
+	${MKDIR} -p ${alidir}/ado/$(LIBRARY_TYPE)
 	${MKDIR} -p ${dynamodir}/ado/db
 	${MKDIR} -p ${dynamodir}/ado/db/mysql
 	${MKDIR} -p ${dynamodir}/ado/db/sqlite
@@ -156,17 +201,24 @@ install:
 	test T${HAVE_MYSQL} = TTrue && ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
 	test T${HAVE_SQLITE} = TTrue && ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
 	${CP} src/model/*.ad[bs] ${includedir}/ado
-	sed -e "s,INSTALL,${prefix},g" < distrib/ado.gpr > ${projectdir}/ado.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
 	${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
-	${CP} lib/ado/*.ali ${alidir}/ado
-	${CP} lib/ado/libadaado.a ${libdir}/
-
+	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ado/$(LIBRARY_TYPE)
+ifeq ($(LIBRARY_TYPE),static)
+	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
+else
+	${CP} -p lib/ado/$(LIBRARY_TYPE)/libada-ado.$(LIBVER) ${libdir}/
+	cd ${libdir} && \
+	rm -f libada-ado.$(LIBEXT) && \
+	${LN} libada-ado.$(LIBVER) libada-ado.$(LIBEXT)
+endif
 
 uninstall:
 	rm -rf ${includedir}/ado
-	rm -f ${libdir}/libadaado.a
+	rm -f ${libdir}/libada-ado.a
+	rm -f ${libdir}/libada-ado.so.${version}
 	rm -f ${projectdir}/ado.gpr
 
 # prepare before releasing a new version of the package
