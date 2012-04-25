@@ -3,7 +3,7 @@ with "util";
 project Ado is
    Version := "@ADO_VERSION@";
 
-   for Library_Name use "adaado";
+   for Library_Name use "ada-ado";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 
