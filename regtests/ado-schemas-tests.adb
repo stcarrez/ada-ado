@@ -20,7 +20,6 @@ with Util.Test_Caller;
 
 with ADO.Sessions;
 with ADO.Schemas.Entities;
-with ADO.Objects;
 
 with Regtests;
 with Regtests.Simple.Model;

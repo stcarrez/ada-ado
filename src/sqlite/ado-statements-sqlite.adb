@@ -446,6 +446,7 @@ package body ADO.Statements.Sqlite is
 
    --  Get the number of rows returned by the query
    function Get_Row_Count (Query : in Sqlite_Query_Statement) return Natural is
+      pragma Unreferenced (Query);
    begin
       return 0;
    end Get_Row_Count;
