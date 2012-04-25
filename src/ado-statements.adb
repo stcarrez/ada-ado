@@ -177,6 +177,17 @@ package body ADO.Statements is
    end Get_Result_Integer;
 
    --  ------------------------------
+   --  Get the query result as a blob
+   --  ------------------------------
+   function Get_Result_Blob (Query : in Query_Statement) return ADO.Blob_Ref is
+   begin
+      if not Query_Statement'Class (Query).Has_Elements then
+         return Null_Blob;
+      end if;
+      return Query_Statement'Class (Query).Get_Blob (0);
+   end Get_Result_Blob;
+
+   --  ------------------------------
    --  Get an unsigned 64-bit number from a C string terminated by \0
    --  ------------------------------
    function Get_Uint64 (Str : chars_ptr) return unsigned_long is
