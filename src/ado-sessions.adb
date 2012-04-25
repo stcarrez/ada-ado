@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@
 with Util.Log;
 with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
+
+with ADO.Drivers;
 with ADO.Sequences;
 package body ADO.Sessions is
 
@@ -150,6 +152,22 @@ package body ADO.Sessions is
       begin
          Stmt.Set_Parameters (Query);
          return Stmt;
+      end;
+   end Create_Statement;
+
+   --  ------------------------------
+   --  Create a query statement and initialize the SQL statement with the query definition.
+   --  ------------------------------
+   function Create_Statement (Database : in Session;
+                              Query    : in ADO.Queries.Query_Definition_Access)
+                              return Query_Statement is
+   begin
+      Check_Session (Database);
+      declare
+         Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+         SQL   : constant String := ADO.Queries.Get_SQL (Query, Index);
+      begin
+         return Database.Impl.Database.Create_Statement (SQL);
       end;
    end Create_Statement;
 

@@ -91,6 +91,12 @@ package ADO.Sessions is
                               Query    : in ADO.Queries.Context'Class)
                               return Query_Statement;
 
+   --  Create a query statement and initialize the SQL statement with the query definition.
+   function Create_Statement (Database : in Session;
+                              Query    : in ADO.Queries.Query_Definition_Access)
+                              return Query_Statement;
+
+
    --  ---------
    --  Master Session
    --  ---------
