@@ -64,8 +64,7 @@ package body ADO.Queries.Tests is
       use ADO.Drivers.Connections;
 
       Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
-      Props         : Util.Properties.Manager := Util.Tests.Get_Properties;
+      Props         : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),

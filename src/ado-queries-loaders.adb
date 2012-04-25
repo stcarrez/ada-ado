@@ -48,7 +48,7 @@ package body ADO.Queries.Loaders is
    --  The list of query files defined by the application.
    Query_Files : Query_File_Access := null;
 
-   Query_List  : Query_Definition_Access := null;
+--     Query_List  : Query_Definition_Access := null;
 
    --  Convert a Time to an Unsigned_32.
    function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32;
@@ -85,7 +85,8 @@ package body ADO.Queries.Loaders is
          return 0;
       end if;
       declare
-         Driver : constant Drivers.Connections.Driver_Access := Drivers.Connections.Get_Driver (Name);
+         Driver : constant Drivers.Connections.Driver_Access
+           := Drivers.Connections.Get_Driver (Name);
       begin
          if Driver = null then
             --  There is no problem to have an SQL query for unsupported drivers, but still
@@ -101,7 +102,7 @@ package body ADO.Queries.Loaders is
    --  Convert a Time to an Unsigned_32.
    --  ------------------------------
    function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32 is
-      D : constant Duration := Duration (T - Base_Time);
+      D : constant Duration := Duration '(T - Base_Time);
    begin
       return Unsigned_32 (D);
    end To_Unsigned_32;
