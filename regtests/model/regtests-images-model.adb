@@ -35,6 +35,7 @@ package body Regtests.Images.Model is
       ADO.Objects.Set_Value (Result, Id);
       return Result;
    end Image_Key;
+
    function Image_Key (Id : in String) return ADO.Objects.Object_Key is
       Result : ADO.Objects.Object_Key (Of_Type  => ADO.Objects.KEY_STRING,
                                        Of_Class => IMAGE_TABLE'Access);
@@ -42,10 +43,12 @@ package body Regtests.Images.Model is
       ADO.Objects.Set_Value (Result, Id);
       return Result;
    end Image_Key;
+
    function "=" (Left, Right : Image_Ref'Class) return Boolean is
    begin
       return ADO.Objects.Object_Ref'Class (Left) = ADO.Objects.Object_Ref'Class (Right);
    end "=";
+
    procedure Set_Field (Object : in out Image_Ref'Class;
                         Impl   : out Image_Access) is
       Result : ADO.Objects.Object_Record_Access;
@@ -53,6 +56,7 @@ package body Regtests.Images.Model is
       Object.Prepare_Modify (Result);
       Impl := Image_Impl (Result.all)'Access;
    end Set_Field;
+
    --  Internal method to allocate the Object_Record instance
    procedure Allocate (Object : in out Image_Ref) is
       Impl : Image_Access;
@@ -66,6 +70,7 @@ package body Regtests.Images.Model is
    -- ----------------------------------------
    --  Data object: Image
    -- ----------------------------------------
+
    procedure Set_Id (Object : in out Image_Ref;
                      Value  : in ADO.Identifier) is
       Impl : Image_Access;
@@ -73,18 +78,23 @@ package body Regtests.Images.Model is
       Set_Field (Object, Impl);
       ADO.Objects.Set_Field_Key_Value (Impl.all, 1, Value);
    end Set_Id;
+
    function Get_Id (Object : in Image_Ref)
                   return ADO.Identifier is
       Impl : constant Image_Access := Image_Impl (Object.Get_Object.all)'Access;
    begin
       return Impl.Get_Key_Value;
    end Get_Id;
+
+
    function Get_Version (Object : in Image_Ref)
                   return Integer is
       Impl : constant Image_Access := Image_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Version;
    end Get_Version;
+
+
    procedure Set_Create_Date (Object : in out Image_Ref;
                               Value  : in Ada.Calendar.Time) is
       Impl : Image_Access;
@@ -92,12 +102,15 @@ package body Regtests.Images.Model is
       Set_Field (Object, Impl);
       ADO.Objects.Set_Field_Time (Impl.all, 3, Impl.Create_Date, Value);
    end Set_Create_Date;
+
    function Get_Create_Date (Object : in Image_Ref)
                   return Ada.Calendar.Time is
       Impl : constant Image_Access := Image_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Create_Date;
    end Get_Create_Date;
+
+
    procedure Set_Image (Object : in out Image_Ref;
                         Value  : in ADO.Blob_Ref) is
       Impl : Image_Access;
@@ -105,12 +118,14 @@ package body Regtests.Images.Model is
       Set_Field (Object, Impl);
       ADO.Objects.Set_Field_Blob (Impl.all, 4, Impl.Image, Value);
    end Set_Image;
+
    function Get_Image (Object : in Image_Ref)
                   return ADO.Blob_Ref is
       Impl : constant Image_Access := Image_Impl (Object.Get_Load_Object.all)'Access;
    begin
       return Impl.Image;
    end Get_Image;
+
    --  Copy of the object.
    procedure Copy (Object : in Image_Ref;
                    Into   : in out Image_Ref) is
@@ -132,6 +147,7 @@ package body Regtests.Images.Model is
       end if;
       Into := Result;
    end Copy;
+
    procedure Find (Object  : in out Image_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -146,6 +162,7 @@ package body Regtests.Images.Model is
          Destroy (Impl);
       end if;
    end Find;
+
    procedure Load (Object  : in out Image_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier) is
@@ -162,6 +179,7 @@ package body Regtests.Images.Model is
       end if;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Load;
+
    procedure Load (Object  : in out Image_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Id      : in ADO.Identifier;
@@ -178,6 +196,7 @@ package body Regtests.Images.Model is
          ADO.Objects.Set_Object (Object, Impl.all'Access);
       end if;
    end Load;
+
    procedure Save (Object  : in out Image_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -192,6 +211,7 @@ package body Regtests.Images.Model is
          Impl.Save (Session);
       end if;
    end Save;
+
    procedure Delete (Object  : in out Image_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : constant ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -200,6 +220,7 @@ package body Regtests.Images.Model is
          Impl.Delete (Session);
       end if;
    end Delete;
+
    --  --------------------
    --  Free the object
    --  --------------------
@@ -207,10 +228,13 @@ package body Regtests.Images.Model is
       type Image_Impl_Ptr is access all Image_Impl;
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
               (Image_Impl, Image_Impl_Ptr);
+      pragma Warnings (Off, "*redundant conversion*");
       Ptr : Image_Impl_Ptr := Image_Impl (Object.all)'Access;
+      pragma Warnings (On, "*redundant conversion*");
    begin
       Unchecked_Free (Ptr);
    end Destroy;
+
    procedure Find (Object  : in out Image_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -228,6 +252,7 @@ package body Regtests.Images.Model is
          Found := False;
       end if;
    end Find;
+
    overriding
    procedure Load (Object  : in out Image_Impl;
                    Session : in out ADO.Sessions.Session'Class) is
@@ -242,6 +267,7 @@ package body Regtests.Images.Model is
          raise ADO.Objects.NOT_FOUND;
       end if;
    end Load;
+
    procedure Save (Object  : in out Image_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement
@@ -278,6 +304,7 @@ package body Regtests.Images.Model is
          end;
       end if;
    end Save;
+
    procedure Create (Object  : in out Image_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Query : ADO.Statements.Insert_Statement
@@ -300,6 +327,7 @@ package body Regtests.Images.Model is
       end if;
       ADO.Objects.Set_Created (Object);
    end Create;
+
    procedure Delete (Object  : in out Image_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Delete_Statement
@@ -309,6 +337,7 @@ package body Regtests.Images.Model is
       Stmt.Add_Param (Value => Object.Get_Key);
       Stmt.Execute;
    end Delete;
+
    function Get_Value (Item : in Image_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
       Obj  : constant ADO.Objects.Object_Record_Access := Item.Get_Load_Object;
@@ -326,6 +355,7 @@ package body Regtests.Images.Model is
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
+
    procedure List (Object  : in out Image_Vector;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class) is
@@ -346,6 +376,7 @@ package body Regtests.Images.Model is
          Stmt.Next;
       end loop;
    end List;
+
    --  ------------------------------
    --  Load the object from current iterator position
    --  ------------------------------

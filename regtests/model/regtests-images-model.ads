@@ -20,6 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+pragma Warnings (Off, "unit * is not referenced");
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -30,6 +31,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
+pragma Warnings (On, "unit * is not referenced");
 package Regtests.Images.Model is
    --  Create an object key for Image.
    function Image_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
@@ -42,14 +44,14 @@ package Regtests.Images.Model is
    Null_Image : constant Image_Ref;
    function "=" (Left, Right : Image_Ref'Class) return Boolean;
 
-   --  Set 
+   --  Set the image identifier
    procedure Set_Id (Object : in out Image_Ref;
                      Value  : in ADO.Identifier);
 
-   --  Get 
+   --  Get the image identifier
    function Get_Id (Object : in Image_Ref)
                  return ADO.Identifier;
-   --  Get 
+   --  Get the image version.
    function Get_Version (Object : in Image_Ref)
                  return Integer;
 
@@ -61,11 +63,11 @@ package Regtests.Images.Model is
    function Get_Create_Date (Object : in Image_Ref)
                  return Ada.Calendar.Time;
 
-   --  Set 
+   --  Set the image data
    procedure Set_Image (Object : in out Image_Ref;
                         Value  : in ADO.Blob_Ref);
 
-   --  Get 
+   --  Get the image data
    function Get_Image (Object : in Image_Ref)
                  return ADO.Blob_Ref;
 

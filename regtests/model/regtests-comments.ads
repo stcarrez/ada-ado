@@ -20,6 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+pragma Warnings (Off, "unit * is not referenced");
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -31,7 +32,12 @@ with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
 with Regtests.Simple.Model;
+pragma Warnings (On, "unit * is not referenced");
 package Regtests.Comments is
+   --  --------------------
+   --  The Comment table records a user comment associated with a database entity.
+   --  The comment can be associated with any other database record.
+   --  --------------------
    --  Create an object key for Comment.
    function Comment_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
    --  Create an object key for Comment from a string.
@@ -43,58 +49,58 @@ package Regtests.Comments is
    Null_Comment : constant Comment_Ref;
    function "=" (Left, Right : Comment_Ref'Class) return Boolean;
 
-   --  Set 
+   --  Set the comment identifier
    procedure Set_Id (Object : in out Comment_Ref;
                      Value  : in ADO.Identifier);
 
-   --  Get 
+   --  Get the comment identifier
    function Get_Id (Object : in Comment_Ref)
                  return ADO.Identifier;
-   --  Get 
+   --  Get the comment version.
    function Get_Version (Object : in Comment_Ref)
                  return Integer;
 
-   --  Set 
+   --  Set the comment publication date.
    procedure Set_Date (Object : in out Comment_Ref;
                        Value  : in Ada.Calendar.Time);
 
-   --  Get 
+   --  Get the comment publication date.
    function Get_Date (Object : in Comment_Ref)
                  return Ada.Calendar.Time;
 
-   --  Set 
+   --  Set the comment message.
    procedure Set_Message (Object : in out Comment_Ref;
                           Value  : in Ada.Strings.Unbounded.Unbounded_String);
    procedure Set_Message (Object : in out Comment_Ref;
                           Value : in String);
 
-   --  Get 
+   --  Get the comment message.
    function Get_Message (Object : in Comment_Ref)
                  return Ada.Strings.Unbounded.Unbounded_String;
    function Get_Message (Object : in Comment_Ref)
                  return String;
 
-   --  Set 
+   --  Set the entity identifier to which this comment is associated.
    procedure Set_Entity_Id (Object : in out Comment_Ref;
                             Value  : in Integer);
 
-   --  Get 
+   --  Get the entity identifier to which this comment is associated.
    function Get_Entity_Id (Object : in Comment_Ref)
                  return Integer;
 
-   --  Set 
+   --  Set the user who posted this comment
    procedure Set_User (Object : in out Comment_Ref;
                        Value  : in Regtests.Simple.Model.User_Ref'Class);
 
-   --  Get 
+   --  Get the user who posted this comment
    function Get_User (Object : in Comment_Ref)
                  return Regtests.Simple.Model.User_Ref'Class;
 
-   --  Set 
+   --  Set the entity type that correspond to the entity associated with this comment.
    procedure Set_Entity_Type (Object : in out Comment_Ref;
                               Value  : in ADO.Entity_Type);
 
-   --  Get 
+   --  Get the entity type that correspond to the entity associated with this comment.
    function Get_Entity_Type (Object : in Comment_Ref)
                  return ADO.Entity_Type;
 
@@ -159,7 +165,7 @@ package Regtests.Comments is
 private
    COMMENT_NAME : aliased constant String := "TEST_COMMENTS";
    COL_0_1_NAME : aliased constant String := "ID";
-   COL_1_1_NAME : aliased constant String := "VERSION";
+   COL_1_1_NAME : aliased constant String := "version";
    COL_2_1_NAME : aliased constant String := "DATE";
    COL_3_1_NAME : aliased constant String := "MESSAGE";
    COL_4_1_NAME : aliased constant String := "ENTITY_ID";

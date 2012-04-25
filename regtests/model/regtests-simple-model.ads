@@ -20,6 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+pragma Warnings (Off, "unit * is not referenced");
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -29,6 +30,7 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
+pragma Warnings (On, "unit * is not referenced");
 package Regtests.Simple.Model is
    --  --------------------
    --  Record representing a user
@@ -51,7 +53,7 @@ package Regtests.Simple.Model is
    --  Get the user id
    function Get_Id (Object : in User_Ref)
                  return ADO.Identifier;
-   --  Get 
+   --  Get the comment version.
    function Get_Version (Object : in User_Ref)
                  return Integer;
 
@@ -164,8 +166,8 @@ package Regtests.Simple.Model is
    --  Get the user id
    function Get_Id (Object : in Allocate_Ref)
                  return ADO.Identifier;
-   --  Get 
-   function Get_Object_Version (Object : in Allocate_Ref)
+   --  Get the allocate version.
+   function Get_Version (Object : in Allocate_Ref)
                  return Integer;
 
    --  Set the sequence value
@@ -241,7 +243,7 @@ package Regtests.Simple.Model is
 private
    USER_NAME : aliased constant String := "test_user";
    COL_0_1_NAME : aliased constant String := "ID";
-   COL_1_1_NAME : aliased constant String := "object_version";
+   COL_1_1_NAME : aliased constant String := "version";
    COL_2_1_NAME : aliased constant String := "VALUE";
    COL_3_1_NAME : aliased constant String := "NAME";
    COL_4_1_NAME : aliased constant String := "select";
@@ -293,7 +295,7 @@ private
                         Impl   : out User_Access);
    ALLOCATE_NAME : aliased constant String := "allocate";
    COL_0_2_NAME : aliased constant String := "ID";
-   COL_1_2_NAME : aliased constant String := "object_version";
+   COL_1_2_NAME : aliased constant String := "version";
    COL_2_2_NAME : aliased constant String := "NAME";
    ALLOCATE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 3,
@@ -310,7 +312,7 @@ private
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
                                      Of_Class => ALLOCATE_TABLE'Access)
    with record
-       Object_Version : Integer;
+       Version : Integer;
        Name : Ada.Strings.Unbounded.Unbounded_String;
    end record;
    type Allocate_Access is access all Allocate_Impl;
