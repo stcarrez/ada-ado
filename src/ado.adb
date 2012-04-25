@@ -15,7 +15,10 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Directories;
+with Ada.Streams.Stream_IO;
 
+with Util.Streams.Files;
 package body ADO is
 
    use Util.Refs;
@@ -43,5 +46,35 @@ package body ADO is
       return Blob_References.Create (B);
    end Create_Blob;
 
+   --  ------------------------------
+   --  Create a blob initialized with the content from the file whose path is <b>Path</b>.
+   --  Raises an IO exception if the file does not exist.
+   --  ------------------------------
+   function Create_Blob (Path : in String) return Blob_Ref is
+      Size : constant Stream_Element_Offset := Stream_Element_Offset (Ada.Directories.Size (Path));
+      File : Util.Streams.Files.File_Stream;
+      Last : Stream_Element_Offset;
+   begin
+      File.Open (Name => Path, Mode => Ada.Streams.Stream_IO.In_File);
+      declare
+         B    : constant Blob_Access := new Blob '(Ref_Entity with
+                                                   Len    => Size,
+                                                   others => <>);
+      begin
+         File.Read (Into => B.Data, Last => Last);
+         File.Close;
+         return Blob_References.Create (B);
+      end;
+   end Create_Blob;
+
+   Null_Blob_Instance : Blob_Ref;
+
+   --  ------------------------------
+   --  Return a null blob.
+   --  ------------------------------
+   function Null_Blob return Blob_Ref is
+   begin
+      return Null_Blob_Instance;
+   end Null_Blob;
 
 end ADO;

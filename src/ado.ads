@@ -96,6 +96,13 @@ package ADO is
    --  Create a blob initialized with the given data buffer.
    function Create_Blob (Data : in Ada.Streams.Stream_Element_Array) return Blob_Ref;
 
+   --  Create a blob initialized with the content from the file whose path is <b>Path</b>.
+   --  Raises an IO exception if the file does not exist.
+   function Create_Blob (Path : in String) return Blob_Ref;
+
+   --  Return a null blob.
+   function Null_Blob return Blob_Ref;
+
 private
 
    DEFAULT_TIME : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year    => 1901,
