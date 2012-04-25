@@ -599,7 +599,7 @@ package body ADO.Statements.Mysql is
          return Get_Blob (Size => Query.Get_Field_Length (Column),
                           Data => Field);
       else
-         return Create_Blob (0);
+         return Null_Blob;
       end if;
    end Get_Blob;
 

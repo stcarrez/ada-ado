@@ -521,7 +521,7 @@ package body ADO.Statements.Sqlite is
       Len  : constant int := Sqlite3_H.sqlite3_column_bytes (Query.Stmt, int (Column));
    begin
       if Text = System.Null_Address or Len <= 0 then
-         return Create_Blob (0);
+         return Null_Blob;
       else
          return Get_Blob (Size => Natural (Len),
                           Data => To_Chars_Ptr (Text));
