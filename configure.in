@@ -1,21 +1,19 @@
-dnl Autoconf configure script for BfdAda
-dnl Copyright 2001, 2002, 2003, 2005 Free Software Foundation, Inc.
+dnl Autoconf configure script for Ada Database Objects
+dnl Copyright (C) 2010, 2011, 2012 Stephane Carrez
+dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
-dnl This file is part of BfdAda.
+dnl  Licensed under the Apache License, Version 2.0 (the "License");
+dnl  you may not use this file except in compliance with the License.
+dnl  You may obtain a copy of the License at
+dnl
+dnl     http://www.apache.org/licenses/LICENSE-2.0
+dnl
+dnl  Unless required by applicable law or agreed to in writing, software
+dnl  distributed under the License is distributed on an "AS IS" BASIS,
+dnl  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+dnl  See the License for the specific language governing permissions and
+dnl  limitations under the License.
 dnl 
-dnl This program is free software; you can redistribute it and/or modify
-dnl it under the terms of the GNU General Public License as published by
-dnl the Free Software Foundation; either version 2 of the License, or
-dnl (at your option) any later version.
-dnl 
-dnl This program is distributed in the hope that it will be useful,
-dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
-dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-dnl GNU General Public License for more details.
-dnl 
-dnl You should have received a copy of the GNU General Public License
-dnl along with this program; if not, write to the Free Software
-dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 dnl Process this file with autoconf to produce a configure script.
 
@@ -27,9 +25,11 @@ AC_EXEEXT
 
 # Current release settings
 ADO_MAJOR_VERSION=0
-ADO_MINOR_VERSION=2
-ADO_MICRO_VERSION=1-dev
+ADO_MINOR_VERSION=3
+ADO_MICRO_VERSION=0
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
+
+AC_CHECK_PROGS(GNATMAKE, gnatmake, "")
 
 # checking for local tools
 AC_PROG_CC
@@ -37,7 +37,7 @@ AC_PROG_CC
 # AM_PATH_PERL
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-AC_PROG_RANLIB
+AC_PROG_LN_S
 
 AC_SUBST(ADO_VERSION)
 AC_SUBST(ADO_MAJOR_VERSION)
