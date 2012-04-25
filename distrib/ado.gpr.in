@@ -1,13 +1,13 @@
 with "util";
 
 project Ado is
-   Version := "0.2.0";
+   Version := "@ADO_VERSION@";
 
    for Library_Name use "adaado";
    for Library_Dir use "INSTALL/lib";
-   for Library_Kind use "static";
+   for Library_Kind use "LIBRARY_TYPE";
 
    for Source_Dirs use ("INSTALL/share/ada/adainclude/ado");
-   for Library_ALI_Dir use "INSTALL/share/ada/adainclude/ado";
+   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ado/" & Project'Library_Kind;
    for Externally_Built use "true";
 end Ado;
