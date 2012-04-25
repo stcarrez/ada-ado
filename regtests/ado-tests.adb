@@ -277,7 +277,7 @@ package body ADO.Tests is
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Img  : Regtests.Images.Model.Image_Ref;
       Size : constant Natural := 100;
-      Data : constant ADO.Blob_Ref := ADO.Create_Blob (Size);
+      Data : ADO.Blob_Ref := ADO.Create_Blob (Size);
       Img2 : Regtests.Images.Model.Image_Ref;
    begin
       for I in 1 .. Size loop
@@ -300,6 +300,11 @@ package body ADO.Tests is
          Assert_Equals (T, Data.Value.Data (I), Img2.Get_Image.Value.Data (I),
                         "Invalid blob content at " & Stream_Element_Offset'Image (I));
       end loop;
+
+      --  Create a blob initialized with a file content.
+      Data := ADO.Create_Blob ("Makefile");
+      T.Assert (not Data.Is_Null, "Null blob returned by Create_Blob");
+      T.Assert (Data.Value.Len > 100, "Blob length initialized from file is too small");
    end Test_Blob;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
