@@ -205,6 +205,9 @@ install_lib:
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
 	${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
+	${CP} dynamo.xml ${dynamodir}/ado/
+	${CP} NOTICE.txt ${dynamodir}/ado/
+	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ado/$(LIBRARY_TYPE)
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
