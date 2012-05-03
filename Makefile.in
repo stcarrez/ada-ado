@@ -115,6 +115,7 @@ clean:
 	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
 	-$(GNATCLEAN) -q -Ptests
 	-$(GNATCLEAN) -q -Psamples
+	-rm -f lib/ado/*.a lib/ado/*.so
 
 # Clean root project and all imported projects too.
 clean_tree:
@@ -156,7 +157,7 @@ create-mysql-tests:
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+ado.gpr.in tests.gpr.in samples.gpr.in config.gpr.in \
 src samples regtests db win32 \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
@@ -197,10 +198,10 @@ install_lib:
 	${MKDIR} -p ${dynamodir}/ado/db
 	${MKDIR} -p ${dynamodir}/ado/db/mysql
 	${MKDIR} -p ${dynamodir}/ado/db/sqlite
-	${CP} src/*.ad[bs] ${includedir}/ado
-	test T${HAVE_MYSQL} = TTrue && ${CP} ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
-	test T${HAVE_SQLITE} = TTrue && ${CP} ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
-	${CP} src/model/*.ad[bs] ${includedir}/ado
+	${CP} -p src/*.ad[bs] ${includedir}/ado
+	test T${HAVE_MYSQL} = TTrue && ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
+	test T${HAVE_SQLITE} = TTrue && ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
+	${CP} -p src/model/*.ad[bs] ${includedir}/ado
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
