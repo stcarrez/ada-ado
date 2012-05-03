@@ -48,8 +48,6 @@ package body ADO.Queries.Loaders is
    --  The list of query files defined by the application.
    Query_Files : Query_File_Access := null;
 
---     Query_List  : Query_Definition_Access := null;
-
    --  Convert a Time to an Unsigned_32.
    function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32;
    pragma Inline_Always (To_Unsigned_32);
