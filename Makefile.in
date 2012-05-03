@@ -157,7 +157,7 @@ create-mysql-tests:
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-ado.gpr.in tests.gpr.in samples.gpr.in config.gpr.in \
+ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
