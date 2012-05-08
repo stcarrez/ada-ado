@@ -1,4 +1,4 @@
-Version 0.3.0   -
+Version 0.3.0   - May 2012
   - Support to update database records when a field is really modified
   - Customize the SQLite database connection by using SQLite PRAGMAs
   - Escape MySQL or SQLite reserved keywords
