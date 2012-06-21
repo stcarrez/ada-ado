@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Ada.Finalization;
 
 with ADO.Databases;
-with ADO.Sequences;
 with ADO.Schemas.Entities;
 
 --  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
@@ -71,7 +70,7 @@ private
    --  cache which is initialized when the factory is created.
    type Session_Factory is new Ada.Finalization.Limited_Controlled with record
       Source       : ADO.Databases.DataSource;
-      Sequences    : access ADO.Sequences.Factory;
+      Sequences    : Factory_Access;
       Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
       Entities     : ADO.Sessions.Entity_Cache_Access;
    end record;

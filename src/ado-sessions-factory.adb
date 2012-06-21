@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -172,12 +172,12 @@ package body ADO.Sessions.Factory is
 
       procedure Free is new
         Ada.Unchecked_Deallocation (Object => ADO.Sequences.Factory,
-                                    Name   => ADO.Sequences.Factory_Access);
+                                    Name   => Factory_Access);
 
-      Seq : ADO.Sequences.Factory_Access;
+      Seq : Factory_Access;
    begin
       if Factory.Sequences /= null then
-         Seq := Factory.Sequences.all'Access;
+         Seq := Factory.Sequences;
          Free (Seq);
          Factory.Sequences := null;
       end if;
