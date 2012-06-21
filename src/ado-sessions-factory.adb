@@ -174,13 +174,8 @@ package body ADO.Sessions.Factory is
         Ada.Unchecked_Deallocation (Object => ADO.Sequences.Factory,
                                     Name   => Factory_Access);
 
-      Seq : Factory_Access;
    begin
-      if Factory.Sequences /= null then
-         Seq := Factory.Sequences;
-         Free (Seq);
-         Factory.Sequences := null;
-      end if;
+      Free (Factory.Sequences);
    end Finalize;
 
 end ADO.Sessions.Factory;

@@ -70,9 +70,9 @@ private
    --  cache which is initialized when the factory is created.
    type Session_Factory is new Ada.Finalization.Limited_Controlled with record
       Source       : ADO.Databases.DataSource;
-      Sequences    : Factory_Access;
+      Sequences    : Factory_Access := null;
       Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
-      Entities     : ADO.Sessions.Entity_Cache_Access;
+      Entities     : ADO.Sessions.Entity_Cache_Access := null;
    end record;
 
    --  Finalize and release the factory
