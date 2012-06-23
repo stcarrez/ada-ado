@@ -171,6 +171,34 @@ package body ADO.Sessions is
       end;
    end Create_Statement;
 
+   --  ------------------------------
+   --  Create a query statement.  The statement is not prepared
+   --  ------------------------------
+   function Create_Statement (Database : in Session;
+                              Query    : in ADO.SQL.Query'Class;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Query_Statement is
+   begin
+      Check_Session (Database);
+      if Query in ADO.Queries.Context'Class then
+         declare
+            Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+            SQL   : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Index);
+            Stmt  : Query_Statement := Database.Impl.Database.Create_Statement (SQL);
+         begin
+            Stmt.Set_Parameters (Query);
+            return Stmt;
+         end;
+      else
+         declare
+            Stmt : Query_Statement := Database.Impl.Database.Create_Statement (Table);
+         begin
+            Stmt.Set_Parameters (Query);
+            return Stmt;
+         end;
+      end if;
+   end Create_Statement;
+
    --  ---------
    --  Master Session
    --  ---------

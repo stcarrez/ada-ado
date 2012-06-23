@@ -24,6 +24,7 @@ with ADO.Objects;
 with ADO.Objects.Cache;
 with ADO.Databases;
 with ADO.Queries;
+with ADO.SQL;
 
 with Util.Concurrent.Counters;
 limited with ADO.Sequences;
@@ -94,6 +95,12 @@ package ADO.Sessions is
    --  Create a query statement and initialize the SQL statement with the query definition.
    function Create_Statement (Database : in Session;
                               Query    : in ADO.Queries.Query_Definition_Access)
+                              return Query_Statement;
+
+   --  Create a query statement.  The statement is not prepared
+   function Create_Statement (Database : in Session;
+                              Query    : in ADO.SQL.Query'Class;
+                              Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement;
 
 
