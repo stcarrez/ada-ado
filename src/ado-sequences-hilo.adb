@@ -39,7 +39,7 @@ package body ADO.Sequences.Hilo is
    --  Create a high low sequence generator
    --  ------------------------------
    function Create_HiLo_Generator
-     (Sess_Factory : access ADO.Sessions.Factory.Session_Factory'Class)
+     (Sess_Factory : in Session_Factory_Access)
       return Generator_Access is
       Result : constant HiLoGenerator_Access := new HiLoGenerator;
    begin

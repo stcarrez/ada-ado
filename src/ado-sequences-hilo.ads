@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences Hilo-- HiLo Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ package ADO.Sequences.Hilo is
    procedure Allocate_Sequence (Gen : in out HiLoGenerator);
 
    function Create_HiLo_Generator
-     (Sess_Factory : access ADO.Sessions.Factory.Session_Factory'Class)
+     (Sess_Factory : in Session_Factory_Access)
       return Generator_Access;
 
 private

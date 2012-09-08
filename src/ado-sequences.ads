@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,6 +42,8 @@ limited with ADO.Sessions.Factory;
 --
 package ADO.Sequences is
 
+   type Session_Factory_Access is access all ADO.Sessions.Factory.Session_Factory'Class;
+
    --  ------------------------------
    --  Abstract sequence generator
    --  ------------------------------
@@ -59,7 +61,7 @@ package ADO.Sequences is
    function Get_Session (Gen : in Generator) return ADO.Sessions.Master_Session'Class;
 
    type Generator_Factory is access
-     function (Sess_Factory : access ADO.Sessions.Factory.Session_Factory'Class)
+     function (Sess_Factory : in Session_Factory_Access)
                return Generator_Access;
 
    --  ------------------------------
@@ -84,7 +86,7 @@ package ADO.Sequences is
    procedure Set_Default_Generator
      (Manager      : in out Factory;
       Factory      : in Generator_Factory;
-      Sess_Factory : access ADO.Sessions.Factory.Session_Factory'Class);
+      Sess_Factory : in Session_Factory_Access);
 
 private
 
@@ -92,7 +94,7 @@ private
 
    type Generator is abstract new Ada.Finalization.Limited_Controlled with record
       Name    : Unbounded_String;
-      Factory : access ADO.Sessions.Factory.Session_Factory'Class;
+      Factory : Session_Factory_Access;
    end record;
 
    --  Each sequence generator is accessed through a protected type
@@ -138,14 +140,14 @@ private
       --  Set the default sequence generator.
       procedure Set_Default_Generator
         (Gen : in Generator_Factory;
-         Factory : access ADO.Sessions.Factory.Session_Factory'Class);
+         Factory : in Session_Factory_Access);
 
       --  Clear the factory map.
       procedure Clear;
    private
       Map              : Sequence_Maps.Map;
       Create_Generator : Generator_Factory;
-      Sess_Factory     : access ADO.Sessions.Factory.Session_Factory'Class;
+      Sess_Factory     : Session_Factory_Access;
    end Factory_Map;
 
    type Factory is new Ada.Finalization.Limited_Controlled with record

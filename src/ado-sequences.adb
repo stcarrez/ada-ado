@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,7 +108,7 @@ package body ADO.Sequences is
    procedure Set_Default_Generator
      (Manager      : in out Factory;
       Factory      : in Generator_Factory;
-      Sess_Factory : access ADO.Sessions.Factory.Session_Factory'Class) is
+      Sess_Factory : in Session_Factory_Access) is
    begin
       Manager.Map.Set_Default_Generator (Factory, Sess_Factory);
    end Set_Default_Generator;
@@ -163,7 +163,7 @@ package body ADO.Sequences is
       --  ------------------------------
       procedure Set_Default_Generator
         (Gen     : in Generator_Factory;
-         Factory : access ADO.Sessions.Factory.Session_Factory'Class) is
+         Factory : in Session_Factory_Access) is
       begin
          Create_Generator := Gen;
          Sess_Factory := Factory;
