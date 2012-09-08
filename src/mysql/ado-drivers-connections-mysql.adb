@@ -16,8 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Task_Attributes;
-with Ada.Finalization;
+with Ada.Task_Identification;
 
 with Interfaces.C.Strings;
 with Util.Log;
@@ -37,22 +36,6 @@ package body ADO.Drivers.Connections.Mysql is
 
    Driver_Name : aliased constant String := "mysql";
    Driver      : aliased Mysql_Driver;
-
-   --  This is a little bit overkill but this is portable.  We must call the 'mysql_thread_end'
-   --  operation before a task/thread terminates.  The only way to do it is to setup a task
-   --  attribute which an object that has a finalization procedure.
-   --
-   --  The task cleaner attribute is set on tasks that call the 'mysql_connect' operation only.
-   type Mysql_Task_Cleaner is new Ada.Finalization.Controlled with null record;
-
-   --  Invoke the 'mysql_task_end' to release the storage allocated by mysql for the current task.
-   overriding
-   procedure Finalize (Object : in out Mysql_Task_Cleaner);
-
-   Cleaner : Mysql_Task_Cleaner;
-
-   package Mysql_Task_Attribute is
-     new Ada.Task_Attributes (Mysql_Task_Cleaner, Cleaner);
 
    --  ------------------------------
    --  Get the database driver which manages this connection.
@@ -231,11 +214,12 @@ package body ADO.Drivers.Connections.Mysql is
          Port := 3306;
       end if;
 
-      Log.Info ("Connecting to {0}:{1}", To_String (Config.Server), To_String (Config.Database));
+      Log.Info ("Task {0} connecting to {1}:{2}",
+                Ada.Task_Identification.Image (Ada.Task_Identification.Current_Task),
+                To_String (Config.Server), To_String (Config.Database));
       Log.Debug ("user={0} password={1}", Config.Get_Property ("user"),
                  Config.Get_Property ("password"));
       Connection := mysql_init (null);
-      Mysql_Task_Attribute.Set_Value (Cleaner);
 
       Database.Server := mysql_real_connect (Connection, ADO.C.To_C (Server),
                                              ADO.C.To_C (Login), ADO.C.To_C (Password),
@@ -280,16 +264,6 @@ package body ADO.Drivers.Connections.Mysql is
       Log.Debug ("Deleting the mysql driver");
 
       mysql_server_end;
-   end Finalize;
-
-   --  ------------------------------
-   --  Invoke the 'mysql_task_end' to release the storage allocated by mysql for the current task.
-   --  ------------------------------
-   overriding
-   procedure Finalize (Object : in out Mysql_Task_Cleaner) is
-      pragma Unreferenced (Object);
-   begin
-      mysql_thread_end;
    end Finalize;
 
 end ADO.Drivers.Connections.Mysql;
