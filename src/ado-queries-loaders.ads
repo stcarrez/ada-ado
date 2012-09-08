@@ -39,7 +39,7 @@ package ADO.Queries.Loaders is
    package Query is
       Query_Name : aliased constant String := Name;
       Query : aliased Query_Definition := Query_Definition '(Name  => Query_Name'Access,
-                                                             Query => null,
+                                                             Query => Null_Query_Info_Ref,
                                                              File  => File,
                                                              Next  => null);
    end Query;

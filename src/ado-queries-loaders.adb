@@ -158,7 +158,7 @@ package body ADO.Queries.Loaders is
       type Query_Info_Fields is (FIELD_CLASS_NAME, FIELD_PROPERTY_TYPE,
                                  FIELD_PROPERTY_NAME, FIELD_QUERY_NAME,
                                  FIELD_SQL_DRIVER,
-                                 FIELD_SQL, FIELD_SQL_COUNT);
+                                 FIELD_SQL, FIELD_SQL_COUNT, FIELD_QUERY);
 
       --  The Query_Loader holds context and state information for loading
       --  the XML query file and initializing the Query_Definition.
@@ -166,7 +166,7 @@ package body ADO.Queries.Loaders is
          File       : Query_File_Access;
          Hash_Value : Unbounded_String;
          Query_Def  : Query_Definition_Access;
-         Query      : Query_Info_Access;
+         Query      : Query_Info_Ref.Ref;
          Driver     : Integer;
       end record;
       type Query_Loader_Access is access all Query_Loader;
@@ -181,6 +181,7 @@ package body ADO.Queries.Loaders is
       procedure Set_Member (Into  : in out Query_Loader;
                             Field : in Query_Info_Fields;
                             Value : in Util.Beans.Objects.Object) is
+         use ADO.Drivers;
       begin
          case Field is
          when FIELD_CLASS_NAME =>
@@ -198,28 +199,32 @@ package body ADO.Queries.Loaders is
          when FIELD_QUERY_NAME =>
             Into.Query_Def  := Find_Query (Into.File.all, Util.Beans.Objects.To_String (Value));
             Into.Driver := 0;
-            Into.Query := null;
             if Into.Query_Def /= null then
-               Into.Query := new Query_Info;
-               Into.Query_Def.Query := Into.Query;
+               Into.Query := Query_Info_Ref.Create;
             end if;
 
          when FIELD_SQL_DRIVER =>
             Into.Driver := Find_Driver (Util.Beans.Objects.To_String (Value));
 
          when FIELD_SQL =>
-            if Into.Query /= null and Into.Driver >= 0 then
-               Set_Query_Pattern (Into.Query.Main_Query (ADO.Drivers.Driver_Index (Into.Driver)),
+            if not Into.Query.Is_Null and Into.Driver >= 0 then
+               Set_Query_Pattern (Into.Query.Value.Main_Query (Driver_Index (Into.Driver)),
                                   Value);
             end if;
             Into.Driver := 0;
 
          when FIELD_SQL_COUNT =>
-            if Into.Query /= null and Into.Driver >= 0 then
-               Set_Query_Pattern (Into.Query.Count_Query (ADO.Drivers.Driver_Index (Into.Driver)),
+            if not Into.Query.Is_Null and Into.Driver >= 0 then
+               Set_Query_Pattern (Into.Query.Value.Count_Query (Driver_Index (Into.Driver)),
                                   Value);
             end if;
             Into.Driver := 0;
+
+         when FIELD_QUERY =>
+            if Into.Query_Def /= null then
+               --  Now we can safely setup the query info associated with the query definition.
+               Into.Query_Def.Query.Set (Into.Query);
+            end if;
 
          end case;
       end Set_Member;
@@ -246,6 +251,7 @@ package body ADO.Queries.Loaders is
       Sql_Mapper.Add_Mapping ("query/sql", FIELD_SQL);
       Sql_Mapper.Add_Mapping ("query/sql/@driver", FIELD_SQL_DRIVER);
       Sql_Mapper.Add_Mapping ("query/sql-count", FIELD_SQL_COUNT);
+      Sql_Mapper.Add_Mapping ("query", FIELD_QUERY);
       Reader.Add_Mapping ("query-mapping", Sql_Mapper'Unchecked_Access);
 
       --  Set the context for Set_Member.
@@ -292,9 +298,18 @@ package body ADO.Queries.Loaders is
          declare
             Path : constant String := Util.Files.Find_File_Path (Name  => File.Name.all,
                                                                  Paths => Paths);
+            Query : Query_Definition_Access := File.Queries;
          begin
             Free (File.Path);
             File.Path := new String '(Path);
+
+            --  Allocate the atomic reference for each query.
+            while Query /= null loop
+               if Query.Query = null then
+                  Query.Query := new Query_Info_Ref.Atomic_Ref;
+               end if;
+               Query := Query.Next;
+            end loop;
             if Load then
                Read_Query (File);
             end if;

@@ -34,6 +34,10 @@ package ADO.Queries is
    type Query_Info is limited private;
    type Query_Info_Access is access all Query_Info;
 
+   type Query_Info_Ref_Access is private;
+
+   Null_Query_Info_Ref : constant Query_Info_Ref_Access;
+
    --  ------------------------------
    --  Query Context
    --  ------------------------------
@@ -75,7 +79,8 @@ package ADO.Queries is
    --  query file can contain several queries.  The Dynamo generator generates
    --  one instance of <b>Query_Definition</b> for each query defined in the XML
    --  file.  The XML file is loaded during application initialization (or later)
-   --  to get the SQL query pattern.
+   --  to get the SQL query pattern.  Multi-thread concurrency is achieved by
+   --  the Query_Info_Ref atomic reference.
    type Query_Definition is limited record
       --  The query name.
       Name   : Util.Strings.Name_Access;
@@ -87,7 +92,7 @@ package ADO.Queries is
       Next   : Query_Definition_Access;
 
       --  The SQL query pattern (initialized when reading the XML query file).
-      Query  : Query_Info_Access;
+      Query  : Query_Info_Ref_Access;
    end record;
 
    function Get_SQL (From   : in Query_Definition_Access;
@@ -153,7 +158,11 @@ private
       Count_Query : Query_Pattern_Array;
    end record;
 
---     package Query_Info_Ref is
---        new Util.Refs.References (Query_Info, Query_Info_Access);
+   package Query_Info_Ref is
+      new Util.Refs.References (Query_Info, Query_Info_Access);
+
+   type Query_Info_Ref_Access is access all Query_Info_Ref.Atomic_Ref;
+
+   Null_Query_Info_Ref : constant Query_Info_Ref_Access := null;
 
 end ADO.Queries;

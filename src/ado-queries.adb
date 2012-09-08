@@ -102,15 +102,17 @@ package body ADO.Queries is
 
    function Get_SQL (From   : in Query_Definition_Access;
                      Driver : in ADO.Drivers.Driver_Index) return String is
+      Query : Query_Info_Ref.Ref;
    begin
       ADO.Queries.Loaders.Read_Query (From);
-      if From.Query = null then
+      Query := From.Query.Get;
+      if Query.Is_Null then
          return "";
       end if;
-      if Length (From.Query.Main_Query (Driver).SQL) > 0 then
-         return To_String (From.Query.Main_Query (Driver).SQL);
+      if Length (Query.Value.Main_Query (Driver).SQL) > 0 then
+         return To_String (Query.Value.Main_Query (Driver).SQL);
       else
-         return To_String (From.Query.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
+         return To_String (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
       end if;
    end Get_SQL;
 
