@@ -93,13 +93,13 @@ package body ADO.Sessions.Factory is
    --  ------------------------------
    function Get_Master_Session (Factory : in Session_Factory) return Master_Session is
       R  : Master_Session;
-      S  : constant Session_Record_Access   := new Session_Record;
       DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
+      S  : constant Session_Record_Access   := new Session_Record;
    begin
-      S.Database := Master_Connection (DB);
-      S.Entities := Factory.Entities;
       R.Impl := S;
       R.Sequences := Factory.Sequences;
+      S.Database := Master_Connection (DB);
+      S.Entities := Factory.Entities;
       return R;
    end Get_Master_Session;
 
