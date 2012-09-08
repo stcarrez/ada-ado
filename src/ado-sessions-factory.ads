@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  with Ada.Finalization;
-
 with ADO.Databases;
 with ADO.Schemas.Entities;
 with ADO.Sequences;
@@ -69,7 +67,7 @@ private
    --  database connection.  The sequence factory is shared by all sessions of the same
    --  factory (implementation is thread-safe).  The factory also contains the entity type
    --  cache which is initialized when the factory is created.
-   type Session_Factory is tagged limited record --  new Ada.Finalization.Limited_Controlled with record
+   type Session_Factory is tagged limited record
       Source       : ADO.Databases.DataSource;
       Sequences    : Factory_Access := null;
       Seq_Factory  : aliased ADO.Sequences.Factory;
