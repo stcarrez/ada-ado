@@ -193,7 +193,7 @@ private
    overriding
    procedure Finalize (Object : in out Session);
 
-   type Factory_Access is access ADO.Sequences.Factory;
+   type Factory_Access is access all ADO.Sequences.Factory;
 
    type Master_Session is new Session with record
       Sequences : Factory_Access;
