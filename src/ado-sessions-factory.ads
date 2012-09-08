@@ -16,10 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Ada.Finalization;
+--  with Ada.Finalization;
 
 with ADO.Databases;
 with ADO.Schemas.Entities;
+with ADO.Sequences;
 
 --  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
 --  sessions.
@@ -68,16 +69,13 @@ private
    --  database connection.  The sequence factory is shared by all sessions of the same
    --  factory (implementation is thread-safe).  The factory also contains the entity type
    --  cache which is initialized when the factory is created.
-   type Session_Factory is new Ada.Finalization.Limited_Controlled with record
+   type Session_Factory is tagged limited record --  new Ada.Finalization.Limited_Controlled with record
       Source       : ADO.Databases.DataSource;
       Sequences    : Factory_Access := null;
+      Seq_Factory  : aliased ADO.Sequences.Factory;
       Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
       Entities     : ADO.Sessions.Entity_Cache_Access := null;
    end record;
-
-   --  Finalize and release the factory
-   overriding
-   procedure Finalize (Factory : in out Session_Factory);
 
    --  Initialize the sequence factory associated with the session factory.
    procedure Initialize_Sequences (Factory : in out Session_Factory);

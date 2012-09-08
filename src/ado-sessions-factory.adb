@@ -118,10 +118,10 @@ package body ADO.Sessions.Factory is
    procedure Initialize_Sequences (Factory : in out Session_Factory) is
       use ADO.Sequences;
    begin
-      Factory.Sequences := new ADO.Sequences.Factory;
-      Set_Default_Generator (Factory.Sequences.all,
+      Factory.Sequences := Factory.Seq_Factory'Unchecked_Access;
+      Set_Default_Generator (Factory.Seq_Factory,
                              ADO.Sequences.Hilo.Create_HiLo_Generator'Access,
-                             Factory'Unrestricted_Access);
+                             Factory'Unchecked_Access);
    end Initialize_Sequences;
 
    --  ------------------------------
@@ -163,19 +163,5 @@ package body ADO.Sessions.Factory is
          end;
       end if;
    end Create;
-
-   --  ------------------------------
-   --  Finalize and release the factory
-   --  ------------------------------
-   overriding
-   procedure Finalize (Factory : in out Session_Factory) is
-
-      procedure Free is new
-        Ada.Unchecked_Deallocation (Object => ADO.Sequences.Factory,
-                                    Name   => Factory_Access);
-
-   begin
-      Free (Factory.Sequences);
-   end Finalize;
 
 end ADO.Sessions.Factory;
