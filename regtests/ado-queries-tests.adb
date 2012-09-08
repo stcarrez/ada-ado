@@ -31,6 +31,8 @@ package body ADO.Queries.Tests is
    begin
       Caller.Add_Test (Suite, "Test ADO.Queries.Read_Query",
                        Test_Load_Queries'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Initialize",
+                       Test_Initialize'Access);
    end Add_Tests;
 
    package Simple_Query_File is
@@ -90,5 +92,34 @@ package body ADO.Queries.Tests is
          end;
       end if;
    end Test_Load_Queries;
+
+   --  ------------------------------
+   --  Test the Initialize operation called several times
+   --  ------------------------------
+   procedure Test_Initialize (T : in out Test) is
+      use ADO.Drivers.Connections;
+
+      Props : constant Util.Properties.Manager := Util.Tests.Get_Properties;
+      Info  : Query_Info_Ref.Ref;
+   begin
+      --  Configure and load the XML queries.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"), True);
+      T.Assert (not Simple_Query.Query.Query.Get.Is_Null, "The simple query was not loaded");
+      T.Assert (not Index_Query.Query.Query.Get.Is_Null, "The index query was not loaded");
+      Info := Simple_Query.Query.Query.Get;
+
+      --  Re-configure but do not reload.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"), False);
+      T.Assert (Info.Value = Simple_Query.Query.Query.Get.Value,
+                "The simple query instance was not changed");
+
+      --  Configure again and reload.  The query info must have changed.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"), True);
+      T.Assert (Info.Value /= Simple_Query.Query.Query.Get.Value,
+                "The simple query instance was not changed");
+
+      --  Due to the reference held by 'Info', it refers to the data loaded first.
+      T.Assert (Length (Info.Value.Main_Query (0).SQL) > 0, "The old query is not valid");
+   end Test_Initialize;
 
 end ADO.Queries.Tests;
