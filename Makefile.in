@@ -196,16 +196,16 @@ install_lib:
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ado/$(LIBRARY_TYPE)
 	${MKDIR} -p ${dynamodir}/ado/db
-	${MKDIR} -p ${dynamodir}/ado/db/mysql
-	${MKDIR} -p ${dynamodir}/ado/db/sqlite
+	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/mysql
+	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ado
-	test T${HAVE_MYSQL} = TTrue && ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
-	test T${HAVE_SQLITE} = TTrue && ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
+	test T${HAVE_MYSQL} = TFalse || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
+	test T${HAVE_SQLITE} = TFalse || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
 	${CP} -p src/model/*.ad[bs] ${includedir}/ado
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
-	${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
-	${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
+	test T${HAVE_MYSQL} = TFalse || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
+	test T${HAVE_SQLITE} = TFalse || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
