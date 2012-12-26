@@ -47,6 +47,9 @@ package ADO.Objects is
    --  The object identifier could not be allocated.
    ALLOCATE_ID_ERROR : exception;
 
+   --  The object is NULL.
+   NULL_ERROR : exception;
+
    --  --------------------
    --  Object Key
    --  --------------------
