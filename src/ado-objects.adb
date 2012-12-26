@@ -240,7 +240,10 @@ package body ADO.Objects is
    --  ------------------------------
    procedure Lazy_Load (Ref : in Object_Ref'Class) is
    begin
-      if Ref.Object /= null and then not Ref.Object.Is_Loaded then
+      if Ref.Object = null then
+         raise NULL_ERROR;
+
+      elsif not Ref.Object.Is_Loaded then
          if Ref.Object.Session = null then
             raise SESSION_EXPIRED;
          end if;
