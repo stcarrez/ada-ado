@@ -180,7 +180,7 @@ package body ADO.Sessions is
                               return Query_Statement is
    begin
       Check_Session (Database);
-      if Query in ADO.Queries.Context'Class then
+      if False and Query in ADO.Queries.Context'Class then
          declare
             Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
             SQL   : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Index);
@@ -193,6 +193,14 @@ package body ADO.Sessions is
          declare
             Stmt : Query_Statement := Database.Impl.Database.Create_Statement (Table);
          begin
+            if Query in ADO.Queries.Context'Class then
+               declare
+                  Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+                  SQL   : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Index);
+               begin
+                  ADO.SQL.Append (Stmt.Get_Query.SQL, SQL);
+               end;
+            end if;
             Stmt.Set_Parameters (Query);
             return Stmt;
          end;
