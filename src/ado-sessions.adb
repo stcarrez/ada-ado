@@ -60,20 +60,17 @@ package body ADO.Sessions is
         Ada.Unchecked_Deallocation (Object => Session_Record,
                                     Name   => Session_Record_Access);
 
+      Is_Zero : Boolean;
    begin
       Log.Info ("Closing session");
       if Database.Impl /= null then
+         ADO.Objects.Release_Proxy (Database.Impl.Proxy);
          Database.Impl.Database.Close;
-         Database.Impl.Counter := Database.Impl.Counter - 1;
-         if Database.Impl.Counter = 0 then
+         Util.Concurrent.Counters.Decrement (Database.Impl.Counter, Is_Zero);
+         if Is_Zero then
             Free (Database.Impl);
          end if;
---
---           if Database.Impl.Proxy /= null then
---              Database.Impl.Proxy.Counter := Database.Impl.Proxy.Counter - 1;
---           end if;
          Database.Impl := null;
-
       end if;
    end Close;
 
@@ -180,31 +177,20 @@ package body ADO.Sessions is
                               return Query_Statement is
    begin
       Check_Session (Database);
-      if False and Query in ADO.Queries.Context'Class then
-         declare
-            Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
-            SQL   : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Index);
-            Stmt  : Query_Statement := Database.Impl.Database.Create_Statement (SQL);
-         begin
-            Stmt.Set_Parameters (Query);
-            return Stmt;
-         end;
-      else
-         declare
-            Stmt : Query_Statement := Database.Impl.Database.Create_Statement (Table);
-         begin
-            if Query in ADO.Queries.Context'Class then
-               declare
-                  Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
-                  SQL   : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Index);
-               begin
-                  ADO.SQL.Append (Stmt.Get_Query.SQL, SQL);
-               end;
-            end if;
-            Stmt.Set_Parameters (Query);
-            return Stmt;
-         end;
-      end if;
+      declare
+         Stmt : Query_Statement := Database.Impl.Database.Create_Statement (Table);
+      begin
+         if Query in ADO.Queries.Context'Class then
+            declare
+               Pos : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+               SQL : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Pos);
+            begin
+               ADO.SQL.Append (Stmt.Get_Query.SQL, SQL);
+            end;
+         end if;
+         Stmt.Set_Parameters (Query);
+         return Stmt;
+      end;
    end Create_Statement;
 
    --  ---------
@@ -266,19 +252,21 @@ package body ADO.Sessions is
    procedure Adjust (Object : in out Session) is
    begin
       if Object.Impl /= null then
-         Object.Impl.Counter := Object.Impl.Counter + 1;
+         Util.Concurrent.Counters.Increment (Object.Impl.Counter);
       end if;
    end Adjust;
 
    overriding
    procedure Finalize (Object : in out Session) is
+      Is_Zero : Boolean;
    begin
       if Object.Impl /= null then
-         if Object.Impl.Counter = 1 then
-            Object.Close;
-         else
-            Object.Impl.Counter := Object.Impl.Counter - 1;
+         Util.Concurrent.Counters.Decrement (Object.Impl.Counter, Is_Zero);
+         if Is_Zero then
+            ADO.Objects.Release_Proxy (Object.Impl.Proxy);
+            Object.Impl.Database.Close;
          end if;
+         Object.Impl := null;
       end if;
    end Finalize;
 
@@ -315,6 +303,12 @@ package body ADO.Sessions is
       return Database.Impl.Database.Create_Statement (Table);
    end Create_Statement;
 
+   --  ------------------------------
+   --  Internal method to get the session proxy associated with the given database session.
+   --  The session proxy is associated with some ADO objects to be able to retrieve the database
+   --  session for the implementation of lazy loading.  The session proxy is kept until the
+   --  session exist and at least one ADO object is refering to it.
+   --  ------------------------------
    function Get_Session_Proxy (Database : in Session) return ADO.Objects.Session_Proxy_Access is
       use type ADO.Objects.Session_Proxy_Access;
    begin

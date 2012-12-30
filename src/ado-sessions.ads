@@ -142,9 +142,10 @@ package ADO.Sessions is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement;
 
-   type Session_Proxy is limited private;
-   type Session_Proxy_Access is access all Session_Proxy;
-
+   --  Internal method to get the session proxy associated with the given database session.
+   --  The session proxy is associated with some ADO objects to be able to retrieve the database
+   --  session for the implementation of lazy loading.  The session proxy is kept until the
+   --  session exist and at least one ADO object is refering to it.
    function Get_Session_Proxy (Database : in Session) return ADO.Objects.Session_Proxy_Access;
 
    type Session_Record is limited private;
@@ -158,12 +159,12 @@ private
       A : Integer;
    end record;
    type Object_Factory_Access is access all Object_Factory'Class;
-
-   type Session_Proxy is limited record
-      Counter : Util.Concurrent.Counters.Counter;
-      Session : Session_Record_Access;
-      Factory : Object_Factory_Access;
-   end record;
+--
+--     type Session_Proxy is limited record
+--        Counter : Util.Concurrent.Counters.Counter;
+--        Session : Session_Record_Access;
+--        Factory : Object_Factory_Access;
+--     end record;
 
    --  The <b>Session_Record</b> maintains the connection information to the database for
    --  the duration of the session.  It also maintains a cache of application objects
@@ -176,7 +177,7 @@ private
    --  When a session is closed, the <b>Session_Proxy</b> is not deleted but it is simply
    --  unlinked from the session record.
    type Session_Record is limited record
-      Counter  : Natural := 1;
+      Counter  : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
       Database : ADO.Databases.Master_Connection;
       Proxy    : ADO.Objects.Session_Proxy_Access;
       Cache    : ADO.Objects.Cache.Object_Cache;

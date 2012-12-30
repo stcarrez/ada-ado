@@ -58,8 +58,6 @@ package ADO.Sessions.Factory is
 
    --  Get a read-only session from the session proxy.
    --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
-   function Get_Session (Proxy : in Session_Proxy_Access) return Session;
-
    function Get_Session (Proxy : in Session_Record_Access) return Session;
 private
 
