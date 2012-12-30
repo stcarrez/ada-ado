@@ -258,6 +258,9 @@ package body ADO.Sessions is
 
    overriding
    procedure Finalize (Object : in out Session) is
+      procedure Free is
+         new Ada.Unchecked_Deallocation (Object => Session_Record,
+                                         Name   => Session_Record_Access);
       Is_Zero : Boolean;
    begin
       if Object.Impl /= null then
@@ -265,6 +268,7 @@ package body ADO.Sessions is
          if Is_Zero then
             ADO.Objects.Release_Proxy (Object.Impl.Proxy);
             Object.Impl.Database.Close;
+            Free (Object.Impl);
          end if;
          Object.Impl := null;
       end if;
