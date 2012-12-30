@@ -53,6 +53,11 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access is
    begin
+      if Database.Server = null then
+         Log.Warn ("Cannot create query statement on table {0}: connection is closed",
+                   Table.Table.all);
+         raise Connection_Error with "Database connection is closed";
+      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -61,6 +66,11 @@ package body ADO.Drivers.Connections.Mysql is
                               Query    : in String)
                               return Query_Statement_Access is
    begin
+      if Database.Server = null then
+         Log.Warn ("Cannot create query statement {0}: connection is closed",
+                   Query);
+         raise Connection_Error with "Database connection is closed";
+      end if;
       return Create_Statement (Database => Database.Server, Query => Query);
    end Create_Statement;
 
@@ -72,6 +82,11 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access is
    begin
+      if Database.Server = null then
+         Log.Warn ("Cannot create delete statement on table {0}: connection is closed",
+                   Table.Table.all);
+         raise Connection_Error with "Database connection is closed";
+      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -83,6 +98,11 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access is
    begin
+      if Database.Server = null then
+         Log.Warn ("Cannot create insert statement on table {0}: connection is closed",
+                   Table.Table.all);
+         raise Connection_Error with "Database connection is closed";
+      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -94,6 +114,11 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access is
    begin
+      if Database.Server = null then
+         Log.Warn ("Cannot create update statement on table {0}: connection is closed",
+                   Table.Table.all);
+         raise Connection_Error with "Database connection is closed";
+      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -154,6 +179,7 @@ package body ADO.Drivers.Connections.Mysql is
       Log.Debug ("Execute SQL: {0}", SQL);
       if Database.Server = null then
          Log.Error ("Database connection is not open");
+         raise Connection_Error with "Database connection is closed";
       end if;
 
       Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
