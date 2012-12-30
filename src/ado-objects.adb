@@ -17,6 +17,8 @@
 -----------------------------------------------------------------------
 
 with Ada.Strings.Unbounded.Hash;
+with Ada.Unchecked_Deallocation;
+
 with ADO.Sessions.Factory;
 package body ADO.Objects is
 
@@ -232,6 +234,18 @@ package body ADO.Objects is
    end Is_Inserted;
 
    --  ------------------------------
+   --  Check whether this object is loaded from the database.
+   --  ------------------------------
+   function Is_Loaded (Object : in Object_Ref'Class) return Boolean is
+   begin
+      if Object.Object = null then
+         return False;
+      else
+         return Object.Object.Is_Loaded;
+      end if;
+   end Is_Loaded;
+
+   --  ------------------------------
    --  Load the object from the database if it was not already loaded.
    --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
    --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
@@ -296,9 +310,10 @@ package body ADO.Objects is
       if Ref.Object = null then
          Ref.Allocate;
       end if;
+      Ref.Object.Is_Created := True;
       Ref.Object.Set_Key_Value (Value);
       Ref.Object.Session := Session.Get_Session_Proxy;
-      Ref.Object.Is_Created := True;
+      Util.Concurrent.Counters.Increment (Ref.Object.Session.Counter);
    end Set_Key_Value;
 
    --  ------------------------------
@@ -311,9 +326,10 @@ package body ADO.Objects is
       if Ref.Object = null then
          Ref.Allocate;
       end if;
+      Ref.Object.Is_Created := True;
       Ref.Object.Set_Key_Value (Value);
       Ref.Object.Session := Session.Get_Session_Proxy;
-      Ref.Object.Is_Created := True;
+      Util.Concurrent.Counters.Increment (Ref.Object.Session.Counter);
    end Set_Key_Value;
 
 
@@ -354,6 +370,7 @@ package body ADO.Objects is
    begin
       if Object /= null and then Object.Session = null then
          Object.Session := Session.Get_Session_Proxy;
+         Util.Concurrent.Counters.Increment (Object.Session.Counter);
       end if;
       Ref.Set_Object (Object);
    end Set_Object;
@@ -457,6 +474,33 @@ package body ADO.Objects is
    begin
       Ref.Modified (Field) := False;
    end Clear_Modified;
+
+   --  ------------------------------
+   --  Release the session proxy, deleting the instance if it is no longer used.
+   --  ------------------------------
+   procedure Release_Proxy (Proxy : in out Session_Proxy_Access) is
+      procedure Free is new
+        Ada.Unchecked_Deallocation (Object => Session_Proxy,
+                                    Name   => Session_Proxy_Access);
+      Is_Zero : Boolean;
+   begin
+      if Proxy /= null then
+         Util.Concurrent.Counters.Decrement (Proxy.Counter, Is_Zero);
+         if Is_Zero then
+            Free (Proxy);
+         end if;
+         Proxy := null;
+      end if;
+   end Release_Proxy;
+
+   --  ------------------------------
+   --  Release the object.
+   --  ------------------------------
+   overriding
+   procedure Finalize (Object : in out Object_Record) is
+   begin
+      Release_Proxy (Object.Session);
+   end Finalize;
 
    --  ------------------------------
    --  Copy the source object record into the target.

@@ -163,6 +163,10 @@ package ADO.Objects is
    --  Frees the storage held by the object.  The database record is not deleted.
    procedure Destroy (Object : access Object_Record) is abstract;
 
+   --  Release the object.
+   overriding
+   procedure Finalize (Object : in out Object_Record);
+
    --  Find the object using a specific query
    procedure Find (Object  : in out Object_Record;
                    Session : in out ADO.Sessions.Session'Class;
@@ -214,6 +218,9 @@ package ADO.Objects is
    --  Check whether this object is saved in the database.
    --  Returns True if the object was saved in the database.
    function Is_Inserted (Object : in Object_Ref'Class) return Boolean;
+
+   --  Check whether this object is loaded from the database.
+   function Is_Loaded (Object : in Object_Ref'Class) return Boolean;
 
    --  Internal method to get the object record instance and make sure it is fully loaded.
    --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
@@ -273,6 +280,10 @@ package ADO.Objects is
 
    type Session_Proxy is limited private;
    type Session_Proxy_Access is access all Session_Proxy;
+
+   --  Release the session proxy, deleting the instance if it is no longer used.
+   procedure Release_Proxy (Proxy : in out Session_Proxy_Access);
+   pragma Inline (Release_Proxy);
 
    function Create_Session_Proxy (S : access ADO.Sessions.Session_Record)
                                   return Session_Proxy_Access;
@@ -399,7 +410,7 @@ private
    procedure Finalize (Object : in out Object_Ref);
 
    type Session_Proxy is limited record
-      Counter : Util.Concurrent.Counters.Counter;
+      Counter : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
       Session : access ADO.Sessions.Session_Record;
    end record;
 
