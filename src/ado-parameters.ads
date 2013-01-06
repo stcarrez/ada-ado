@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -174,7 +174,10 @@ package ADO.Parameters is
    procedure Add_Param (Params : in out Abstract_List;
                          Value : in Unbounded_String);
    procedure Add_Param (Params : in out Abstract_List;
-                         Value : in Ada.Calendar.Time);
+                        Value : in Ada.Calendar.Time);
+
+   --  Add a null parameter.
+   procedure Add_Null_Param (Params : in out Abstract_List);
 
    --  Expand the SQL string with the query parameters.  The following parameters syntax
    --  are recognized and replaced:
