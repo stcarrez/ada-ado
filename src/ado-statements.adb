@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,6 +101,20 @@ package body ADO.Statements is
             end;
 
       end case;
+   end Add_Param;
+
+   --  ------------------------------
+   --  Add the parameter by using the primary key of the object.
+   --  Use null if the object is a null reference.
+   --  ------------------------------
+   procedure Add_Param (Params : in out Statement;
+                        Value  : in ADO.Objects.Object_Ref'Class) is
+   begin
+      if Value.Is_Null then
+         Params.Query.Add_Null_Param;
+      else
+         Params.Add_Param (Value.Get_Key);
+      end if;
    end Add_Param;
 
    procedure Append (Query : in out Statement; SQL : in String) is
