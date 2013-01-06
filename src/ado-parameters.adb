@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -387,6 +387,14 @@ package body ADO.Parameters is
    begin
       Params.Bind_Param (Position => 0, Value => Value);
    end Add_Param;
+
+   --  ------------------------------
+   --  Add a null parameter.
+   --  ------------------------------
+   procedure Add_Null_Param (Params : in out Abstract_List) is
+   begin
+      Params.Bind_Null_Param (Position => 0);
+   end Add_Null_Param;
 
    --  ------------------------------
    --  Expand the SQL string with the query parameters.  The following parameters syntax
