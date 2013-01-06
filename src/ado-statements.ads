@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,6 +89,11 @@ package ADO.Statements is
 
    procedure Add_Param (Params : in out Statement;
                         Value : in ADO.Objects.Object_Key);
+
+   --  Add the parameter by using the primary key of the object.
+   --  Use null if the object is a null reference.
+   procedure Add_Param (Params : in out Statement;
+                        Value  : in ADO.Objects.Object_Ref'Class);
 
    --  Operations to build the SQL query
    procedure Append (Query : in out Statement; SQL : in String);
