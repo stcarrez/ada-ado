@@ -38,6 +38,7 @@ package ADO.Drivers.Connections is
    --
    type Database_Connection is abstract new Ada.Finalization.Limited_Controlled with record
       Count : Natural := 0;
+      Ident : String (1 .. 8) := (others => ' ');
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 
