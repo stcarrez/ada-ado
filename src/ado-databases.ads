@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Connections
---  Copyright (C) 2010 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,6 +74,9 @@ package ADO.Databases is
 
    --  Get the database driver index.
    function Get_Driver_Index (Database : in Connection) return ADO.Drivers.Driver_Index;
+
+   --  Get a database connection identifier.
+   function Get_Ident (Database : in Connection) return String;
 
    --  ---------
    --  Master Database connection
