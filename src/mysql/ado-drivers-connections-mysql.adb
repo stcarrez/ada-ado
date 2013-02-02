@@ -192,8 +192,9 @@ package body ADO.Drivers.Connections.Mysql is
    overriding
    procedure Close (Database : in out Database_Connection) is
    begin
-      Log.Info ("Closing connection {0}", Database.Name);
       if Database.Server /= null then
+         Log.Info ("Closing connection {0}/{1}", Database.Name, Database.Ident);
+
          mysql_close (Database.Server);
          Database.Server := null;
       end if;
@@ -205,7 +206,7 @@ package body ADO.Drivers.Connections.Mysql is
    overriding
    procedure Finalize (Database : in out Database_Connection) is
    begin
-      Log.Debug ("Release connection {0}", Database.Name);
+      Log.Debug ("Release connection {0}/{1}", Database.Name, Database.Ident);
       Database.Close;
    end Finalize;
 
@@ -218,8 +219,6 @@ package body ADO.Drivers.Connections.Mysql is
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
                                 Result : out ADO.Drivers.Connections.Database_Connection_Access) is
-
-      pragma Unreferenced (D);
 
       Server   : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
       Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Database);
@@ -261,6 +260,12 @@ package body ADO.Drivers.Connections.Mysql is
          end;
       end if;
 
+      D.Id := D.Id + 1;
+      declare
+         Ident : constant String := Util.Strings.Image (D.Id);
+      begin
+         Database.Ident (1 .. Ident'Length) := Ident;
+      end;
       Database.Name  := Config.Database;
       Database.Count := 1;
       Result         := Database.all'Access;
