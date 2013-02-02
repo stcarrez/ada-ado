@@ -162,12 +162,18 @@ package body ADO.Drivers.Connections is
    procedure Create_Connection (Config : in Configuration'Class;
                                 Result : out Database_Connection_Access) is
    begin
-      Log.Info ("Create connection to '{0}'", Config.URI);
       if Config.Driver = null then
          Log.Error ("No driver found for connection {0}", To_String (Config.URI));
          raise Connection_Error with "Data source is not initialized: driver not found";
       end if;
       Config.Driver.Create_Connection (Config, Result);
+      Log.Info ("Created connection to '{0}' -> {1}", Config.URI, Result.Ident);
+
+   exception
+      when others =>
+         Log.Info ("Failed to create connection to '{0}'", Config.URI);
+         raise;
+
    end Create_Connection;
 
    package Driver_List is
