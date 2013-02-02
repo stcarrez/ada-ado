@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Connections
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Log;
 with Util.Log.Loggers;
 
 with Ada.Unchecked_Deallocation;
-with System.Address_Image;
 with ADO.Statements.Create;
 package body ADO.Databases is
 
@@ -101,6 +100,18 @@ package body ADO.Databases is
    end Get_Driver_Index;
 
    --  ------------------------------
+   --  Get a database connection identifier.
+   --  ------------------------------
+   function Get_Ident (Database : in Connection) return String is
+   begin
+      if Database.Impl = null then
+         return "null";
+      else
+         return Database.Impl.Ident;
+      end if;
+   end Get_Ident;
+
+   --  ------------------------------
    --  Load the database schema definition for the current database.
    --  ------------------------------
    procedure Load_Schema (Database : in Connection;
@@ -118,7 +129,7 @@ package body ADO.Databases is
    --  ------------------------------
    procedure Close (Database : in out Connection) is
    begin
-      Log.Info ("Closing database connection");
+      Log.Info ("Closing database connection {0}", Database.Get_Ident);
 
       if Database.Impl /= null then
          Database.Impl.Close;
@@ -130,7 +141,7 @@ package body ADO.Databases is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Master_Connection) is
    begin
-      Log.Info ("Begin transaction");
+      Log.Info ("Begin transaction {0}", Database.Get_Ident);
 
       if Database.Impl = null then
          Log.Error ("Database implementation is not initialized");
@@ -144,7 +155,7 @@ package body ADO.Databases is
    --  ------------------------------
    procedure Commit (Database : in out Master_Connection) is
    begin
-      Log.Info ("Commit transaction");
+      Log.Info ("Commit transaction {0}", Database.Get_Ident);
 
       if Database.Impl = null then
          Log.Error ("Database implementation is not initialized");
@@ -158,7 +169,7 @@ package body ADO.Databases is
    --  ------------------------------
    procedure Rollback (Database : in out Master_Connection) is
    begin
-      Log.Info ("Rollback transaction");
+      Log.Info ("Rollback transaction {0}", Database.Get_Ident);
 
       if Database.Impl = null then
          Log.Error ("Database implementation is not initialized");
@@ -174,7 +185,7 @@ package body ADO.Databases is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement is
    begin
-      Log.Info ("Create delete statement");
+      Log.Debug ("Create delete statement {0}", Database.Get_Ident);
 
       declare
          Stmt : constant Delete_Statement_Access := Database.Impl.all.Create_Statement (Table);
@@ -190,7 +201,7 @@ package body ADO.Databases is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement is
    begin
-      Log.Info ("Create insert statement");
+      Log.Debug ("Create insert statement {0}", Database.Get_Ident);
 
       declare
          Stmt : constant Insert_Statement_Access := Database.Impl.all.Create_Statement (Table);
@@ -206,7 +217,7 @@ package body ADO.Databases is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement is
    begin
-      Log.Info ("Create update statement");
+      Log.Debug ("Create update statement {0}", Database.Get_Ident);
 
       return ADO.Statements.Create.Create_Statement (Database.Impl.all.Create_Statement (Table));
    end Create_Statement;
@@ -218,8 +229,6 @@ package body ADO.Databases is
    procedure Adjust   (Object : in out Connection) is
    begin
       if Object.Impl /= null then
-         Log.Debug ("Adjust {0} : {1}", System.Address_Image (Object.Impl.all'Address),
-                    Natural'Image (Object.Impl.Count));
          Object.Impl.Count := Object.Impl.Count + 1;
       end if;
    end Adjust;
@@ -236,8 +245,6 @@ package body ADO.Databases is
 
    begin
       if Object.Impl /= null then
-         Log.Debug ("Finalize {0} : {1}", System.Address_Image (Object.Impl.all'Address),
-                    Natural'Image (Object.Impl.Count));
          Object.Impl.Count := Object.Impl.Count - 1;
          if Object.Impl.Count = 0 then
             Free (Object.Impl);
