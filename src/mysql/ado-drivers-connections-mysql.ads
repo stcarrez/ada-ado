@@ -32,7 +32,9 @@ private
                                 Config : in Configuration'Class;
                                 Result : out Database_Connection_Access);
 
-   type Mysql_Driver is new ADO.Drivers.Connections.Driver with null record;
+   type Mysql_Driver is new ADO.Drivers.Connections.Driver with record
+      Id : Natural := 0;
+   end record;
 
    --  Deletes the Mysql driver.
    overriding
@@ -45,8 +47,9 @@ private
       Login_Name  : Unbounded_String := Null_Unbounded_String;
       Password    : Unbounded_String := Null_Unbounded_String;
 
-      Connected   : Boolean      := False;
       Server      : Mysql_Access := null;
+
+      Connected   : Boolean      := False;
 
       --  MySQL autocommit flag
       Autocommit  : Boolean := True;
