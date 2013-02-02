@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -200,7 +200,8 @@ private
       Sequences : Factory_Access;
    end record;
 
-   procedure Check_Session (Database : in Session'Class);
+   procedure Check_Session (Database : in Session'Class;
+                            Message  : in String := "");
    pragma Inline (Check_Session);
 
 end ADO.Sessions;

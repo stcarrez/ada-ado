@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,15 +24,17 @@ with ADO.Drivers;
 with ADO.Sequences;
 package body ADO.Sessions is
 
-   use Util.Log;
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Sessions");
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Sessions");
-
-   procedure Check_Session (Database : in Session'Class) is
+   procedure Check_Session (Database : in Session'Class;
+                            Message  : in String := "") is
    begin
       if Database.Impl = null then
          Log.Error ("Session is closed or not initialized");
          raise NOT_OPEN;
+      end if;
+      if Message'Length > 0 then
+         Log.Info (Message, Database.Impl.Database.Get_Ident);
       end if;
    end Check_Session;
 
@@ -202,9 +204,7 @@ package body ADO.Sessions is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Master_Session) is
    begin
-      Log.Info ("Begin transaction");
-
-      Check_Session (Database);
+      Check_Session (Database, "Begin transaction {0}");
       Database.Impl.Database.Begin_Transaction;
    end Begin_Transaction;
 
@@ -213,9 +213,7 @@ package body ADO.Sessions is
    --  ------------------------------
    procedure Commit (Database : in out Master_Session) is
    begin
-      Log.Info ("Commit transaction");
-
-      Check_Session (Database);
+      Check_Session (Database, "Commit transaction {0}");
       Database.Impl.Database.Commit;
    end Commit;
 
@@ -224,9 +222,7 @@ package body ADO.Sessions is
    --  ------------------------------
    procedure Rollback (Database : in out Master_Session) is
    begin
-      Log.Info ("Rollback transaction");
-
-      Check_Session (Database);
+      Check_Session (Database, "Rollback transaction {0}");
       Database.Impl.Database.Rollback;
    end Rollback;
 
