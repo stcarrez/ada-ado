@@ -1,6 +1,7 @@
-Version 0.4.0   -
+Version 0.4.0   - Feb 2013
   - Fix support to reload query definitions
   - Optimize session factory implementation
+  - Customize the MySQL database connection by using MySQL SET
 
 Version 0.3.0   - May 2012
   - Support to update database records when a field is really modified
