@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -220,7 +220,7 @@ package body ADO.Drivers.Connections.Mysql is
                                 Config : in Configuration'Class;
                                 Result : out ADO.Drivers.Connections.Database_Connection_Access) is
 
-      Server   : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
+      Host     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
       Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Database);
       Login    : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Property ("user"));
       Password : constant ADO.C.String_Ptr := C.To_String_Ptr (Config.Get_Property ("password"));
@@ -230,7 +230,7 @@ package body ADO.Drivers.Connections.Mysql is
       Connection : Mysql_Access;
 
       Socket_Path : constant String := Config.Get_Property ("socket");
-      Database : constant Database_Connection_Access := new Database_Connection;
+      Server      : Mysql_Access;
    begin
       if Socket_Path /= "" then
          ADO.C.Set_String (Socket, Socket_Path);
@@ -246,11 +246,11 @@ package body ADO.Drivers.Connections.Mysql is
                  Config.Get_Property ("password"));
       Connection := mysql_init (null);
 
-      Database.Server := mysql_real_connect (Connection, ADO.C.To_C (Server),
-                                             ADO.C.To_C (Login), ADO.C.To_C (Password),
-                                             ADO.C.To_C (Name), Port, ADO.C.To_C (Socket), Flags);
+      Server := mysql_real_connect (Connection, ADO.C.To_C (Host),
+                                    ADO.C.To_C (Login), ADO.C.To_C (Password),
+                                    ADO.C.To_C (Name), Port, ADO.C.To_C (Socket), Flags);
 
-      if Database.Server = null then
+      if Server = null then
          declare
             Message : constant String := Strings.Value (Mysql_Error (Connection));
          begin
@@ -262,13 +262,39 @@ package body ADO.Drivers.Connections.Mysql is
 
       D.Id := D.Id + 1;
       declare
-         Ident : constant String := Util.Strings.Image (D.Id);
+         Ident    : constant String := Util.Strings.Image (D.Id);
+         Database : constant Database_Connection_Access := new Database_Connection;
+
+         procedure Configure (Name, Item : in Util.Properties.Value);
+
+         procedure Configure (Name, Item : in Util.Properties.Value) is
+            Value : constant String := To_String (Item);
+         begin
+            if Name = "encoding" then
+               Database.Execute ("SET NAMES " & Value);
+               Database.Execute ("SET CHARACTER SET " & Value);
+               Database.Execute ("SET CHARACTER_SET_SERVER = '" & Value & "'");
+               Database.Execute ("SET CHARACTER_SET_DATABASE = '" & Value & "'");
+
+            elsif Name /= "user" and Name /= "password" then
+               Database.Execute ("SET " & To_String (Name) & "='" & Value & "'");
+            end if;
+         end Configure;
+
       begin
          Database.Ident (1 .. Ident'Length) := Ident;
+         Database.Server := Server;
+         Database.Count  := 1;
+         Database.Name   := Config.Database;
+
+         --  Configure the connection by setting up the MySQL 'SET X=Y' SQL commands.
+         --  Typical configuration includes:
+         --    encoding=utf8
+         --    collation_connection=utf8_general_ci
+         Config.Properties.Iterate (Process => Configure'Access);
+
+         Result := Database.all'Access;
       end;
-      Database.Name  := Config.Database;
-      Database.Count := 1;
-      Result         := Database.all'Access;
    end Create_Connection;
 
    --  ------------------------------
