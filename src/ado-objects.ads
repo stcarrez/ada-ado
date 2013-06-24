@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -388,7 +388,7 @@ private
      new Ada.Finalization.Controlled with record
       case Of_Type is
          when KEY_INTEGER =>
-            Id : Identifier := 0;
+            Id : Identifier := NO_IDENTIFIER;
 
          when KEY_STRING =>
             Str : Ada.Strings.Unbounded.Unbounded_String;
