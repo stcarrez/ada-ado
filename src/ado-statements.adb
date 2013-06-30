@@ -268,7 +268,7 @@ package body ADO.Statements is
       Hours  : Natural      := 0;
       Mins   : Natural      := 0;
       Secs   : Natural      := 0;
-      Dt     : Duration;
+      Dt     : Duration     := 0.0;
       Field  : chars_ptr    := Value;
 
       function Get_Number (P : in chars_ptr;
@@ -328,37 +328,39 @@ package body ADO.Statements is
             end if;
             Field := Field + 2;
             C := Field.all;
-            if C /= ' ' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
+            if C /= ASCII.NUL then
+               if C /= ' ' then
+                  raise Constraint_Error with "Invalid date format";
+               end if;
+               Field := Field + 1;
 
-            Hours := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= ':' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
+               Hours := Get_Number (Field, 2);
+               Field := Field + 2;
+               C := Field.all;
+               if C /= ':' then
+                  raise Constraint_Error with "Invalid date format";
+               end if;
+               Field := Field + 1;
 
-            Mins := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= ':' then
-               raise Constraint_Error with "Invalid date format";
-            end if;
-            Field := Field + 1;
+               Mins := Get_Number (Field, 2);
+               Field := Field + 2;
+               C := Field.all;
+               if C /= ':' then
+                  raise Constraint_Error with "Invalid date format";
+               end if;
+               Field := Field + 1;
 
-            Secs := Get_Number (Field, 2);
-            Field := Field + 2;
-            C := Field.all;
-            if C /= '.' and C /= ASCII.NUL then
-               raise Constraint_Error with "Invalid date format";
+               Secs := Get_Number (Field, 2);
+               Field := Field + 2;
+               C := Field.all;
+               if C /= '.' and C /= ASCII.NUL then
+                  raise Constraint_Error with "Invalid date format";
+               end if;
+               Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
             end if;
          end;
       end if;
 
-      Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
       return Ada.Calendar.Formatting.Time_Of (Year, Month, Day, Dt, False, 0);
    end Get_Time;
 
