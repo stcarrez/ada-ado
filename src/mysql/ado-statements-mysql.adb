@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -700,6 +700,49 @@ package body ADO.Statements.Mysql is
             return ADO.Schemas.T_UNKNOWN;
       end case;
    end Get_Column_Type;
+
+   --  ------------------------------
+   --  Get the column name
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   overriding
+   function Get_Column_Name (Query  : in Mysql_Query_Statement;
+                             Column : in Natural)
+                             return String is
+      use type Interfaces.C.Strings.chars_ptr;
+
+      Field : MYSQL_FIELD;
+   begin
+      if Query.Result = null then
+         raise Invalid_Statement with "No statement";
+      end if;
+      if Column > Query.Max_Column then
+         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+      end if;
+
+      Field := Mysql_Fetch_Field_Direct (Query.Result, MYSQL_FIELD_OFFSET (Column));
+      if Field = null then
+         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+      end if;
+      if Field.name = Interfaces.C.Strings.Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (Field.name);
+      end if;
+   end Get_Column_Name;
+
+   --  ------------------------------
+   --  Get the number of columns in the result.
+   --  ------------------------------
+   overriding
+   function Get_Column_Count (Query  : in Mysql_Query_Statement)
+                              return Natural is
+   begin
+      if Query.Result = null then
+         raise Invalid_Statement with "No statement";
+      end if;
+      return Query.Max_Column;
+   end Get_Column_Count;
 
    overriding
    procedure Finalize (Query : in out Mysql_Query_Statement) is
