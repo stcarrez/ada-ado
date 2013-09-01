@@ -221,6 +221,16 @@ package ADO.Statements is
                              Column : Natural)
                              return ADO.Schemas.Column_Type;
 
+   --  Get the column name.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Column_Name (Query  : in Query_Statement;
+                             Column : in Natural)
+                             return String;
+
+   --  Get the number of columns in the result.
+   function Get_Column_Count (Query  : in Query_Statement)
+                             return Natural;
+
    --  Get the query result as an integer
    function Get_Result_Integer (Query : in Query_Statement) return Integer;
 
