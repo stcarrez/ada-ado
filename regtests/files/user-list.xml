@@ -20,9 +20,11 @@
     select
         u.id as ID,
         u.name as NAME,
-        u.email as EMAIL
+        u.value as VALUE
     from
-        user u
+        test_user u
+    where
+        u.select = :filter
     order by
         u.name asc
        </sql>
@@ -39,11 +41,11 @@
     select
         u.id as ID,
         u.name as NAME,
-        u.email as EMAIL
+        u.value as VALUE
     from
-        user u
+        test_user u
     where
-        u.name = ?
+        u.select = :filter
     order by
         u.name asc
        </sql>
