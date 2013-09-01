@@ -634,6 +634,32 @@ package body ADO.Statements is
       return Query.Proxy.Get_Column_Type (Column);
    end Get_Column_Type;
 
+   --  ------------------------------
+   --  Get the column name.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Column_Name (Query  : in Query_Statement;
+                             Column : in Natural)
+                             return String is
+   begin
+      if Query.Proxy = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
+      return Query.Proxy.Get_Column_Name (Column);
+   end Get_Column_Name;
+
+   --  ------------------------------
+   --  Get the number of columns in the result.
+   --  ------------------------------
+   function Get_Column_Count (Query  : in Query_Statement)
+                              return Natural is
+   begin
+      if Query.Proxy = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
+      return Query.Proxy.Get_Column_Count;
+   end Get_Column_Count;
+
    overriding
    procedure Adjust (Stmt : in out Query_Statement) is
    begin
