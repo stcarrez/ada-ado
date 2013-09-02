@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database connections
---  Copyright (C) 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Free Software Foundation, Inc.
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  This file is part of ADO.
@@ -573,6 +573,36 @@ package body ADO.Statements.Sqlite is
 
       end case;
    end Get_Column_Type;
+
+   --  ------------------------------
+   --  Get the column name.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   overriding
+   function Get_Column_Name (Query  : in Sqlite_Query_Statement;
+                             Column : in Natural)
+                             return String is
+      use type Interfaces.C.Strings.chars_ptr;
+
+      Name : constant Interfaces.C.Strings.chars_ptr
+        := Sqlite3_H.sqlite3_column_name (Query.Stmt, int (Column));
+   begin
+      if Name = Interfaces.C.Strings.Null_Ptr then
+         return "";
+      else
+         return Interfaces.C.Strings.Value (Name);
+      end if;
+   end Get_Column_Name;
+
+   --  ------------------------------
+   --  Get the number of columns in the result.
+   --  ------------------------------
+   overriding
+   function Get_Column_Count (Query  : in Sqlite_Query_Statement)
+                              return Natural is
+   begin
+      return Natural (Sqlite3_H.sqlite3_column_count (Query.Stmt));
+   end Get_Column_Count;
 
    --  ------------------------------
    --  Deletes the query statement.
