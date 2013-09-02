@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -144,6 +144,18 @@ package ADO.Statements.Sqlite is
    function Get_Column_Type (Query  : Sqlite_Query_Statement;
                              Column : Natural)
                              return ADO.Schemas.Column_Type;
+
+   --  Get the column name.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   overriding
+   function Get_Column_Name (Query  : in Sqlite_Query_Statement;
+                             Column : in Natural)
+                             return String;
+
+   --  Get the number of columns in the result.
+   overriding
+   function Get_Column_Count (Query  : in Sqlite_Query_Statement)
+                              return Natural;
 
    --  Deletes the query statement.
    overriding
