@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Containers;
 
 with Util.Beans.Objects;
 package ADO.Utils is
@@ -24,5 +25,8 @@ package ADO.Utils is
 
    --  Build the identifier from the bean object.
    function To_Identifier (Value : in Util.Beans.Objects.Object) return ADO.Identifier;
+
+   --  Compute the hash of the identifier.
+   function Hash (Key : in ADO.Identifier) return Ada.Containers.Hash_Type;
 
 end ADO.Utils;
