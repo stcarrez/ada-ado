@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Containers;
+with Ada.Containers.Vectors;
 
 with Util.Beans.Objects;
 package ADO.Utils is
@@ -28,5 +29,16 @@ package ADO.Utils is
 
    --  Compute the hash of the identifier.
    function Hash (Key : in ADO.Identifier) return Ada.Containers.Hash_Type;
+
+   package Identifier_Vectors is
+      new Ada.Containers.Vectors (Index_Type   => Positive,
+                                  Element_Type => ADO.Identifier,
+                                  "="          => "=");
+
+   subtype Identifier_Vector is Identifier_Vectors.Vector;
+   subtype Identifier_Cursor is Identifier_Vectors.Cursor;
+
+   --  Return the identifier list as a comma separated list of identifiers.
+   function To_Parameter_List (List : in Identifier_Vector) return String;
 
 end ADO.Utils;
