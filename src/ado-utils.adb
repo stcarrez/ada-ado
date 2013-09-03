@@ -42,4 +42,18 @@ package body ADO.Utils is
       end if;
    end To_Identifier;
 
+   --  ------------------------------
+   --  Compute the hash of the identifier.
+   --  ------------------------------
+   function Hash (Key : in ADO.Identifier) return Ada.Containers.Hash_Type is
+      use Ada.Containers;
+   begin
+
+      if Key < 0 then
+         return Hash_Type (-Key);
+      else
+         return Hash_Type (Key);
+      end if;
+   end Hash;
+
 end ADO.Utils;
