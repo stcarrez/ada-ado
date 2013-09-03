@@ -24,7 +24,7 @@
     from
         test_user u
     where
-        u.select = :filter
+        u.`select` = :filter
     order by
         u.name asc
        </sql>
@@ -45,7 +45,7 @@
     from
         test_user u
     where
-        u.select = :filter
+        u.`select` = :filter
     order by
         u.name asc
        </sql>
