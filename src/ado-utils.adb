@@ -56,4 +56,25 @@ package body ADO.Utils is
       end if;
    end Hash;
 
+   --  ------------------------------
+   --  Return the identifier list as a comma separated list of identifiers.
+   --  ------------------------------
+   function To_Parameter_List (List : in Identifier_Vector) return String is
+      use Identifier_Vectors;
+
+      Result     : Ada.Strings.Unbounded.Unbounded_String;
+      Pos        : Identifier_Cursor := List.First;
+      Need_Comma : Boolean := False;
+   begin
+      while Identifier_Vectors.Has_Element (Pos) loop
+         if Need_Comma then
+            Ada.Strings.Unbounded.Append (Result, ",");
+         end if;
+         Ada.Strings.Unbounded.Append (Result, ADO.Identifier'Image (Element (Pos)));
+         Need_Comma := True;
+         Next (Pos);
+      end loop;
+      return Ada.Strings.Unbounded.To_String (Result);
+   end To_Parameter_List;
+
 end ADO.Utils;
