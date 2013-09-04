@@ -21,6 +21,7 @@ with Ada.Finalization;
 with Ada.Calendar;
 with Ada.Containers.Indefinite_Vectors;
 
+with ADO.Utils;
 with ADO.Drivers.Dialects;
 
 --  Defines a list of parameters for an SQL statement.
@@ -31,7 +32,7 @@ package ADO.Parameters is
 
    type Token is new String;
 
-   type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_DATE, T_LONG_INTEGER,
+   type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_LIST, T_DATE, T_LONG_INTEGER,
                            T_INTEGER, T_BOOLEAN, T_BLOB);
 
    type Parameter (T   : Parameter_Type;
@@ -128,6 +129,9 @@ package ADO.Parameters is
    procedure Bind_Param (Params : in out Abstract_List;
                          Name   : in String;
                          Value  : in ADO.Blob_Ref);
+   procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
+                         Value  : in ADO.Utils.Identifier_Vector);
 
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
