@@ -150,6 +150,20 @@ package body ADO.Parameters is
    end Bind_Param;
 
    procedure Bind_Param (Params : in out Abstract_List;
+                         Name   : in String;
+                         Value  : in ADO.Utils.Identifier_Vector) is
+      S : constant String := ADO.Utils.To_Parameter_List (Value);
+   begin
+      Abstract_List'Class (Params).
+        Add_Parameter (Parameter '(T         => T_LIST,
+                                   Len       => Name'Length,
+                                   Value_Len => S'Length,
+                                   Name      => Name,
+                                   Position  => 0,
+                                   Str       => S));
+   end Bind_Param;
+
+   procedure Bind_Param (Params : in out Abstract_List;
                          Name  : in String;
                          Value : in Unbounded_String) is
       Val   : constant String := To_String (Value);
@@ -464,7 +478,7 @@ package body ADO.Parameters is
             when T_NULL =>
                Append (Buffer, "NULL");
 
-            when T_TOKEN =>
+            when T_TOKEN | T_LIST =>
                Append (Buffer, Param.Str);
 
             when T_BLOB =>
