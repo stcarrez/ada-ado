@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,9 +38,6 @@ package ADO.Drivers is
 
    --  Initialize the drivers and the library and configure the runtime with the given properties.
    procedure Initialize (Config : in Util.Properties.Manager'Class);
-
-   --  Initialize the drivers which are available.
-   procedure Initialize;
 
    --  Get the global configuration property identified by the name.
    --  If the configuration property does not exist, returns the default value.
