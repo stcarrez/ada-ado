@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  userdb -- Example to find/create an object from the database
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ADO;
-with ADO.Drivers;
+with ADO.Drivers.Initializer;
 with ADO.Sessions;
 with ADO.SQL;
 with ADO.Sessions.Factory;
@@ -118,9 +118,10 @@ procedure Userdb is
    end List_User_Info;
 
    procedure Initialize (File : in String) is
+      procedure Init is new ADO.Drivers.Initializer (String, ADO.Drivers.Initialize);
    begin
       Util.Log.Loggers.Initialize (File);
-      ADO.Drivers.Initialize (File);
+      Init (File);
    end Initialize;
 
 begin
