@@ -7,12 +7,14 @@ LIBRARY_TYPE=static
 # target names defined.
 MODE=debug
 GNATMAKE=@GNATMAKE@
-GNATMAKE=gnatmake -XMODE=${MODE} -XPROCESSORS=4
+GNATMAKE=gnatmake -XMODE=${MODE}
 GNATCLEAN=gnatclean
 SVN=svn
 INSTALL=@INSTALL@
 
-GPRPATH=ado.gpr
+GPRPATH=ado_core.gpr
+ADO_MYSQL_GPRPATH=ado_mysql.gpr
+ADO_SQLITE_GPRPATH=ado_sqlite.gpr
 
 version=@ADO_VERSION@
 
@@ -22,8 +24,8 @@ BUILDS_SHARED=@BUILDS_SHARED@
 
 DIST_FILE=ada-ado-@ADO_VERSION@.tar.gz
 
-HAVE_MYSQL=@ADO_DB_MYSQL@
-HAVE_SQLITE=@ADO_DB_SQLITE@
+HAVE_MYSQL=@ADO_HAVE_MYSQL@
+HAVE_SQLITE=@ADO_HAVE_SQLITE@
 
 MYSQL_LIBNAME=@MYSQL_LIBNAME@
 
@@ -53,7 +55,8 @@ projectdir=${prefix}/share/ada/adainclude
 libdir=${prefix}/lib
 alidir=${libdir}/ada/adalib/
 
-MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=4
+CPUS := $(shell getconf _NPROCESSORS_ONLN)
+MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
@@ -68,7 +71,9 @@ endif
 
 # Build executables for all mains defined by the project.
 build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
-	$(GNATMAKE) -m -p -P "$(GPRPATH)" $(MAKE_ARGS)
+	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
+	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
+	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
 	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS)
 
 static:
@@ -86,16 +91,18 @@ autobuild:
 
 # Configure the driver file
 src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
-	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
-	          -DHAVE_SQLITE=$(HAVE_SQLITE) \
-		  src/ado-drivers-initialize.gpb $@
+	#gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
+	#          -DHAVE_SQLITE=$(HAVE_SQLITE) \
+	#	  src/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
 	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
 
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
-	gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
-	         -DHAVE_SQLITE=$(HAVE_SQLITE) \
+	mysql=`test T$(HAVE_MYSQL) = Tno && echo True || echo False`; \
+	sqlite=`test T$(HAVE_SQLITE) = Tno && echo True || echo False`; \
+	gnatprep -DHAVE_MYSQL=$$mysql \
+	         -DHAVE_SQLITE=$$sqlite \
 		 regtests/ado-testsuite-drivers.gpb $@
 
 # Build and run the unit tests
@@ -115,7 +122,8 @@ clean:
 	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
 	-$(GNATCLEAN) -q -Ptests
 	-$(GNATCLEAN) -q -Psamples
-	-rm -f lib/ado/*.a lib/ado/*.so
+	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
+	-rm -rf obj/ado obj/ado-mysql obj/ado-sqlite
 
 # Clean root project and all imported projects too.
 clean_tree:
