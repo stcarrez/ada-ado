@@ -1,0 +1,13 @@
+with "util";
+
+project Ado_Core is
+   Version := "@ADO_VERSION@";
+
+   for Library_Name use "ada-ado";
+   for Library_Dir use "INSTALL/lib";
+   for Library_Kind use "LIBRARY_TYPE";
+
+   for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado");
+   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado/":
+   for Externally_Built use "true";
+end Ado_Core;
