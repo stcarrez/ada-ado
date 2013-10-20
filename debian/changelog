@@ -1,0 +1,5 @@
+libada-ado (1.0-1) unstable; urgency=low
+
+  * Initial release to setup a debian library and development package
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Fri, 18 Oct 2013 20:33:06 +0200

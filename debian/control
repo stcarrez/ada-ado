@@ -1,0 +1,76 @@
+Source: libada-ado
+Priority: extra
+Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, gnat, gnat-4.6,
+ libada-util1.7-dev, libada-testutil1.7-dev
+Standards-Version: 3.9.2
+Section: libs
+Homepage: http://code.google.com/p/ada-ado/
+#Vcs-Git: git://git.debian.org/collab-maint/libada-ado.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/libada-ado.git;a=summary
+
+Package: libada-ado1.0
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, libada-util1.7, ${misc:Depends}
+Description: Ada Database Objects runtime libraries
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.  The package contains the runtime
+ libraries.
+
+Package: libada-ado-mysql1.0
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, libada-ado1.0, libada-util1.7, libmysqlclient18, ${misc:Depends}
+Description: Ada Database Objects MySQL driver
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.  The package contains the driver
+ library to support MySQL databases.
+
+Package: libada-ado-sqlite1.0
+Section: libs
+Architecture: any
+Pre-Depends: multiarch-support
+Depends: ${shlibs:Depends}, libada-ado1.0, libada-util1.7, libsqlite3-0, ${misc:Depends}
+Description: Ada Database Objects SQLite driver
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.  The package contains the driver
+ library to support SQLite databases.
+
+Package: libada-ado1.0-dev
+Section: libdevel
+Architecture: any
+Depends: libada-ado1.0 (= ${binary:Version}), libada-util1.7-dev, ${misc:Depends}
+Description: Ada Database Objects (Development files)
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.
+
+Package: libada-ado-mysql1.0-dev
+Section: libdevel
+Architecture: any
+Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
+ libmysqlclient-dev, ${misc:Depends}
+Description: Ada Database Objects (MySQL Driver development files)
+ The package contains the Ada development files for the MySQL driver.
+
+Package: libada-ado-sqlite1.0-dev
+Section: libdevel
+Architecture: any
+Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
+ libsqlite3-ev, ${misc:Depends}
+Description: Ada Database Objects (SQLite Driver development files)
+ The package contains the Ada development files for the SQLite driver.
+
+Package: libada-ado1.0-dbg
+Section: debug
+Architecture: any
+Depends: libada-ado1.0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Debugging symbols for the Ada Database Objects Library
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.
+ .
+ This is the library containing debugging symbols for the Ada Database
+ Objects library.
+
