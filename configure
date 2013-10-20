@@ -566,9 +566,11 @@ ac_subst_vars='LTLIBOBJS
 LIBOBJS
 UTIL_DIR
 BUILDS_SHARED
+WITH_ADO_SQLITE
+WITH_ADO_MYSQL
 MYSQL_LIBNAME
-ADO_DB_SQLITE
-ADO_DB_MYSQL
+ADO_HAVE_SQLITE
+ADO_HAVE_MYSQL
 ADO_TESTS_HARNESS
 ADO_TESTS_SRC_DIR
 ADO_DATABASES_SRC_DIR
@@ -1948,10 +1950,9 @@ test -n "$target_alias" &&
   program_prefix=${target_alias}-
 
 
-
 # Current release settings
-ADO_MAJOR_VERSION=0
-ADO_MINOR_VERSION=4
+ADO_MAJOR_VERSION=1
+ADO_MINOR_VERSION=0
 ADO_MICRO_VERSION=0
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
@@ -2790,8 +2791,6 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-# AM_PATH_GNAT
-# AM_PATH_PERL
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ${MAKE-make} sets \$(MAKE)" >&5
 $as_echo_n "checking whether ${MAKE-make} sets \$(MAKE)... " >&6; }
 set x ${MAKE-make}
@@ -2956,7 +2955,8 @@ fi
 
 
 DB=""
-ADO_DB_MYSQL=False
+WITH_ADO_MYSQL=""
+ADO_HAVE_MYSQL=no
 if test "${ENABLE_MYSQL}" = "yes" ; then
   case "${host}" in
   ## On Windows, the MySQL library name is libmysql
@@ -3007,7 +3007,8 @@ done
 
     if test "X$MYSQL" != "X" ; then
        DB="$DB mysql"
-       ADO_DB_MYSQL=True
+       ADO_HAVE_MYSQL=yes
+	   WITH_ADO_MYSQL="with \"ado_mysql\";";
        MYSQL_LIBNAME="$MYSQL_LIB"
     fi
     ;;
@@ -3056,7 +3057,8 @@ $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
 
        DB="$DB mysql"
-       ADO_DB_MYSQL=True
+       ADO_HAVE_MYSQL=yes
+	   WITH_ADO_MYSQL="with \"ado_mysql\";";
        MYSQL_LIBNAME="$MYSQL_LIB"
 
 fi
@@ -3066,7 +3068,8 @@ fi
   esac
 fi
 
-ADO_DB_SQLITE=False
+WITH_ADO_SQLITE=""
+ADO_HAVE_SQLITE=no
 if test "${ENABLE_SQLITE}" = "yes" ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sqlite3_open in -lsqlite3" >&5
 $as_echo_n "checking for sqlite3_open in -lsqlite3... " >&6; }
@@ -3107,11 +3110,14 @@ $as_echo "$ac_cv_lib_sqlite3_sqlite3_open" >&6; }
 if test "x$ac_cv_lib_sqlite3_sqlite3_open" = xyes; then :
 
     DB="$DB sqlite"
-    ADO_DB_SQLITE=True
+    ADO_HAVE_SQLITE=yes
+	WITH_ADO_SQLITE="with \"ado_sqlite\";";
 
 fi
 
 fi
+
+
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
@@ -3138,18 +3144,20 @@ fi
 
 
 
+
+
 ##########################################
 # Check to enable/disable shared library
 ##########################################
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking library type" >&5
-$as_echo_n "checking library type... " >&6; }
-ac_enable_shared=relocatable
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking shared library support" >&5
+$as_echo_n "checking shared library support... " >&6; }
+ac_enable_shared=no
 # Check whether --enable-shared was given.
 if test "${enable_shared+set}" = set; then :
   enableval=$enable_shared; case "${enableval}" in
-  no|none)  ac_enable_shared=static ;;
-  *)        ac_enable_shared=relocatable ;;
+  no|none)  ac_enable_shared=no ;;
+  *)        ac_enable_shared=yes ;;
 esac
 fi
 
@@ -3191,11 +3199,11 @@ if test $? -ne 0 ; then
    as_fn_error $? "Ada Utility library not found in ${UTIL_DIR}" "$LINENO" 5
 fi
 rm -f t.gpr
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${UTIL_DIR}" >&5
-$as_echo "${UTIL_DIR}" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ok ${UTIL_DIR}" >&5
+$as_echo "ok ${UTIL_DIR}" >&6; }
 
 
-ac_config_files="$ac_config_files Makefile ado.gpr tests.gpr samples.gpr distrib/ado.gpr"
+ac_config_files="$ac_config_files Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3917,6 +3925,7 @@ do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "ado.gpr") CONFIG_FILES="$CONFIG_FILES ado.gpr" ;;
+    "ado_core.gpr") CONFIG_FILES="$CONFIG_FILES ado_core.gpr" ;;
     "tests.gpr") CONFIG_FILES="$CONFIG_FILES tests.gpr" ;;
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
     "distrib/ado.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado.gpr" ;;
