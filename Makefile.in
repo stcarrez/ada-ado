@@ -167,7 +167,7 @@ create-mysql-tests:
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-ado.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+ado.gpr.in ado_core.gpr.in ado_mysql.gpr ado_sqlite.gpr tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
@@ -204,28 +204,46 @@ install_shared:
 	$(MAKE) LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
-	$(MKDIR) -p ${includedir}/ado
+	$(MKDIR) -p ${includedir}/ada-ado
+	$(MKDIR) -p ${includedir}/ada-ado-drivers
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/ado/$(LIBRARY_TYPE)
+	${MKDIR} -p ${alidir}/ada-ado
+	${MKDIR} -p ${alidir}/ada-ado-drivers
 	${MKDIR} -p ${dynamodir}/ado/db
 	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/mysql
 	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
-	${CP} -p src/*.ad[bs] ${includedir}/ado
-	test T${HAVE_MYSQL} = TFalse || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ado
-	test T${HAVE_SQLITE} = TFalse || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ado
-	${CP} -p src/model/*.ad[bs] ${includedir}/ado
+	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${includedir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${includedir}/ada-ado-sqlite
+	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${alidir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${alidir}/ada-ado-sqlite
+	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
+	test T${HAVE_MYSQL} = TFalse || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = TFalse || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
+	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+		< distrib/ado_core.gpr > ${projectdir}/ado_core.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = TFalse || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
-	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ado/$(LIBRARY_TYPE)
+	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
+	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
+	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.a ${libdir}/
+	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.a ${libdir}/
 else
 	${CP} -p lib/ado/$(LIBRARY_TYPE)/libada-ado.$(LIBVER) ${libdir}/
+	test T${HAVE_MYSQL} = TFalse || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.$(LIBVER) ${libdir}/
+	test T${HAVE_SQLITE} = TFalse || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
 	rm -f libada-ado.$(LIBEXT) && \
 	${LN} libada-ado.$(LIBVER) libada-ado.$(LIBEXT)
@@ -234,8 +252,15 @@ endif
 uninstall:
 	rm -rf ${includedir}/ado
 	rm -f ${libdir}/libada-ado.a
+	rm -f ${libdir}/libada-ado-mysql.a
+	rm -f ${libdir}/libada-ado-sqlite.a
 	rm -f ${libdir}/libada-ado.so.${version}
+	rm -f ${libdir}/libada-ado-mysql.so.${version}
+	rm -f ${libdir}/libada-ado-sqlite.so.${version}
 	rm -f ${projectdir}/ado.gpr
+	rm -f ${projectdir}/ado_core.gpr
+	rm -f ${projectdir}/ado_mysql.gpr
+	rm -f ${projectdir}/ado_sqlite.gpr
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)
