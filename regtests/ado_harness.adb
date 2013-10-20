@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with ADO.Testsuite;
-with ADO.Drivers;
+with ADO.Drivers.Initializer;
 with Regtests;
 
 with Util.Tests;
@@ -29,6 +29,9 @@ procedure ADO_Harness is
    procedure Harness is new Util.Tests.Harness (ADO.Testsuite.Suite,
                                                Initialize);
 
+   procedure Init_Drivers is new ADO.Drivers.Initializer (Util.Properties.Manager'Class,
+                                                          ADO.Drivers.Initialize);
+
    --  ------------------------------
    --  Initialization procedure: setup the database
    --  ------------------------------
@@ -36,7 +39,7 @@ procedure ADO_Harness is
       DB : constant String := Props.Get ("test.database",
                                          "sqlite:///regtests.db");
    begin
-      ADO.Drivers.Initialize;
+      Init_Drivers (Props);
       Regtests.Initialize (DB);
    end Initialize;
 
