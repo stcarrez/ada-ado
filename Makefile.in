@@ -70,7 +70,7 @@ install: install_static
 endif
 
 # Build executables for all mains defined by the project.
-build:  src/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
+build:  src/drivers/ado-drivers-initializer.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
@@ -90,17 +90,19 @@ autobuild:
 	$(GNATMAKE) -gnatc -c -k  -P "$(GPRPATH)"
 
 # Configure the driver file
-src/ado-drivers-initialize.adb: src/ado-drivers-initialize.gpb Makefile
-	#gnatprep -DHAVE_MYSQL=$(HAVE_MYSQL) \
-	#          -DHAVE_SQLITE=$(HAVE_SQLITE) \
-	#	  src/ado-drivers-initialize.gpb $@
+src/drivers/ado-drivers-initializer.adb: src/drivers/ado-drivers-initializer.gpb Makefile
+	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
+	sqlite=`(test T$(HAVE_SQLITE) = Tyes && echo True) || echo False`; \
+	gnatprep -DHAVE_MYSQL=$$mysql \
+	          -DHAVE_SQLITE=$$sqlite \
+		  src/drivers/ado-drivers-initializer.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
 	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
 
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
-	mysql=`test T$(HAVE_MYSQL) = Tno && echo True || echo False`; \
-	sqlite=`test T$(HAVE_SQLITE) = Tno && echo True || echo False`; \
+	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
+	sqlite=`(test T$(HAVE_SQLITE) = Tyes && echo True) || echo False`; \
 	gnatprep -DHAVE_MYSQL=$$mysql \
 	         -DHAVE_SQLITE=$$sqlite \
 		 regtests/ado-testsuite-drivers.gpb $@
