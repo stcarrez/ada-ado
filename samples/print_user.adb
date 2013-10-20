@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ADO;
-with ADO.Drivers;
+with ADO.Drivers.Initializer;
 with ADO.Sessions;
 with ADO.SQL;
 with ADO.Sessions.Factory;
