@@ -217,9 +217,10 @@ install_lib:
 	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${alidir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${alidir}/ada-ado-sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
+	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
+	${CP} -p src/drivers/*.ad[bs] ${includedir}/ada-ado-drivers
 	test T${HAVE_MYSQL} = TFalse || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
-	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
@@ -235,7 +236,7 @@ install_lib:
 	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.a ${libdir}/
@@ -247,6 +248,12 @@ else
 	cd ${libdir} && \
 	rm -f libada-ado.$(LIBEXT) && \
 	${LN} libada-ado.$(LIBVER) libada-ado.$(LIBEXT)
+	test T${HAVE_MYSQL} = TFalse || cd ${libdir} && \
+		 rm -f libada-ado-mysql.$(LIBEXT) && \
+		 ${LN} libada-ado-mysql.$(LIBVER) libada-ado-mysql.$(LIBEXT)
+	test T${HAVE_SQLITE} = TFalse || cd ${libdir} && \
+		 rm -f libada-ado-sqlite.$(LIBEXT) && \
+		 ${LN} libada-ado-sqlite.$(LIBVER) libada-ado-sqlite.$(LIBEXT)
 endif
 
 uninstall:
