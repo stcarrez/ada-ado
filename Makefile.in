@@ -188,7 +188,8 @@ dist:
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	rm -f $(distdir)/distrib/*.gpr
+	rm -f $(distdir)/distrib/ado_core.gpr
+	rm -f $(distdir)/distrib/ado.gpr
 	rm -rf $(distdir)/regtests/result
 	mkdir $(distdir)/bin
 	mkdir $(distdir)/obj
