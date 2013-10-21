@@ -23,7 +23,7 @@ Package: libada-ado-mysql1.0
 Section: libs
 Architecture: any
 Pre-Depends: multiarch-support
-Depends: ${shlibs:Depends}, libada-ado1.0, libada-util1.7, libmysqlclient18, ${misc:Depends}
+Depends: ${shlibs:Depends}, libada-ado1.0, libada-util1.7, libmysqlclient18 | libmysqlclient16, ${misc:Depends}
 Description: Ada Database Objects MySQL driver
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.  The package contains the driver
