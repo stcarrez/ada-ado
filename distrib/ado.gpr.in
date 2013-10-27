@@ -5,7 +5,6 @@ with "ado_core";
 
 abstract project Ado is
    Version := Ado_Core.Version;
-   Library_Dir := Ado_Core.Library_Dir;
 
    Has_Mysql  : Config.Yes_No := "@ADO_HAVE_MYSQL@";
    Has_Sqlite : Config.Yes_No := "@ADO_HAVE_SQLITE@";
