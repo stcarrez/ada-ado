@@ -6,7 +6,9 @@ with "ado_core";
 abstract project Ado is
    Version := Ado_Core.Version;
 
-   Has_Mysql  : Config.Yes_No := "@ADO_HAVE_MYSQL@";
-   Has_Sqlite : Config.Yes_No := "@ADO_HAVE_SQLITE@";
+   type Yes_No is ("yes", "no");
+
+   Has_Mysql  : Yes_No := "@ADO_HAVE_MYSQL@";
+   Has_Sqlite : Yes_No := "@ADO_HAVE_SQLITE@";
 
 end Ado;
