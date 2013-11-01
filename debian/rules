@@ -72,7 +72,9 @@ libada-ado$(aliversion)-dev:	libada-ado$(aliversion)
 		usr/share/dynamo/ado \
 		usr/share/dynamo/ado/db
 	dh_install -p$@ usr/lib/libada-ado.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/libada-ado-drivers.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado/*.ali /usr/lib/ada/adalib/ada-ado
+	dh_install -p$@ usr/lib/ada/adalib/ada-ado-drivers/*.ali /usr/lib/ada/adalib/ada-ado-drivers
 	dh_install -p$@ usr/share/ada/adainclude/ado.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ado_core.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-ado/*.ad[bs] /usr/share/ada/adainclude/ada-ado
