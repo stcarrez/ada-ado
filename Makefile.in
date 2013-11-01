@@ -236,14 +236,17 @@ install_lib:
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
+	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-drivers
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
+	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/libada-ado-drivers.a ${libdir}/
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.a ${libdir}/
 	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.a ${libdir}/
 else
 	${CP} -p lib/ado/$(LIBRARY_TYPE)/libada-ado.$(LIBVER) ${libdir}/
+	${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/libada-ado-drivers.$(LIBVER) ${libdir}/
 	test T${HAVE_MYSQL} = TFalse || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.$(LIBVER) ${libdir}/
 	test T${HAVE_SQLITE} = TFalse || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
