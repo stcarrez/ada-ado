@@ -17,7 +17,7 @@ project Ado_Mysql is
    for Object_Dir use "obj/ado-mysql/" & Project'Library_Kind;
 
    package Linker is
-      for Linker_Options use ("-lmysqlclient");
+      for Linker_Options use ("-l@MYSQL_LIBNAME@");
    end Linker;
 
   package Binder renames Config.Binder;
