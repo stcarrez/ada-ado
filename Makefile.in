@@ -55,6 +55,9 @@ projectdir=${prefix}/share/ada/adainclude
 libdir=${prefix}/lib
 alidir=${libdir}/ada/adalib/
 
+libname=libada_ado
+libprefix=$(libname)_
+
 CPUS := $(shell getconf _NPROCESSORS_ONLN)
 MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
@@ -240,34 +243,34 @@ install_lib:
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifeq ($(LIBRARY_TYPE),static)
-	${CP} lib/ado/$(LIBRARY_TYPE)/libada-ado.a ${libdir}/
-	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/libada-ado-drivers.a ${libdir}/
-	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.a ${libdir}/
-	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.a ${libdir}/
+	${CP} lib/ado/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
+	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.a ${libdir}/
+	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.a ${libdir}/
+	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.a ${libdir}/
 else
-	${CP} -p lib/ado/$(LIBRARY_TYPE)/libada-ado.$(LIBVER) ${libdir}/
-	${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/libada-ado-drivers.$(LIBVER) ${libdir}/
-	test T${HAVE_MYSQL} = TFalse || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/libada-ado-mysql.$(LIBVER) ${libdir}/
-	test T${HAVE_SQLITE} = TFalse || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/libada-ado-sqlite.$(LIBVER) ${libdir}/
+	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
+	${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${libdir}/
+	test T${HAVE_MYSQL} = TFalse || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
+	test T${HAVE_SQLITE} = TFalse || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
-	rm -f libada-ado.$(LIBEXT) && \
-	${LN} libada-ado.$(LIBVER) libada-ado.$(LIBEXT)
+	rm -f $(libname).$(LIBEXT) && \
+	${LN} $(libname).$(LIBVER) $(libname).$(LIBEXT)
 	test T${HAVE_MYSQL} = TFalse || cd ${libdir} && \
-		 rm -f libada-ado-mysql.$(LIBEXT) && \
-		 ${LN} libada-ado-mysql.$(LIBVER) libada-ado-mysql.$(LIBEXT)
+		 rm -f $(libprefix)mysql.$(LIBEXT) && \
+		 ${LN} $(libprefix)mysql.$(LIBVER) $(libprefix)mysql.$(LIBEXT)
 	test T${HAVE_SQLITE} = TFalse || cd ${libdir} && \
-		 rm -f libada-ado-sqlite.$(LIBEXT) && \
-		 ${LN} libada-ado-sqlite.$(LIBVER) libada-ado-sqlite.$(LIBEXT)
+		 rm -f $(libprefix)sqlite.$(LIBEXT) && \
+		 ${LN} $(libprefix)sqlite.$(LIBVER) $(libprefix)sqlite.$(LIBEXT)
 endif
 
 uninstall:
 	rm -rf ${includedir}/ado
-	rm -f ${libdir}/libada-ado.a
-	rm -f ${libdir}/libada-ado-mysql.a
-	rm -f ${libdir}/libada-ado-sqlite.a
-	rm -f ${libdir}/libada-ado.so.${version}
-	rm -f ${libdir}/libada-ado-mysql.so.${version}
-	rm -f ${libdir}/libada-ado-sqlite.so.${version}
+	rm -f ${libdir}/$(libname).a
+	rm -f ${libdir}/$(libprefix)mysql.a
+	rm -f ${libdir}/$(libprefix)sqlite.a
+	rm -f ${libdir}/$(libname).so.${version}
+	rm -f ${libdir}/$(libprefix)mysql.so.${version}
+	rm -f ${libdir}/$(libprefix)sqlite.so.${version}
 	rm -f ${projectdir}/ado.gpr
 	rm -f ${projectdir}/ado_core.gpr
 	rm -f ${projectdir}/ado_mysql.gpr
