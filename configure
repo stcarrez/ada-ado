@@ -3203,7 +3203,7 @@ rm -f t.gpr
 $as_echo "ok ${UTIL_DIR}" >&6; }
 
 
-ac_config_files="$ac_config_files Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_core.gpr"
+ac_config_files="$ac_config_files Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_core.gpr ado_mysql.gpr ado_sqlite.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3930,6 +3930,8 @@ do
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
     "distrib/ado.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado.gpr" ;;
     "distrib/ado_core.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado_core.gpr" ;;
+    "ado_mysql.gpr") CONFIG_FILES="$CONFIG_FILES ado_mysql.gpr" ;;
+    "ado_sqlite.gpr") CONFIG_FILES="$CONFIG_FILES ado_sqlite.gpr" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
