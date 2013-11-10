@@ -208,11 +208,12 @@ install_shared:
 	$(MAKE) LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
+	rm -rf ${alidir}/ada-ado-mysql \
+	       ${alidir}/ada-ado-sqlite \
+	       ${alidir}/ada-ado
 	$(MKDIR) -p ${includedir}/ada-ado
-	$(MKDIR) -p ${includedir}/ada-ado-drivers
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ada-ado
-	${MKDIR} -p ${alidir}/ada-ado-drivers
 	${MKDIR} -p ${dynamodir}/ado/db
 	test T${HAVE_MYSQL} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/mysql
 	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
@@ -222,7 +223,7 @@ install_lib:
 	test T${HAVE_SQLITE} = TFalse || ${MKDIR} -p ${alidir}/ada-ado-sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
-	${CP} -p src/drivers/*.ad[bs] ${includedir}/ada-ado-drivers
+	#${CP} -p src/drivers/*.ad[bs] ${includedir}/ada-ado-drivers
 	test T${HAVE_MYSQL} = TFalse || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
@@ -239,17 +240,17 @@ install_lib:
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
-	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-drivers
+	#${CP} lib/ado-drivers/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-drivers
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
-	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.a ${libdir}/
+	#${CP} lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.a ${libdir}/
 	test T${HAVE_MYSQL} = TFalse || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.a ${libdir}/
 	test T${HAVE_SQLITE} = TFalse || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.a ${libdir}/
 else
 	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
-	${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${libdir}/
+	#${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${libdir}/
 	test T${HAVE_MYSQL} = TFalse || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
 	test T${HAVE_SQLITE} = TFalse || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
 	cd ${libdir} && \
