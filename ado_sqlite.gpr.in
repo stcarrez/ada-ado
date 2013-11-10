@@ -11,7 +11,14 @@ project Ado_Sqlite is
    for Library_Name use "ada_ado_sqlite";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-   for Library_Interface use ("ADO.Drivers.Connections.Sqlite");
+   case Library_Type is
+      when "relocatable" =>
+         for Library_Interface use ("ADO.Drivers.Connections.Sqlite");
+
+	  when others =>
+	      null;
+
+   end case;
 
    for Library_Dir use "lib/ado-sqlite/" & Project'Library_Kind;
    for Object_Dir use "obj/ado-sqlite/" & Project'Library_Kind;

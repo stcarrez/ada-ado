@@ -11,7 +11,15 @@ project Ado_Mysql is
    for Library_Name use "ada_ado_mysql";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-   for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql");
+   case Library_Type is
+      when "relocatable" =>
+          for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
+							         "ADO.Statements.Mysql");
+
+	  when others =>
+	      null;
+
+   end case;
 
    for Library_Dir use "lib/ado-mysql/" & Project'Library_Kind;
    for Object_Dir use "obj/ado-mysql/" & Project'Library_Kind;
