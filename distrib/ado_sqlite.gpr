@@ -4,7 +4,7 @@ with "ado_core";
 project Ado_Sqlite is
    Version := Ado_Core.Version;
 
-   for Library_Name use "ada-ado-sqlite";
+   for Library_Name use "ada_ado_sqlite";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 

@@ -4,7 +4,7 @@ with "ado_core";
 project Ado_Mysql is
    Version := Ado_Core.Version;
 
-   for Library_Name use "ada-ado-mysql";
+   for Library_Name use "ada_ado_mysql";
    for Library_Dir use "INSTALL/lib";
    for Library_Kind use "LIBRARY_TYPE";
 
