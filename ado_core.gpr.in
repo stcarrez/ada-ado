@@ -11,7 +11,10 @@ project Ado_Core is
    for Library_Name use "ada_ado";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-   for Library_Interface use ("ADO", "ADO.C",
+
+   case Library_Type is
+      when "relocatable" =>
+	     for Library_Interface use ("ADO", "ADO.C",
 							  "ADO.Drivers", "ADO.Drivers.Connections", "ADO.Drivers.Dialects",
 							  "ADO.Schemas", "ADO.Schemas.Entities", "ADO.Sql",
 							  "ADO.Objects", "ADO.Objects.Cache",
@@ -23,6 +26,11 @@ project Ado_Core is
 							  "ADO.Parameters",
 							  "ADO.Queries", "ADO.Queries.Loaders",
 							  "ADO.Sessions", "ADO.Sessions.Factory", "ADO.Sessions.Entities");
+
+      when others =>
+           null;
+
+   end case;
 
    for Library_Dir use "lib/ado/" & Project'Library_Kind;
    for Object_Dir use "obj/ado/" & Project'Library_Kind;
