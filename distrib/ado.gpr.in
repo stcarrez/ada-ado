@@ -13,7 +13,7 @@ project Ado is
 
    for Library_Name use "ada-ado-drivers";
    for Library_Dir use "INSTALL/lib";
-   for Library_Kind use "LIBRARY_TYPE";
+   for Library_Kind use "static";
 
    for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado-drivers");
    for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado-drivers/";
