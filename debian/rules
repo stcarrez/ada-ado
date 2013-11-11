@@ -54,7 +54,7 @@ $(pkgname)$(aliversion):
 $(pkgname)-mysql$(aliversion):
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/$(libperfix)mysql.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libprefix)mysql.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
 $(pkgname)-sqlite$(aliversion):
 	dh_installdirs -p$@ \
