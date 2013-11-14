@@ -28,8 +28,8 @@ LIBRARY_TYPE=dynamic
 	dh $@ 
 
 .PHONY: binary-arch build-arch
-.PHONY: $(pkgname)$(aliversion)-dev $(pkgname)$(soversion) $(pkgname)-mysql$(soversion) $(pkgname)-sqlite$(soversion)
-.pHONY: $(pkgname)-mysql$(aliversion)-dev $(pkgname)-sqlite$(aliversion)-dev
+.PHONY: $(pkgname)$(aliversion)-dev $(pkgname)$(soversion) $(pkgname)$(soversion)-mysql $(pkgname)$(soversion)-sqlite
+.pHONY: $(pkgname)$(aliversion)-mysql-dev $(pkgname)$(aliversion)-sqlite-dev
 
 binary-arch: build-arch $(pkgname)$(aliversion)-dev $(pkgname)$(soversion)
 	: # Common to all architecture-dependent packages
@@ -51,12 +51,12 @@ $(pkgname)$(aliversion):
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libname).so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
-$(pkgname)-mysql$(aliversion):
+$(pkgname)$(aliversion)-mysql:
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libprefix)mysql.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
-$(pkgname)-sqlite$(aliversion):
+$(pkgname)$(aliversion)-sqlite:
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libprefix)sqlite.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
@@ -112,7 +112,7 @@ $(pkgname)-mysql$(aliversion)-dev:
 	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)mysql.so
 	dh_strip -p$@ -X.a
 
-$(pkgname)-sqlite$(aliversion)-dev:
+$(pkgname)$(aliversion)-sqlite-dev:
 	: # The development package
 	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/ado_sqlite.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/ado_sqlite.gpr
@@ -136,11 +136,11 @@ override_dh_auto_build:
 	dh_auto_build
 
 override_dh_auto_install: $(pkgname)$(aliversion) \
-						  $(pkgname)-mysql$(aliversion) \
-						  $(pkgname)-sqlite$(aliversion) \
+						  $(pkgname)$(aliversion)-mysql \
+						  $(pkgname)$(aliversion)-sqlite \
 						  $(pkgname)$(aliversion)-dev \
-						  $(pkgname)-sqlite$(aliversion)-dev \
-						  $(pkgname)-mysql$(aliversion)-dev
+						  $(pkgname)$(aliversion)-sqlite-dev \
+						  $(pkgname)$(aliversion)-mysql-dev
 
 override_dh_compress:
 	dh_compress -X.ads -X.adb -XMakefile

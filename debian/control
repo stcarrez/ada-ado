@@ -19,7 +19,7 @@ Description: Ada Database Objects runtime libraries
  databases in Ada applications.  The package contains the runtime
  libraries.
 
-Package: libada-ado-mysql1.0
+Package: libada-ado1.0-mysql
 Section: libs
 Architecture: any
 Pre-Depends: multiarch-support
@@ -29,7 +29,7 @@ Description: Ada Database Objects MySQL driver
  databases in Ada applications.  The package contains the driver
  library to support MySQL databases.
 
-Package: libada-ado-sqlite1.0
+Package: libada-ado1.0-sqlite
 Section: libs
 Architecture: any
 Pre-Depends: multiarch-support
@@ -47,7 +47,7 @@ Description: Ada Database Objects (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
 
-Package: libada-ado-mysql1.0-dev
+Package: libada-ado1.0-mysql-dev
 Section: libdevel
 Architecture: any
 Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
@@ -55,7 +55,7 @@ Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-
 Description: Ada Database Objects (MySQL Driver development files)
  The package contains the Ada development files for the MySQL driver.
 
-Package: libada-ado-sqlite1.0-dev
+Package: libada-ado1.0-sqlite-dev
 Section: libdevel
 Architecture: any
 Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
