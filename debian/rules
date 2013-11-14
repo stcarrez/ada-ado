@@ -76,7 +76,7 @@ $(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
 		usr/share/dynamo/ado \
 		usr/share/dynamo/ado/db
 	dh_install -p$@ usr/lib/$(libname).a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/$(libname)-drivers.a /usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_install -p$@ usr/lib/$(libprefix)drivers.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado/*.ali /usr/lib/ada/adalib/ada-ado
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado-drivers/*.ali /usr/lib/ada/adalib/ada-ado-drivers
 	dh_install -p$@ usr/share/ada/adainclude/ado.gpr /usr/share/ada/adainclude
