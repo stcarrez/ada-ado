@@ -2,7 +2,7 @@ Source: libada-ado
 Priority: extra
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 8.0.0), autotools-dev, gnat, gnat-4.6,
- libada-util1.7-dev, libada-testutil1.7-dev
+ libada-util1.7-dev, libada-util1.7-test-dev
 Standards-Version: 3.9.2
 Section: libs
 Homepage: http://code.google.com/p/ada-ado/
