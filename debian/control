@@ -51,7 +51,7 @@ Package: libada-ado1.0-mysql-dev
 Section: libdevel
 Architecture: any
 Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
- libada-ado-mysql1.0, ${misc:Depends}
+ libada-ado1.0-mysql, ${misc:Depends}
 Description: Ada Database Objects (MySQL Driver development files)
  The package contains the Ada development files for the MySQL driver.
 
@@ -59,7 +59,7 @@ Package: libada-ado1.0-sqlite-dev
 Section: libdevel
 Architecture: any
 Depends: libada-ado1.0 (= ${binary:Version}), libada-ado1.0-dev, libada-util1.7-dev,
- libada-ado-sqlite1.0, ${misc:Depends}
+ libada-ado1.0-sqlite, ${misc:Depends}
 Description: Ada Database Objects (SQLite Driver development files)
  The package contains the Ada development files for the SQLite driver.
 
