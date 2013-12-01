@@ -26,10 +26,12 @@ with Ada.Exceptions;
 
 package body ADO.Drivers.Connections is
 
-   use Util.Log;
    use Ada.Strings.Fixed;
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Drivers.Connections");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Drivers.Connections");
+
+   --  Load the database driver.
+   procedure Load_Driver (Name : in String);
 
    --  ------------------------------
    --  Set the connection URL to connect to the database.
@@ -213,8 +215,9 @@ package body ADO.Drivers.Connections is
       Next_Index := Next_Index + 1;
    end Register;
 
-   type Driver_Initialize_Access is not null access procedure;
-
+   --  ------------------------------
+   --  Load the database driver.
+   --  ------------------------------
    procedure Load_Driver (Name : in String) is
       Lib    : constant String := "libada_ado_" & Name & Util.Systems.DLLs.Extension;
       Symbol : constant String := "ado__drivers__connections__" & Name & "__initialize";
