@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,12 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Systems.DLLs;
 
+with System;
 with Ada.Strings.Fixed;
 with Ada.Containers.Doubly_Linked_Lists;
+with Ada.Exceptions;
 
 package body ADO.Drivers.Connections is
 
@@ -210,23 +213,62 @@ package body ADO.Drivers.Connections is
       Next_Index := Next_Index + 1;
    end Register;
 
+   type Driver_Initialize_Access is not null access procedure;
+
+   procedure Load_Driver (Name : in String) is
+      Lib    : constant String := "libada_ado_" & Name & Util.Systems.DLLs.Extension;
+      Symbol : constant String := "ado__drivers__connections__" & Name & "__initialize";
+      Handle : Util.Systems.DLLs.Handle;
+      Addr   : System.Address;
+
+   begin
+      Log.Info ("Loading driver {0}", Lib);
+      Handle := Util.Systems.DLLs.Load (Lib);
+      Addr := Util.Systems.DLLs.Get_Symbol (Handle, Symbol);
+
+      declare
+         procedure Init;
+         pragma Import (C, Init);
+         for Init'Address use Addr;
+      begin
+         Init;
+      end;
+   exception
+      when Util.Systems.DLLs.Not_Found =>
+         Log.Error ("Driver for {0} was loaded but does not define the initialization symbol",
+                    Name);
+
+      when E : Util.Systems.DLLs.Load_Error =>
+         Log.Error ("Driver for {0} was not found: {1}",
+                    Name, Ada.Exceptions.Exception_Message (E));
+
+   end Load_Driver;
+
    --  ------------------------------
    --  Get a database driver given its name.
    --  ------------------------------
    function Get_Driver (Name : in String) return Driver_Access is
-      Iter : Driver_List.Cursor := Driver_List.First (Drivers);
    begin
       Log.Info ("Get driver {0}", Name);
 
-      while Driver_List.Has_Element (Iter) loop
+      for Retry in 0 .. 1 loop
+         if Retry > 0 then
+            Load_Driver (Name);
+         end if;
          declare
-            D : constant Driver_Access := Driver_List.Element (Iter);
+            Iter : Driver_List.Cursor := Driver_List.First (Drivers);
          begin
-            if Name = D.Name.all then
-               return D;
-            end if;
+            while Driver_List.Has_Element (Iter) loop
+               declare
+                  D : constant Driver_Access := Driver_List.Element (Iter);
+               begin
+                  if Name = D.Name.all then
+                     return D;
+                  end if;
+               end;
+               Driver_List.Next (Iter);
+            end loop;
          end;
-         Driver_List.Next (Iter);
       end loop;
       return null;
    end Get_Driver;
