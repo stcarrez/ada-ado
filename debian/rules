@@ -47,16 +47,19 @@ binary-arch: build-arch $(pkgname)$(aliversion)-dev $(pkgname)$(soversion)
 
 $(pkgname)$(aliversion):
 	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/$(libname).so.$(soversion)
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libname).so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
 $(pkgname)$(aliversion)-mysql:
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/$(libprefix)mysql.so.$(soversion)
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libprefix)mysql.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
 
 $(pkgname)$(aliversion)-sqlite:
+	chrpath -d $(CURDIR)/debian/tmp/usr/lib/$(libprefix)sqlite.so.$(soversion)
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/$(libprefix)sqlite.so.$(soversion) /usr/lib/$(DEB_HOST_MULTIARCH)
@@ -130,7 +133,7 @@ $(pkgname)$(aliversion)-sqlite-dev:
 	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)sqlite.so
 
 override_dh_auto_configure:
-	dh_auto_configure -- --enable-shared
+	dh_auto_configure -- --enable-shared --with-gprbuild
 
 override_dh_auto_build:
 	dh_auto_build
