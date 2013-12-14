@@ -19,11 +19,12 @@
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings;
 with System;
-with Interfaces.C.Extensions;
+--  with Interfaces.C.Extensions;
 with Mysql.My_list;
 with Mysql.Com;
 
 package Mysql.Mysql is
+   pragma Preelaborate;
    pragma Warnings (Off);
    pragma Warnings (Off, "*style*");
 
@@ -126,7 +127,9 @@ package Mysql.Mysql is
    -- offset to current field
    subtype MYSQL_FIELD_OFFSET is unsigned;  -- /usr/include/mysql/mysql.h:121:22
 
-   subtype My_Ulonglong is Extensions.Unsigned_Long_Long;
+--   subtype My_Ulonglong is Extensions.Unsigned_Long_Long;
+   subtype My_Ulonglong is Long_Long_Integer;
+   type Unsigned_Long_Long is mod 2 ** 64;
 
    type St_Mysql_Rows;
    type MYSQL_ROWS is access st_mysql_rows;
