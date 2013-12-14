@@ -3,6 +3,8 @@ with System;
 
 package Mysql.My_list is
 
+   pragma Pure;
+
    --  arg-macro: function list_rest (a)
    --    return (a).next;
    --  arg-macro: function list_push (a, b)
