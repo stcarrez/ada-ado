@@ -1,9 +1,11 @@
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings;
-with Interfaces.C.Extensions;
+--  with Interfaces.C.Extensions;
 with System;
 
 package Sqlite3_H is
+   pragma Preelaborate;
+
    pragma Warnings (Off);
    pragma Warnings (Off, "*style*");
 
@@ -438,7 +440,8 @@ package Sqlite3_H is
 
    subtype sqlite_int64 is Long_Long_Integer;  -- /usr/include/sqlite3.h:225:25
 
-   subtype sqlite_uint64 is Extensions.unsigned_long_long;  -- /usr/include/sqlite3.h:226:34
+--   subtype sqlite_uint64 is Extensions.unsigned_long_long;  -- /usr/include/sqlite3.h:226:34
+   subtype sqlite_uint64 is Long_Long_Integer;
 
    subtype sqlite3_int64 is sqlite_int64;  -- /usr/include/sqlite3.h:228:22
 
