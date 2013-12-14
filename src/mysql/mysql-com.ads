@@ -21,6 +21,8 @@ with System;
 with Interfaces.C.Strings;
 
 package Mysql.Com is
+   pragma Preelaborate;
+
    pragma Warnings (Off);
    pragma Warnings (Off, "*style*");
 

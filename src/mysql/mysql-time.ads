@@ -3,7 +3,7 @@ with Interfaces.C; use Interfaces.C;
 with Mysql.Mysql;  use Mysql.Mysql;
 
 package Mysql.Time is
-
+   pragma Preelaborate;
 
    --  Copyright (C) 2004 MySQL AB
    --  This program is free software; you can redistribute it and/or modify
