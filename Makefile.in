@@ -100,7 +100,7 @@ src/drivers/ado-drivers-initializer.adb: src/drivers/ado-drivers-initializer.gpb
 		  src/drivers/ado-drivers-initializer.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
-	gnatprep -DMYSQL_LIB='"-l$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
+	gnatprep -DMYSQL_LIB='"$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
 
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
 	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
