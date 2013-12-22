@@ -652,6 +652,7 @@ enable_option_checking
 with_gprbuild
 enable_mysql
 enable_sqlite
+with_mysql
 enable_shared
 with_ada_util
 '
@@ -1285,6 +1286,7 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-gprbuild         Use gprbuild instead of gnatmake for the compilation
+  --with-mysql=ARG        Use the MySQL configuration tool (mysql_config)
   --with-ada-util=x       Path for the Ada Utility library
                           (code.google.com/p/ada-util)
 
@@ -3114,6 +3116,27 @@ fi
 DB=""
 WITH_ADO_MYSQL=""
 ADO_HAVE_MYSQL=no
+
+##########################################
+# MySQL support
+##########################################
+
+ac_mysql_config=mysql_config
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking MySQL configuration" >&5
+$as_echo_n "checking MySQL configuration... " >&6; }
+
+# Check whether --with-mysql was given.
+if test "${with_mysql+set}" = set; then :
+  withval=$with_mysql;
+  ac_mysql_config=${withval}
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: ${ac_mysql_config}" >&5
+$as_echo "${ac_mysql_config}" >&6; }
+
+ac_mysql_libs=`$ac_mysql_config --libs 2>/dev/null`
+
 if test "${ENABLE_MYSQL}" = "yes" ; then
   case "${host}" in
   ## On Windows, the MySQL library name is libmysql
@@ -3172,6 +3195,7 @@ done
 
   *)
     MYSQL_LIB=mysqlclient
+    LDFLAGS="$LDFLAGS $ac_mysql_libs"
 
 as_ac_Lib=`$as_echo "ac_cv_lib_$MYSQL_LIB''_mysql_init" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -l$MYSQL_LIB" >&5
@@ -3216,7 +3240,7 @@ if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="$MYSQL_LIB"
+       MYSQL_LIBNAME="$ac_mysql_libs"
 
 fi
 
