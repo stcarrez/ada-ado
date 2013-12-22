@@ -217,5 +217,5 @@ AC_MSG_RESULT(ok ${UTIL_DIR})
 AC_SUBST(UTIL_DIR)
 
 AC_OUTPUT(
-Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_core.gpr ado_mysql.gpr ado_sqlite.gpr
+Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_core.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
 )
