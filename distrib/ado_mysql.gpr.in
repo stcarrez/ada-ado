@@ -11,4 +11,7 @@ project Ado_Mysql is
    for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado-mysql");
    for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado-mysql/";
    for Externally_Built use "true";
+   package Linker is
+      for Linker_Options use ("@MYSQL_LIBNAME@");
+   end Linker;
 end Ado_Mysql;
