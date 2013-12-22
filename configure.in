@@ -82,6 +82,24 @@ ENABLE_SQLITE=yes)
 DB=""
 WITH_ADO_MYSQL=""
 ADO_HAVE_MYSQL=no
+
+##########################################
+# MySQL support
+##########################################
+
+ac_mysql_config=mysql_config
+AC_MSG_CHECKING([MySQL configuration])
+AC_ARG_WITH(mysql,
+AS_HELP_STRING([--with-mysql=ARG], [Use the MySQL configuration tool (mysql_config)]),
+[
+  ac_mysql_config=${withval}
+],
+[
+])
+AC_MSG_RESULT(${ac_mysql_config})
+
+ac_mysql_libs=`$ac_mysql_config --libs 2>/dev/null`
+
 if test "${ENABLE_MYSQL}" = "yes" ; then
   case "${host}" in
   ## On Windows, the MySQL library name is libmysql
@@ -99,11 +117,12 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
 
   *)
     MYSQL_LIB=mysqlclient
+    LDFLAGS="$LDFLAGS $ac_mysql_libs"
     AC_CHECK_LIB($MYSQL_LIB,mysql_init,[
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="$MYSQL_LIB"
+       MYSQL_LIBNAME="$ac_mysql_libs"
        ])
     ;;
 
