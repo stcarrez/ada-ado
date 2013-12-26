@@ -170,7 +170,7 @@ create-mysql-tests:
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
 ado.gpr.in ado_core.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in tests.gpr.in samples.gpr.in config.gpr \
-src samples regtests db win32 \
+src samples regtests db win32 samples.properties \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml debian
 
 dist:
