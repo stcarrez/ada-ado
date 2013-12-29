@@ -111,7 +111,7 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="$MYSQL_LIB"
+       MYSQL_LIBNAME="-l$MYSQL_LIB"
     fi
     ;;
 

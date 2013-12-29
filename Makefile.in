@@ -254,6 +254,7 @@ else
 	#${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${libdir}/
 	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
 	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
+ifneq (${OS},Windows_NT)
 	cd ${libdir} && \
 	rm -f $(libname).$(LIBEXT) && \
 	${LN} $(libname).$(LIBVER) $(libname).$(LIBEXT)
@@ -263,6 +264,12 @@ else
 	test T${HAVE_SQLITE} = Tno || cd ${libdir} && \
 		 rm -f $(libprefix)sqlite.$(LIBEXT) && \
 		 ${LN} $(libprefix)sqlite.$(LIBVER) $(libprefix)sqlite.$(LIBEXT)
+else
+	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${bindir}/
+	#${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${bindir}/
+	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${bindir}/
+	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${bindir}/
+endif
 endif
 
 uninstall:
