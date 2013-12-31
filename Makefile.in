@@ -58,7 +58,7 @@ libname=libada_ado
 libprefix=$(libname)_
 
 CPUS := @NR_CPUS@
-MAKE_ARGS=-XMODE=${MODE} -XLIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
+MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS) -XLIBRARY_TYPE=relocatable
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
@@ -72,7 +72,7 @@ install: install_static
 endif
 
 # Build executables for all mains defined by the project.
-build:  src/drivers/ado-drivers-initializer.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
+build:  src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ado-drivers-initialize.adb
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
@@ -92,12 +92,12 @@ autobuild:
 	$(GNATMAKE) -gnatc -c -k  -P "$(GPRPATH)"
 
 # Configure the driver file
-src/drivers/ado-drivers-initializer.adb: src/drivers/ado-drivers-initializer.gpb Makefile
+src/static/ado-drivers-initialize.adb: src/static/ado-drivers-initialize.gpb Makefile
 	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
 	sqlite=`(test T$(HAVE_SQLITE) = Tyes && echo True) || echo False`; \
 	gnatprep -DHAVE_MYSQL=$$mysql \
 	          -DHAVE_SQLITE=$$sqlite \
-		  src/drivers/ado-drivers-initializer.gpb $@
+		  src/static/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
 	gnatprep -DMYSQL_LIB='"$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
@@ -169,7 +169,7 @@ create-mysql-tests:
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-ado.gpr.in ado_core.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 samples.properties \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml debian
 
