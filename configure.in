@@ -122,7 +122,8 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="`echo $ac_mysql_libs | sed -e s'/ /\",\"/'g`"
+       MYSQL_LIBNAME="-l$MYSQL_LIB"
+	   # "`echo $ac_mysql_libs | sed -e s'/ /\",\"/'g`"
        ])
     ;;
 
