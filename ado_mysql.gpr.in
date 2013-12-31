@@ -1,23 +1,23 @@
 with "config";
-with "ado_core";
+with "ado";
 
 project Ado_Mysql is
-   Version := Ado_Core.Version;
-   Library_Dir := Ado_Core.Library_Dir;
+   Version := Ado.Version;
+   Library_Dir := Ado.Library_Dir;
 
-   Library_Type : Config.Library_Type_Type := external ("LIBRARY_TYPE", "static");
+   Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
-   for Source_Dirs use ("src/mysql");
-   for Library_Name use "ada_ado_mysql";
-   for Library_Kind use Library_Type;
-   for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
    case Library_Type is
       when "relocatable" =>
+          for Library_Name use "ada_ado_mysql";
+          for Library_Kind use Library_Type;
+          for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
+          for Source_Dirs use ("src/mysql");
           for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
 							         "ADO.Statements.Mysql");
 
 	  when others =>
-	      null;
+          for Source_Dirs use ();
 
    end case;
 
