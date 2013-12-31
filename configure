@@ -3384,7 +3384,7 @@ rm -f t.gpr
 $as_echo "ok ${UTIL_DIR}" >&6; }
 
 
-ac_config_files="$ac_config_files Makefile ado.gpr ado_core.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_core.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr"
+ac_config_files="$ac_config_files Makefile ado.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4106,11 +4106,9 @@ do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "ado.gpr") CONFIG_FILES="$CONFIG_FILES ado.gpr" ;;
-    "ado_core.gpr") CONFIG_FILES="$CONFIG_FILES ado_core.gpr" ;;
     "tests.gpr") CONFIG_FILES="$CONFIG_FILES tests.gpr" ;;
     "samples.gpr") CONFIG_FILES="$CONFIG_FILES samples.gpr" ;;
     "distrib/ado.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado.gpr" ;;
-    "distrib/ado_core.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado_core.gpr" ;;
     "distrib/ado_mysql.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado_mysql.gpr" ;;
     "ado_mysql.gpr") CONFIG_FILES="$CONFIG_FILES ado_mysql.gpr" ;;
     "ado_sqlite.gpr") CONFIG_FILES="$CONFIG_FILES ado_sqlite.gpr" ;;
