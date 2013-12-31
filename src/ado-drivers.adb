@@ -19,6 +19,7 @@
 with Util.Log.Loggers;
 
 with Ada.IO_Exceptions;
+
 with ADO.Queries.Loaders;
 package body ADO.Drivers is
 
@@ -57,6 +58,8 @@ package body ADO.Drivers is
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),
                                       Global_Config.Get ("ado.queries.load", "false") = "true");
+
+      --  Initialize the drivers.
       ADO.Drivers.Initialize;
    end Initialize;
 
