@@ -14,7 +14,7 @@ project Ado_Mysql is
           for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
           for Source_Dirs use ("src/mysql");
           for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
-							         "ADO.Statements.Mysql");
+							         "ADO.Statements.Mysql", "Mysql", "Mysql.mysql", "Mysql.com", "Mysql.my_list");
 
 	  when others =>
           for Source_Dirs use ();
