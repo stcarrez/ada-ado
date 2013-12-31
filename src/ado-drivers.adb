@@ -57,6 +57,7 @@ package body ADO.Drivers is
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),
                                       Global_Config.Get ("ado.queries.load", "false") = "true");
+      ADO.Drivers.Initialize;
    end Initialize;
 
    --  ------------------------------
@@ -68,5 +69,8 @@ package body ADO.Drivers is
    begin
       return Global_Config.Get (Name, Default);
    end Get_Config;
+
+   --  Initialize the drivers which are available.
+   procedure Initialize is separate;
 
 end ADO.Drivers;
