@@ -2,6 +2,8 @@ with "config";
 with "@UTIL_DIR@util";
 with "@UTIL_DIR@util_unit";
 with "ado";
+@WITH_ADO_SQLITE@
+@WITH_ADO_MYSQL@
 
 project Tests is
 
