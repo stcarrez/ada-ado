@@ -11,7 +11,7 @@ GNATCLEAN=@GNATCLEAN@
 SVN=svn
 INSTALL=@INSTALL@
 
-GPRPATH=ado_core.gpr
+GPRPATH=ado.gpr
 ADO_MYSQL_GPRPATH=ado_mysql.gpr
 ADO_SQLITE_GPRPATH=ado_sqlite.gpr
 
