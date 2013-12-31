@@ -1,9 +1,9 @@
 with "config";
-with "ado_core";
+with "ado";
 
 project Ado_Sqlite is
-   Version := Ado_Core.Version;
-   Library_Dir := Ado_Core.Library_Dir;
+   Version := Ado.Version;
+   Library_Dir := Ado.Library_Dir;
 
    Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
