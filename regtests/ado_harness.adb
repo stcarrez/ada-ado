@@ -17,7 +17,7 @@
 -----------------------------------------------------------------------
 
 with ADO.Testsuite;
-with ADO.Drivers.Initializer;
+with ADO.Drivers;
 with Regtests;
 
 with Util.Tests;
@@ -29,9 +29,6 @@ procedure ADO_Harness is
    procedure Harness is new Util.Tests.Harness (ADO.Testsuite.Suite,
                                                Initialize);
 
-   procedure Init_Drivers is new ADO.Drivers.Initializer (Util.Properties.Manager'Class,
-                                                          ADO.Drivers.Initialize);
-
    --  ------------------------------
    --  Initialization procedure: setup the database
    --  ------------------------------
@@ -39,7 +36,7 @@ procedure ADO_Harness is
       DB : constant String := Props.Get ("test.database",
                                          "sqlite:///regtests.db");
    begin
-      Init_Drivers (Props);
+      ADO.Drivers.Initialize (Props);
       Regtests.Initialize (DB);
    end Initialize;
 
