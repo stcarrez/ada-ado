@@ -72,4 +72,9 @@ package ADO.Drivers is
    function Get_Config (Name    : in String;
                         Default : in String := "") return String;
 
+private
+
+   --  Initialize the drivers which are available.
+   procedure Initialize;
+
 end ADO.Drivers;
