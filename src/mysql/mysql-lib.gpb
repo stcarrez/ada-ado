@@ -20,6 +20,6 @@ package Mysql.Lib is
 
     pragma Pure;
 
---    MYSQL_LIB_NAME : constant String := $MYSQL_LIB;
+    MYSQL_LIB_NAME : constant String := $MYSQL_LIB;
 
 end Mysql.Lib;

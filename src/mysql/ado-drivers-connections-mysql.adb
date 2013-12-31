@@ -30,7 +30,7 @@ package body ADO.Drivers.Connections.Mysql is
    use Util.Log;
    use Interfaces.C;
 
---   pragma Linker_Options (MYSQL_LIB_NAME);
+   pragma Linker_Options (MYSQL_LIB_NAME);
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases.Mysql");
 
