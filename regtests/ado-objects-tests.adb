@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -150,7 +150,8 @@ package body ADO.Objects.Tests is
          Cmt.Set_User (User);
          Cmt.Set_Entity_Id (2);
          Cmt.Set_Entity_Type (1);
-         Cmt.Set_Date (ADO.DEFAULT_TIME);
+         --  Cmt.Set_Date (ADO.DEFAULT_TIME);
+         Cmt.Set_Date (Ada.Calendar.Clock);
          Cmt.Save (S);
          S.Commit;
       end;
