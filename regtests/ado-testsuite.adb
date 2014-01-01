@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-testsuite -- Testsuite for ADO
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with ADO.Tests;
+with ADO.Drivers.Tests;
 with ADO.Sequences.Tests;
 with ADO.Schemas.Tests;
 with ADO.Objects.Tests;
@@ -36,6 +37,7 @@ package body ADO.Testsuite is
    function Suite return Util.Tests.Access_Test_Suite is
       Ret : constant Util.Tests.Access_Test_Suite := Tests'Access;
    begin
+      ADO.Drivers.Tests.Add_Tests (Ret);
       ADO.Parameters.Tests.Add_Tests (Ret);
       ADO.Sequences.Tests.Add_Tests (Ret);
       ADO.Objects.Tests.Add_Tests (Ret);
