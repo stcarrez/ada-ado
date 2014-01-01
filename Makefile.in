@@ -122,8 +122,8 @@ test-mysql:		build create-mysql-tests
 
 # Clean the root project of all build products.
 clean:
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=static
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XLIBRARY_TYPE=relocatable
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=static
+	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=relocatable
 	-$(GNATCLEAN) -q -Ptests
 	-$(GNATCLEAN) -q -Psamples
 	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
@@ -190,7 +190,7 @@ dist:
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	rm -f $(distdir)/distrib/ado_core.gpr
+	rm -f $(distdir)/distrib/ado_mysql.gpr
 	rm -f $(distdir)/distrib/ado.gpr
 	rm -rf $(distdir)/regtests/result
 	mkdir $(distdir)/bin
@@ -211,20 +211,13 @@ install_lib:
 	       ${alidir}/ada-ado-sqlite \
 	       ${alidir}/ada-ado
 	$(MKDIR) -p ${includedir}/ada-ado
-	$(MKDIR) -p ${includedir}/ada-ado-drivers
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ada-ado
-	${MKDIR} -p ${alidir}/ada-ado-drivers
 	${MKDIR} -p ${dynamodir}/ado/db
-	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql
-	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
-	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${includedir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${includedir}/ada-ado-sqlite
-	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${alidir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${alidir}/ada-ado-sqlite
+	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql ${includedir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite ${includedir}/ada-ado-sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
-	${CP} -p src/drivers/*.ad[bs] ${includedir}/ada-ado-drivers
 	test T${HAVE_MYSQL} = Tno || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
@@ -232,8 +225,6 @@ install_lib:
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
 	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< distrib/ado_core.gpr > ${projectdir}/ado_core.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
@@ -241,19 +232,15 @@ install_lib:
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
-	${CP} lib/ado-drivers/static/*.ali ${alidir}/ada-ado-drivers
-	test T${HAVE_MYSQL} = Tno || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = Tno || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
-	${CP} lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.a ${libdir}/
-	test T${HAVE_MYSQL} = Tno || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.a ${libdir}/
-	test T${HAVE_SQLITE} = Tno || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.a ${libdir}/
 else
+	${MKDIR} -p ${alidir}/ada-ado-mysql ${alidir}/ada-ado-sqlite
 	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
-	#${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${libdir}/
 	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
 	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
+	test T${HAVE_MYSQL} = Tno || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = Tno || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifneq (${OS},Windows_NT)
 	cd ${libdir} && \
 	rm -f $(libname).$(LIBEXT) && \
@@ -266,7 +253,6 @@ ifneq (${OS},Windows_NT)
 		 ${LN} $(libprefix)sqlite.$(LIBVER) $(libprefix)sqlite.$(LIBEXT)
 else
 	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${bindir}/
-	#${CP} -p lib/ado-drivers/$(LIBRARY_TYPE)/$(libprefix)drivers.$(LIBVER) ${bindir}/
 	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${bindir}/
 	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${bindir}/
 endif
@@ -281,7 +267,6 @@ uninstall:
 	rm -f ${libdir}/$(libprefix)mysql.so.${version}
 	rm -f ${libdir}/$(libprefix)sqlite.so.${version}
 	rm -f ${projectdir}/ado.gpr
-	rm -f ${projectdir}/ado_core.gpr
 	rm -f ${projectdir}/ado_mysql.gpr
 	rm -f ${projectdir}/ado_sqlite.gpr
 
