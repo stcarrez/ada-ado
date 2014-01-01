@@ -209,21 +209,23 @@ install_shared:
 install_lib:
 	rm -rf ${alidir}/ada-ado-mysql \
 	       ${alidir}/ada-ado-sqlite \
-	       ${alidir}/ada-ado
-	$(MKDIR) -p ${includedir}/ada-ado
+	       ${alidir}/ada-ado/$(LIBRARY_TYPE)
+	$(MKDIR) -p ${includedir}/ada-ado ${includedir}/ada-ado/static ${includedir}/ada-ado/dynamic
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/ada-ado
+	${MKDIR} -p ${alidir}/ada-ado/$(LIBRARY_TYPE)
 	${MKDIR} -p ${dynamodir}/ado/db
 	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite ${includedir}/ada-ado-sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
+	${CP} -p src/dynamic/*.ad[bs] ${includedir}/ada-ado/dynamic
+	${CP} -p src/static/*.ad[bs] ${includedir}/ada-ado/static
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	test T${HAVE_MYSQL} = Tno || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
@@ -231,7 +233,7 @@ install_lib:
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
-	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado
+	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado/$(LIBRARY_TYPE)
 ifeq ($(LIBRARY_TYPE),static)
 	${CP} lib/ado/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
 else

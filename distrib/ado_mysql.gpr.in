@@ -6,7 +6,7 @@ project Ado_Mysql is
 
    type Library_Type_Type is ("relocatable", "static");
 
-   Library_Type : Library_Type_Type := external ("ADO_LIBRARY_TYPE", "LIBRARY_TYPE");
+   Library_Type : Library_Type_Type := external ("ADO_LIBRARY_TYPE", "xLIBRARY_TYPE");
 
    case Library_Type is
       when "relocatable" =>
