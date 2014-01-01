@@ -76,7 +76,7 @@ build:  src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ad
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
-	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS) -Llib/ado/${LIBRARY_TYPE}
+	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS) -largs -Llib/ado/${LIBRARY_TYPE}
 
 static:
 	$(MAKE) LIBRARY_TYPE=static build
