@@ -4,13 +4,25 @@ with "ado";
 project Ado_Mysql is
    Version := Ado.Version;
 
-   for Library_Name use "ada_ado_mysql";
-   for Library_Dir use "INSTALL/lib";
-   for Library_Kind use "LIBRARY_TYPE";
+   type Library_Type_Type is ("relocatable", "static");
 
-   for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado-mysql");
-   for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado-mysql/";
-   for Externally_Built use "true";
+   Library_Type : Library_Type_Type := external ("ADO_LIBRARY_TYPE", "LIBRARY_TYPE");
+
+   case Library_Type is
+      when "relocatable" =>
+         for Library_Name use "ada_ado_mysql";
+	     for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado-mysql");
+		 for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado-mysql/";
+		 for Library_Dir use "INSTALL/lib";
+		 for Library_Kind use Library_Type;
+
+		 for Externally_Built use "true";
+
+      when others =>
+         for Source_Dirs use ();
+
+   end case;
+
    package Linker is
       for Linker_Options use ("@MYSQL_LIBNAME@");
    end Linker;
