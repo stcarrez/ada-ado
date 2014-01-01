@@ -106,7 +106,6 @@ $(pkgname)$(aliversion)-mysql-dev:
 		usr/share/ada/adainclude/ada-ado-mysql \
 		usr/lib/ada/adalib/ada-ado-mysql \
 		usr/share/dynamo/ado/db/mysql
-	dh_install -p$@ usr/lib/$(libprefix)mysql.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado-mysql/*.ali /usr/lib/ada/adalib/ada-ado-mysql
 	dh_install -p$@ usr/share/ada/adainclude/ada-ado-mysql/*.ad[bs] /usr/share/ada/adainclude/ada-ado-mysql
 	dh_install -p$@ usr/share/ada/adainclude/ado_mysql.gpr /usr/share/ada/adainclude
@@ -124,7 +123,6 @@ $(pkgname)$(aliversion)-sqlite-dev:
 		usr/share/ada/adainclude/ada-ado-sqlite \
 		usr/lib/ada/adalib/ada-ado-sqlite \
 		usr/share/dynamo/ado/db/sqlite
-	dh_install -p$@ usr/lib/$(libprefix)sqlite.a /usr/lib/$(DEB_HOST_MULTIARCH)
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado-sqlite/*.ali /usr/lib/ada/adalib/ada-ado-sqlite
 	dh_install -p$@ usr/share/ada/adainclude/ada-ado-sqlite/*.ad[bs] /usr/share/ada/adainclude/ada-ado-sqlite
 	dh_install -p$@ usr/share/ada/adainclude/ado_sqlite.gpr /usr/share/ada/adainclude
