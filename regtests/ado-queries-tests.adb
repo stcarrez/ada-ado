@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,6 +66,7 @@ package body ADO.Queries.Tests is
       use ADO.Drivers.Connections;
 
       Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
       Props         : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       --  Configure the XML query loader.
@@ -86,9 +87,18 @@ package body ADO.Queries.Tests is
 
       if Mysql_Driver /= null then
          declare
-            SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, 1);
+            SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
+                                                          Mysql_Driver.Get_Driver_Index);
          begin
-            Assert_Equals (T, "select 1", SQL, "Invalid query for 'index'");
+            Assert_Equals (T, "select 1", SQL, "Invalid query for 'index' (MySQL driver)");
+         end;
+      end if;
+      if Sqlite_Driver /= null then
+         declare
+            SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
+                                                          Sqlite_Driver.Get_Driver_Index);
+         begin
+            Assert_Equals (T, "select 0", SQL, "Invalid query for 'index' (SQLite driver)");
          end;
       end if;
    end Test_Load_Queries;
