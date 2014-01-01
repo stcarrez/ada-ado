@@ -66,26 +66,26 @@ $(pkgname)$(aliversion)-sqlite:
 
 $(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
 	: # The development package
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,/usr,g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/ado.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/ado.gpr
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
-		< $(CURDIR)/distrib/ado_core.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/ado_core.gpr
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
 		usr/share/ada/adainclude/ada-ado \
-		usr/lib/ada/adalib/ada-ado \
-		usr/share/ada/adainclude/ada-ado-drivers \
-		usr/lib/ada/adalib/ada-ado-drivers \
+		usr/share/ada/adainclude/ada-ado-mysql \
+		usr/share/ada/adainclude/ada-ado-sqlite \
+		usr/share/ada/adainclude/ada-ado/static \
+		usr/share/ada/adainclude/ada-ado/dynamic \
+		usr/lib/ada/adalib/ada-ado/relocatable \
+		usr/lib/ada/adalib/ada-ado/static \
 		usr/share/dynamo/ado \
 		usr/share/dynamo/ado/db
 	dh_install -p$@ usr/lib/$(libname).a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/$(libprefix)drivers.a /usr/lib/$(DEB_HOST_MULTIARCH)
-	dh_install -p$@ usr/lib/ada/adalib/ada-ado/*.ali /usr/lib/ada/adalib/ada-ado
-	dh_install -p$@ usr/lib/ada/adalib/ada-ado-drivers/*.ali /usr/lib/ada/adalib/ada-ado-drivers
+	dh_install -p$@ usr/lib/ada/adalib/ada-ado/relocatable/*.ali /usr/lib/ada/adalib/ada-ado/relocatable
+	dh_install -p$@ usr/lib/ada/adalib/ada-ado/static/*.ali /usr/lib/ada/adalib/ada-ado/static
 	dh_install -p$@ usr/share/ada/adainclude/ado.gpr /usr/share/ada/adainclude
-	dh_install -p$@ usr/share/ada/adainclude/ado_core.gpr /usr/share/ada/adainclude
 	dh_install -p$@ usr/share/ada/adainclude/ada-ado/*.ad[bs] /usr/share/ada/adainclude/ada-ado
-	dh_install -p$@ usr/share/ada/adainclude/ada-ado-drivers/*.ad[bs] /usr/share/ada/adainclude/ada-ado-drivers
+	dh_install -p$@ usr/share/ada/adainclude/ada-ado/static/*.ad[bs] /usr/share/ada/adainclude/ada-ado/static
+	dh_install -p$@ usr/share/ada/adainclude/ada-ado/dynamic/*.ad[bs] /usr/share/ada/adainclude/ada-ado/dynamic
 	dh_install -p$@ samples/*.ad[sb] usr/share/doc/$@/samples
 	dh_install -p$@ samples/model/*.ad[sb] usr/share/doc/$@/samples/model
 	dh_install -p$@ samples.gpr usr/share/doc/$@/
@@ -99,7 +99,7 @@ $(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
 
 $(pkgname)$(aliversion)-mysql-dev:
 	: # The development package
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,/usr,g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/ado_mysql.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/ado_mysql.gpr
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
@@ -117,7 +117,7 @@ $(pkgname)$(aliversion)-mysql-dev:
 
 $(pkgname)$(aliversion)-sqlite-dev:
 	: # The development package
-	sed -e "s,INSTALL,/usr,g" -e "s,LIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,/usr,g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
 		< $(CURDIR)/distrib/ado_sqlite.gpr > $(CURDIR)/debian/tmp/usr/share/ada/adainclude/ado_sqlite.gpr
 	dh_installdirs -p$@ \
 		usr/lib/$(DEB_HOST_MULTIARCH) \
