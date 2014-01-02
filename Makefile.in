@@ -5,7 +5,7 @@ LIBRARY_TYPE=static
 
 # You may edit this makefile as long as you keep these original 
 # target names defined.
-MODE=debug
+MODE=distrib
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=@GNATCLEAN@
 SVN=svn
