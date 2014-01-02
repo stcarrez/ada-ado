@@ -7,7 +7,7 @@ library project Ado is
 
    type Yes_No is ("yes", "no");
 
-   type Library_Type_Type is ("relocatable", "static");
+   type Library_Type_Type is ("dynamic", "static");
 
    Library_Type : Library_Type_Type := external ("ADO_LIBRARY_TYPE", "xLIBRARY_TYPE");
 
@@ -22,7 +22,7 @@ library project Ado is
    for Externally_Built use "true";
 
    case Library_Type is
-      when "relocatable" =>
+      when "dynamic" =>
          for Source_Dirs use Project'Source_Dirs & ("INSTALL/share/ada/adainclude/ada-ado/dynamic");
          for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado/relocatable";
 
