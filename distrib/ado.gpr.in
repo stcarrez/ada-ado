@@ -3,7 +3,7 @@ with "util";
 --  @WITH_ADO_MYSQL@
 
 library project Ado is
-   Version := Ado_Core.Version;
+   Version := "@ADO_VERSION@";
 
    type Yes_No is ("yes", "no");
 
