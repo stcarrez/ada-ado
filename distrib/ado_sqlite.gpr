@@ -22,4 +22,8 @@ project Ado_Sqlite is
          for Source_Dirs use ();
 
    end case;
+
+   package Linker is
+      for Linker_Options use ("-lsqlite3");
+   end Linker;
 end Ado_Sqlite;

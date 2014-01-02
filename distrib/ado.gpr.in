@@ -1,6 +1,6 @@
 with "util";
-@WITH_ADO_SQLITE@
-@WITH_ADO_MYSQL@
+--  @WITH_ADO_SQLITE@
+--  @WITH_ADO_MYSQL@
 
 library project Ado is
    Version := Ado_Core.Version;
