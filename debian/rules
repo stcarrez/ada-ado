@@ -123,6 +123,7 @@ $(pkgname)$(aliversion)-sqlite-dev:
 		usr/share/ada/adainclude/ada-ado-sqlite \
 		usr/lib/ada/adalib/ada-ado-sqlite \
 		usr/share/dynamo/ado/db/sqlite
+
 	dh_install -p$@ usr/lib/ada/adalib/ada-ado-sqlite/*.ali /usr/lib/ada/adalib/ada-ado-sqlite
 	dh_install -p$@ usr/share/ada/adainclude/ada-ado-sqlite/*.ad[bs] /usr/share/ada/adainclude/ada-ado-sqlite
 	dh_install -p$@ usr/share/ada/adainclude/ado_sqlite.gpr /usr/share/ada/adainclude
@@ -131,7 +132,10 @@ $(pkgname)$(aliversion)-sqlite-dev:
 	             usr/lib/$(DEB_HOST_MULTIARCH)/$(libprefix)sqlite.so
 
 override_dh_auto_configure:
-	dh_auto_configure -- --enable-shared --with-gprbuild
+	dh_auto_configure -- --enable-shared --with-gprbuild \
+					  --enable-link-options-sqlite=--no-as-needed,-lsqlite3,--as-needed \
+					  --enable-link-options-mysql=--no-as-needed,-lmysqlclient,--as-needed
+
 
 override_dh_auto_build:
 	dh_auto_build
