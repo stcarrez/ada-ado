@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets -- Datasets
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,5 +29,9 @@ package ADO.Datasets is
    procedure List (Into    : in out Dataset;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.Queries.Context'Class);
+
+   --  Get the number of items in a list by executing an SQL query.
+   function Get_Count (Session : in ADO.Sessions.Session'Class;
+                       Query   : in ADO.Queries.Context'Class) return Natural;
 
 end ADO.Datasets;
