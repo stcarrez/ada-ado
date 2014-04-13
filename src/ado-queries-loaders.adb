@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -207,14 +207,14 @@ package body ADO.Queries.Loaders is
             Into.Driver := Find_Driver (Util.Beans.Objects.To_String (Value));
 
          when FIELD_SQL =>
-            if not Into.Query.Is_Null and Into.Driver >= 0 then
+            if not Into.Query.Is_Null and Into.Driver >= 0 and Into.Query_Def /= null then
                Set_Query_Pattern (Into.Query.Value.Main_Query (Driver_Index (Into.Driver)),
                                   Value);
             end if;
             Into.Driver := 0;
 
          when FIELD_SQL_COUNT =>
-            if not Into.Query.Is_Null and Into.Driver >= 0 then
+            if not Into.Query.Is_Null and Into.Driver >= 0 and Into.Query_Def /= null then
                Set_Query_Pattern (Into.Query.Value.Count_Query (Driver_Index (Into.Driver)),
                                   Value);
             end if;
@@ -225,6 +225,7 @@ package body ADO.Queries.Loaders is
                --  Now we can safely setup the query info associated with the query definition.
                Into.Query_Def.Query.Set (Into.Query);
             end if;
+            Into.Query_Def := null;
 
          end case;
       end Set_Member;
