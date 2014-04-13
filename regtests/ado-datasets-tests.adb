@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,17 +32,23 @@ package body ADO.Datasets.Tests is
      new ADO.Queries.Loaders.Query (Name => "user-list",
                                     File => User_List_Query_File.File'Access);
 
+   package User_List_Count_Query is
+     new ADO.Queries.Loaders.Query (Name => "user-list-count",
+                                    File => User_List_Query_File.File'Access);
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test ADO.Datasets.List",
                        Test_List'Access);
+      Caller.Add_Test (Suite, "Test ADO.Datasets.Get_Count",
+                       Test_Count'Access);
    end Add_Tests;
 
    procedure Test_List (T : in out Test) is
       DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Query  : ADO.Queries.Context;
       Data   : ADO.Datasets.Dataset;
-      Props         : constant Util.Properties.Manager := Util.Tests.Get_Properties;
+      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
@@ -64,5 +70,20 @@ package body ADO.Datasets.Tests is
       ADO.Datasets.List (Data, DB, Query);
       Util.Tests.Assert_Equals (T, 100, Data.Get_Count, "Invalid dataset size");
    end Test_List;
+
+   procedure Test_Count (T : in out Test) is
+      DB     : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Query  : ADO.Queries.Context;
+      Count  : Natural;
+      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
+   begin
+      --  Configure the XML query loader.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
+                                      Props.Get ("ado.queries.load", "false") = "true");
+      Query.Set_Query (User_List_Count_Query.Query'Access);
+      Count := ADO.Datasets.Get_Count (DB, Query);
+      T.Assert (Count > 0,
+                "The ADO.Datasets.Get_Count query should return a positive count");
+   end Test_Count;
 
 end ADO.Datasets.Tests;
