@@ -36,6 +36,13 @@
        </sql-count>
     </query>
 
+    <query name='user-list-count'>
+       <comment>Get the number of users</comment>
+       <sql>
+          select count(*) from test_user
+       </sql>
+    </query>
+
     <query name='user-list-filter'>
        <sql>
     select
