@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,5 +24,7 @@ package ADO.Datasets.Tests is
    type Test is new Util.Tests.Test with null record;
 
    procedure Test_List (T : in out Test);
+
+   procedure Test_Count (T : in out Test);
 
 end ADO.Datasets.Tests;
