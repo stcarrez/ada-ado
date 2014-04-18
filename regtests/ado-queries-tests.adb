@@ -74,13 +74,13 @@ package body ADO.Queries.Tests is
                                       Props.Get ("ado.queries.load", "false") = "true");
 
       declare
-         SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0);
+         SQL : constant String := ADO.Queries.Get_SQL (Simple_Query.Query'Access, 0, False);
       begin
          Assert_Equals (T, "select count(*) from user", SQL, "Invalid query for 'simple-query'");
       end;
 
       declare
-         SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, 0);
+         SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, 0, False);
       begin
          Assert_Equals (T, "select 0", SQL, "Invalid query for 'index'");
       end;
@@ -88,7 +88,8 @@ package body ADO.Queries.Tests is
       if Mysql_Driver /= null then
          declare
             SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
-                                                          Mysql_Driver.Get_Driver_Index);
+                                                          Mysql_Driver.Get_Driver_Index,
+                                                          False);
          begin
             Assert_Equals (T, "select 1", SQL, "Invalid query for 'index' (MySQL driver)");
          end;
@@ -96,7 +97,7 @@ package body ADO.Queries.Tests is
       if Sqlite_Driver /= null then
          declare
             SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
-                                                          Sqlite_Driver.Get_Driver_Index);
+                                                          Sqlite_Driver.Get_Driver_Index, False);
          begin
             Assert_Equals (T, "select 0", SQL, "Invalid query for 'index' (SQLite driver)");
          end;
