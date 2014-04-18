@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +21,25 @@ package body ADO.Queries is
 
    --  ------------------------------
    --  Set the query definition which identifies the SQL query to execute.
+   --  The query is represented by the <tt>sql</tt> XML entry.
    --  ------------------------------
    procedure Set_Query (Into  : in out Context;
                         Query : in Query_Definition_Access) is
    begin
       Into.Query_Def := Query;
+      Into.Is_Count  := False;
    end Set_Query;
+
+   --  ------------------------------
+   --  Set the query definition which identifies the SQL query to execute.
+   --  The query count is represented by the <tt>sql-count</tt> XML entry.
+   --  ------------------------------
+   procedure Set_Count_Query (Into  : in out Context;
+                              Query : in Query_Definition_Access) is
+   begin
+      Into.Query_Def := Query;
+      Into.Is_Count  := True;
+   end Set_Count_Query;
 
    procedure Set_Query (Into  : in out Context;
                         Name  : in String) is
@@ -79,7 +92,7 @@ package body ADO.Queries is
       if From.Query_Def = null then
          return "";
       else
-         return Get_SQL (From.Query_Def, Driver);
+         return Get_SQL (From.Query_Def, Driver, From.Is_Count);
       end if;
    end Get_SQL;
 
@@ -100,8 +113,9 @@ package body ADO.Queries is
       return null;
    end Find_Query;
 
-   function Get_SQL (From   : in Query_Definition_Access;
-                     Driver : in ADO.Drivers.Driver_Index) return String is
+   function Get_SQL (From      : in Query_Definition_Access;
+                     Driver    : in ADO.Drivers.Driver_Index;
+                     Use_Count : in Boolean) return String is
       Query : Query_Info_Ref.Ref;
    begin
       ADO.Queries.Loaders.Read_Query (From);
@@ -109,7 +123,13 @@ package body ADO.Queries is
       if Query.Is_Null then
          return "";
       end if;
-      if Length (Query.Value.Main_Query (Driver).SQL) > 0 then
+      if Use_Count then
+         if Length (Query.Value.Count_Query (Driver).SQL) > 0 then
+            return To_String (Query.Value.Count_Query (Driver).SQL);
+         else
+            return To_String (Query.Value.Count_Query (ADO.Drivers.Driver_Index'First).SQL);
+         end if;
+      elsif Length (Query.Value.Main_Query (Driver).SQL) > 0 then
          return To_String (Query.Value.Main_Query (Driver).SQL);
       else
          return To_String (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
