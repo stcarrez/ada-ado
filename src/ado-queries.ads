@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,8 +46,14 @@ package ADO.Queries is
    type Context is new ADO.SQL.Query with private;
 
    --  Set the query definition which identifies the SQL query to execute.
+   --  The query is represented by the <tt>sql</tt> XML entry.
    procedure Set_Query (Into  : in out Context;
                         Query : in Query_Definition_Access);
+
+   --  Set the query count definition which identifies the SQL query to execute.
+   --  The query count is represented by the <tt>sql-count</tt> XML entry.
+   procedure Set_Count_Query (Into  : in out Context;
+                              Query : in Query_Definition_Access);
 
    procedure Set_Query (Into  : in out Context;
                         Name  : in String);
@@ -95,8 +101,9 @@ package ADO.Queries is
       Query  : Query_Info_Ref_Access;
    end record;
 
-   function Get_SQL (From   : in Query_Definition_Access;
-                     Driver : in ADO.Drivers.Driver_Index) return String;
+   function Get_SQL (From      : in Query_Definition_Access;
+                     Driver    : in ADO.Drivers.Driver_Index;
+                     Use_Count : in Boolean) return String;
 
    --  ------------------------------
    --  Query File
@@ -137,6 +144,7 @@ private
       Last_Index : Natural := 0;
       Max_Row_Count : Natural := 0;
       Query_Def  : Query_Definition_Access := null;
+      Is_Count   : Boolean := False;
    end record;
 
    --  Find the query with the given name.
