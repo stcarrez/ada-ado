@@ -4,13 +4,17 @@ This Ada05 library provides object relational mapping
 to access a database in Ada05.  Most of the concepts
 developped for ADO come from the Java Hibernate ORM.
 
-This library supports MySQL, Sqlite as databases.
+This library supports MySQL, SQLite as databases.
 You need at least one of these databases (or both).
 
 To build ADO, you will need:
 
  - Ada Util (http://code.google.com/p/ada-util)
  - XML/Ada  (http://libre.adacore.com/libre/tools/xmlada/)
+
+You should have installed either MySQL or SQLite before
+running the configure script.  For Windows, please read
+the file 'win32/README' that gives some installation hints.
 
 Build with the following commands:
 
