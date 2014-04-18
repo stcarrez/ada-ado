@@ -261,7 +261,12 @@ endif
 endif
 
 uninstall:
-	rm -rf ${includedir}/ado
+	rm -rf ${includedir}/ada-ado
+	rm -rf ${includedir}/ada-ado-mysql
+	rm -rf ${includedir}/ada-ado-sqlite
+	rm -rf ${alidir}/ada-ado
+	rm -rf ${alidir}/ada-ado-mysql
+	rm -rf ${alidir}/ada-ado-sqlite
 	rm -f ${libdir}/$(libname).a
 	rm -f ${libdir}/$(libprefix)mysql.a
 	rm -f ${libdir}/$(libprefix)sqlite.a
