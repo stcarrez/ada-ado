@@ -29,10 +29,10 @@
         u.name asc
        </sql>
        <sql-count driver='mysql'>
-          select count(*) from user          
+          select count(*) from test_user as u where u.`select` = :filter
        </sql-count>
        <sql-count>
-          select count(*) from user
+          select count(*) from test_user as u where u.`select` = :filter
        </sql-count>
     </query>
 
