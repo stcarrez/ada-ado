@@ -38,21 +38,28 @@ package body ADO.Datasets.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
-      Caller.Add_Test (Suite, "Test ADO.Datasets.List",
+      Caller.Add_Test (Suite, "Test ADO.Datasets.List (from <sql>)",
                        Test_List'Access);
-      Caller.Add_Test (Suite, "Test ADO.Datasets.Get_Count",
+      Caller.Add_Test (Suite, "Test ADO.Datasets.Get_Count (from <sql>)",
                        Test_Count'Access);
+      Caller.Add_Test (Suite, "Test ADO.Datasets.Get_Count (from <sql-count>)",
+                       Test_Count_Query'Access);
    end Add_Tests;
 
    procedure Test_List (T : in out Test) is
       DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Query  : ADO.Queries.Context;
+      Count  : Natural;
       Data   : ADO.Datasets.Dataset;
       Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       --  Configure the XML query loader.
       ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
                                       Props.Get ("ado.queries.load", "false") = "true");
+
+      Query.Set_Count_Query (User_List_Query.Query'Access);
+      Query.Bind_Param ("filter", String '("test-list"));
+      Count := ADO.Datasets.Get_Count (DB, Query);
       for I in 1 .. 100 loop
          declare
             User : Regtests.Simple.Model.User_Ref;
@@ -66,9 +73,8 @@ package body ADO.Datasets.Tests is
       DB.Commit;
 
       Query.Set_Query (User_List_Query.Query'Access);
-      Query.Bind_Param ("filter", String '("test-list"));
       ADO.Datasets.List (Data, DB, Query);
-      Util.Tests.Assert_Equals (T, 100, Data.Get_Count, "Invalid dataset size");
+      Util.Tests.Assert_Equals (T, 100 + Count, Data.Get_Count, "Invalid dataset size");
    end Test_List;
 
    procedure Test_Count (T : in out Test) is
@@ -85,5 +91,21 @@ package body ADO.Datasets.Tests is
       T.Assert (Count > 0,
                 "The ADO.Datasets.Get_Count query should return a positive count");
    end Test_Count;
+
+   procedure Test_Count_Query (T : in out Test) is
+      DB     : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Query  : ADO.Queries.Context;
+      Count  : Natural;
+      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
+   begin
+      --  Configure the XML query loader.
+      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
+                                      Props.Get ("ado.queries.load", "false") = "true");
+      Query.Set_Count_Query (User_List_Query.Query'Access);
+      Query.Bind_Param ("filter", String '("test-list"));
+      Count := ADO.Datasets.Get_Count (DB, Query);
+      T.Assert (Count > 0,
+                "The ADO.Datasets.Get_Count query should return a positive count");
+   end Test_Count_Query;
 
 end ADO.Datasets.Tests;
