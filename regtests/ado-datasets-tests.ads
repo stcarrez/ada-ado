@@ -27,4 +27,6 @@ package ADO.Datasets.Tests is
 
    procedure Test_Count (T : in out Test);
 
+   procedure Test_Count_Query (T : in out Test);
+
 end ADO.Datasets.Tests;
