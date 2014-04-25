@@ -89,6 +89,7 @@ $(pkgname)$(aliversion)-dev:	$(pkgname)$(aliversion)
 	dh_install -p$@ samples/*.ad[sb] usr/share/doc/$@/samples
 	dh_install -p$@ samples/model/*.ad[sb] usr/share/doc/$@/samples/model
 	dh_install -p$@ samples.gpr usr/share/doc/$@/
+	dh_install -p$@ config.gpr usr/share/doc/$@/
 	dh_install -p$@ samples/model/*.ad[sb] usr/share/doc/$@/samples/model
 	dh_install -p$@ usr/share/dynamo/ado/*.xml usr/share/dynamo/ado/
 	dh_install -p$@ usr/share/dynamo/ado/db/*.xml usr/share/dynamo/ado/db
