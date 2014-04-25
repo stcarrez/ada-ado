@@ -18,7 +18,7 @@
 with Samples.User.Model;
 
 with ADO;
-with ADO.Drivers.Initializer;
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 
@@ -45,12 +45,11 @@ procedure Add_User is
       end if;
    end Get_Name;
 
-   procedure Initialize is new ADO.Drivers.Initializer (String, ADO.Drivers.Initialize);
 begin
    Util.Log.Loggers.Initialize ("samples.properties");
 
    --  Initialize the database drivers.
-   Initialize ("samples.properties");
+   ADO.Drivers.Initialize ("samples.properties");
 
    if Ada.Command_Line.Argument_Count < 1 then
       Ada.Text_IO.Put_Line ("Usage: add_user user-email ...");

@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ADO;
-with ADO.Drivers.Initializer;
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.SQL;
 with ADO.Sessions.Factory;
@@ -118,10 +118,9 @@ procedure Userdb is
    end List_User_Info;
 
    procedure Initialize (File : in String) is
-      procedure Init is new ADO.Drivers.Initializer (String, ADO.Drivers.Initialize);
    begin
       Util.Log.Loggers.Initialize (File);
-      Init (File);
+      ADO.Drivers.Initialize (File);
    end Initialize;
 
 begin
