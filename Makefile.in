@@ -276,6 +276,7 @@ uninstall:
 	rm -f ${projectdir}/ado.gpr
 	rm -f ${projectdir}/ado_mysql.gpr
 	rm -f ${projectdir}/ado_sqlite.gpr
+	rm -rf ${dynamodir}/ado
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)
