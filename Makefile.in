@@ -128,6 +128,9 @@ clean:
 	-$(GNATCLEAN) -q -Psamples
 	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
 	-rm -rf obj/ado obj/ado-mysql obj/ado-sqlite
+	-rm -f src/static/ado-drivers-initialize.adb
+	-rm -f src/mysql/mysql-lib.ads
+	-rm -f regtests/ado-testsuite-drivers.adb
 
 # Clean root project and all imported projects too.
 clean_tree:
