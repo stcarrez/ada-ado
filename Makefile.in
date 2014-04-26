@@ -120,6 +120,8 @@ test-mysql:		build create-mysql-tests
 	-test T${HAVE_MYSQL} = Tno || \
 	bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
 
+CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
+
 # Clean the root project of all build products.
 clean:
 	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=static
@@ -128,9 +130,7 @@ clean:
 	-$(GNATCLEAN) -q -Psamples
 	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
 	-rm -rf obj/ado obj/ado-mysql obj/ado-sqlite
-	-rm -f src/static/ado-drivers-initialize.adb
-	-rm -f src/mysql/mysql-lib.ads
-	-rm -f regtests/ado-testsuite-drivers.adb
+	-rm -f $(CLEAN_FILES)
 
 # Clean root project and all imported projects too.
 clean_tree:
@@ -199,6 +199,7 @@ dist:
 	mkdir $(distdir)/bin
 	mkdir $(distdir)/obj
 	mkdir $(distdir)/lib
+	-cd $(distdir) && rm -f $(CLEAN_FILES)
 	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
 	    --exclude="*.log" --exclude="*.a" \
 	    -cvzf $(DIST_FILE) $(distdir)
