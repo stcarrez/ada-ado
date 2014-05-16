@@ -1,4 +1,4 @@
-with "config";
+with "@UTIL_DIR@config";
 with "ado";
 
 project Ado_Sqlite is
