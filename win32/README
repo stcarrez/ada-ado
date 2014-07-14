@@ -19,10 +19,20 @@ MySQL Notes
    The MySQL dll files come from MySQL Connector 6.0.2.
    Download them at: http://dev.mysql.com/downloads/
 
-
 SQLite Notes
    The SQLite DLLs are provided for convenience (version 3070603).
 
    The files should be copied in a directory in the PATH.
 
    Download them at: http://www.sqlite.org/download.html
+
+
+Installation for GNAT 2014
+
+  If your GNAT 2014 co,piler is installed in C:/GNAT/2014, you may
+  install the MySQL and SQLite libraries by using msys cp with:
+
+     cp win32/*.dll C:/GNAT/2014/bin
+     cp win32/*.dll C:/GNAT/2014/lib
+     cp win32/*.lib C:/GNAT/2014/lib
+     cp win32/*.a C:/GNAT/2014/lib
