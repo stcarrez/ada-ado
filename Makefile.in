@@ -58,7 +58,7 @@ libname=libada_ado
 libprefix=$(libname)_
 
 CPUS := @NR_CPUS@
-MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS) -XLIBRARY_TYPE=relocatable
+MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
