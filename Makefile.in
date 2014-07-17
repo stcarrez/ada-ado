@@ -1,7 +1,7 @@
 ## The type of library we want to build. Possible values:
 ##   relocatable
 ##   static
-LIBRARY_TYPE=static
+ADO_LIBRARY_TYPE=static
 
 # You may edit this makefile as long as you keep these original 
 # target names defined.
@@ -58,7 +58,7 @@ libname=libada_ado
 libprefix=$(libname)_
 
 CPUS := @NR_CPUS@
-MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
+MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${ADO_LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
@@ -76,13 +76,13 @@ build:  src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ad
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
-	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS) -largs -Llib/ado/${LIBRARY_TYPE}
+	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS) -largs -Llib/ado/${ADO_LIBRARY_TYPE}
 
 static:
-	$(MAKE) LIBRARY_TYPE=static build
+	$(MAKE) ADO_LIBRARY_TYPE=static build
 
 shared:
-	$(MAKE) LIBRARY_TYPE=relocatable build
+	$(MAKE) ADO_LIBRARY_TYPE=relocatable build
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
@@ -205,18 +205,18 @@ dist:
 	    -cvzf $(DIST_FILE) $(distdir)
 
 install_static:
-	$(MAKE) LIBRARY_TYPE=static install_lib
+	$(MAKE) ADO_LIBRARY_TYPE=static install_lib
 
 install_shared:
-	$(MAKE) LIBRARY_TYPE=relocatable install_lib
+	$(MAKE) ADO_LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
 	rm -rf ${alidir}/ada-ado-mysql \
 	       ${alidir}/ada-ado-sqlite \
-	       ${alidir}/ada-ado/$(LIBRARY_TYPE)
+	       ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 	$(MKDIR) -p ${includedir}/ada-ado ${includedir}/ada-ado/static ${includedir}/ada-ado/dynamic
 	$(MKDIR) -p ${projectdir}/
-	${MKDIR} -p ${alidir}/ada-ado/$(LIBRARY_TYPE)
+	${MKDIR} -p ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 	${MKDIR} -p ${dynamodir}/ado/db
 	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite ${includedir}/ada-ado-sqlite
@@ -226,10 +226,10 @@ install_lib:
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	test T${HAVE_MYSQL} = Tno || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(LIBRARY_TYPE),g" \
+	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
@@ -237,16 +237,16 @@ install_lib:
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
-	${CP} lib/ado/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado/$(LIBRARY_TYPE)
-ifeq ($(LIBRARY_TYPE),static)
-	${CP} lib/ado/$(LIBRARY_TYPE)/$(libname).a ${libdir}/
+	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/*.ali ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
+ifeq ($(ADO_LIBRARY_TYPE),static)
+	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).a ${libdir}/
 else
 	${MKDIR} -p ${alidir}/ada-ado-mysql ${alidir}/ada-ado-sqlite
-	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
-	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
-	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
-	test T${HAVE_MYSQL} = Tno || ${CP} lib/ado-mysql/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = Tno || ${CP} lib/ado-sqlite/$(LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
+	${CP} -p lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
+	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(ADO_LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
+	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(ADO_LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
+	test T${HAVE_MYSQL} = Tno || ${CP} lib/ado-mysql/$(ADO_LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = Tno || ${CP} lib/ado-sqlite/$(ADO_LIBRARY_TYPE)/*.ali ${alidir}/ada-ado-sqlite
 ifneq (${OS},Windows_NT)
 	cd ${libdir} && \
 	rm -f $(libname).$(LIBEXT) && \
@@ -258,9 +258,9 @@ ifneq (${OS},Windows_NT)
 		 rm -f $(libprefix)sqlite.$(LIBEXT) && \
 		 ${LN} $(libprefix)sqlite.$(LIBVER) $(libprefix)sqlite.$(LIBEXT)
 else
-	${CP} -p lib/ado/$(LIBRARY_TYPE)/$(libname).$(LIBVER) ${bindir}/
-	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${bindir}/
-	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${bindir}/
+	${CP} -p lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).$(LIBVER) ${bindir}/
+	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(ADO_LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${bindir}/
+	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(ADO_LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${bindir}/
 endif
 endif
 
