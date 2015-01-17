@@ -1,0 +1,9 @@
+*~
+*.log
+Makefile
+bin
+lib
+obj
+ado.gpr
+tests.gpr
+samples.gpr
