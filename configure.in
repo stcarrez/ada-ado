@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Database Objects
-dnl Copyright (C) 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+dnl Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ dnl AM_MAINTAINER_MODE
 # Current release settings
 ADO_MAJOR_VERSION=1
 ADO_MINOR_VERSION=0
-ADO_MICRO_VERSION=1
+ADO_MICRO_VERSION=2
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
 # checking for local tools
@@ -123,7 +123,7 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
        MYSQL_LIBNAME="-l$MYSQL_LIB"
-	   # "`echo $ac_mysql_libs | sed -e s'/ /\",\"/'g`"
+	   MYSQL_LIBS="$ac_mysql_libs"
        ])
     ;;
 
@@ -166,6 +166,7 @@ AC_SUBST(ADO_TESTS_HARNESS)
 AC_SUBST(ADO_HAVE_MYSQL)
 AC_SUBST(ADO_HAVE_SQLITE)
 AC_SUBST(MYSQL_LIBNAME)
+AC_SUBST(MYSQL_LIBS)
 AC_SUBST(WITH_ADO_MYSQL)
 AC_SUBST(WITH_ADO_SQLITE)
 

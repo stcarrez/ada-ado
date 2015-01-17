@@ -570,6 +570,7 @@ UTIL_DIR
 BUILDS_SHARED
 WITH_ADO_SQLITE
 WITH_ADO_MYSQL
+MYSQL_LIBS
 MYSQL_LIBNAME
 ADO_HAVE_SQLITE
 ADO_HAVE_MYSQL
@@ -1967,7 +1968,7 @@ test -n "$target_alias" &&
 # Current release settings
 ADO_MAJOR_VERSION=1
 ADO_MINOR_VERSION=0
-ADO_MICRO_VERSION=1
+ADO_MICRO_VERSION=2
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
 # checking for local tools
@@ -3249,7 +3250,7 @@ if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
        ADO_HAVE_MYSQL=yes
 	   WITH_ADO_MYSQL="with \"ado_mysql\";";
        MYSQL_LIBNAME="-l$MYSQL_LIB"
-	   # "`echo $ac_mysql_libs | sed -e s'/ /\",\"/'g`"
+	   MYSQL_LIBS="$ac_mysql_libs"
 
 fi
 
@@ -3326,6 +3327,7 @@ else
     ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS \"ado_${i}_harness\""
   done
 fi
+
 
 
 

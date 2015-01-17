@@ -27,6 +27,7 @@ HAVE_MYSQL=@ADO_HAVE_MYSQL@
 HAVE_SQLITE=@ADO_HAVE_SQLITE@
 
 MYSQL_LIBNAME=@MYSQL_LIBNAME@
+MYSQL_LIBS=@MYSQL_LIBS@
 
 LN_S=@LN_S@
 MKDIR=mkdir
@@ -100,7 +101,8 @@ src/static/ado-drivers-initialize.adb: src/static/ado-drivers-initialize.gpb Mak
 		  src/static/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
-	gnatprep -DMYSQL_LIB='"$(MYSQL_LIBNAME)"' src/mysql/mysql-lib.gpb $@
+	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
+	gnatprep -DMYSQL_LIB="$$libs" src/mysql/mysql-lib.gpb $@
 
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
 	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
