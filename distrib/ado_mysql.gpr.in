@@ -1,7 +1,8 @@
 with "util";
+with "util_config";
 with "ado";
 
-project Ado_Mysql is
+library project Ado_Mysql is
    Version := Ado.Version;
 
    type Library_Type_Type is ("dynamic", "relocatable", "static");
@@ -11,9 +12,9 @@ project Ado_Mysql is
    case Library_Type is
       when "dynamic" | "relocatable" =>
          for Library_Name use "ada_ado_mysql";
-	     for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado-mysql");
-		 for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado-mysql/";
-		 for Library_Dir use "INSTALL/lib";
+	     for Source_Dirs use (Util_Config.Includedir & "/ada-ado-mysql");
+		 for Library_ALI_Dir use Util_Config.Alidir & "/ada-ado-mysql/";
+		 for Library_Dir use Util_Config.Libdir;
 		 for Library_Kind use Library_Type;
 
 		 for Externally_Built use "true";
