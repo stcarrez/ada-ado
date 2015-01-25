@@ -49,11 +49,24 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 top_builddir = .
 
+# share/ada/adainclude
+infix_inc=@ADA_INC_BASE@
+
+# share/ada/adainclude
+infix_prj=@ADA_PRJ_BASE@
+
+# lib
+infix_lib=@ADA_LIB_BASE@
+
+# lib/ada/adalib
+infix_ali=@ADA_ALI_BASE@
+
+includedir=${prefix}/${infix_inc}
+projectdir=${prefix}/${infix_prj}
+bindir=${prefix}/bin
+libdir=${prefix}/${infix_lib}
+alidir=${prefix}/${infix_ali}
 dynamodir=${prefix}/share/dynamo
-includedir=${prefix}/share/ada/adainclude
-projectdir=${prefix}/share/ada/adainclude
-libdir=${prefix}/lib
-alidir=${libdir}/ada/adalib/
 
 libname=libada_ado
 libprefix=$(libname)_
@@ -228,10 +241,10 @@ install_lib:
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	test T${HAVE_MYSQL} = Tno || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
+	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
+	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
-	sed -e "s,INSTALL,${prefix},g" -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
+	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
