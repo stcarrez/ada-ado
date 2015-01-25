@@ -1,4 +1,5 @@
 with "util";
+with "util_config";
 --  @WITH_ADO_SQLITE@
 --  @WITH_ADO_MYSQL@
 
@@ -15,24 +16,24 @@ library project Ado is
    Has_Sqlite : Yes_No := "@ADO_HAVE_SQLITE@";
 
    for Library_Name use "ada_ado";
-   for Library_Dir use "INSTALL/lib";
+   for Library_Dir use Util_Config.Libdir;
    for Library_Kind use Library_Type;
 
-   for Source_Dirs use ("INSTALL/share/ada/adainclude/ada-ado");
+   for Source_Dirs use (Util_Config.Includedir & "/ada-ado");
    for Externally_Built use "true";
 
    case Library_Type is
       when "dynamic" | "relocatable" =>
-         for Source_Dirs use Project'Source_Dirs & ("INSTALL/share/ada/adainclude/ada-ado/dynamic");
-         for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado/relocatable";
+         for Source_Dirs use Project'Source_Dirs & (Util_Config.Includedir & "/ada-ado/dynamic");
+         for Library_ALI_Dir use Util_Config.Alidir & "/ada-ado/relocatable";
 
       when "static" =>
-         for Source_Dirs use Project'Source_Dirs & ("INSTALL/share/ada/adainclude/ada-ado/static");
-         for Library_ALI_Dir use "INSTALL/lib/ada/adalib/ada-ado/static";
+         for Source_Dirs use Project'Source_Dirs & (Util_Config.Includedir & "/ada-ado/static");
+         for Library_ALI_Dir use Util_Config.Alidir & "/ada-ado/static";
 
          case Has_Mysql is
             when "yes" =>
-               for Source_Dirs use Project'Source_Dirs & ("INSTALL/share/ada/adainclude/ada-ado-mysql");
+               for Source_Dirs use Project'Source_Dirs & (Util_Config.Includedir & "/ada-ado-mysql");
 
             when "no" =>
                null;
@@ -41,7 +42,7 @@ library project Ado is
 
          case Has_Sqlite is
             when "yes" =>
-               for Source_Dirs use Project'Source_Dirs & ("INSTALL/share/ada/adainclude/ada-ado-sqlite");
+               for Source_Dirs use Project'Source_Dirs & (Util_Config.Includedir & "/ada-ado-sqlite");
 
             when "no" =>
                null;
