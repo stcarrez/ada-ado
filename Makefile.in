@@ -90,7 +90,7 @@ build:  src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ad
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
-	$(GNATMAKE) -m -p -Ptests $(MAKE_ARGS) -largs -Llib/ado/${ADO_LIBRARY_TYPE}
+	$(GNATMAKE) -m -p -Pado_tests $(MAKE_ARGS) -largs -Llib/ado/${ADO_LIBRARY_TYPE}
 
 static:
 	$(MAKE) ADO_LIBRARY_TYPE=static build
@@ -141,7 +141,7 @@ CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtes
 clean:
 	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=static
 	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=relocatable
-	-$(GNATCLEAN) -q -Ptests
+	-$(GNATCLEAN) -q -Pado_tests
 	-$(GNATCLEAN) -q -Psamples
 	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
 	-rm -rf obj/ado obj/ado-mysql obj/ado-sqlite
@@ -187,7 +187,7 @@ create-mysql-tests:
 # Files to package in source distribution
 DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
-ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in tests.gpr.in samples.gpr.in config.gpr \
+ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in ado_tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 samples.properties \
 distrib test-mysql.properties test-sqlite.properties dynamo.xml debian
 

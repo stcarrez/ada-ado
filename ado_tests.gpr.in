@@ -5,7 +5,7 @@ with "ado";
 @WITH_ADO_SQLITE@
 @WITH_ADO_MYSQL@
 
-project Tests is
+project Ado_Tests is
 
    for Languages use ("Ada", "Project file");
 
@@ -23,4 +23,4 @@ project Tests is
    package Compiler renames Config.Compiler;
    package Linker renames Config.Linker;
 
-end Tests;
+end Ado_Tests;

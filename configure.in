@@ -221,5 +221,5 @@ AC_SUBST(ADO_SQLITE_LIBRARY_OPTIONS)
 AM_UTIL_CHECK_INSTALL
 
 AC_OUTPUT(
-Makefile ado.gpr tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
+Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
 )
