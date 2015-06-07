@@ -1,5 +1,6 @@
-Version 1.0.2   - 
+Version 1.0.2   -
   - Fix link issue on Fedora
+  - Detect MariaDB as a replacement for MySQL
 
 Version 1.0.1   - Jul 2014
   - Fix minor configuration issue with GNAT 2014
