@@ -678,6 +678,7 @@ ac_user_opts='
 enable_option_checking
 with_gprbuild
 enable_mysql
+enable_mariadb
 enable_sqlite
 with_mysql
 enable_shared
@@ -1306,6 +1307,7 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-mysql          build MySQL support
+  --enable-mariadb        build MariaDB support (MySQL alternative)
   --enable-sqlite         build SQLite support
   --enable-shared         Enable the shared libraries (disabled)
   --enable-link-options-mysql=opts
@@ -3134,6 +3136,16 @@ else
 fi
 
 
+# Check whether --enable-mariadb was given.
+if test "${enable_mariadb+set}" = set; then :
+  enableval=$enable_mariadb; ENABLE_MARIADB=$enableval
+ENABLE_MYSQL=$enableval
+else
+  ENABLE_MARIADB=yes
+ENABLE_MYSQL=yes
+fi
+
+
 # Check whether --enable-sqlite was given.
 if test "${enable_sqlite+set}" = set; then :
   enableval=$enable_sqlite; ENABLE_SQLITE=$enableval
@@ -3274,6 +3286,58 @@ if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
 
 fi
 
+    if test "${ADO_HAVE_MYSQL}" = "no"; then
+       MYSQL_LIB=mariadbclient
+       LDFLAGS="$LDFLAGS $ac_mysql_libs"
+       as_ac_Lib=`$as_echo "ac_cv_lib_$MYSQL_LIB''_mysql_init" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -l$MYSQL_LIB" >&5
+$as_echo_n "checking for mysql_init in -l$MYSQL_LIB... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-l$MYSQL_LIB  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char mysql_init ();
+int
+main ()
+{
+return mysql_init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+
+         DB="$DB mysql"
+         ADO_HAVE_MYSQL=yes
+         WITH_ADO_MYSQL="with \"ado_mysql\";";
+         MYSQL_LIBNAME="-l$MYSQL_LIB"
+         MYSQL_LIBS="$ac_mysql_libs"
+
+fi
+
+    fi
     ;;
 
   esac
