@@ -74,6 +74,13 @@ AC_ARG_ENABLE(mysql,
 ENABLE_MYSQL=$enableval,
 ENABLE_MYSQL=yes)
 
+AC_ARG_ENABLE(mariadb,
+[  --enable-mariadb        build MariaDB support (MySQL alternative)],
+ENABLE_MARIADB=$enableval
+ENABLE_MYSQL=$enableval,
+ENABLE_MARIADB=yes
+ENABLE_MYSQL=yes)
+
 AC_ARG_ENABLE(sqlite,
 [  --enable-sqlite         build SQLite support],
 ENABLE_SQLITE=$enableval,
@@ -125,6 +132,17 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
        MYSQL_LIBNAME="-l$MYSQL_LIB"
 	   MYSQL_LIBS="$ac_mysql_libs"
        ])
+    if test "${ADO_HAVE_MYSQL}" = "no"; then
+       MYSQL_LIB=mariadbclient
+       LDFLAGS="$LDFLAGS $ac_mysql_libs"
+       AC_CHECK_LIB($MYSQL_LIB,mysql_init,[
+         DB="$DB mysql"
+         ADO_HAVE_MYSQL=yes
+         WITH_ADO_MYSQL="with \"ado_mysql\";";
+         MYSQL_LIBNAME="-l$MYSQL_LIB"
+         MYSQL_LIBS="$ac_mysql_libs"
+         ])
+    fi
     ;;
 
   esac
