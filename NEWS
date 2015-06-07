@@ -1,4 +1,7 @@
-Version 1.0.1   -
+Version 1.0.2   - 
+  - Fix link issue on Fedora
+
+Version 1.0.1   - Jul 2014
   - Fix minor configuration issue with GNAT 2014
 
 Version 1.0     - Apr 2014
