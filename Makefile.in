@@ -114,7 +114,8 @@ src/static/ado-drivers-initialize.adb: src/static/ado-drivers-initialize.gpb Mak
 		  src/static/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
-	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's,^ *,,' -e 's,  , ,g' -e 's,   , ,g' -e 's, $$,,g' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
+	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's,^ *,,' -e 's,  , ,g' -e 's, $$,,g' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
+    libs=`echo "$$libs" | sed -e 's,ASCII.NUL & "" & ASCII.NUL,ASCII.NUL,g'`;\
 	gnatprep -DMYSQL_LIB="$$libs" src/mysql/mysql-lib.gpb $@
 
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
