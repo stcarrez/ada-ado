@@ -2,7 +2,7 @@ with "util";
 with "util_config";
 with "ado";
 
-library project Ado_Sqlite is
+project Ado_Sqlite is
    Version := Ado.Version;
 
    type Library_Type_Type is ("dynamic", "relocatable", "static");
