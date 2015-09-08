@@ -8,6 +8,7 @@ ADO_LIBRARY_TYPE=static
 MODE=distrib
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=@GNATCLEAN@
+GPRINSTALL=@GPRINSTALL@
 SVN=svn
 INSTALL=@INSTALL@
 
@@ -73,6 +74,11 @@ libprefix=$(libname)_
 
 CPUS := @NR_CPUS@
 MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${ADO_LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
+ifeq ($(ADO_LIBRARY_TYPE),relocatable)
+MAKE_ARGS += -XUTIL_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
+MAKE_ARGS += -XXMLADA_BUILD=relocatable
+MAKE_ARGS += -XLIBRARY_TYPE=relocatable
+endif
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
@@ -190,7 +196,7 @@ DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess conf
 configure.in Makefile.in install-sh \
 ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in ado_tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 samples.properties \
-distrib test-mysql.properties test-sqlite.properties dynamo.xml debian
+distrib test-mysql.properties test-sqlite.properties dynamo.xml
 
 dist:
 	-rm -rf $(distdir)
@@ -227,6 +233,16 @@ install_shared:
 	$(MAKE) ADO_LIBRARY_TYPE=relocatable install_lib
 
 install_lib:
+ifneq (${GPRINSTALL},)
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ADO_LIBRARY_TYPE) $(GPRPATH)
+	test T${HAVE_MYSQL} = Tno || \
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_MYSQL_GPRPATH)
+	test T${HAVE_SQLITE} = Tno || \
+	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_SQLITE_GPRPATH)
+else
 	rm -rf ${alidir}/ada-ado-mysql \
 	       ${alidir}/ada-ado-sqlite \
 	       ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
@@ -279,8 +295,12 @@ else
 	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(ADO_LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${bindir}/
 endif
 endif
+endif
 
 uninstall:
+ifneq (${GPRINSTALL},)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(GPRPATH)
+else
 	rm -rf ${includedir}/ada-ado
 	rm -rf ${includedir}/ada-ado-mysql
 	rm -rf ${includedir}/ada-ado-sqlite
@@ -297,6 +317,7 @@ uninstall:
 	rm -f ${projectdir}/ado_mysql.gpr
 	rm -f ${projectdir}/ado_sqlite.gpr
 	rm -rf ${dynamodir}/ado
+endif
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)
