@@ -236,6 +236,7 @@ AC_DEFUN(AM_GNAT_CHECK_INSTALL,
   gnat_xml_lib_dir=
   gnat_xml_prl_dir=
 
+  AC_CHECK_PROGS(GPRINSTALL, gprinstall, "")
   if test x${gnat_xml_ada} = 'x'; then
      gnat_xml_ada=xmlada-config
   fi
@@ -385,6 +386,7 @@ AC_DEFUN(AM_GNAT_CHECK_INSTALL,
 dnl Guess the installation path
 AC_DEFUN(AM_UTIL_CHECK_INSTALL,
 [
+  AC_CHECK_PROGS(GPRINSTALL, gprinstall, "")
   AM_GNAT_CHECK_PROJECT([util_config],[util_config])
 
   # Search in the GNAT project path.
