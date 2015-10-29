@@ -30,6 +30,12 @@ with Util.Concurrent.Counters;
 limited with ADO.Sequences;
 limited with ADO.Schemas.Entities;
 
+--  == Session ==
+--  The <tt>ADO.Sessions</tt> package defines the control and management of database sessions.
+--  The database session is represented by the <tt>Session</tt> or <tt>Master_Session</tt> types.
+--
+--  @include ado-sessions-factory.ads
+--
 package ADO.Sessions is
 
    use ADO.Statements;

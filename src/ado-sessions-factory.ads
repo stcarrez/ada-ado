@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,27 @@ with ADO.Databases;
 with ADO.Schemas.Entities;
 with ADO.Sequences;
 
+--  === Session Factory ===
+--  The session factory is the entry point to obtain a database session.
 --  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
 --  sessions.
+--
+--    with ADO.Sessions.Factory;
+--    ...
+--    Sess_Factory : ADO.Sessions.Factory;
+--
+--  The session factory can be initialized by using the <tt>Create</tt> operation and
+--  by giving a URI string that identifies the driver and the information to connect
+--  to the database.  The session factory is created only once when the application starts.
+--
+--    ADO.Sessions.Factory.Create (Sess_Factory, "mysql://localhost:3306/ado_test?user=test");
+--
+--  Having a session factory, one can get a database by using the <tt>Get_Session</tt> or
+--  <tt>Get_Master_Session</tt> function.  Each time this operation is called, a new session
+--  is returned.  The session is released when the session variable is finalized.
+--
+--    DB : ADO.Sessions.Session := Sess_Factory.Get_Session;
+--
 package ADO.Sessions.Factory is
 
    pragma Elaborate_Body;
