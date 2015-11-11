@@ -7,7 +7,7 @@ with "ado";
 
 project Ado_Tests is
 
-   for Languages use ("Ada", "Project file");
+   for Languages use ("Ada");
 
    Mains := ("ado_harness");
 
