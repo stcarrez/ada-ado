@@ -169,7 +169,7 @@ rebuild: clean build
 GENERATOR=dynamo
 
 generate:
-	$(GENERATOR) generate db
+	# $(GENERATOR) generate db
 	$(GENERATOR) generate db/regtests
 	$(GENERATOR) generate db/samples
 
