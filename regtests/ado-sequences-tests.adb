@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ package body ADO.Sequences.Tests is
 
    type Test_Impl is
      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
-                                    Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE'Access)
+                                    Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE)
    with record
       Version : Integer;
       Value   : ADO.Identifier;
