@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -291,6 +291,12 @@ package ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in Entity_Type);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Entity_Type);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
