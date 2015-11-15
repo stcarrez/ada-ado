@@ -621,6 +621,26 @@ package body ADO.Statements is
    end Get_Time;
 
    --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_Entity_Type</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Nullable_Entity_Type (Query  : Query_Statement;
+                                      Column : Natural) return Nullable_Entity_Type is
+   begin
+      if Query.Proxy = null then
+         return Result : Nullable_Entity_Type do
+            Result.Is_Null := Query_Statement'Class (Query).Is_Null (Column);
+            if not Result.Is_Null then
+               Result.Value := Entity_Type (Query_Statement'Class (Query).Get_Integer (Column));
+            end if;
+         end return;
+      end if;
+      return Query.Proxy.all.Get_Nullable_Entity_Type (Column);
+   end Get_Nullable_Entity_Type;
+
+   --  ------------------------------
    --  Get the column type
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    --  ------------------------------
