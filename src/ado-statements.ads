@@ -215,6 +215,13 @@ package ADO.Statements is
    function Get_Time (Query  : Query_Statement;
                       Column : Natural) return Nullable_Time;
 
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_Entity_Type</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Nullable_Entity_Type (Query  : Query_Statement;
+                                      Column : Natural) return Nullable_Entity_Type;
+
    --  Get the column type
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    function Get_Column_Type (Query  : Query_Statement;
