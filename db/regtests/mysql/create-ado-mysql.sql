@@ -32,27 +32,17 @@ CREATE TABLE TEST_COMMENTS (
   /* the comment identifier */
   `ID` INTEGER ,
   /* the comment version. */
-  `version` int ,
+  `version` int NOT NULL,
   /* the comment publication date. */
   `DATE` TIMESTAMP NOT NULL,
   /* the comment message. */
   `MESSAGE` VARCHAR(256) NOT NULL,
   /* the entity identifier to which this comment is associated. */
-  `ENTITY_ID` INTEGER ,
+  `ENTITY_ID` INTEGER NOT NULL,
   /* the user who posted this comment */
   `USER_FK` INTEGER NOT NULL,
   /* the entity type that correspond to the entity associated with this comment. */
   `ENTITY__TYPE_FK` INTEGER NOT NULL,
-  PRIMARY KEY (`ID`)
-);
-/* Record representing a user */
-CREATE TABLE allocate (
-  /* the user id */
-  `ID` BIGINT NOT NULL,
-  /* the allocate version. */
-  `version` int ,
-  /* the sequence value */
-  `NAME` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
 );
 /*  */
@@ -60,7 +50,7 @@ CREATE TABLE test_image (
   /* the image identifier */
   `id` INTEGER ,
   /* the image version. */
-  `version` int ,
+  `version` int NOT NULL,
   /* the message creation date */
   `create_date` DATETIME NOT NULL,
   /* the image data */
@@ -68,13 +58,23 @@ CREATE TABLE test_image (
   PRIMARY KEY (`id`)
 );
 /* Record representing a user */
+CREATE TABLE allocate (
+  /* the user id */
+  `ID` BIGINT NOT NULL,
+  /* the allocate version. */
+  `version` int NOT NULL,
+  /* the sequence value */
+  `NAME` VARCHAR(255) ,
+  PRIMARY KEY (`ID`)
+);
+/* Record representing a user */
 CREATE TABLE test_user (
   /* the user id */
   `ID` BIGINT NOT NULL,
   /* the comment version. */
-  `version` int ,
+  `version` int NOT NULL,
   /* the sequence value */
-  `VALUE` BIGINT ,
+  `VALUE` BIGINT NOT NULL,
   /* the user name */
   `NAME` VARCHAR(255) ,
   /* the user name */
@@ -83,7 +83,7 @@ CREATE TABLE test_user (
 );
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
-,("allocate")
 ,("test_image")
+,("allocate")
 ,("test_user")
 ;

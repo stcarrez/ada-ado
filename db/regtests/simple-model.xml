@@ -8,12 +8,12 @@
             <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
             <generator class="sequence"/>
         </id>
-        <version name="version" type="int" column="version">
+        <version name="version" type="int" column="version" not-null="true">
             <comment>the comment version.</comment>
         </version> 
         <property name="value" type="ADO.Identifier">
             <comment>the sequence value</comment>
-            <column name="VALUE" not-null="false" unique="false" sql-type="BIGINT"/>
+            <column name="VALUE" not-null="true" unique="false" sql-type="BIGINT"/>
         </property>
         <property name="name" type="String">
             <comment>the user name</comment>
@@ -33,7 +33,7 @@
             <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
             <generator class="sequence"/>
         </id>
-        <version name="version" type="int" column="version">
+        <version name="version" type="int" column="version" not-null="true">
             <comment>the allocate version.</comment>
         </version> 
         <property name="name" type="String">

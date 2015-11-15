@@ -4,7 +4,7 @@ CREATE TABLE user (
   /* the user identifier */
   `ID` BIGINT NOT NULL,
   /*  */
-  `object_version` int ,
+  `object_version` int NOT NULL,
   /* the user name */
   `NAME` VARCHAR(256) ,
   /* the user email */
