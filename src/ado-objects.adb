@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -658,6 +658,17 @@ package body ADO.Objects is
                                     Field  : in Positive;
                                     Into   : in out ADO.Entity_Type;
                                     Value  : in ADO.Entity_Type) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Entity_Type;
+
+   procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
+                                    Field  : in Positive;
+                                    Into   : in out ADO.Nullable_Entity_Type;
+                                    Value  : in ADO.Nullable_Entity_Type) is
    begin
       if Into /= Value then
          Into := Value;
