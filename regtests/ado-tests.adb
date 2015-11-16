@@ -22,6 +22,7 @@ with Ada.Calendar;
 with ADO.Statements;
 with ADO.Objects;
 with ADO.Sessions;
+with ADO.Utils;
 with Regtests;
 
 with Regtests.Simple.Model;
@@ -31,6 +32,7 @@ with Util.Assertions;
 with Util.Measures;
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Beans.Objects;
 with Util.Test_Caller;
 
 package body ADO.Tests is
@@ -307,6 +309,23 @@ package body ADO.Tests is
       T.Assert (Data.Value.Len > 100, "Blob length initialized from file is too small");
    end Test_Blob;
 
+   --  ------------------------------
+   --  Test the To_Object and To_Identifier operations.
+   --  ------------------------------
+   procedure Test_Identifier_To_Object (T : in out Test) is
+      Val : Util.Beans.Objects.Object := ADO.Utils.To_Object (ADO.NO_IDENTIFIER);
+   begin
+      T.Assert (Util.Beans.Objects.Is_Null (Val),
+                "To_Object must return null for ADO.NO_IDENTIFIER");
+      T.Assert (ADO.Utils.To_Identifier (Val) = ADO.NO_IDENTIFIER,
+                "To_Identifier must return ADO.NO_IDENTIFIER for null");
+      Val := ADO.Utils.To_Object (1);
+      T.Assert (not Util.Beans.Objects.Is_Null (Val),
+                "To_Object must not return null for a valid Identifier");
+      T.Assert (ADO.Utils.To_Identifier (Val) = 1,
+                "To_Identifier must return the correct identifier");
+   end Test_Identifier_To_Object;
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test Object_Ref.Load", Test_Load'Access);
@@ -323,6 +342,8 @@ package body ADO.Tests is
                        Test_String'Access);
       Caller.Add_Test (Suite, "Test insert blob",
                        Test_Blob'Access);
+      Caller.Add_Test (Suite, "Test ADO.Utils.To_Object/To_Identifier",
+                       Test_Identifier_To_Object'Access);
    end Add_Tests;
 
 end ADO.Tests;
