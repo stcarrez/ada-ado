@@ -596,6 +596,17 @@ package body ADO.Objects is
       end if;
    end Set_Field_Integer;
 
+   procedure Set_Field_Integer (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out ADO.Nullable_Integer;
+                                Value  : in ADO.Nullable_Integer) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Integer;
+
    procedure Set_Field_Natural (Object : in out Object_Record'Class;
                                 Field  : in Positive;
                                 Into   : in out Natural;
