@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,10 +73,17 @@ package body ADO.Drivers.Connections is
 
       --  Extract the server and port.
       Pos2 := Index (URI, ":", Pos);
-      if Pos2 > Pos then
+      if Pos2 >= Pos then
          Controller.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
-         Controller.Port := Integer'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
+         begin
+            Controller.Port := Integer'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
 
+         exception
+            when Constraint_Error =>
+               Log.Error ("Invalid port in connection URI: {0}", URI);
+               raise Connection_Error
+                 with "Invalid port in connection URI: '" & URI & "'";
+         end;
       else
          Controller.Port := 0;
          Controller.Server := To_Unbounded_String (URI (Pos .. Slash_Pos - 1));
