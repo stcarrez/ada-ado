@@ -24,10 +24,9 @@ with System.Storage_Elements;
 with Ada.Unchecked_Deallocation;
 package body ADO.Statements is
 
-   use Util.Log;
    use System.Storage_Elements;
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements");
 
    function Get_Query (Query : Statement) return ADO.SQL.Query_Access is
    begin
@@ -761,6 +760,21 @@ package body ADO.Statements is
                          Value  : in Integer) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Integer) is
+   begin
+      if Value.Is_Null then
+         Update.Save_Null_Field (Name);
+      else
+         Update.Update.Save_Field (Name => Name, Value => Value.Value);
+      end if;
    end Save_Field;
 
    --  ------------------------------
