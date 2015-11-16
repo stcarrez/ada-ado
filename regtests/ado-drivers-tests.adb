@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014 Stephane Carrez
+--  Copyright (C) 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,8 @@ package body ADO.Drivers.Tests is
                        Test_Get_Driver_Index'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Driver",
                        Test_Load_Invalid_Driver'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection (Errors)",
+                       Test_Set_Connection_Error'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -84,5 +86,34 @@ package body ADO.Drivers.Tests is
                    "Two drivers must have different driver indexes");
       end if;
    end Test_Get_Driver_Index;
+
+   --  ------------------------------
+   --  Test the Set_Connection procedure with several error cases.
+   --  ------------------------------
+   procedure Test_Set_Connection_Error (T : in out Test) is
+
+      procedure Check_Invalid_Connection (URI : in String);
+
+      Controller : ADO.Drivers.Connections.Configuration;
+
+      procedure Check_Invalid_Connection (URI : in String) is
+      begin
+         Controller.Set_Connection (URI);
+         T.Fail ("No Connection_Error exception raised for " & URI);
+
+      exception
+         when Connection_Error =>
+            null;
+
+      end Check_Invalid_Connection;
+
+   begin
+      Check_Invalid_Connection ("");
+      Check_Invalid_Connection ("http://");
+      Check_Invalid_Connection ("mysql://");
+      Check_Invalid_Connection ("sqlite://");
+      Check_Invalid_Connection ("mysql://:toto/");
+      Check_Invalid_Connection ("sqlite://:toto/");
+   end Test_Set_Connection_Error;
 
 end ADO.Drivers.Tests;
