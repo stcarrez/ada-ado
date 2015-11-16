@@ -54,9 +54,51 @@ CREATE TABLE test_user (
   `select` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
 );
+/* Record representing a user */
+CREATE TABLE test_nullable_table (
+  /* the user id */
+  `ID` BIGINT NOT NULL,
+  /* the comment version. */
+  `version` int NOT NULL,
+  /* an identifier value */
+  `ID_VALUE` BIGINT ,
+  /* an integer value */
+  `INT_VALUE` INTEGER ,
+  /* a boolean value */
+  `BOOL_VALUE` INTEGER ,
+  /* a string value */
+  `STRING_VALUE` VARCHAR(255) ,
+  /* a time value */
+  `TIME_VALUE` DATETIME ,
+  /* an entity value */
+  `ENTITY_VALUE` INTEGER ,
+  PRIMARY KEY (`ID`)
+);
+/* Record representing a user */
+CREATE TABLE test_table (
+  /* the user id */
+  `ID` BIGINT NOT NULL,
+  /* the comment version. */
+  `version` int NOT NULL,
+  /* an identifier value */
+  `ID_VALUE` BIGINT NOT NULL,
+  /* an integer value */
+  `INT_VALUE` INTEGER NOT NULL,
+  /* a boolean value */
+  `BOOL_VALUE` INTEGER NOT NULL,
+  /* a string value */
+  `STRING_VALUE` VARCHAR(255) NOT NULL,
+  /* a time value */
+  `TIME_VALUE` DATETIME NOT NULL,
+  /* an entity value */
+  `ENTITY_VALUE` INTEGER NOT NULL,
+  PRIMARY KEY (`ID`)
+);
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
 ,("test_image")
 ,("allocate")
 ,("test_user")
+,("test_nullable_table")
+,("test_table")
 ;
