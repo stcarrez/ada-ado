@@ -109,11 +109,17 @@ package body ADO.Drivers.Tests is
          Util.Tests.Assert_Equals (T, Server, Controller.Get_Server, "Invalid server for " & URI);
          Util.Tests.Assert_Equals (T, Port, Controller.Get_Port, "Invalid port for " & URI);
          Util.Tests.Assert_Equals (T, Database, Controller.Get_Database, "Invalid db for " & URI);
+
+         Controller.Set_Property ("password", "test");
+         Util.Tests.Assert_Equals (T, "test", Controller.Get_Property ("password"),
+                                   "Invalid 'password' property for " & URI);
       end Check;
 
    begin
       Check ("mysql://test:3306/db", "test", 3306, "db");
+      Check ("mysql://test2:3307/db2?user=admin&password=admin", "test2", 3307, "db2");
       Check ("sqlite:///test.db", "", 0, "test.db");
+      Check ("sqlite:///test2.db?user=root&encoding=UTF-8", "", 0, "test2.db");
    end Test_Set_Connection;
 
    --  ------------------------------
