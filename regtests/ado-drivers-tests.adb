@@ -34,6 +34,8 @@ package body ADO.Drivers.Tests is
                        Test_Get_Driver_Index'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Driver",
                        Test_Load_Invalid_Driver'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection",
+                       Test_Set_Connection'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection (Errors)",
                        Test_Set_Connection_Error'Access);
    end Add_Tests;
@@ -86,6 +88,33 @@ package body ADO.Drivers.Tests is
                    "Two drivers must have different driver indexes");
       end if;
    end Test_Get_Driver_Index;
+
+   --  ------------------------------
+   --  Test the Set_Connection procedure.
+   --  ------------------------------
+   procedure Test_Set_Connection (T : in out Test) is
+
+      procedure Check (URI      : in String;
+                       Server   : in String;
+                       Port     : in Integer;
+                       Database : in String);
+
+      procedure Check (URI      : in String;
+                       Server   : in String;
+                       Port     : in Integer;
+                       Database : in String) is
+         Controller : ADO.Drivers.Connections.Configuration;
+      begin
+         Controller.Set_Connection (URI);
+         Util.Tests.Assert_Equals (T, Server, Controller.Get_Server, "Invalid server for " & URI);
+         Util.Tests.Assert_Equals (T, Port, Controller.Get_Port, "Invalid port for " & URI);
+         Util.Tests.Assert_Equals (T, Database, Controller.Get_Database, "Invalid db for " & URI);
+      end Check;
+
+   begin
+      Check ("mysql://test:3306/db", "test", 3306, "db");
+      Check ("sqlite:///test.db", "", 0, "test.db");
+   end Test_Set_Connection;
 
    --  ------------------------------
    --  Test the Set_Connection procedure with several error cases.
