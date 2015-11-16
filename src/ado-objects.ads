@@ -318,6 +318,11 @@ package ADO.Objects is
                                 Into   : in out Integer;
                                 Value  : in Integer);
 
+   procedure Set_Field_Integer (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out ADO.Nullable_Integer;
+                                Value  : in ADO.Nullable_Integer);
+
    procedure Set_Field_Natural (Object : in out Object_Record'Class;
                                 Field  : in Positive;
                                 Into   : in out Natural;
