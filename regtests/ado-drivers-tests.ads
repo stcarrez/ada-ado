@@ -35,6 +35,9 @@ package ADO.Drivers.Tests is
    --  Test the Get_Driver_Index operation.
    procedure Test_Get_Driver_Index (T : in out Test);
 
+   --  Test the Set_Connection procedure.
+   procedure Test_Set_Connection (T : in out Test);
+
    --  Test the Set_Connection procedure with several error cases.
    procedure Test_Set_Connection_Error (T : in out Test);
 
