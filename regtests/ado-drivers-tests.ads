@@ -23,6 +23,9 @@ package ADO.Drivers.Tests is
 
    type Test is new Util.Tests.Test with null record;
 
+   --  Test the Initialize operation.
+   procedure Test_Initialize (T : in out Test);
+
    --  Test the Get_Config operation.
    procedure Test_Get_Config (T : in out Test);
 
