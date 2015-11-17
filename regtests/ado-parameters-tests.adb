@@ -22,6 +22,13 @@ package body ADO.Parameters.Tests is
 
    use Util.Tests;
 
+   type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
+
+   --  Check if the string is a reserved keyword.
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean;
+
    --  Test the Add_Param operation for various types.
    generic
       type T (<>) is private;
@@ -135,11 +142,21 @@ package body ADO.Parameters.Tests is
    end Add_Tests;
 
    --  ------------------------------
+   --  Check if the string is a reserved keyword.
+   --  ------------------------------
+   overriding
+   function Is_Reserved (D    : in Dialect;
+                         Name : in String) return Boolean is
+   begin
+      return False;
+   end Is_Reserved;
+
+   --  ------------------------------
    --  Test expand SQL with parameters.
    --  ------------------------------
    procedure Test_Expand_Sql (T : in out Test) is
       SQL : ADO.Parameters.List;
-      D   : aliased ADO.Drivers.Dialects.Dialect;
+      D   : aliased Dialect;
 
       procedure Check (Pattern : in String; Expect : in String);
 
@@ -201,7 +218,7 @@ package body ADO.Parameters.Tests is
       pragma Unreferenced (T);
 
       SQL : ADO.Parameters.List;
-      D   : aliased ADO.Drivers.Dialects.Dialect;
+      D   : aliased Dialect;
    begin
       SQL.Set_Dialect (D'Unchecked_Access);
       declare
