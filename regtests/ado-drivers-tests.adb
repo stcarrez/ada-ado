@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Exceptions;
+
 with Util.Test_Caller;
 
 with ADO.Drivers.Connections;
@@ -123,6 +125,12 @@ package body ADO.Drivers.Tests is
          Controller.Set_Property ("password", "test");
          Util.Tests.Assert_Equals (T, "test", Controller.Get_Property ("password"),
                                    "Invalid 'password' property for " & URI);
+
+      exception
+         when E : Connection_Error =>
+            Util.Tests.Assert_Matches (T, "Driver.*not found.*",
+                                       Ada.Exceptions.Exception_Message (E),
+                                       "Invalid exception raised for " & URI);
       end Check;
 
    begin
