@@ -19,6 +19,7 @@
 with Util.Test_Caller;
 with Util.Strings.Transforms;
 
+with ADO.Utils;
 with ADO.Sessions;
 
 with Regtests.Statements.Model;
@@ -163,8 +164,20 @@ package body ADO.Statements.Tests is
    begin
       Stmt.Execute;
       T.Assert (Stmt.Has_Elements, "The query statement must return a value for table " & Table);
---        Util.Tests.Assert_Equals (T, 1, Stmt.Get_Row_Count, "The query must return one row "
---                                  & Table);
+      return Stmt.Get_Integer (0);
+   end Get_Sum;
+
+   function Get_Sum (T     : in Test;
+                     Table : in String;
+                     Ids   : in ADO.Utils.Identifier_Vector) return Natural is
+      DB   : constant ADO.Sessions.Session := Regtests.Get_Database;
+      Stmt : ADO.Statements.Query_Statement := DB.Create_Statement ("SELECT SUM(id_value) FROM "
+                                                                    & Table
+                                                                    & " WHERE id IN (:ids)");
+   begin
+      Stmt.Bind_Param ("ids", Ids);
+      Stmt.Execute;
+      T.Assert (Stmt.Has_Elements, "The query statement must return a value for table " & Table);
       return Stmt.Get_Integer (0);
    end Get_Sum;
 
@@ -172,8 +185,9 @@ package body ADO.Statements.Tests is
    --  Test creation of several rows in test_table with different column type.
    --  ------------------------------
    procedure Test_Save (T : in out Test) is
-      First : constant Natural := Get_Sum (T, "test_table");
-      DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      First  : constant Natural := Get_Sum (T, "test_table");
+      DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      List   : ADO.Utils.Identifier_Vector;
    begin
       DB.Begin_Transaction;
       for I in 1 .. 10 loop
@@ -187,11 +201,14 @@ package body ADO.Statements.Tests is
             Item.Set_Time_Value (Ada.Calendar.Clock);
             Item.Set_Entity_Value (ADO.Entity_Type (10 - I));
             Item.Save (DB);
+            List.Append (Item.Get_Id);
          end;
       end loop;
       DB.Commit;
 
       Util.Tests.Assert_Equals (T, First + 385, Get_Sum (T, "test_table"),
+                                "The SUM query returns an invalid value for test_table");
+      Util.Tests.Assert_Equals (T, 385, Get_Sum (T, "test_table", List),
                                 "The SUM query returns an invalid value for test_table");
    end Test_Save;
 
