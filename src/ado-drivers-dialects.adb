@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Dialects -- Driver support for basic SQL Generation
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +17,6 @@
 -----------------------------------------------------------------------
 
 package body ADO.Drivers.Dialects is
-
-   --  --------------------
-   --  Check if the string is a reserved keyword.
-   --  --------------------
-   function Is_Reserved (D    : in Dialect;
-                         Name : in String) return Boolean is
-   begin
-      return D.Keywords.Contains (Name'Unrestricted_Access);
-   end Is_Reserved;
-
-   --  --------------------
-   --  Add a set of keywords to be escaped.
-   --  --------------------
-   procedure Add_Keywords (D        : in out Dialect;
-                           Keywords : in Keyword_Array) is
-   begin
-      for I in Keywords'Range loop
-         D.Keywords.Insert (Keywords (I));
-      end loop;
-   end Add_Keywords;
 
    --  --------------------
    --  Get the quote character to escape an identifier.

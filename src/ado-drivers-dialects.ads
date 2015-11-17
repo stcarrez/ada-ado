@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Dialects -- Driver support for basic SQL Generation
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Strings;
-
 --  The <b>ADO.Drivers.Dialects</b> package controls the database specific SQL dialects.
 package ADO.Drivers.Dialects is
-
-   type Keyword_Array is array (Natural range <>) of Util.Strings.Name_Access;
 
    --  --------------------
    --  SQL Dialect
@@ -33,16 +29,12 @@ package ADO.Drivers.Dialects is
    --    <li>How to escape those keywords</li>
    --    <li>How to escape special characters</li>
    --  </ul>
-   type Dialect is tagged private;
+   type Dialect is abstract tagged private;
    type Dialect_Access is access all Dialect'Class;
 
    --  Check if the string is a reserved keyword.
    function Is_Reserved (D    : Dialect;
-                         Name : String) return Boolean;
-
-   --  Add a set of keywords to be escaped.
-   procedure Add_Keywords (D        : in out Dialect;
-                           Keywords : in Keyword_Array);
+                         Name : String) return Boolean is abstract;
 
    --  Get the quote character to escape an identifier.
    function Get_Identifier_Quote (D : in Dialect) return Character;
@@ -60,8 +52,6 @@ package ADO.Drivers.Dialects is
 
 private
 
-   type Dialect is tagged record
-      Keywords : Util.Strings.String_Set.Set;
-   end record;
+   type Dialect is abstract tagged null record;
 
 end ADO.Drivers.Dialects;
