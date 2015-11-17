@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -215,6 +215,13 @@ package ADO.Statements is
    function Get_Time (Query  : Query_Statement;
                       Column : Natural) return Nullable_Time;
 
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_Entity_Type</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Nullable_Entity_Type (Query  : Query_Statement;
+                                      Column : Natural) return Nullable_Entity_Type;
+
    --  Get the column type
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    function Get_Column_Type (Query  : Query_Statement;
@@ -278,6 +285,12 @@ package ADO.Statements is
    --  identified by <b>Name</b> and set it to the <b>Value</b>.
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
+                         Value  : in Nullable_Integer);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
                          Value  : in Long_Long_Integer);
 
    --  Prepare the update/insert query to save the table field
@@ -291,6 +304,12 @@ package ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in Entity_Type);
+
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Entity_Type);
 
    --  Prepare the update/insert query to save the table field
    --  identified by <b>Name</b> and set it to the <b>Value</b>.

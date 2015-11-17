@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping default-cascade="none">
+    <class name="Regtests.Statements.Model.Table" table="test_table"
+           dynamic-insert="true" dynamic-update="true">
+        <comment>Record representing a user</comment>
+        <id name="id" type="ADO.Identifier" unsaved-value="0">
+            <comment>the user id</comment>
+            <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
+            <generator class="sequence"/>
+        </id>
+        <version name="version" type="int" column="version" not-null="true">
+            <comment>the comment version.</comment>
+        </version> 
+        <property name="id_value" type="ADO.Identifier">
+            <comment>an identifier value</comment>
+            <column name="ID_VALUE" not-null="true" unique="false" sql-type="BIGINT"/>
+        </property>
+        <property name="int_value" type="Integer">
+            <comment>an integer value</comment>
+            <column name="INT_VALUE" not-null="true" unique="false" sql-type="INTEGER"/>
+        </property>
+        <property name="bool_value" type="Boolean">
+            <comment>a boolean value</comment>
+            <column name="BOOL_VALUE" not-null="true" unique="false" sql-type="INTEGER"/>
+        </property>
+        <property name="string_value" type="String">
+            <comment>a string value</comment>
+            <column name="STRING_VALUE" not-null="true" unique="false" sql-type="VARCHAR(255)"/>
+        </property>
+        <property name="time_value" type="Time">
+            <comment>a time value</comment>
+            <column name="TIME_VALUE" not-null="true" unique="false" sql-type="DATETIME"/>
+        </property>
+        <property name="entity_value" type="ADO.Entity_Type">
+            <comment>an entity value</comment>
+            <column name="ENTITY_VALUE" not-null="true" unique="false" sql-type="INTEGER"/>
+        </property>
+    </class>
+
+    <class name="Regtests.Statements.Model.Nullable_Table" table="test_nullable_table"
+           dynamic-insert="true" dynamic-update="true">
+        <comment>Record representing a user</comment>
+        <id name="id" type="ADO.Identifier" unsaved-value="0">
+            <comment>the user id</comment>
+            <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
+            <generator class="sequence"/>
+        </id>
+        <version name="version" type="int" column="version" not-null="true">
+            <comment>the comment version.</comment>
+        </version> 
+        <property name="id_value" type="ADO.Identifier">
+            <comment>an identifier value</comment>
+            <column name="ID_VALUE" not-null="false" unique="false" sql-type="BIGINT"/>
+        </property>
+        <property name="int_value" type="Integer">
+            <comment>an integer value</comment>
+            <column name="INT_VALUE" not-null="false" unique="false" sql-type="INTEGER"/>
+        </property>
+        <property name="bool_value" type="Boolean">
+            <comment>a boolean value</comment>
+            <column name="BOOL_VALUE" not-null="false" unique="false" sql-type="INTEGER"/>
+        </property>
+        <property name="string_value" type="String">
+            <comment>a string value</comment>
+            <column name="STRING_VALUE" not-null="false" unique="false" sql-type="VARCHAR(255)"/>
+        </property>
+        <property name="time_value" type="Nullable_Time">
+            <comment>a time value</comment>
+            <column name="TIME_VALUE" not-null="false" unique="false" sql-type="DATETIME"/>
+        </property>
+        <property name="entity_value" type="ADO.Entity_Type">
+            <comment>an entity value</comment>
+            <column name="ENTITY_VALUE" not-null="false" unique="false" sql-type="INTEGER"/>
+        </property>
+    </class>
+
+</hibernate-mapping>

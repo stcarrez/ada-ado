@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  ado-statements-tests -- Test statements package
+--  Copyright (C) 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,13 @@
 -----------------------------------------------------------------------
 
 with Util.Tests;
-package ADO.Queries.Tests is
+package ADO.Statements.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);
 
    type Test is new Util.Tests.Test with null record;
 
-   procedure Test_Load_Queries (T : in out Test);
+   --  Test creation of several rows in test_table with different column type.
+   procedure Test_Save (T : in out Test);
 
-   --  Test the Initialize operation called several times
-   procedure Test_Initialize (T : in out Test);
-
-   --  Test the Set_Query operation.
-   procedure Test_Set_Query (T : in out Test);
-
-   --  Test the Set_Limit operation.
-   procedure Test_Set_Limit (T : in out Test);
-
-end ADO.Queries.Tests;
+end ADO.Statements.Tests;

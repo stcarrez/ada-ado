@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ with Util.Test_Caller;
 with ADO.Drivers;
 with ADO.Sessions;
 with ADO.SQL;
+with ADO.Databases;
 with Regtests.Simple.Model;
 
 with ADO.Sequences.Hilo;
@@ -31,7 +32,7 @@ package body ADO.Sequences.Tests is
 
    type Test_Impl is
      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
-                                    Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE'Access)
+                                    Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE)
    with record
       Version : Integer;
       Value   : ADO.Identifier;
@@ -78,6 +79,8 @@ package body ADO.Sequences.Tests is
       Seq_Factory : ADO.Sequences.Factory;
       Obj         : Test_Impl;
       Factory     : aliased ADO.Sessions.Factory.Session_Factory;
+      Controller  : aliased ADO.Databases.DataSource;
+      Prev_Id     : Identifier := ADO.NO_IDENTIFIER;
    begin
       Seq_Factory.Set_Default_Generator (ADO.Sequences.Hilo.Create_HiLo_Generator'Access,
                                          Factory'Unchecked_Access);
@@ -89,6 +92,15 @@ package body ADO.Sequences.Tests is
          when ADO.Drivers.Connection_Error =>
             null;  --  Good! An exception is expected because the session factory is empty.
       end;
+
+      --  Make a real connection.
+      Controller.Set_Connection (ADO.Drivers.Get_Config ("test.database"));
+      Factory.Create (Controller);
+      for I in 1 .. 1_000 loop
+         Seq_Factory.Allocate (Obj);
+         T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
+         Prev_Id := Obj.Get_Key_Value;
+      end loop;
    end Test_Create_Factory;
 
    overriding

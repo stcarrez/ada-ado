@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,10 +57,10 @@ package body ADO.Schemas.Tests is
 
          T4 : constant ADO.Entity_Type
            := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
+                                         Table => Regtests.Simple.Model.ALLOCATE_TABLE);
          T5 : constant ADO.Entity_Type
            := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.USER_TABLE'Access);
+                                         Table => Regtests.Simple.Model.USER_TABLE);
       begin
 --           T.Assert (not ADO.Objects.Is_Null (T1), "Find_Entity_Type returned a null value");
 --           T.Assert (not ADO.Objects.Is_Null (T2), "Find_Entity_Type returned a null value");
@@ -88,7 +88,7 @@ package body ADO.Schemas.Tests is
          pragma Unreferenced (R);
       begin
          R := Entities.Find_Entity_Type (Cache => C,
-                                         Table => Regtests.Simple.Model.USER_TABLE'Access);
+                                         Table => Regtests.Simple.Model.USER_TABLE);
          T.Assert (False, "Find_Entity_Type did not raise the No_Entity_Type exception");
 
       exception

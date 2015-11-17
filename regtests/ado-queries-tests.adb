@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,10 @@ package body ADO.Queries.Tests is
                        Test_Load_Queries'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Initialize",
                        Test_Initialize'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Set_Query",
+                       Test_Set_Query'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Set_Limit",
+                       Test_Set_Limit'Access);
    end Add_Tests;
 
    package Simple_Query_File is
@@ -132,5 +136,32 @@ package body ADO.Queries.Tests is
       --  Due to the reference held by 'Info', it refers to the data loaded first.
       T.Assert (Length (Info.Value.Main_Query (0).SQL) > 0, "The old query is not valid");
    end Test_Initialize;
+
+   --  ------------------------------
+   --  Test the Set_Query operation.
+   --  ------------------------------
+   procedure Test_Set_Query (T : in out Test) is
+      Query : ADO.Queries.Context;
+   begin
+      Query.Set_Query ("simple-query");
+
+      declare
+         SQL : constant String := Query.Get_SQL (0);
+      begin
+         Assert_Equals (T, "select count(*) from user", SQL, "Invalid query for 'simple-query'");
+      end;
+   end Test_Set_Query;
+
+   --  ------------------------------
+   --  Test the Set_Limit operation.
+   --  ------------------------------
+   procedure Test_Set_Limit (T : in out Test) is
+      Query : ADO.Queries.Context;
+   begin
+      Query.Set_Query ("index");
+      Query.Set_Limit (0, 10);
+      Assert_Equals (T, 0, Query.Get_First_Row_Index, "Invalid first row index");
+      Assert_Equals (T, 10, Query.Get_Last_Row_Index, "Invalid last row index");
+   end Test_Set_Limit;
 
 end ADO.Queries.Tests;

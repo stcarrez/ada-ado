@@ -3,7 +3,7 @@ with System;
 
 package Mysql.My_list is
 
-   pragma Pure;
+   pragma Preelaborate;
 
    --  arg-macro: function list_rest (a)
    --    return (a).next;

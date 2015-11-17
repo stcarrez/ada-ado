@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014 Stephane Carrez
+--  Copyright (C) 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,8 @@ package body ADO.Drivers.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Initialize",
+                       Test_Initialize'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Config",
                        Test_Get_Config'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Driver",
@@ -34,7 +36,19 @@ package body ADO.Drivers.Tests is
                        Test_Get_Driver_Index'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Driver",
                        Test_Load_Invalid_Driver'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection",
+                       Test_Set_Connection'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection (Errors)",
+                       Test_Set_Connection_Error'Access);
    end Add_Tests;
+
+   --  ------------------------------
+   --  Test the Initialize operation.
+   --  ------------------------------
+   procedure Test_Initialize (T : in out Test) is
+   begin
+      ADO.Drivers.Initialize ("test-missing-config.properties");
+   end Test_Initialize;
 
    --  ------------------------------
    --  Test the Get_Config operation.
@@ -84,5 +98,67 @@ package body ADO.Drivers.Tests is
                    "Two drivers must have different driver indexes");
       end if;
    end Test_Get_Driver_Index;
+
+   --  ------------------------------
+   --  Test the Set_Connection procedure.
+   --  ------------------------------
+   procedure Test_Set_Connection (T : in out Test) is
+
+      procedure Check (URI      : in String;
+                       Server   : in String;
+                       Port     : in Integer;
+                       Database : in String);
+
+      procedure Check (URI      : in String;
+                       Server   : in String;
+                       Port     : in Integer;
+                       Database : in String) is
+         Controller : ADO.Drivers.Connections.Configuration;
+      begin
+         Controller.Set_Connection (URI);
+         Util.Tests.Assert_Equals (T, Server, Controller.Get_Server, "Invalid server for " & URI);
+         Util.Tests.Assert_Equals (T, Port, Controller.Get_Port, "Invalid port for " & URI);
+         Util.Tests.Assert_Equals (T, Database, Controller.Get_Database, "Invalid db for " & URI);
+
+         Controller.Set_Property ("password", "test");
+         Util.Tests.Assert_Equals (T, "test", Controller.Get_Property ("password"),
+                                   "Invalid 'password' property for " & URI);
+      end Check;
+
+   begin
+      Check ("mysql://test:3306/db", "test", 3306, "db");
+      Check ("mysql://test2:3307/db2?user=admin&password=admin", "test2", 3307, "db2");
+      Check ("sqlite:///test.db", "", 0, "test.db");
+      Check ("sqlite:///test2.db?user=root&encoding=UTF-8", "", 0, "test2.db");
+   end Test_Set_Connection;
+
+   --  ------------------------------
+   --  Test the Set_Connection procedure with several error cases.
+   --  ------------------------------
+   procedure Test_Set_Connection_Error (T : in out Test) is
+
+      procedure Check_Invalid_Connection (URI : in String);
+
+      Controller : ADO.Drivers.Connections.Configuration;
+
+      procedure Check_Invalid_Connection (URI : in String) is
+      begin
+         Controller.Set_Connection (URI);
+         T.Fail ("No Connection_Error exception raised for " & URI);
+
+      exception
+         when Connection_Error =>
+            null;
+
+      end Check_Invalid_Connection;
+
+   begin
+      Check_Invalid_Connection ("");
+      Check_Invalid_Connection ("http://");
+      Check_Invalid_Connection ("mysql://");
+      Check_Invalid_Connection ("sqlite://");
+      Check_Invalid_Connection ("mysql://:toto/");
+      Check_Invalid_Connection ("sqlite://:toto/");
+   end Test_Set_Connection_Error;
 
 end ADO.Drivers.Tests;

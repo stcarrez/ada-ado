@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -318,6 +318,11 @@ package ADO.Objects is
                                 Into   : in out Integer;
                                 Value  : in Integer);
 
+   procedure Set_Field_Integer (Object : in out Object_Record'Class;
+                                Field  : in Positive;
+                                Into   : in out ADO.Nullable_Integer;
+                                Value  : in ADO.Nullable_Integer);
+
    procedure Set_Field_Natural (Object : in out Object_Record'Class;
                                 Field  : in Positive;
                                 Into   : in out Natural;
@@ -347,6 +352,11 @@ package ADO.Objects is
                                     Field  : in Positive;
                                     Into   : in out ADO.Entity_Type;
                                     Value  : in ADO.Entity_Type);
+
+   procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
+                                    Field  : in Positive;
+                                    Into   : in out ADO.Nullable_Entity_Type;
+                                    Value  : in ADO.Nullable_Entity_Type);
 
    procedure Set_Field_Blob (Object : in out Object_Record'Class;
                              Field  : in Positive;

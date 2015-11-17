@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,6 +72,11 @@ package ADO is
    --  A date which can be null.
    type Nullable_Time is record
       Value   : Ada.Calendar.Time;
+      Is_Null : Boolean := True;
+   end record;
+
+   type Nullable_Entity_Type is record
+      Value   : Entity_Type;
       Is_Null : Boolean := True;
    end record;
 

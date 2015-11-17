@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ package body ADO.Objects.Tests is
 
    function Get_Allocate_Key (N : Identifier) return Object_Key is
       Result : Object_Key (Of_Type  => KEY_INTEGER,
-                           Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
+                           Of_Class => Regtests.Simple.Model.ALLOCATE_TABLE);
    begin
       Set_Value (Result, N);
       return Result;
@@ -41,10 +41,10 @@ package body ADO.Objects.Tests is
    procedure Test_Key (T : in out Test) is
       K1 : constant Object_Key := Get_Allocate_Key (1);
       K2 : Object_Key (Of_Type  => KEY_STRING,
-                       Of_Class => Regtests.Simple.Model.USER_TABLE'Access);
+                       Of_Class => Regtests.Simple.Model.USER_TABLE);
       K3 : Object_Key := K1;
       K4 : Object_Key (Of_Type  => KEY_INTEGER,
-                       Of_Class => Regtests.Simple.Model.USER_TABLE'Access);
+                       Of_Class => Regtests.Simple.Model.USER_TABLE);
    begin
       T.Assert (not (K1 = K2), "Key on different tables must be different");
       T.Assert (not (K2 = K4), "Key with different type must be different");
@@ -161,8 +161,10 @@ package body ADO.Objects.Tests is
          S  : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
          C2 : Regtests.Comments.Comment_Ref;
       begin
+         T.Assert (not C2.Is_Loaded, "Object is not loaded");
          C2.Load (S, Cmt.Get_Id);
          T.Assert (not C2.Is_Null, "Loading of object failed");
+         T.Assert (C2.Is_Loaded, "Object is loaded");
          T.Assert (Cmt.Get_Key = C2.Get_Key, "Invalid key after load");
          T.Assert_Equals ("A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message),
                           "Invalid message");

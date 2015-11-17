@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-testsuite -- Testsuite for ADO
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ with ADO.Objects.Tests;
 with ADO.Queries.Tests;
 with ADO.Parameters.Tests;
 with ADO.Datasets.Tests;
+with ADO.Statements.Tests;
 package body ADO.Testsuite is
 
    use ADO.Tests;
@@ -41,6 +42,7 @@ package body ADO.Testsuite is
       ADO.Parameters.Tests.Add_Tests (Ret);
       ADO.Sequences.Tests.Add_Tests (Ret);
       ADO.Objects.Tests.Add_Tests (Ret);
+      ADO.Statements.Tests.Add_Tests (Ret);
       ADO.Tests.Add_Tests (Ret);
       ADO.Schemas.Tests.Add_Tests (Ret);
       Drivers (Ret);

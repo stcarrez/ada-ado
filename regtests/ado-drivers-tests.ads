@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014 Stephane Carrez
+--  Copyright (C) 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,9 @@ package ADO.Drivers.Tests is
 
    type Test is new Util.Tests.Test with null record;
 
+   --  Test the Initialize operation.
+   procedure Test_Initialize (T : in out Test);
+
    --  Test the Get_Config operation.
    procedure Test_Get_Config (T : in out Test);
 
@@ -34,5 +37,11 @@ package ADO.Drivers.Tests is
 
    --  Test the Get_Driver_Index operation.
    procedure Test_Get_Driver_Index (T : in out Test);
+
+   --  Test the Set_Connection procedure.
+   procedure Test_Set_Connection (T : in out Test);
+
+   --  Test the Set_Connection procedure with several error cases.
+   procedure Test_Set_Connection_Error (T : in out Test);
 
 end ADO.Drivers.Tests;

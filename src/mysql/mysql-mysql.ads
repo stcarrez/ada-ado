@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Interfaces.C; use Interfaces.C;
 with Interfaces.C.Strings;
 with System;
---  with Interfaces.C.Extensions;
 with Mysql.My_list;
 with Mysql.Com;
 
@@ -119,6 +118,7 @@ package Mysql.Mysql is
    pragma Convention (C, Row_Fields);
 
    type System_Access is access all System.Address;
+   pragma No_Strict_Aliasing (System_Access);
 
    -- return data as array of strings
    type MYSQL_ROW is access all Row_Fields;
