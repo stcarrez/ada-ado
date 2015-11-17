@@ -26,6 +26,8 @@ package body ADO.Drivers.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Initialize",
+                       Test_Initialize'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Config",
                        Test_Get_Config'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Get_Driver",
@@ -39,6 +41,14 @@ package body ADO.Drivers.Tests is
       Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection (Errors)",
                        Test_Set_Connection_Error'Access);
    end Add_Tests;
+
+   --  ------------------------------
+   --  Test the Initialize operation.
+   --  ------------------------------
+   procedure Test_Initialize (T : in out Test) is
+   begin
+      ADO.Drivers.Initialize ("test-missing-config.properties");
+   end Test_Initialize;
 
    --  ------------------------------
    --  Test the Get_Config operation.
