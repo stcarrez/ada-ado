@@ -161,8 +161,10 @@ package body ADO.Objects.Tests is
          S  : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
          C2 : Regtests.Comments.Comment_Ref;
       begin
+         T.Assert (not C2.Is_Loaded, "Object is not loaded");
          C2.Load (S, Cmt.Get_Id);
          T.Assert (not C2.Is_Null, "Loading of object failed");
+         T.Assert (C2.Is_Loaded, "Object is loaded");
          T.Assert (Cmt.Get_Key = C2.Get_Key, "Invalid key after load");
          T.Assert_Equals ("A comment from Joe", Ada.Strings.Unbounded.To_String (C2.Get_Message),
                           "Invalid message");
