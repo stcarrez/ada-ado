@@ -71,7 +71,7 @@ package body ADO.Queries is
    --  ------------------------------
    function Get_Last_Row_Index (From : in Context) return Natural is
    begin
-      return From.Last_Index;
+      return From.Last;
    end Get_Last_Row_Index;
 
    --  ------------------------------
