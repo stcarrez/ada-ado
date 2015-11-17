@@ -147,6 +147,7 @@ package body ADO.Parameters.Tests is
    overriding
    function Is_Reserved (D    : in Dialect;
                          Name : in String) return Boolean is
+      pragma Unreferenced (D, Name);
    begin
       return False;
    end Is_Reserved;
