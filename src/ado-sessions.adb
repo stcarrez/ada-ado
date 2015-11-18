@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -194,6 +194,16 @@ package body ADO.Sessions is
          return Stmt;
       end;
    end Create_Statement;
+
+   --  ------------------------------
+   --  Load the database schema definition for the current database.
+   --  ------------------------------
+   procedure Load_Schema (Database : in Session;
+                          Schema   : out ADO.Schemas.Schema_Definition) is
+   begin
+      Check_Session (Database, "Loading schema {0}");
+      Database.Impl.Database.Load_Schema (Schema);
+   end Load_Schema;
 
    --  ---------
    --  Master Session
