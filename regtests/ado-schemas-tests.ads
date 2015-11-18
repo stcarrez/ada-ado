@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,5 +28,8 @@ package ADO.Schemas.Tests is
 
    --  Test calling Find_Entity_Type with an invalid table.
    procedure Test_Find_Entity_Type_Error (T : in out Test);
+
+   --  Test the Load_Schema operation and check the result schema.
+   procedure Test_Load_Schema (T : in out Test);
 
 end ADO.Schemas.Tests;
