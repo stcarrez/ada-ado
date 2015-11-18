@@ -18,6 +18,7 @@
 
 with Util.Test_Caller;
 
+with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Schemas.Entities;
 
@@ -35,6 +36,8 @@ package body ADO.Schemas.Tests is
                        Test_Find_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Entities.Find_Entity_Type (error)",
                        Test_Find_Entity_Type_Error'Access);
+      Caller.Add_Test (Suite, "Test ADO.Sessions.Load_Schema",
+                       Test_Load_Schema'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -96,5 +99,60 @@ package body ADO.Schemas.Tests is
             null;
       end;
    end Test_Find_Entity_Type_Error;
+
+   --  ------------------------------
+   --  Test the Load_Schema operation and check the result schema.
+   --  ------------------------------
+   procedure Test_Load_Schema (T : in out Test) is
+      S      : constant ADO.Sessions.Session := Regtests.Get_Database;
+      Schema : Schema_Definition;
+      Table  : Table_Definition;
+   begin
+      S.Load_Schema (Schema);
+
+      Table := ADO.Schemas.Find_Table (Schema, "allocate");
+      T.Assert (Table /= null, "Table schema for test_allocate not found");
+
+      Assert_Equals (T, "allocate", Get_Name (Table));
+
+      declare
+         C : Column_Cursor := Get_Columns (Table);
+         Nb_Columns : Integer := 0;
+      begin
+         while Has_Element (C) loop
+            Nb_Columns := Nb_Columns + 1;
+            Next (C);
+         end loop;
+         Assert_Equals (T, 3, Nb_Columns, "Invalid number of columns");
+      end;
+
+      declare
+         C : constant Column_Definition := Find_Column (Table, "ID");
+      begin
+         T.Assert (C /= null, "Cannot find column 'id' in table schema");
+         Assert_Equals (T, "ID", Get_Name (C), "Invalid column name");
+         T.Assert (Get_Type (C) = T_LONG_INTEGER, "Invalid column type");
+         T.Assert (not Is_Null (C), "Column is null");
+      end;
+
+      declare
+         C : constant Column_Definition := Find_Column (Table, "NAME");
+      begin
+         T.Assert (C /= null, "Cannot find column 'NAME' in table schema");
+         Assert_Equals (T, "NAME", Get_Name (C), "Invalid column name");
+         T.Assert (Get_Type (C) = T_VARCHAR, "Invalid column type");
+         T.Assert (Is_Null (C), "Column is null");
+      end;
+
+      declare
+         C : constant Column_Definition := Find_Column (Table, "version");
+      begin
+         T.Assert (C /= null, "Cannot find column 'version' in table schema");
+         Assert_Equals (T, "version", Get_Name (C), "Invalid column name");
+         T.Assert (Get_Type (C) = T_INTEGER, "Invalid column type");
+         T.Assert (not Is_Null (C), "Column is null");
+      end;
+
+   end Test_Load_Schema;
 
 end ADO.Schemas.Tests;
