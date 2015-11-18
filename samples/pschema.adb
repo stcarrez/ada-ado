@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  pschema - Print the database schema
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with ADO;
-with ADO.Schemas.Mysql;
 with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
@@ -47,16 +46,10 @@ begin
 
    declare
       DB     : constant ADO.Sessions.Master_Session := Factory.Get_Master_Session;
-      Driver : constant String := DB.Get_Connection.Get_Driver.Get_Driver_Name;
       Schema : ADO.Schemas.Schema_Definition;
       Iter   : Table_Cursor;
    begin
-      if Driver /= "mysql" then
-         Ada.Text_IO.Put_Line ("Loading and printing the database schema is supported for MySQL");
-         return;
-      end if;
-
-      ADO.Schemas.Mysql.Load_Schema (DB.Get_Connection, Schema);
+      DB.Load_Schema (Schema);
 
       --  Dump the database schema using SQL create table forms.
       Iter := Get_Tables (Schema);
