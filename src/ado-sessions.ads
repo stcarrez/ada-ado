@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,6 +109,9 @@ package ADO.Sessions is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement;
 
+   --  Load the database schema definition for the current database.
+   procedure Load_Schema (Database : in Session;
+                          Schema   : out ADO.Schemas.Schema_Definition);
 
    --  ---------
    --  Master Session
