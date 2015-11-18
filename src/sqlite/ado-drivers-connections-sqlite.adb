@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,16 +22,16 @@ with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.Statements.Sqlite;
+with ADO.Schemas.Sqlite;
 
 package body ADO.Drivers.Connections.Sqlite is
 
-   use Util.Log;
    use ADO.Statements.Sqlite;
    use Interfaces.C;
 
    pragma Linker_Options ("-lsqlite3");
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases.Sqlite");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Databases.Sqlite");
 
    Driver_Name : aliased constant String := "sqlite";
    Driver      : aliased Sqlite_Driver;
@@ -212,7 +212,7 @@ package body ADO.Drivers.Connections.Sqlite is
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is
    begin
-      null;
+      ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
 
    DB : ADO.Drivers.Connections.Database_Connection_Access := null;
