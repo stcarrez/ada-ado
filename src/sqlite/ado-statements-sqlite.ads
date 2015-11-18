@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  ado-statements-sqlite -- SQLite database statements
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
