@@ -1,24 +1,19 @@
 -----------------------------------------------------------------------
---  ADO Databases -- Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Free Software Foundation, Inc.
+--  ado-statements-sqlite -- SQLite database statements
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
---  This file is part of ADO.
+--  Licensed under the Apache License, Version 2.0 (the "License");
+--  you may not use this file except in compliance with the License.
+--  You may obtain a copy of the License at
 --
---  This program is free software; you can redistribute it and/or
---  modify it under the terms of the GNU General Public License as
---  published by the Free Software Foundation; either version 2,
---  or (at your option) any later version.
+--      http://www.apache.org/licenses/LICENSE-2.0
 --
---  This program is distributed in the hope that it will be useful,
---  but WITHOUT ANY WARRANTY; without even the implied warranty of
---  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---  GNU General Public License for more details.
---
---  You should have received a copy of the GNU General Public License
---  along with this program; see the file COPYING.  If not, write to
---  the Free Software Foundation, 59 Temple Place - Suite 330,
---  Boston, MA 02111-1307, USA.
+--  Unless required by applicable law or agreed to in writing, software
+--  distributed under the License is distributed on an "AS IS" BASIS,
+--  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+--  See the License for the specific language governing permissions and
+--  limitations under the License.
 -----------------------------------------------------------------------
 with Sqlite3_H;
 with Sqlite3_H.Perfect_Hash;
@@ -31,12 +26,11 @@ with Util.Log.Loggers;
 with ADO.Drivers.Dialects;
 package body ADO.Statements.Sqlite is
 
-   use Util.Log;
    use Ada.Calendar;
 
    use type ADO.Schemas.Class_Mapping_Access;
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Sqlite");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements.Sqlite");
 
    type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
 
@@ -353,7 +347,9 @@ package body ADO.Statements.Sqlite is
 
    end Prepare;
 
+   --  ------------------------------
    --  Execute the query
+   --  ------------------------------
    procedure Execute (Query : in out Sqlite_Query_Statement) is
       use Sqlite3_H;
       use System;
@@ -444,7 +440,9 @@ package body ADO.Statements.Sqlite is
       return Res = Sqlite3_H.SQLITE_NULL;
    end Is_Null;
 
+   --  ------------------------------
    --  Get the number of rows returned by the query
+   --  ------------------------------
    function Get_Row_Count (Query : in Sqlite_Query_Statement) return Natural is
       pragma Unreferenced (Query);
    begin
@@ -646,12 +644,11 @@ package body ADO.Statements.Sqlite is
    function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
                               Query    : in String)
                               return Query_Statement_Access is
-      pragma Unreferenced (Query);
-
       Result : constant Sqlite_Query_Statement_Access := new Sqlite_Query_Statement;
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
+      Append (Query => Result.all, SQL => Query);
       return Result.all'Access;
    end Create_Statement;
 
