@@ -76,7 +76,7 @@ package ADO is
    end record;
 
    type Nullable_Entity_Type is record
-      Value   : Entity_Type;
+      Value   : Entity_Type := 0;
       Is_Null : Boolean := True;
    end record;
 
