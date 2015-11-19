@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-parameters-tests -- Test query parameters and SQL expansion
---  Copyright (C) 2011 Stephane Carrez
+--  Copyright (C) 2011, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,6 +76,8 @@ package body ADO.Parameters.Tests is
 
    procedure Test_Add_Param_Integer is
      new Test_Add_Param_T (Integer, Add_Param, 10, "Integer");
+   procedure Test_Add_Param_Long_Long_Integer is
+     new Test_Add_Param_T (Long_Long_Integer, Add_Param, 10_000_000_000_000, "Long_Long_Integer");
    procedure Test_Add_Param_Identifier is
      new Test_Add_Param_T (Identifier, Add_Param, 100, "Identifier");
    procedure Test_Add_Param_Boolean is
@@ -90,8 +92,13 @@ package body ADO.Parameters.Tests is
 
    procedure Test_Bind_Param_Integer is
      new Test_Bind_Param_T (Integer, Bind_Param, 10, "Integer");
+   procedure Test_Bind_Param_Long_Long_Integer is
+     new Test_Bind_Param_T (Long_Long_Integer, Bind_Param, 10_000_000_000_000,
+                            "Long_Long_Integer");
    procedure Test_Bind_Param_Identifier is
      new Test_Bind_Param_T (Identifier, Bind_Param, 100, "Identifier");
+   procedure Test_Bind_Param_Entity_Type is
+     new Test_Bind_Param_T (Entity_Type, Bind_Param, 100, "Entity_Type");
    procedure Test_Bind_Param_Boolean is
      new Test_Bind_Param_T (Boolean, Bind_Param, False, "Boolean");
    procedure Test_Bind_Param_String is
@@ -117,6 +124,8 @@ package body ADO.Parameters.Tests is
                        Test_Add_Param_Boolean'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Integer)",
                        Test_Add_Param_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Long_Long_Integer)",
+                       Test_Add_Param_Long_Long_Integer'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Identifier)",
                        Test_Add_Param_Identifier'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Calendar)",
@@ -126,11 +135,12 @@ package body ADO.Parameters.Tests is
       Caller.Add_Test (Suite, "Test ADO.Parameters.Add_Param (Unbounded_String)",
                        Test_Add_Param_Unbounded_String'Access);
 
-
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Boolean)",
                        Test_Bind_Param_Boolean'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Integer)",
                        Test_Bind_Param_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Long_Long_Integer)",
+                       Test_Bind_Param_Long_Long_Integer'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Identifier)",
                        Test_Bind_Param_Identifier'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Calendar)",
@@ -139,6 +149,8 @@ package body ADO.Parameters.Tests is
                        Test_Bind_Param_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Unbounded_String)",
                        Test_Bind_Param_Unbounded_String'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Entity_Type)",
+                       Test_Bind_Param_Entity_Type'Access);
    end Add_Tests;
 
    --  ------------------------------
