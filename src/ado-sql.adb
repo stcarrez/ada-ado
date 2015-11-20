@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO SQL -- Basic SQL Generation
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,36 +18,6 @@
 
 --  Utilities for creating SQL queries and statements.
 package body ADO.SQL is
-
-   function Escape (Str : in Unbounded_String) return String is
-   begin
-      return Escape (To_String (Str));
-   end Escape;
-
-   function Escape (Str : in String) return String is
-      S : String (1 .. 2 + Str'Length * 2);
-      J : Positive := S'First;
-   begin
-      if Str = "" then
-         return "NULL";
-      end if;
-
-      S (J) := ''';
-
-      for K in Str'Range loop
-         if Str (K) = ''' then
-            J := J + 1;
-            S (J) := ''';
-         end if;
-         J := J + 1;
-         S (J) := Str (K);
-      end loop;
-
-      J := J + 1;
-      S (J) := ''';
-
-      return S (1 .. J);
-   end Escape;
 
    --  --------------------
    --  Buffer
