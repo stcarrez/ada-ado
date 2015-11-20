@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.Statements.Mysql;
+with ADO.Schemas.Mysql;
 with ADO.C;
 with Mysql.Lib; use Mysql.Lib;
 package body ADO.Drivers.Connections.Mysql is
@@ -165,7 +166,7 @@ package body ADO.Drivers.Connections.Mysql is
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is
    begin
-      null;
+      ADO.Schemas.Mysql.Load_Schema (Database, Schema);
    end Load_Schema;
 
    --  ------------------------------
