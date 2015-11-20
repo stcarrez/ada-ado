@@ -18,7 +18,6 @@
 
 with Util.Test_Caller;
 
-with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Schemas.Entities;
 
@@ -40,6 +39,8 @@ package body ADO.Schemas.Tests is
                        Test_Load_Schema'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table",
                        Test_Table_Iterator'Access);
+      Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table (Empty schema)",
+                       Test_Empty_Schema'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -169,6 +170,7 @@ package body ADO.Schemas.Tests is
       S      : constant ADO.Sessions.Session := Regtests.Get_Database;
       Schema : Schema_Definition;
       Table  : Table_Definition;
+      Driver : constant String := S.Get_Connection.Get_Driver.Get_Driver_Name;
    begin
       S.Load_Schema (Schema);
 
@@ -178,11 +180,39 @@ package body ADO.Schemas.Tests is
       begin
          T.Assert (Has_Element (Iter), "The Get_Tables returns an empty iterator");
          while Has_Element (Iter) loop
+            Table := Element (Iter);
+            T.Assert (Table /= null, "Element function must not return null");
+            declare
+               Col_Iter : Column_Cursor := Get_Columns (Table);
+            begin
+               --  T.Assert (Has_Element (Col_Iter), "Table has a column");
+               while Has_Element (Col_Iter) loop
+                  T.Assert (Element (Col_Iter) /= null, "Element function must not return null");
+                  Next (Col_Iter);
+               end loop;
+            end;
             Count := Count + 1;
             Next (Iter);
          end loop;
-         Util.Tests.Assert_Equals (T, 15, Count, "Invalid number of tables found in the schema");
+         if Driver = "sqlite" then
+            Util.Tests.Assert_Equals (T, 15, Count,
+                                      "Invalid number of tables found in the schema");
+         elsif Driver = "mysql" then
+            Util.Tests.Assert_Equals (T, 9, Count,
+                                      "Invalid number of tables found in the schema");
+         end if;
       end;
    end Test_Table_Iterator;
+
+   --  ------------------------------
+   --  Test the Table_Cursor operations on an empty schema.
+   --  ------------------------------
+   procedure Test_Empty_Schema (T : in out Test) is
+      Schema : Schema_Definition;
+      Iter   : constant Table_Cursor := Schema.Get_Tables;
+   begin
+      T.Assert (not Has_Element (Iter), "The Get_Tables must return an empty iterator");
+      T.Assert (Schema.Find_Table ("test") = null, "The Find_Table must return null");
+   end Test_Empty_Schema;
 
 end ADO.Schemas.Tests;
