@@ -38,6 +38,8 @@ package body ADO.Schemas.Tests is
                        Test_Find_Entity_Type_Error'Access);
       Caller.Add_Test (Suite, "Test ADO.Sessions.Load_Schema",
                        Test_Load_Schema'Access);
+      Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table",
+                       Test_Table_Iterator'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -153,6 +155,34 @@ package body ADO.Schemas.Tests is
          T.Assert (not Is_Null (C), "Column is null");
       end;
 
+      declare
+         C : constant Column_Definition := Find_Column (Table, "this_column_does_not_exist");
+      begin
+         T.Assert (C = null, "Find_Column must return null for an unknown column");
+      end;
    end Test_Load_Schema;
+
+   --  ------------------------------
+   --  Test the Table_Cursor operations and check the result schema.
+   --  ------------------------------
+   procedure Test_Table_Iterator (T : in out Test) is
+      S      : constant ADO.Sessions.Session := Regtests.Get_Database;
+      Schema : Schema_Definition;
+      Table  : Table_Definition;
+   begin
+      S.Load_Schema (Schema);
+
+      declare
+         Iter  : Table_Cursor := Schema.Get_Tables;
+         Count : Natural := 0;
+      begin
+         T.Assert (Has_Element (Iter), "The Get_Tables returns an empty iterator");
+         while Has_Element (Iter) loop
+            Count := Count + 1;
+            Next (Iter);
+         end loop;
+         Util.Tests.Assert_Equals (T, 15, Count, "Invalid number of tables found in the schema");
+      end;
+   end Test_Table_Iterator;
 
 end ADO.Schemas.Tests;
