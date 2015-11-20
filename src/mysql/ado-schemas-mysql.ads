@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas.mysql -- Mysql Database Schemas
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ADO.Databases;
+with ADO.Drivers.Connections;
 package ADO.Schemas.Mysql is
 
    --  Load the database schema
-   procedure Load_Schema (C      : in ADO.Databases.Connection'Class;
+   procedure Load_Schema (C      : in ADO.Drivers.Connections.Database_Connection'Class;
                           Schema : out Schema_Definition);
 
 end ADO.Schemas.Mysql;
