@@ -75,6 +75,9 @@ package ADO is
       Is_Null : Boolean := True;
    end record;
 
+   --  Return True if the two nullable times are identical (both null or both same time).
+   function "=" (Left, Right : in Nullable_Time) return Boolean;
+
    type Nullable_Entity_Type is record
       Value   : Entity_Type := 0;
       Is_Null : Boolean := True;
