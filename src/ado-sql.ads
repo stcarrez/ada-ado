@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO SQL -- Basic SQL Generation
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,9 +27,6 @@ with ADO.Drivers.Dialects;
 package ADO.SQL is
 
    use Ada.Strings.Unbounded;
-
-   function Escape (Str : in Unbounded_String) return String;
-   function Escape (Str : in String) return String;
 
    --  --------------------
    --  Buffer
@@ -210,7 +207,6 @@ private
 
    type Buffer is new ADO.Parameters.List with record
       Buf     : Unbounded_String;
---        Dialect : ADO.Drivers.Dialects.Dialect_Access;
    end record;
 
    type Update_Query is new Query with record
@@ -218,10 +214,6 @@ private
       Set_Fields     : Buffer;
       Fields         : Buffer;
       Is_Update_Stmt : Boolean := True;
-   end record;
-
-   type Dialect is tagged record
-      Keywords : Util.Strings.String_Set.Set;
    end record;
 
    procedure Add_Field (Update : in out Update_Query'Class;
