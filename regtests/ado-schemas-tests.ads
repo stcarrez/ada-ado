@@ -35,4 +35,7 @@ package ADO.Schemas.Tests is
    --  Test the Table_Cursor operations and check the result schema.
    procedure Test_Table_Iterator (T : in out Test);
 
+   --  Test the Table_Cursor operations on an empty schema.
+   procedure Test_Empty_Schema (T : in out Test);
+
 end ADO.Schemas.Tests;
