@@ -44,4 +44,7 @@ package ADO.Drivers.Tests is
    --  Test the Set_Connection procedure with several error cases.
    procedure Test_Set_Connection_Error (T : in out Test);
 
+   --  Test the connection operations on an empty connection.
+   procedure Test_Empty_Connection (T : in out Test);
+
 end ADO.Drivers.Tests;
