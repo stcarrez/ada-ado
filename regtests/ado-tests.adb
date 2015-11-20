@@ -21,6 +21,7 @@ with Ada.Calendar;
 
 with ADO.Statements;
 with ADO.Objects;
+with ADO.Databases;
 with ADO.Sessions;
 with ADO.Utils;
 with Regtests;
@@ -179,12 +180,18 @@ package body ADO.Tests is
    --  ------------------------------
    procedure Test_Create_Save (T : in out Test) is
       use ADO.Objects;
+      use type ADO.Databases.Connection_Status;
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-
+      Conn : constant ADO.Databases.Connection'Class := DB.Get_Connection;
       Ref  : Regtests.Simple.Model.Allocate_Ref;
       Ref2 : Regtests.Simple.Model.Allocate_Ref;
    begin
+      T.Assert (Conn.Get_Status = ADO.Databases.OPEN,
+                "The database connection is open");
+      T.Assert (DB.Get_Status = ADO.Databases.OPEN,
+                "The database connection is open");
+
       Ref.Set_Name ("Testing the allocation");
       Ref.Save (DB);
       T.Assert (Ref.Get_Id > 0, "Object must have an id");
