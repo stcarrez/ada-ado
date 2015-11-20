@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2012 Stephane Carrez
+--  Copyright (C) 2012, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,5 +76,20 @@ package body ADO is
    begin
       return Null_Blob_Instance;
    end Null_Blob;
+
+   --  ------------------------------
+   --  Return True if the two nullable times are identical (both null or both same time).
+   --  ------------------------------
+   function "=" (Left, Right : in Nullable_Time) return Boolean is
+      use type Ada.Calendar.Time;
+   begin
+      if Left.Is_Null /= Right.Is_Null then
+         return False;
+      elsif Left.Is_Null then
+         return True;
+      else
+         return Left.Value = Right.Value;
+      end if;
+   end "=";
 
 end ADO;
