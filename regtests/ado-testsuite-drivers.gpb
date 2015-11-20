@@ -17,17 +17,11 @@
 -----------------------------------------------------------------------
 
 with Util.Tests;
-#if HAVE_MYSQL
-with ADO.Schemas.Mysql.Tests;
-#end if;
 
 separate (ADO.Testsuite)
 
 procedure Drivers (Suite : in Util.Tests.Access_Test_Suite) is
 
 begin
-#if HAVE_MYSQL
-   ADO.Schemas.Mysql.Tests.Add_Tests (Suite);
-#end if;
    null;
 end Drivers;
