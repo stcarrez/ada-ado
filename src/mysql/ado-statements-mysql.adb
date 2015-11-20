@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -496,7 +496,8 @@ package body ADO.Statements.Mysql is
    begin
       if Query.Status = DONE
         or else Query.Status = ERROR
-        or else Query.Row = null then
+        or else Query.Row = null
+      then
          return False;
       end if;
       return True;
@@ -781,13 +782,12 @@ package body ADO.Statements.Mysql is
    function Create_Statement (Database : in Mysql_Access;
                               Query    : in String)
                               return Query_Statement_Access is
-      pragma Unreferenced (Query);
-
       Result : constant Mysql_Query_Statement_Access := new Mysql_Query_Statement;
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
       Result.This_Query.Set_Dialect (Mysql_Dialect'Access);
+      Append (Query => Result.all, SQL => Query);
       return Result.all'Access;
    end Create_Statement;
 
