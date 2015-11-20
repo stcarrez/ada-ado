@@ -20,10 +20,76 @@ with Util.Test_Caller;
 with ADO.Sessions;
 with Regtests.Simple.Model;
 with Regtests.Comments;
+with Regtests.Statements.Model;
 package body ADO.Objects.Tests is
 
    use Util.Tests;
    use type Ada.Containers.Hash_Type;
+
+   --  Test the Set_xxx and Get_xxx operation on various simple times.
+   generic
+      Name : String;
+      type Element_Type (<>) is private;
+      with function "=" (Left, Right : in Element_Type) return Boolean is <>;
+      with procedure Set_Value (Item : in out Regtests.Statements.Model.Nullable_Table_Ref;
+                                Val  : in Element_Type);
+      with function Get_Value (Item : in Regtests.Statements.Model.Nullable_Table_Ref)
+                               return Element_Type;
+      Val1 : Element_Type;
+      Val2 : Element_Type;
+   procedure Test_Op (T : in out Test);
+
+   procedure Test_Op (T : in out Test) is
+      Item1 : Regtests.Statements.Model.Nullable_Table_Ref;
+      Item2 : Regtests.Statements.Model.Nullable_Table_Ref;
+      Item3 : Regtests.Statements.Model.Nullable_Table_Ref;
+      DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+   begin
+      Set_Value (Item1, Val1);
+      Item1.Save (DB);
+      T.Assert (Item1.Is_Inserted, Name & " item is created");
+      --  Util.Tests.Assert_Equals (T, T'Image (Val), T'Image (
+
+      --  Load in a second item and check the value.
+      Item2.Load (DB, Item1.Get_Id);
+      T.Assert (Item2.Get_Id = Item1.Get_Id, Name & " item2 cannot be loaded");
+      --  T.Assert (Get_Value (Item2) = Val1, Name & " invalid value loaded in item2");
+
+      --  Change the item in database.
+      Set_Value (Item2, Val2);
+      Item2.Save (DB);
+      T.Assert (Get_Value (Item2) = Val2, Name & " invalid value loaded in item2");
+
+      --  Load again and compare to check the update.
+      Item3.Load (DB, Item2.Get_Id);
+      T.Assert (Get_Value (Item3) = Val2, Name & " invalid value loaded in item3");
+   end Test_Op;
+
+   procedure Test_Object_Nullable_Integer is
+     new Test_Op ("Nullable_Integer",
+                  Nullable_Integer, "=",
+                  Regtests.Statements.Model.Set_Int_Value,
+                  Regtests.Statements.Model.Get_Int_Value,
+                  Nullable_Integer '(Value => 123, Is_Null => False),
+                  Nullable_Integer '(Value => 0, Is_Null => True));
+
+   procedure Test_Object_Nullable_Entity_Type is
+     new Test_Op ("Nullable_Entity_Type",
+                  Nullable_Entity_Type, "=",
+                  Regtests.Statements.Model.Set_Entity_Value,
+                  Regtests.Statements.Model.Get_Entity_Value,
+                  Nullable_Entity_Type '(Value => 456, Is_Null => False),
+                  Nullable_Entity_Type '(Value => 0, Is_Null => True));
+
+   Empty_Time : ADO.Nullable_Time;
+
+   procedure Test_Object_Nullable_Time is
+     new Test_Op ("Nullable_Time",
+                  Nullable_Time, "=",
+                  Regtests.Statements.Model.Set_Time_Value,
+                  Regtests.Statements.Model.Get_Time_Value,
+                  Nullable_Time '(Value => 456, Is_Null => False),
+                  Empty_Time);
 
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
@@ -268,6 +334,12 @@ package body ADO.Objects.Tests is
       Caller.Add_Test (Suite, "Test ADO.Objects.Create", Test_Create_Object'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Delete", Test_Delete_Object'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Is_Created", Test_Is_Inserted'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Integer)",
+                       Test_Object_Nullable_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Entity_Type)",
+                       Test_Object_Nullable_Entity_Type'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Time)",
+                       Test_Object_Nullable_Time'Access);
    end Add_Tests;
 
 end ADO.Objects.Tests;
