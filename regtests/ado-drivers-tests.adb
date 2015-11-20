@@ -19,6 +19,8 @@ with Ada.Exceptions;
 
 with Util.Test_Caller;
 
+with ADO.Statements;
+with ADO.Databases;
 with ADO.Drivers.Connections;
 package body ADO.Drivers.Tests is
 
@@ -42,6 +44,8 @@ package body ADO.Drivers.Tests is
                        Test_Set_Connection'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Connection (Errors)",
                        Test_Set_Connection_Error'Access);
+      Caller.Add_Test (Suite, "Test ADO.Databases (Errors)",
+                       Test_Empty_Connection'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -168,5 +172,51 @@ package body ADO.Drivers.Tests is
       Check_Invalid_Connection ("mysql://:toto/");
       Check_Invalid_Connection ("sqlite://:toto/");
    end Test_Set_Connection_Error;
+
+   --  ------------------------------
+   --  Test the connection operations on an empty connection.
+   --  ------------------------------
+   procedure Test_Empty_Connection (T : in out Test) is
+      use ADO.Databases;
+
+      C    : ADO.Databases.Connection;
+      Stmt : ADO.Statements.Query_Statement;
+   begin
+      T.Assert (ADO.Databases.Get_Status (C) = ADO.Databases.CLOSED,
+                "The database connection must be closed for an empty connection");
+
+      Util.Tests.Assert_Equals (T, "null", ADO.Databases.Get_Ident (C),
+                                "Get_Ident must return null");
+
+      --  Create_Statement must raise NOT_OPEN.
+      begin
+         Stmt := ADO.Databases.Create_Statement (C, null);
+         T.Fail ("No exception raised for Create_Statement");
+
+      exception
+         when NOT_OPEN =>
+            null;
+      end;
+
+      --  Create_Statement must raise NOT_OPEN.
+      begin
+         Stmt := ADO.Databases.Create_Statement (C, "select");
+         T.Fail ("No exception raised for Create_Statement");
+
+      exception
+         when NOT_OPEN =>
+            null;
+      end;
+
+      --  Get_Driver must raise NOT_OPEN.
+      begin
+         T.Assert (ADO.Databases.Get_Driver (C) /= null, "Get_Driver must raise an exception");
+
+      exception
+         when NOT_OPEN =>
+            null;
+      end;
+
+   end Test_Empty_Connection;
 
 end ADO.Drivers.Tests;
