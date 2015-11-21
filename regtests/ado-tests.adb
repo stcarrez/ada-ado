@@ -38,24 +38,17 @@ with Util.Test_Caller;
 
 package body ADO.Tests is
 
-   use Util.Log;
    use Ada.Exceptions;
    use ADO.Statements;
    use type Regtests.Simple.Model.User_Ref;
    use type Regtests.Simple.Model.Allocate_Ref;
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Tests");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Tests");
 
    package Caller is new Util.Test_Caller (Test, "ADO");
 
-   procedure Fail (T : in Test; Message : in String);
    procedure Assert_Has_Message (T : in Test;
                                  E : in Exception_Occurrence);
-
-   procedure Fail (T : in Test; Message : in String) is
-   begin
-      T.Assert (False, Message);
-   end Fail;
 
    procedure Assert_Has_Message (T : in Test;
                                  E : in Exception_Occurrence) is
@@ -128,7 +121,7 @@ package body ADO.Tests is
    begin
       begin
          DB.Rollback;
-         Fail (T, "Master_Connection.Rollback should raise an exception");
+         T.Fail ("Master_Connection.Rollback should raise an exception");
 
       exception
          when E : ADO.Sessions.NOT_OPEN =>
@@ -137,7 +130,7 @@ package body ADO.Tests is
 
       begin
          DB.Commit;
-         Fail (T, "Master_Connection.Commit should raise an exception");
+         T.Fail ("Master_Connection.Commit should raise an exception");
 
       exception
          when E : ADO.Sessions.NOT_OPEN =>
@@ -314,6 +307,32 @@ package body ADO.Tests is
       Data := ADO.Create_Blob ("Makefile");
       T.Assert (not Data.Is_Null, "Null blob returned by Create_Blob");
       T.Assert (Data.Value.Len > 100, "Blob length initialized from file is too small");
+
+      declare
+         Content : Ada.Streams.Stream_Element_Array (1 .. 10);
+         Img3    : Regtests.Images.Model.Image_Ref;
+      begin
+         for I in Content'Range loop
+            Content (I) := Ada.Streams.Stream_Element_Offset'Pos (I + 30);
+         end loop;
+         Data := ADO.Create_Blob (Content);
+         T.Assert (not Data.Is_Null, "Null blob returned by Create_Blob (Stream_Element_Array)");
+         T.Assert (Data.Value.Len = 10, "Blob length initialized from array is too small");
+
+         DB.Begin_Transaction;
+         Img3.Set_Image (Data);
+         Img3.Set_Create_Date (Ada.Calendar.Clock);
+         Img3.Save (DB);
+         DB.Commit;
+
+         --  Check that we can load the image and the blob.
+         Img2.Load (DB, Img3.Get_Id);
+         T.Assert (Img2.Get_Image.Is_Null = False, "No image blob loaded");
+
+         Img2.Set_Image (ADO.Null_Blob);
+         Img2.Save (DB);
+         DB.Commit;
+      end;
    end Test_Blob;
 
    --  ------------------------------
