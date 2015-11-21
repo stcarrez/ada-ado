@@ -17,7 +17,7 @@
         </property>
         <property name="image">
             <comment>the image data</comment>
-            <column name="image" not-null="true" unique="false" sql-type="BLOB"/>
+            <column name="image" not-null="false" unique="false" sql-type="BLOB"/>
             <type name="blob"/>
         </property>
     </class>
