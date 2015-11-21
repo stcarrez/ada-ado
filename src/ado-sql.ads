@@ -19,7 +19,6 @@
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
 
-with Util.Strings;
 with ADO.Parameters;
 with ADO.Drivers.Dialects;
 
