@@ -52,6 +52,7 @@ package body ADO.Drivers.Tests is
    --  Test the Initialize operation.
    --  ------------------------------
    procedure Test_Initialize (T : in out Test) is
+      pragma Unreferenced (T);
    begin
       ADO.Drivers.Initialize ("test-missing-config.properties");
    end Test_Initialize;
