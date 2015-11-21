@@ -181,6 +181,8 @@ package body ADO.Drivers.Tests is
 
       C    : ADO.Databases.Connection;
       Stmt : ADO.Statements.Query_Statement;
+
+      pragma Unreferenced (Stmt);
    begin
       T.Assert (ADO.Databases.Get_Status (C) = ADO.Databases.CLOSED,
                 "The database connection must be closed for an empty connection");

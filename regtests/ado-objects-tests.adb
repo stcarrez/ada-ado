@@ -81,15 +81,13 @@ package body ADO.Objects.Tests is
                   Nullable_Entity_Type '(Value => 456, Is_Null => False),
                   Nullable_Entity_Type '(Value => 0, Is_Null => True));
 
-   Empty_Time : ADO.Nullable_Time;
-
    procedure Test_Object_Nullable_Time is
      new Test_Op ("Nullable_Time",
                   Nullable_Time, "=",
                   Regtests.Statements.Model.Set_Time_Value,
                   Regtests.Statements.Model.Get_Time_Value,
                   Nullable_Time '(Value => 456, Is_Null => False),
-                  Empty_Time);
+                  Nullable_Time '(Value => <>, Is_Null => False));
 
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
