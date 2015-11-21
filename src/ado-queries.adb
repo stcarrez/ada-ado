@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,16 @@ package body ADO.Queries is
    end Set_Query;
 
    --  ------------------------------
+   --  Set the query to execute as SQL statement.
+   --  ------------------------------
+   procedure Set_SQL (Into : in out Context;
+                      SQL  : in String) is
+   begin
+      ADO.SQL.Clear (Into.SQL);
+      ADO.SQL.Append (Into.SQL, SQL);
+   end Set_SQL;
+
+   --  ------------------------------
    --  Set the limit for the SQL query.
    --  ------------------------------
    procedure Set_Limit (Into  : in out Context;
@@ -90,7 +100,7 @@ package body ADO.Queries is
                      Driver : in ADO.Drivers.Driver_Index) return String is
    begin
       if From.Query_Def = null then
-         return "";
+         return ADO.SQL.To_String (From.SQL);
       else
          return Get_SQL (From.Query_Def, Driver, From.Is_Count);
       end if;
