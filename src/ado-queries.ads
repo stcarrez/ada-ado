@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,6 +54,10 @@ package ADO.Queries is
    --  The query count is represented by the <tt>sql-count</tt> XML entry.
    procedure Set_Count_Query (Into  : in out Context;
                               Query : in Query_Definition_Access);
+
+   --  Set the query to execute as SQL statement.
+   procedure Set_SQL (Into : in out Context;
+                      SQL  : in String);
 
    procedure Set_Query (Into  : in out Context;
                         Name  : in String);
