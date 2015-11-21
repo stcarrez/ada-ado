@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013, 2014 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,8 @@ with Util.Test_Caller;
 with Util.Properties;
 
 with Regtests.Simple.Model;
+with Regtests.Statements.Model;
+
 with ADO.Queries.Loaders;
 package body ADO.Datasets.Tests is
 
@@ -44,6 +46,8 @@ package body ADO.Datasets.Tests is
                        Test_Count'Access);
       Caller.Add_Test (Suite, "Test ADO.Datasets.Get_Count (from <sql-count>)",
                        Test_Count_Query'Access);
+      Caller.Add_Test (Suite, "Test ADO.Datasets.List (<sql> with null)",
+                       Test_List_Nullable'Access);
    end Add_Tests;
 
    procedure Test_List (T : in out Test) is
@@ -76,6 +80,40 @@ package body ADO.Datasets.Tests is
       ADO.Datasets.List (Data, DB, Query);
       Util.Tests.Assert_Equals (T, 100 + Count, Data.Get_Count, "Invalid dataset size");
    end Test_List;
+
+   --  ------------------------------
+   --  Test dataset lists with null columns.
+   --  ------------------------------
+   procedure Test_List_Nullable (T : in out Test) is
+      DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Query  : ADO.Queries.Context;
+      Count  : Natural;
+      Data   : ADO.Datasets.Dataset;
+   begin
+      Query.Set_SQL ("SELECT COUNT(*) FROM test_nullable_table");
+      Count := ADO.Datasets.Get_Count (DB, Query);
+
+      for I in 1 .. 100 loop
+         declare
+            Item : Regtests.Statements.Model.Nullable_Table_Ref;
+         begin
+            Item.Set_Bool_Value (False);
+            if (I mod 2) = 0 then
+               Item.Set_Int_Value (ADO.Nullable_Integer '(123, False));
+            end if;
+            if (I mod 4) = 0 then
+               Item.Set_Time_Value (ADO.Nullable_Time '(Value => Ada.Calendar.Clock,
+                                                        Is_Null => False));
+            end if;
+            Item.Save (DB);
+         end;
+      end loop;
+      DB.Commit;
+
+      Query.Set_SQL ("SELECT * FROM test_nullable_table");
+      ADO.Datasets.List (Data, DB, Query);
+      Util.Tests.Assert_Equals (T, 100 + Count, Data.Get_Count, "Invalid dataset size");
+   end Test_List_Nullable;
 
    procedure Test_Count (T : in out Test) is
       DB     : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
