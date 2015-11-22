@@ -41,7 +41,7 @@ CREATE TABLE user (
   /* the user description */
   `DESCRIPTION` VARCHAR(256) ,
   /* the user status */
-  `STATUS` Integer ,
+  `STATUS` Integer NOT NULL,
   PRIMARY KEY (`ID`)
 );
 INSERT INTO entity_type (name) VALUES
