@@ -27,7 +27,7 @@
         </property>
         <property name="status" type="Integer">
             <comment>the user status</comment>
-            <column name="STATUS" not-null="false" unique="false" sql-type="Integer"/>
+            <column name="STATUS" not-null="true" unique="false" sql-type="Integer"/>
         </property>
     </class>
 
