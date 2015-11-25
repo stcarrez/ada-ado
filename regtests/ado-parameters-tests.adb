@@ -71,7 +71,7 @@ package body ADO.Parameters.Tests is
          Bind_Param (ADO.Parameters.Abstract_List (SQL), "a_parameter_name", Value);
       end loop;
       Util.Measures.Report (S, "Bind_Param " & Name & "(" & Positive'Image (Count) & " calls)");
-      Util.Tests.Assert_Equals (Tst, Count, SQL.Length, "Invalid param list for " & Name);
+      Util.Tests.Assert_Equals (Tst, 1, SQL.Length, "Invalid param list for " & Name);
    end Test_Bind_Param_T;
 
    procedure Test_Add_Param_Integer is
