@@ -616,13 +616,27 @@ package body ADO.Parameters is
       return To_String (Buffer);
    end Expand;
 
+   function Compare_On_Name (Left, Right : in Parameter) return Boolean is
+   begin
+      return Left.Name = Right.Name;
+   end Compare_On_Name;
+
    --  ------------------------------
    --  Add the parameter in the list.
    --  ------------------------------
    procedure Add_Parameter (Params : in out List;
                             Param  : in Parameter) is
+      Pos : Parameter_Vectors.Extended_Index;
    begin
-      if Param.Position = 0 or else Param.Position = Natural (Length (Params.Params)) + 1 then
+      if Param.Position = 0 then
+         Pos := Params.Params.Find_Index (Param);
+         if Pos /= Parameter_Vectors.No_Index then
+            Params.Params.Replace_Element (Index    => Pos,
+                                           New_Item => Param);
+         else
+            Params.Params.Append (Param);
+         end if;
+      elsif Param.Position = Natural (Length (Params.Params)) + 1 then
          Params.Params.Append (Param);
       else
          Params.Params.Replace_Element (Index    => Param.Position,
