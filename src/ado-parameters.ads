@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -225,9 +225,12 @@ package ADO.Parameters is
 
 private
 
+   function Compare_On_Name (Left, Right : in Parameter) return Boolean;
+
    package Parameter_Vectors is
      new Ada.Containers.Indefinite_Vectors (Index_Type   => Positive,
-                                            Element_Type => Parameter);
+                                            Element_Type => Parameter,
+                                            "="          => Compare_On_Name);
 
    type Abstract_List is abstract new Ada.Finalization.Controlled with record
       Dialect : ADO.Drivers.Dialects.Dialect_Access := null;
