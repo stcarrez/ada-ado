@@ -72,8 +72,8 @@ dynamodir=${prefix}/share/dynamo
 libname=libada_ado
 libprefix=$(libname)_
 
-CPUS := @NR_CPUS@
-MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${ADO_LIBRARY_TYPE} -XPROCESSORS=$(CPUS)
+PROCESSORS=@NR_CPUS@
+MAKE_ARGS=-XMODE=${MODE} -XADO_LIBRARY_TYPE=${ADO_LIBRARY_TYPE} -XPROCESSORS=$(PROCESSORS)
 ifeq ($(ADO_LIBRARY_TYPE),relocatable)
 MAKE_ARGS += -XUTIL_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
 MAKE_ARGS += -XXMLADA_BUILD=relocatable
