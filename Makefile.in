@@ -92,7 +92,7 @@ install: install_static
 endif
 
 # Build executables for all mains defined by the project.
-build:  src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ado-drivers-initialize.adb
+build:  setup
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
 	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
@@ -103,6 +103,11 @@ static:
 
 shared:
 	$(MAKE) ADO_LIBRARY_TYPE=relocatable build
+
+setup: src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ado-drivers-initialize.adb obj/ado/static lib/ado/static
+
+obj/ado/static lib/ado/static:
+	$(MKDIR) -p $@
 
 # Not intended for manual invocation.
 # Invoked if automatic builds are enabled.
