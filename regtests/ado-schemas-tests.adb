@@ -198,7 +198,7 @@ package body ADO.Schemas.Tests is
             Util.Tests.Assert_Equals (T, 15, Count,
                                       "Invalid number of tables found in the schema");
          elsif Driver = "mysql" then
-            Util.Tests.Assert_Equals (T, 9, Count,
+            Util.Tests.Assert_Equals (T, 8, Count,
                                       "Invalid number of tables found in the schema");
          end if;
       end;
