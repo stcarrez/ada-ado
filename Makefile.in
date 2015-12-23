@@ -174,7 +174,6 @@ rebuild: clean build
 GENERATOR=dynamo
 
 generate:
-	# $(GENERATOR) generate db
 	$(GENERATOR) generate db/regtests
 	$(GENERATOR) generate db/samples
 
@@ -197,7 +196,7 @@ create-mysql-tests:
 	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
 
 # Files to package in source distribution
-DISTFILES=README LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
+DISTFILES=README.md LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
 configure.in Makefile.in install-sh \
 ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in ado_tests.gpr.in samples.gpr.in config.gpr \
 src samples regtests db win32 samples.properties \
@@ -237,16 +236,21 @@ install_static:
 install_shared:
 	$(MAKE) ADO_LIBRARY_TYPE=relocatable install_lib
 
-install_lib:
+install_lib:  install_dynamo
 ifneq (${GPRINSTALL},)
-	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+	$(GPRINSTALL) -p -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
 		--build-name=$(ADO_LIBRARY_TYPE) $(GPRPATH)
-	test T${HAVE_MYSQL} = Tno || \
-	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+ifeq (${HAVE_MYSQL},yes)
+	$(GPRINSTALL) -p -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
 		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_MYSQL_GPRPATH)
-	test T${HAVE_SQLITE} = Tno || \
-	$(GPRINSTALL) -p -f --prefix=${prefix} $(MAKE_ARGS) \
+endif
+ifeq (${HAVE_SQLITE},yes)
+	$(GPRINSTALL) -p -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
 		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_SQLITE_GPRPATH)
+endif
 else
 	rm -rf ${alidir}/ada-ado-mysql \
 	       ${alidir}/ada-ado-sqlite \
@@ -254,9 +258,8 @@ else
 	$(MKDIR) -p ${includedir}/ada-ado ${includedir}/ada-ado/static ${includedir}/ada-ado/dynamic
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
-	${MKDIR} -p ${dynamodir}/ado/db
-	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql ${includedir}/ada-ado-mysql
-	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite ${includedir}/ada-ado-sqlite
+	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${includedir}/ada-ado-mysql
+	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${includedir}/ada-ado-sqlite
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
 	${CP} -p src/dynamic/*.ad[bs] ${includedir}/ada-ado/dynamic
 	${CP} -p src/static/*.ad[bs] ${includedir}/ada-ado/static
@@ -268,12 +271,6 @@ else
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
 	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
-	${CP} db/*.xml ${dynamodir}/ado/db/
-	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
-	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
-	${CP} dynamo.xml ${dynamodir}/ado/
-	${CP} NOTICE.txt ${dynamodir}/ado/
-	${CP} LICENSE.txt ${dynamodir}/ado/
 	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/*.ali ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 ifeq ($(ADO_LIBRARY_TYPE),static)
 	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).a ${libdir}/
@@ -302,9 +299,31 @@ endif
 endif
 endif
 
+install_dynamo:
+	${MKDIR} -p ${dynamodir}/ado/db
+	${CP} db/*.xml ${dynamodir}/ado/db/
+	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql
+	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
+	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
+	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
+	${CP} dynamo.xml ${dynamodir}/ado/
+	${CP} NOTICE.txt ${dynamodir}/ado/
+	${CP} LICENSE.txt ${dynamodir}/ado/
+
 uninstall:
 ifneq (${GPRINSTALL},)
-	-$(GPRINSTALL) -q -f --prefix=${prefix} $(MAKE_ARGS) --uninstall $(GPRPATH)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} \
+	    $(MAKE_ARGS) --uninstall $(GPRPATH)
+ifeq (${HAVE_MYSQL},yes)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
+		--uninstall $(ADO_MYSQL_GPRPATH)
+endif
+ifeq (${HAVE_SQLITE},yes)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
+		--uninstall $(ADO_SQLITE_GPRPATH)
+endif
 else
 	rm -rf ${includedir}/ada-ado
 	rm -rf ${includedir}/ada-ado-mysql
@@ -321,8 +340,8 @@ else
 	rm -f ${projectdir}/ado.gpr
 	rm -f ${projectdir}/ado_mysql.gpr
 	rm -f ${projectdir}/ado_sqlite.gpr
-	rm -rf ${dynamodir}/ado
 endif
+	rm -rf ${dynamodir}/ado
 
 # prepare before releasing a new version of the package
 # (collect information about changes and SVN repository)
