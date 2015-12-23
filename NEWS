@@ -1,6 +1,7 @@
-Version 1.1.0  -
+Version 1.1.0   - Dec 2015
   - Fix link issue on Fedora
   - Detect MariaDB as a replacement for MySQL
+  - Improvement of configure and installation process with gprinstall (if available)
 
 Version 1.0.1   - Jul 2014
   - Fix minor configuration issue with GNAT 2014
