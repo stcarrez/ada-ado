@@ -181,7 +181,7 @@ AM_SHARED_LIBRARY_SUPPORT
 ##########################################
 AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[util],
   [git@github.com:stcarrez/ada-util.git],
-  [Building Ada EL requires the Ada Utility Library.],
+  [Building Ada ADO requires the Ada Utility Library.],
   [
     UTIL_DIR=${gnat_project_dir_util}
   ])
