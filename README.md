@@ -15,7 +15,7 @@ You need at least one of these databases (or both).
 
 To build ADO, you will need:
 
-* Ada Util (http://code.google.com/p/ada-util)
+* Ada Util (https://github.com/stcarrez/ada-util)
 * XML/Ada  (http://libre.adacore.com/libre/tools/xmlada/)
 
 You should have installed either MySQL or SQLite before
@@ -81,7 +81,7 @@ For Windows, check win32/README to install the libraries.
 ## Database Creation
 
 Create the tests database by using the Dynamo command.
-(Dynamo is available at: http://code.google.com/p/ada-gen/)
+(Dynamo is available at: https://github.com/stcarrez/dynamo)
 Note: change 'root' and 'password' to a MySQL user that has admin access rights
 ('create database' and 'grant option' privileges).
 ```
