@@ -2,9 +2,9 @@
 
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
-[![Download](https://img.shields.io/badge/download-1.0.1-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-1.0.1.tar.gz)
+[![Download](https://img.shields.io/badge/download-1.1.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-1.1.0.tar.gz)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/v1.0.1.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/1.1.0.svg)
 
 This Ada05 library provides object relational mapping
 to access a database in Ada05.  Most of the concepts
@@ -57,7 +57,7 @@ For SQLite, use:
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
-   http://code.google.com/p/ada-ado/
+   https://github.com/stcarrez/ada-ado/wiki
 
 
 
