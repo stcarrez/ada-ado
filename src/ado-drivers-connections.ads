@@ -120,8 +120,12 @@ package ADO.Drivers.Connections is
    --  Get the server hostname.
    function Get_Server (Controller : in Configuration) return String;
 
+   --  Set the server port.
+   procedure Set_Port (Controller : in out Configuration;
+                       Port       : in Natural);
+
    --  Get the server port.
-   function Get_Port (Controller : in Configuration) return Integer;
+   function Get_Port (Controller : in Configuration) return Natural;
 
    --  Get the database name.
    function Get_Database (Controller : in Configuration) return String;
@@ -161,7 +165,7 @@ private
    type Configuration is new Ada.Finalization.Controlled with record
       URI        : Unbounded_String := Null_Unbounded_String;
       Server     : Unbounded_String := Null_Unbounded_String;
-      Port       : Integer := 0;
+      Port       : Natural := 0;
       Database   : Unbounded_String := Null_Unbounded_String;
       Properties : Util.Properties.Manager;
       Driver     : Driver_Access;
