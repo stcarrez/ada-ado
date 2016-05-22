@@ -288,8 +288,10 @@ package body ADO.Drivers.Connections is
    begin
       Log.Info ("Get driver {0}", Name);
 
-      for Retry in 0 .. 1 loop
-         if Retry > 0 then
+      for Retry in 0 .. 2 loop
+         if Retry = 1 then
+            ADO.Drivers.Initialize;
+         elsif Retry = 2 then
             Load_Driver (Name);
          end if;
          declare
