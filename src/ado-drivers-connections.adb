@@ -179,6 +179,15 @@ package body ADO.Drivers.Connections is
    end Get_Port;
 
    --  ------------------------------
+   --  Set the database name.
+   --  ------------------------------
+   procedure Set_Database (Controller : in out Configuration;
+                           Database   : in String) is
+   begin
+      Controller.Database := To_Unbounded_String (Database);
+   end Set_Database;
+
+   --  ------------------------------
    --  Get the database name.
    --  ------------------------------
    function Get_Database (Controller : in Configuration) return String is
