@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,9 @@ package ADO.Drivers.Tests is
 
    --  Test the Set_Connection procedure with several error cases.
    procedure Test_Set_Connection_Error (T : in out Test);
+
+   --  Test the Set_Server operation.
+   procedure Test_Set_Connection_Server (T : in out Test);
 
    --  Test the connection operations on an empty connection.
    procedure Test_Empty_Connection (T : in out Test);
