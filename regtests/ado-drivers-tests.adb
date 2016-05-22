@@ -46,6 +46,8 @@ package body ADO.Drivers.Tests is
                        Test_Set_Connection_Error'Access);
       Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Server",
                        Test_Set_Connection_Server'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections.Set_Port",
+                       Test_Set_Connection_Port'Access);
       Caller.Add_Test (Suite, "Test ADO.Databases (Errors)",
                        Test_Empty_Connection'Access);
    end Add_Tests;
@@ -187,6 +189,18 @@ package body ADO.Drivers.Tests is
       Util.Tests.Assert_Equals (T, "server-name", Controller.Get_Server,
                                 "Configuration Set_Server returned invalid value");
    end Test_Set_Connection_Server;
+
+   --  ------------------------------
+   --  Test the Set_Port operation.
+   --  ------------------------------
+   procedure Test_Set_Connection_Port (T : in out Test) is
+      Controller : ADO.Drivers.Connections.Configuration;
+   begin
+      Controller.Set_Connection ("mysql://localhost:3306/db");
+      Controller.Set_Port (1234);
+      Util.Tests.Assert_Equals (T, 1234, Controller.Get_Port,
+                                "Configuration Set_Port returned invalid value");
+   end Test_Set_Connection_Port;
 
    --  ------------------------------
    --  Test the connection operations on an empty connection.
