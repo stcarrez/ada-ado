@@ -127,6 +127,10 @@ package ADO.Drivers.Connections is
    --  Get the server port.
    function Get_Port (Controller : in Configuration) return Natural;
 
+   --  Set the database name.
+   procedure Set_Database (Controller : in out Configuration;
+                           Database   : in String);
+
    --  Get the database name.
    function Get_Database (Controller : in Configuration) return String;
 
