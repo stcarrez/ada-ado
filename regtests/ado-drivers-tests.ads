@@ -47,6 +47,9 @@ package ADO.Drivers.Tests is
    --  Test the Set_Server operation.
    procedure Test_Set_Connection_Server (T : in out Test);
 
+   --  Test the Set_Port operation.
+   procedure Test_Set_Connection_Port (T : in out Test);
+
    --  Test the connection operations on an empty connection.
    procedure Test_Empty_Connection (T : in out Test);
 
