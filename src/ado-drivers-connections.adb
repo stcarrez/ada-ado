@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -151,6 +151,15 @@ package body ADO.Drivers.Connections is
    begin
       return To_String (Controller.Server);
    end Get_Server;
+
+   --  ------------------------------
+   --  Set the server hostname.
+   --  ------------------------------
+   procedure Set_Server (Controller : in out Configuration;
+                         Server     : in String) is
+   begin
+      Controller.Server := To_Unbounded_String (Server);
+   end Set_Server;
 
    --  ------------------------------
    --  Get the server port.
