@@ -76,7 +76,7 @@ package body ADO.Drivers.Connections is
       if Pos2 >= Pos then
          Controller.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
          begin
-            Controller.Port := Integer'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
+            Controller.Port := Natural'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
 
          exception
             when Constraint_Error =>
@@ -162,9 +162,18 @@ package body ADO.Drivers.Connections is
    end Set_Server;
 
    --  ------------------------------
+   --  Set the server port.
+   --  ------------------------------
+   procedure Set_Port (Controller : in out Configuration;
+                       Port       : in Natural) is
+   begin
+      Controller.Port := Port;
+   end Set_Port;
+
+   --  ------------------------------
    --  Get the server port.
    --  ------------------------------
-   function Get_Port (Controller : in Configuration) return Integer is
+   function Get_Port (Controller : in Configuration) return Natural is
    begin
       return Controller.Port;
    end Get_Port;
