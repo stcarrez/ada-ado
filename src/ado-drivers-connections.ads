@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,6 +112,10 @@ package ADO.Drivers.Connections is
    --  If the property does not exist, an empty string is returned.
    function Get_Property (Controller : in Configuration;
                           Name       : in String) return String;
+
+   --  Set the server hostname.
+   procedure Set_Server (Controller : in out Configuration;
+                         Server     : in String);
 
    --  Get the server hostname.
    function Get_Server (Controller : in Configuration) return String;
