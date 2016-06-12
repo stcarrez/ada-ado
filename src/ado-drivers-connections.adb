@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,7 @@ package body ADO.Drivers.Connections is
       if Pos2 >= Pos then
          Controller.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
          begin
-            Controller.Port := Integer'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
+            Controller.Port := Natural'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
 
          exception
             when Constraint_Error =>
@@ -153,12 +153,39 @@ package body ADO.Drivers.Connections is
    end Get_Server;
 
    --  ------------------------------
+   --  Set the server hostname.
+   --  ------------------------------
+   procedure Set_Server (Controller : in out Configuration;
+                         Server     : in String) is
+   begin
+      Controller.Server := To_Unbounded_String (Server);
+   end Set_Server;
+
+   --  ------------------------------
+   --  Set the server port.
+   --  ------------------------------
+   procedure Set_Port (Controller : in out Configuration;
+                       Port       : in Natural) is
+   begin
+      Controller.Port := Port;
+   end Set_Port;
+
+   --  ------------------------------
    --  Get the server port.
    --  ------------------------------
-   function Get_Port (Controller : in Configuration) return Integer is
+   function Get_Port (Controller : in Configuration) return Natural is
    begin
       return Controller.Port;
    end Get_Port;
+
+   --  ------------------------------
+   --  Set the database name.
+   --  ------------------------------
+   procedure Set_Database (Controller : in out Configuration;
+                           Database   : in String) is
+   begin
+      Controller.Database := To_Unbounded_String (Database);
+   end Set_Database;
 
    --  ------------------------------
    --  Get the database name.
@@ -261,8 +288,10 @@ package body ADO.Drivers.Connections is
    begin
       Log.Info ("Get driver {0}", Name);
 
-      for Retry in 0 .. 1 loop
-         if Retry > 0 then
+      for Retry in 0 .. 2 loop
+         if Retry = 1 then
+            ADO.Drivers.Initialize;
+         elsif Retry = 2 then
             Load_Driver (Name);
          end if;
          declare
