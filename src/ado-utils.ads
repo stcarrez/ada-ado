@@ -19,7 +19,7 @@ with Ada.Containers;
 with Ada.Containers.Vectors;
 
 with Util.Beans.Objects;
-with Util.Serialize.IO;
+
 package ADO.Utils is
 
    --  Build a bean object from the identifier.
@@ -41,10 +41,5 @@ package ADO.Utils is
 
    --  Return the identifier list as a comma separated list of identifiers.
    function To_Parameter_List (List : in Identifier_Vector) return String;
-
-   --  Write the entity to the serialization stream (JSON/XML).
-   procedure Write_Entity (Stream : in out Util.Serialize.IO.Output_Stream'Class;
-                           Name   : in String;
-                           Value  : in ADO.Identifier);
 
 end ADO.Utils;
