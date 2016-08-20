@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-utils -- Utility operations for ADO
---  Copyright (C) 2013 Stephane Carrez
+--  Copyright (C) 2013, 2016 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,6 @@ package body ADO.Utils is
    function Hash (Key : in ADO.Identifier) return Ada.Containers.Hash_Type is
       use Ada.Containers;
    begin
-
       if Key < 0 then
          return Hash_Type (-Key);
       else
@@ -76,5 +75,15 @@ package body ADO.Utils is
       end loop;
       return Ada.Strings.Unbounded.To_String (Result);
    end To_Parameter_List;
+
+   --  ------------------------------
+   --  Write the entity to the serialization stream (JSON/XML).
+   --  ------------------------------
+   procedure Write_Entity (Stream : in out Util.Serialize.IO.Output_Stream'Class;
+                           Name   : in String;
+                           Value  : in ADO.Identifier) is
+   begin
+      Stream.Write_Long_Entity (Name, Long_Long_Integer (Value));
+   end Write_Entity;
 
 end ADO.Utils;
