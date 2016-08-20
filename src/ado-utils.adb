@@ -76,14 +76,4 @@ package body ADO.Utils is
       return Ada.Strings.Unbounded.To_String (Result);
    end To_Parameter_List;
 
-   --  ------------------------------
-   --  Write the entity to the serialization stream (JSON/XML).
-   --  ------------------------------
-   procedure Write_Entity (Stream : in out Util.Serialize.IO.Output_Stream'Class;
-                           Name   : in String;
-                           Value  : in ADO.Identifier) is
-   begin
-      Stream.Write_Long_Entity (Name, Long_Long_Integer (Value));
-   end Write_Entity;
-
 end ADO.Utils;
