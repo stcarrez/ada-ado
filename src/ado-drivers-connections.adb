@@ -196,6 +196,18 @@ package body ADO.Drivers.Connections is
    end Get_Database;
 
    --  ------------------------------
+   --  Get the database driver name.
+   --  ------------------------------
+   function Get_Driver (Controller : in Configuration) return String is
+   begin
+      if Controller.Driver /= null then
+         return Get_Driver_Name (Controller.Driver.all);
+      else
+         return "";
+      end if;
+   end Get_Driver;
+
+   --  ------------------------------
    --  Create a new connection using the configuration parameters.
    --  ------------------------------
    procedure Create_Connection (Config : in Configuration'Class;
