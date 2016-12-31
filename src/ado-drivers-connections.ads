@@ -134,6 +134,9 @@ package ADO.Drivers.Connections is
    --  Get the database name.
    function Get_Database (Controller : in Configuration) return String;
 
+   --  Get the database driver name.
+   function Get_Driver (Controller : in Configuration) return String;
+
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (Config : in Configuration'Class;
                                 Result : out Database_Connection_Access);
