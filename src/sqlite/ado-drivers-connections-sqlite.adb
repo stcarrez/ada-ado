@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -255,10 +255,24 @@ package body ADO.Drivers.Connections.Sqlite is
          Database : constant Database_Connection_Access := new Database_Connection;
 
          procedure Configure (Name, Item : in Util.Properties.Value);
+         function Escape (Value : in Util.Properties.Value) return String;
+
+         function Escape (Value : in Util.Properties.Value) return String is
+            S : constant String := To_String (Value);
+         begin
+            if S'Length > 0 and then S (S'First) >= '0' and then S (S'First) <= '9' then
+               return S;
+            elsif S'Length > 0 and then S (S'First) = ''' then
+               return S;
+            else
+               return "'" & S & "'";
+            end if;
+         end Escape;
 
          procedure Configure (Name, Item : in Util.Properties.Value) is
-            SQL : constant String := "PRAGMA " & To_String (Name) & "=" & To_String (Item);
+            SQL : constant String := "PRAGMA " & To_String (Name) & "=" & Escape (Item);
          begin
+            Log.Info ("Configure database with {0}", SQL);
             Database.Execute (SQL);
          end Configure;
 
