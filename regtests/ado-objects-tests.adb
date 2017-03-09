@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,7 +87,7 @@ package body ADO.Objects.Tests is
                   Regtests.Statements.Model.Set_Time_Value,
                   Regtests.Statements.Model.Get_Time_Value,
                   Nullable_Time '(Value => 456, Is_Null => False),
-                  Nullable_Time '(Value => <>, Is_Null => False));
+                  Nullable_Time '(Value => <>, Is_Null => True));
 
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
