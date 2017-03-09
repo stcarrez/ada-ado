@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,6 +108,6 @@ private
    overriding
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Connections.Database_Connection_Access);
+                                Result : in out Ref.Ref'Class);
 
 end ADO.Drivers.Connections.Sqlite;
