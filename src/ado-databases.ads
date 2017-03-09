@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Connections
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
-with Ada.Finalization;
 
 with ADO.Statements;
 with ADO.Schemas;
@@ -168,17 +166,7 @@ package ADO.Databases is
 
 private
 
-   type Connection is new Ada.Finalization.Controlled with record
-      Impl : ADO.Drivers.Connections.Database_Connection_Access := null;
-   end record;
-
-   --  Adjust the connection reference counter
-   overriding
-   procedure Adjust (Object : in out Connection);
-
-   --  Releases the connection reference counter
-   overriding
-   procedure Finalize (Object : in out Connection);
+   type Connection is new ADO.Drivers.Connections.Ref.Ref with null record;
 
    type Master_Connection is new Connection with null record;
 
