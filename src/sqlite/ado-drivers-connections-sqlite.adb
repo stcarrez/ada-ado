@@ -197,11 +197,8 @@ package body ADO.Drivers.Connections.Sqlite is
    begin
       Log.Debug ("Release connection");
 
-      Database.Count := Database.Count - 1;
---        if Database.Count <= 1 then
---           Result := Sqlite3_H.Sqlite3_Close (Database.Server);
---        end if;
---        Database.Server := System.Null_Address;
+      Result := Sqlite3_H.sqlite3_close (Database.Server);
+      Database.Server := System.Null_Address;
       pragma Unreferenced (Result);
    end Finalize;
 
@@ -215,14 +212,14 @@ package body ADO.Drivers.Connections.Sqlite is
       ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
 
-   DB : ADO.Drivers.Connections.Database_Connection_Access := null;
+   DB : Ref.Ref;
 
    --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Connections.Database_Connection_Access) is
+                                Result : in out Ref.Ref'Class) is
       pragma Unreferenced (D);
       use Strings;
       use type System.Address;
@@ -236,9 +233,8 @@ package body ADO.Drivers.Connections.Sqlite is
    begin
       Log.Info ("Opening database {0}", Name);
 
-      if DB /= null then
-         Result := DB;
-         DB.Count := DB.Count + 1;
+      if not DB.Is_Null then
+         Result := Ref.Create (DB.Value);
          return;
       end if;
       Filename := Strings.New_String (Name);
@@ -278,8 +274,8 @@ package body ADO.Drivers.Connections.Sqlite is
 
       begin
          Database.Server := Handle;
-         Database.Count  := 2;
          Database.Name   := Config.Database;
+         DB := Ref.Create (Database.all'Access);
 
          --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
          --  Typical configuration includes:
@@ -288,8 +284,7 @@ package body ADO.Drivers.Connections.Sqlite is
          --    encoding='UTF-8'
          Config.Properties.Iterate (Process => Configure'Access);
 
-         Result := Database.all'Access;
-         DB := Result;
+         Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
 
