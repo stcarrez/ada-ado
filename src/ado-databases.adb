@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Connections
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,18 +23,17 @@ with Ada.Unchecked_Deallocation;
 with ADO.Statements.Create;
 package body ADO.Databases is
 
-   use Util.Log;
    use ADO.Drivers;
    use type ADO.Drivers.Connections.Database_Connection_Access;
 
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Databases");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Databases");
 
    --  ------------------------------
    --  Get the database connection status.
    --  ------------------------------
    function Get_Status (Database : in Connection) return Connection_Status is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          return CLOSED;
       else
          return OPEN;
@@ -48,12 +47,12 @@ package body ADO.Databases is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
       declare
-         Query : constant Query_Statement_Access := Database.Impl.all.Create_Statement (Table);
+         Query : constant Query_Statement_Access := Database.Value.all.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Query);
       end;
@@ -66,12 +65,12 @@ package body ADO.Databases is
                               Query    : in String)
                               return Query_Statement is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
       declare
-         Stmt : constant Query_Statement_Access := Database.Impl.all.Create_Statement (null);
+         Stmt : constant Query_Statement_Access := Database.Value.all.Create_Statement (null);
       begin
          Append (Query => Stmt.all, SQL => Query);
          return ADO.Statements.Create.Create_Statement (Stmt);
@@ -83,11 +82,11 @@ package body ADO.Databases is
    --  ------------------------------
    function Get_Driver (Database : in Connection) return ADO.Drivers.Connections.Driver_Access is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      return Database.Impl.Get_Driver;
+      return Database.Value.Get_Driver;
    end Get_Driver;
 
    --  ------------------------------
@@ -104,10 +103,10 @@ package body ADO.Databases is
    --  ------------------------------
    function Get_Ident (Database : in Connection) return String is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          return "null";
       else
-         return Database.Impl.Ident;
+         return Database.Value.Ident;
       end if;
    end Get_Ident;
 
@@ -117,11 +116,11 @@ package body ADO.Databases is
    procedure Load_Schema (Database : in Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is
    begin
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database connection is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      Database.Impl.Load_Schema (Schema);
+      Database.Value.Load_Schema (Schema);
    end Load_Schema;
 
    --  ------------------------------
@@ -131,8 +130,8 @@ package body ADO.Databases is
    begin
       Log.Info ("Closing database connection {0}", Database.Get_Ident);
 
-      if Database.Impl /= null then
-         Database.Impl.Close;
+      if not Database.Is_Null then
+         Database.Value.Close;
       end if;
    end Close;
 
@@ -143,11 +142,11 @@ package body ADO.Databases is
    begin
       Log.Info ("Begin transaction {0}", Database.Get_Ident);
 
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      Database.Impl.Begin_Transaction;
+      Database.Value.Begin_Transaction;
    end Begin_Transaction;
 
    --  ------------------------------
@@ -157,11 +156,11 @@ package body ADO.Databases is
    begin
       Log.Info ("Commit transaction {0}", Database.Get_Ident);
 
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "No connection to the database";
       end if;
-      Database.Impl.Commit;
+      Database.Value.Commit;
    end Commit;
 
    --  ------------------------------
@@ -171,11 +170,11 @@ package body ADO.Databases is
    begin
       Log.Info ("Rollback transaction {0}", Database.Get_Ident);
 
-      if Database.Impl = null then
+      if Database.Is_Null then
          Log.Error ("Database implementation is not initialized");
          raise NOT_OPEN with "Database implementation is not initialized";
       end if;
-      Database.Impl.Rollback;
+      Database.Value.Rollback;
    end Rollback;
 
    --  ------------------------------
@@ -188,7 +187,7 @@ package body ADO.Databases is
       Log.Debug ("Create delete statement {0}", Database.Get_Ident);
 
       declare
-         Stmt : constant Delete_Statement_Access := Database.Impl.all.Create_Statement (Table);
+         Stmt : constant Delete_Statement_Access := Database.Value.all.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt);
       end;
@@ -204,7 +203,7 @@ package body ADO.Databases is
       Log.Debug ("Create insert statement {0}", Database.Get_Ident);
 
       declare
-         Stmt : constant Insert_Statement_Access := Database.Impl.all.Create_Statement (Table);
+         Stmt : constant Insert_Statement_Access := Database.Value.all.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access);
       end;
@@ -219,38 +218,8 @@ package body ADO.Databases is
    begin
       Log.Debug ("Create update statement {0}", Database.Get_Ident);
 
-      return ADO.Statements.Create.Create_Statement (Database.Impl.all.Create_Statement (Table));
+      return ADO.Statements.Create.Create_Statement (Database.Value.all.Create_Statement (Table));
    end Create_Statement;
-
-   --  ------------------------------
-   --  Adjust the connection reference counter
-   --  ------------------------------
-   overriding
-   procedure Adjust   (Object : in out Connection) is
-   begin
-      if Object.Impl /= null then
-         Object.Impl.Count := Object.Impl.Count + 1;
-      end if;
-   end Adjust;
-
-   --  ------------------------------
-   --  Releases the connection reference counter
-   --  ------------------------------
-   overriding
-   procedure Finalize (Object : in out Connection) is
-
-      procedure Free is new
-        Ada.Unchecked_Deallocation (Object => ADO.Drivers.Connections.Database_Connection'Class,
-                                    Name   => ADO.Drivers.Connections.Database_Connection_Access);
-
-   begin
-      if Object.Impl /= null then
-         Object.Impl.Count := Object.Impl.Count - 1;
-         if Object.Impl.Count = 0 then
-            Free (Object.Impl);
-         end if;
-      end if;
-   end Finalize;
 
    --  ------------------------------
    --  Attempts to establish a connection with the data source
@@ -258,13 +227,12 @@ package body ADO.Databases is
    --  ------------------------------
    function Get_Connection (Controller : in DataSource)
                            return Master_Connection'Class is
-      Connection : ADO.Drivers.Connections.Database_Connection_Access;
+      Connection : Master_Connection; --  ADO.Drivers.Connections.Database_Connection_Access;
    begin
       Log.Info ("Get master connection from data-source");
 
       Controller.Create_Connection (Connection);
-      return Master_Connection '(Ada.Finalization.Controlled with
-                                 Impl => Connection);
+      return Connection;
    end Get_Connection;
 
    --  ------------------------------
