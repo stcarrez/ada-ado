@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ private
    --  Create a new MySQL connection using the configuration parameters.
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
-                                Result : out Database_Connection_Access);
+                                Result : in out Ref.Ref'Class);
 
    type Mysql_Driver is new ADO.Drivers.Connections.Driver with record
       Id : Natural := 0;
