@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -219,7 +219,7 @@ package body ADO.Drivers.Connections.Mysql is
    --  ------------------------------
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
-                                Result : out ADO.Drivers.Connections.Database_Connection_Access) is
+                                Result : in out Ref.Ref'Class) is
 
       Host     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
       Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Database);
@@ -285,7 +285,6 @@ package body ADO.Drivers.Connections.Mysql is
       begin
          Database.Ident (1 .. Ident'Length) := Ident;
          Database.Server := Server;
-         Database.Count  := 1;
          Database.Name   := Config.Database;
 
          --  Configure the connection by setting up the MySQL 'SET X=Y' SQL commands.
@@ -294,7 +293,7 @@ package body ADO.Drivers.Connections.Mysql is
          --    collation_connection=utf8_general_ci
          Config.Properties.Iterate (Process => Configure'Access);
 
-         Result := Database.all'Access;
+         Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
 
