@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -211,14 +211,19 @@ package body ADO.Drivers.Connections is
    --  Create a new connection using the configuration parameters.
    --  ------------------------------
    procedure Create_Connection (Config : in Configuration'Class;
-                                Result : out Database_Connection_Access) is
+                                Result : in out Ref.Ref'Class) is
    begin
       if Config.Driver = null then
          Log.Error ("No driver found for connection {0}", To_String (Config.URI));
          raise Connection_Error with "Data source is not initialized: driver not found";
       end if;
       Config.Driver.Create_Connection (Config, Result);
-      Log.Info ("Created connection to '{0}' -> {1}", Config.URI, Result.Ident);
+      if Result.Is_Null then
+         Log.Error ("Driver {0} failed to create connection {0}",
+                    Config.Driver.Name.all, To_String (Config.URI));
+         raise Connection_Error with "Data source is not initialized: driver error";
+      end if;
+      Log.Info ("Created connection to '{0}' -> {1}", Config.URI, Result.Value.Ident);
 
    exception
       when others =>
