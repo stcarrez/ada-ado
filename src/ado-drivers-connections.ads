@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2016 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with ADO.Statements;
 with ADO.Schemas;
 with Util.Properties;
 with Util.Strings;
+with Util.Refs;
 
 --  The <b>ADO.Drivers</b> package represents the database driver that will create
 --  database connections and provide the database specific implementation.
@@ -36,8 +37,7 @@ package ADO.Drivers.Connections is
    --  Database connection implementation
    --  ------------------------------
    --
-   type Database_Connection is abstract new Ada.Finalization.Limited_Controlled with record
-      Count : Natural := 0;
+   type Database_Connection is abstract new Util.Refs.Ref_Entity with record
       Ident : String (1 .. 8) := (others => ' ');
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
@@ -84,6 +84,10 @@ package ADO.Drivers.Connections is
 
    --  Closes the database connection
    procedure Close (Database : in out Database_Connection) is abstract;
+
+   package Ref is
+      new Util.Refs.Indefinite_References (Element_Type   => Database_Connection'Class,
+                                           Element_Access => Database_Connection_Access);
 
    --  ------------------------------
    --  The database configuration properties
@@ -139,7 +143,7 @@ package ADO.Drivers.Connections is
 
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (Config : in Configuration'Class;
-                                Result : out Database_Connection_Access);
+                                Result : in out Ref.Ref'Class);
 
    --  ------------------------------
    --  Database Driver
@@ -148,7 +152,7 @@ package ADO.Drivers.Connections is
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (D      : in out Driver;
                                 Config : in Configuration'Class;
-                                Result : out Database_Connection_Access) is abstract;
+                                Result : in out Ref.Ref'Class) is abstract;
 
    --  Get the driver unique index.
    function Get_Driver_Index (D : in Driver) return Driver_Index;
