@@ -6,11 +6,11 @@
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 ![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/1.1.0.svg)
 
-This Ada05 library provides object relational mapping
-to access a database in Ada05.  Most of the concepts
-developped for ADO come from the Java Hibernate ORM.
+Ada Database Objects is an Ada05 library that provides
+object relational mapping to access a database in Ada05.
+The library supports MySQL, SQLite as databases.
+Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
-This library supports MySQL, SQLite as databases.
 You need at least one of these databases (or both).
 
 To build ADO, you will need:
