@@ -11,6 +11,7 @@ GNATCLEAN=@GNATCLEAN@
 GPRINSTALL=@GPRINSTALL@
 SVN=svn
 INSTALL=@INSTALL@
+DYNAMO=dynamo
 
 GPRPATH=ado.gpr
 ADO_MYSQL_GPRPATH=ado_mysql.gpr
@@ -94,8 +95,12 @@ endif
 # Build executables for all mains defined by the project.
 build:  setup
 	$(GNATMAKE) -m -p -P"$(GPRPATH)" $(MAKE_ARGS)
-	test T${HAVE_SQLITE} = Tno || $(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
-	test T${HAVE_MYSQL} = Tno || $(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
+ifeq (${HAVE_SQLITE},yes)
+	$(GNATMAKE) -m -p -P"$(ADO_SQLITE_GPRPATH)" $(MAKE_ARGS)
+endif
+ifeq (${HAVE_MYSQL},yes)
+	$(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
+endif
 	$(GNATMAKE) -m -p -Pado_tests $(MAKE_ARGS) -largs -Llib/ado/${ADO_LIBRARY_TYPE}
 
 static:
@@ -140,36 +145,36 @@ regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
 test:	test-sqlite test-mysql
 
 test-sqlite:		build regtests.db
-	-test T${HAVE_SQLITE} = Tno || \
+ifeq (${HAVE_SQLITE},yes)
 	bin/ado_harness -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
+endif
 
 test-mysql:		build create-mysql-tests
-	-test T${HAVE_MYSQL} = Tno || \
+ifeq (${HAVE_MYSQL},yes)
 	bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
+endif
 
 CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
 
 # Clean the root project of all build products.
 clean:
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=static
-	-$(GNATCLEAN) -q -P "$(GPRPATH)" -XADO_LIBRARY_TYPE=relocatable
-	-$(GNATCLEAN) -q -Pado_tests
-	-$(GNATCLEAN) -q -Psamples
-	-rm -rf lib/ado lib/ado-mysql lib/ado-sqlite
-	-rm -rf obj/ado obj/ado-mysql obj/ado-sqlite
+	-rm -rf lib obj bin
 	-rm -f $(CLEAN_FILES)
 
 # Clean root project and all imported projects too.
 clean_tree:
-	$(GNATCLEAN) -P "$(GPRPATH)" -r
+	$(GNATCLEAN) -q -P "$(GPRPATH)" -r
 
 # Check *all* sources for errors, even those not changed.
 # Does not build executables.
 analyze:
-	$(GNATMAKE) -f  -gnatc -c -k  -P "$(GPRPATH)"
+	$(GNATMAKE) $(MAKE_ARGS) -f  -gnatc -c -k  -P "$(GPRPATH)"
 
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
+
+doc:
+	$(DYNAMO) build-doc -markdown wiki
 
 GENERATOR=dynamo
 
@@ -179,56 +184,26 @@ generate:
 
 # Create the test sqlite database
 regtests.db:
-	test T${HAVE_SQLITE} = Tno || \
+ifeq (${HAVE_SQLITE},yes)
 	sqlite3 $@ < db/regtests/sqlite/create-ado-sqlite.sql
+endif
 
 # Create the samples sqlite database
 samples.db:
-	test T${HAVE_SQLITE} = Tno || \
+ifeq (${HAVE_SQLITE},yes)
 	sqlite3 $@ < db/samples/sqlite/create-ado-sqlite.sql
+endif
 
 # Create the tables in the database.
 # (The database itself must have been created)
 create-mysql-tests:
-	-test T${HAVE_MYSQL} = Tno || \
+ifeq (${HAVE_MYSQL},yes)
 	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
-	test T${HAVE_MYSQL} = Tno || \
 	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
-
-# Files to package in source distribution
-DISTFILES=README.md LICENSE.txt NOTICE.txt CHANGES ChangeLog NEWS config.guess configure config.sub \
-configure.in Makefile.in install-sh \
-ado.gpr.in ado_mysql.gpr.in ado_sqlite.gpr.in ado_tests.gpr.in samples.gpr.in config.gpr \
-src samples regtests db win32 samples.properties \
-distrib test-mysql.properties test-sqlite.properties dynamo.xml
+endif
 
 dist:
-	-rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
-	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(distdir) && pwd`; \
-	distdir=`cd $(distdir) && pwd`; \
-	for file in $(DISTFILES); do \
-	  d=$(srcdir); \
-	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
-	  else \
-	    test -f $(distdir)/$$file \
-	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
-	    || cp -p $$d/$$file $(distdir)/$$file || :; \
-	  fi; \
-	done
-	rm -f $(distdir)/distrib/ado_mysql.gpr
-	rm -f $(distdir)/distrib/ado.gpr
-	rm -rf $(distdir)/regtests/result
-	mkdir $(distdir)/bin
-	mkdir $(distdir)/obj
-	mkdir $(distdir)/lib
-	-cd $(distdir) && rm -f $(CLEAN_FILES)
-	tar --exclude=.svn --exclude="*~" --exclude="*.o" --exclude="*.ali" \
-	    --exclude="*.log" --exclude="*.a" \
-	    -cvzf $(DIST_FILE) $(distdir)
+	git archive -o $(DIST_FILE) --prefix=$(distdir)/ HEAD
 
 install_static:
 	$(MAKE) ADO_LIBRARY_TYPE=static install_lib
@@ -342,10 +317,3 @@ else
 	rm -f ${projectdir}/ado_sqlite.gpr
 endif
 	rm -rf ${dynamodir}/ado
-
-# prepare before releasing a new version of the package
-# (collect information about changes and SVN repository)
-prepare-release:
-	# ${SVN} update
-	# ${SVN} info > CHANGES
-	# ${SVN} log -v > ChangeLog
