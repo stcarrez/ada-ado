@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -272,7 +272,7 @@ package body ADO.Sessions is
       if Object.Impl /= null then
          Util.Concurrent.Counters.Decrement (Object.Impl.Counter, Is_Zero);
          if Is_Zero then
-            ADO.Objects.Release_Proxy (Object.Impl.Proxy);
+            ADO.Objects.Release_Proxy (Object.Impl.Proxy, Detach => True);
             Object.Impl.Database.Close;
             Free (Object.Impl);
          end if;
