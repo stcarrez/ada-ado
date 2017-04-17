@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -477,8 +477,13 @@ package body ADO.Objects is
 
    --  ------------------------------
    --  Release the session proxy, deleting the instance if it is no longer used.
+   --  The <tt>Detach</tt> parameter controls whether the session proxy must be detached
+   --  from the database session.  When set, the session proxy is no longer linked to the
+   --  database session and trying to load the lazy object will raise the SESSION_EXPIRED
+   --  exception.
    --  ------------------------------
-   procedure Release_Proxy (Proxy : in out Session_Proxy_Access) is
+   procedure Release_Proxy (Proxy  : in out Session_Proxy_Access;
+                            Detach : in Boolean := False) is
       procedure Free is new
         Ada.Unchecked_Deallocation (Object => Session_Proxy,
                                     Name   => Session_Proxy_Access);
@@ -486,6 +491,9 @@ package body ADO.Objects is
    begin
       if Proxy /= null then
          Util.Concurrent.Counters.Decrement (Proxy.Counter, Is_Zero);
+         if Detach then
+            Proxy.Session := null;
+         end if;
          if Is_Zero then
             Free (Proxy);
          end if;
