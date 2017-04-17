@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -282,7 +282,12 @@ package ADO.Objects is
    type Session_Proxy_Access is access all Session_Proxy;
 
    --  Release the session proxy, deleting the instance if it is no longer used.
-   procedure Release_Proxy (Proxy : in out Session_Proxy_Access);
+   --  The <tt>Detach</tt> parameter controls whether the session proxy must be detached
+   --  from the database session.  When set, the session proxy is no longer linked to the
+   --  database session and trying to load the lazy object will raise the SESSION_EXPIRED
+   --  exception.
+   procedure Release_Proxy (Proxy  : in out Session_Proxy_Access;
+                            Detach : in Boolean := False);
    pragma Inline (Release_Proxy);
 
    function Create_Session_Proxy (S : access ADO.Sessions.Session_Record)
