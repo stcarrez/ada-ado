@@ -259,7 +259,7 @@ package body ADO.Drivers.Connections.Mysql is
          declare
             Message : constant String := Strings.Value (Mysql_Error (Connection));
          begin
-            Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.URI), Message);
+            Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.Log_URI), Message);
             mysql_close (Connection);
             raise Connection_Error with "Cannot connect to mysql server: " & Message;
          end;
