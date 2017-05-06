@@ -243,8 +243,12 @@ package body ADO.Drivers.Connections.Mysql is
       Log.Info ("Task {0} connecting to {1}:{2}",
                 Ada.Task_Identification.Image (Ada.Task_Identification.Current_Task),
                 To_String (Config.Server), To_String (Config.Database));
-      Log.Debug ("user={0} password={1}", Config.Get_Property ("user"),
-                 Config.Get_Property ("password"));
+      if Config.Get_Property ("password") = "" then
+         Log.Debug ("MySQL connection with user={0}", Config.Get_Property ("user"));
+      else
+         Log.Debug ("MySQL connection with user={0} password=XXXXXXXX",
+                    Config.Get_Property ("user"));
+      end if;
       Connection := mysql_init (null);
 
       Server := mysql_real_connect (Connection, ADO.C.To_C (Host),
