@@ -46,9 +46,8 @@ package body ADO.Drivers.Connections is
                              URI        : in String) is
 
       Pos, Pos2, Slash_Pos, Next : Natural;
+      Is_Hidden : Boolean;
    begin
-      Log.Info ("Set connection URI: {0}", URI);
-
       Controller.URI := To_Unbounded_String (URI);
       Pos := Index (URI, "://");
       if Pos <= 1 then
@@ -99,27 +98,45 @@ package body ADO.Drivers.Connections is
          Controller.Database := Null_Unbounded_String;
       end if;
 
+
       --  Parse the optional properties
       if Pos > Slash_Pos then
+         Controller.Log_URI := To_Unbounded_String (URI (URI'First .. Pos));
          while Pos < URI'Last loop
             Pos2 := Index (URI, "=", Pos + 1);
             if Pos2 > Pos then
                Next := Index (URI, "&", Pos2 + 1);
+               Append (Controller.Log_URI, URI (Pos + 1 .. Pos2));
+               Is_Hidden := URI (Pos + 1 .. Pos2 - 1) = "password";
+               if Is_Hidden then
+                  Append (Controller.Log_URI, "XXXXXXX");
+               end if;
                if Next > 0 then
                   Controller.Properties.Set (URI (Pos + 1 .. Pos2 - 1),
                                              URI (Pos2 + 1 .. Next - 1));
+                  if not Is_Hidden then
+                     Append (Controller.Log_URI, URI (Pos2 + 1 .. Next - 1));
+                  end if;
+                  Append (Controller.Log_URI, "&");
                   Pos := Next;
                else
                   Controller.Properties.Set (URI (Pos + 1 .. Pos2 - 1),
                                              URI (Pos2 + 1 .. URI'Last));
+                 if not Is_Hidden then
+                     Append (Controller.Log_URI, URI (Pos2 + 1 .. URI'Last));
+                  end if;
                   Pos := URI'Last;
                end if;
             else
                Controller.Properties.Set (URI (Pos + 1 .. URI'Last), "");
+               Append (Controller.Log_URI, URI (Pos + 1 .. URI'Last));
                Pos := URI'Last;
             end if;
          end loop;
+      else
+         Controller.Log_URI := Controller.URI;
       end if;
+      Log.Info ("Set connection URI: {0}", Controller.Log_URI);
    end Set_Connection;
 
    --  ------------------------------
@@ -214,20 +231,20 @@ package body ADO.Drivers.Connections is
                                 Result : in out Ref.Ref'Class) is
    begin
       if Config.Driver = null then
-         Log.Error ("No driver found for connection {0}", To_String (Config.URI));
+         Log.Error ("No driver found for connection {0}", To_String (Config.Log_URI));
          raise Connection_Error with "Data source is not initialized: driver not found";
       end if;
       Config.Driver.Create_Connection (Config, Result);
       if Result.Is_Null then
          Log.Error ("Driver {0} failed to create connection {0}",
-                    Config.Driver.Name.all, To_String (Config.URI));
+                    Config.Driver.Name.all, To_String (Config.Log_URI));
          raise Connection_Error with "Data source is not initialized: driver error";
       end if;
-      Log.Info ("Created connection to '{0}' -> {1}", Config.URI, Result.Value.Ident);
+      Log.Info ("Created connection to '{0}' -> {1}", Config.Log_URI, Result.Value.Ident);
 
    exception
       when others =>
-         Log.Info ("Failed to create connection to '{0}'", Config.URI);
+         Log.Info ("Failed to create connection to '{0}'", Config.Log_URI);
          raise;
 
    end Create_Connection;
