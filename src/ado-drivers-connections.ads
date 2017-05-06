@@ -174,10 +174,11 @@ private
    end record;
 
    type Configuration is new Ada.Finalization.Controlled with record
-      URI        : Unbounded_String := Null_Unbounded_String;
-      Server     : Unbounded_String := Null_Unbounded_String;
+      URI        : Unbounded_String;
+      Log_URI    : Unbounded_String;
+      Server     : Unbounded_String;
       Port       : Natural := 0;
-      Database   : Unbounded_String := Null_Unbounded_String;
+      Database   : Unbounded_String;
       Properties : Util.Properties.Manager;
       Driver     : Driver_Access;
    end record;
