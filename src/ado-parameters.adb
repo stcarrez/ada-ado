@@ -579,10 +579,9 @@ package body ADO.Parameters is
             if First_Pos <= Pos - 1 then
                Append (Buffer, SQL (First_Pos .. Pos - 1));
             end if;
-            Pos := Pos + 1;
             First_Pos := Pos + 1;
-            exit when Pos > SQL'Last;
-            Pos := Pos + 1;
+            exit when Pos + 1 > SQL'Last;
+            Pos := Pos + 2;
 
          elsif C = ':' and Pos + 1 <= SQL'Last then
             if First_Pos <= Pos - 1 then
