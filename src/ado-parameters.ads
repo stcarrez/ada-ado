@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,36 @@ with Ada.Containers.Indefinite_Vectors;
 with ADO.Utils;
 with ADO.Drivers.Dialects;
 
---  Defines a list of parameters for an SQL statement.
+--  === Query Parameters ===
+--  Query parameters are represented by the <tt>Parameter</tt> type which can represent almost
+--  all database types including boolean, numbers, strings, dates and blob.  Parameters are
+--  put in a list represented by the <tt>Abstract_List</tt> or <tt>List</tt> types.
+--
+--  A parameter is added by using either the <tt>Bind_Param</tt> or the <tt>Add_Param</tt>
+--  operation.  The <tt>Bind_Param</tt> operation allows to specify either the parameter name
+--  or its position.  The <tt>Add_Param</tt> operation adds the parameter at end of the list
+--  and uses the last position.  In most cases, it is easier to bind a parameter with a name
+--  as follows:
+--
+--    Query.Bind_Param ("name", "Joe");
+--
+--  and the SQL can use the following construct:
+--
+--    SELECT * FROM user WHERE name = :name
+--
+--  When the <tt>Add_Param</tt> is used, the parameter is not associated with any name but it
+--  as a position index.  Setting a parameter is easier:
+--
+--    Query.Add_Param ("Joe");
+--
+--  but the SQL cannot make any reference to names and must use the <tt>?</tt> construct:
+--
+--    SELECT * FROM user WHERE name = ?
+--
+--  === Parameter Expander ===
+--  The parameter expander is a mechanism that allows to replace or inject values in the SQL
+--  query by looking at an operation provided by the <tt>Expander</tt> interface.  Such expander
+--  is useful to replace parameters that are global to a session or to an application.
 --
 package ADO.Parameters is
 
@@ -63,6 +92,15 @@ package ADO.Parameters is
             Str : String (1 .. Value_Len);
       end case;
    end record;
+
+   type Expander is limited interface;
+   type Expander_Access is access all Expander'Class;
+
+   --  Expand the name from the given group into a target parameter value to be used in
+   --  the SQL query.  The expander can look in a cache or in some configuration.
+   function Expand (Instance : in Expander;
+                    Group    : in String;
+                    Name     : in String) return Parameter is abstract;
 
    type Abstract_List is abstract new Ada.Finalization.Controlled with private;
    type Abstract_List_Access is access all Abstract_List'Class;
@@ -233,7 +271,8 @@ private
                                             "="          => Compare_On_Name);
 
    type Abstract_List is abstract new Ada.Finalization.Controlled with record
-      Dialect : ADO.Drivers.Dialects.Dialect_Access := null;
+      Dialect  : ADO.Drivers.Dialects.Dialect_Access := null;
+      Expander : Expander_Access;
    end record;
 
    type List is new Abstract_List with record
