@@ -37,7 +37,8 @@ package body ADO.Caches is
          end if;
          C := C.Next;
       end loop;
-      raise No_Value;
+      Log.Warn ("There is no group {0} registered in the cache manager", Group);
+      raise No_Value with "No group '" & Group & "'";
    end Expand;
 
    --  --------------------
@@ -47,6 +48,8 @@ package body ADO.Caches is
                         Name    : in String;
                         Cache   : in Cache_Type_Access) is
    begin
+      Log.Debug ("Adding cache group {0}", Name);
+
       Cache.Next    := Manager.First;
       Cache.Name    := Ada.Strings.Unbounded.To_Unbounded_String (Name);
       Manager.First := Cache;
