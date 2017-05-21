@@ -207,6 +207,7 @@ package body ADO.Parameters.Tests is
       Check ("select ? ? ? ? ? ?", "select 'select ''' 'from' '23' 44 1 0");
       Check ("select ? :2 :user_id :object_23_identifier :bool :6",
              "select 'select ''' 'from' '23' 44 1 0");
+      Check ("select \:1 \:2 \:3 \:4 \:5 \:6", "select :1 :2 :3 :4 :5 :6");
    end Test_Expand_Sql;
 
    --  ------------------------------
@@ -348,6 +349,8 @@ package body ADO.Parameters.Tests is
       P.Insert ("a", 1, True);
       Check ("SELECT * FROM user WHERE id = $G2[a]+$test-group[value-1]",
              "SELECT * FROM user WHERE id = 1+123");
+      Check ("SELECT * FROM user WHERE id = 2$G2[titi]+$test[value-1]1",
+             "SELECT * FROM user WHERE id = 2+1");
    end Test_Expand_With_Expander;
 
 end ADO.Parameters.Tests;
