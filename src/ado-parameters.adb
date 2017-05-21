@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,7 @@ package body ADO.Parameters is
 
    use Parameter_Vectors;
 
-   use Util.Log;
-
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Parameters");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Parameters");
 
    --  --------------------
    --  Set the SQL dialect description object.
@@ -418,6 +416,7 @@ package body ADO.Parameters is
    --         after each occurrence of ? character.
    --     <li>:nnn is replaced by the parameter at index <b>nnn</b>.
    --     <li>:name is replaced by the parameter with the name <b>name</b>
+   --     <li>$group[var-name] is replaced by using the expander interface.
    --  </ul>
    --  Parameter strings are escaped.  When a parameter is not found, an empty string is used.
    --  Returns the expanded SQL string.
@@ -438,6 +437,11 @@ package body ADO.Parameters is
 
       --  Find and replace the parameter at the given index.
       procedure Replace_Parameter (Position : in Natural);
+
+      --  Find and replace the variable by using the expander and looking up in the
+      --  group identified by <tt>Group</tt> a value with the name <tt>Name</tt>.
+      procedure Replace_Expander (Group : in String;
+                                  Name  : in STring);
 
       --  ------------------------------
       --  Format and append the date to the buffer.
@@ -542,6 +546,25 @@ package body ADO.Parameters is
          Log.Warn ("Parameter '{0}' not found in query '{1}'", Name, SQL);
       end Replace_Parameter;
 
+      --  ------------------------------
+      --  Find and replace the variable by using the expander and looking up in the
+      --  group identified by <tt>Group</tt> a value with the name <tt>Name</tt>.
+      --  ------------------------------
+      procedure Replace_Expander (Group : in String;
+                                  Name  : in STring) is
+      begin
+         if Params.Expander = null then
+            Log.Warn ("There is no expander to evaluate ${0}[{1}]", Group, Name);
+         else
+            Replace_Parameter (Params.Expander.Expand (Group, Name));
+         end if;
+
+      exception
+         when others =>
+            Log.Warn ("No value ${0}[{1}] in the cache expander", Group, Name);
+
+      end Replace_Expander;
+
       Num       : Natural := 0;
       Pos       : Natural;
       C         : Character;
@@ -606,6 +629,46 @@ package body ADO.Parameters is
             Replace_Parameter (Position => Num);
             Pos := Pos + 1;
             First_Pos := Pos;
+
+         elsif C = '$' then
+            if First_Pos <= Pos - 1 then
+               Append (Buffer, SQL (First_Pos .. Pos - 1));
+            end if;
+
+            --  We have a variable to lookup in a cache with the form: $group[var-name]
+            Pos := Pos + 1;
+            declare
+               Group_Start : constant Natural := Pos;
+               Group_End   : Natural;
+            begin
+               --  Isolate the parameter name.
+               loop
+                  C := SQL (Pos);
+                  exit when C = '[';
+                  Pos := Pos + 1;
+                  exit when Pos > SQL'Last;
+                  C := SQL (Pos);
+               end loop;
+               if C = '[' then
+                  Group_End := Pos;
+                  loop
+                     C := SQL (Pos);
+                     exit when C = ']';
+                     Pos := Pos + 1;
+                     exit when Pos > SQL'Last;
+                     C := SQL (Pos);
+                  end loop;
+                  if C = ']' then
+                     Replace_Expander (Group => SQL (Group_Start .. Group_End - 1),
+                                       Name  => SQL (Group_End + 1 .. Pos - 1));
+                     Pos := Pos + 1;
+                  end if;
+               end if;
+
+               --  And replace it with its value.
+               First_Pos := Pos;
+            end;
+
          else
             Pos := Pos + 1;
          end if;
