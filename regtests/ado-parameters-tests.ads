@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-parameters-tests -- Test query parameters and SQL expansion
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,5 +31,8 @@ package ADO.Parameters.Tests is
 
    --  Test expand performance.
    procedure Test_Expand_Perf (T : in out Test);
+
+   --  Test expand with cache expander.
+   procedure Test_Expand_With_Expander (T : in out Test);
 
 end ADO.Parameters.Tests;
