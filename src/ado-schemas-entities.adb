@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-entities -- Entity types cache
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,26 @@ package body ADO.Schemas.Entities is
    use Util.Log;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Schemas.Entities");
+
+   --  ------------------------------
+   --  Expand the name into a target parameter value to be used in the SQL query.
+   --  The Expander can return a T_NULL when a value is not found or
+   --  it may also raise some exception.
+   --  ------------------------------
+   overriding
+   function Expand (Instance : in out Entity_Cache;
+                    Name     : in String) return ADO.Parameters.Parameter is
+      Pos : constant Entity_Map.Cursor := Instance.Entities.Find (Name);
+   begin
+      if not Entity_Map.Has_Element (Pos) then
+         Log.Error ("No entity type associated with table {0}", Name);
+         raise No_Entity_Type with "No entity type associated with table " & Name;
+      end if;
+      return ADO.Parameters.Parameter '(T => ADO.Parameters.T_INTEGER,
+                                        Len => 0, Value_Len => 0, Position => 0,
+                                        Name => "",
+                                        Num => Entity_Type'Pos (Entity_Map.Element (Pos)));
+   end Expand;
 
    --  ------------------------------
    --  Find the entity type index associated with the given database table.
