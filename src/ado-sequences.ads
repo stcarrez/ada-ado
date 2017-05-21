@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ with ADO.Sessions;
 with ADO.Objects;
 limited with ADO.Sessions.Factory;
 
+--  == Sequence Generators ==
 --  The sequence generator is responsible for creating unique ID's
 --  across all database objects.
 --
@@ -40,6 +41,7 @@ limited with ADO.Sessions.Factory;
 --
 --    Allocate (Manager => F, Name => "user", Id => Id);
 --
+--  @include ado-sequences-hilo.ads
 package ADO.Sequences is
 
    type Session_Factory_Access is access all ADO.Sessions.Factory.Session_Factory'Class;
