@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,7 @@ package body ADO.Sessions.Factory is
    begin
       S.Database := Master_Connection (DB);
       S.Entities := Factory.Entities;
+      S.Values   := Factory.Cache_Values;
       Database.Impl := S;
    end Open_Session;
 
@@ -47,6 +48,7 @@ package body ADO.Sessions.Factory is
    begin
       S.Database := Master_Connection (DB);
       S.Entities := Factory.Entities;
+      S.Values   := Factory.Cache_Values;
       R.Impl := S;
       return R;
    end Get_Session;
@@ -78,6 +80,7 @@ package body ADO.Sessions.Factory is
       R.Sequences := Factory.Sequences;
       S.Database := Master_Connection (DB);
       S.Entities := Factory.Entities;
+      S.Values   := Factory.Cache_Values;
       return R;
    end Get_Master_Session;
 
@@ -110,14 +113,16 @@ package body ADO.Sessions.Factory is
                      Source  : in ADO.Databases.DataSource) is
    begin
       Factory.Source := Source;
-      Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
+      Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
+      Factory.Cache_Values := Factory.Cache'Unchecked_Access;
+      Factory.Cache.Add_Cache (ENTITY_CACHE_NAME, Factory.Entities.all'Access);
       Initialize_Sequences (Factory);
 
       if Factory.Source.Get_Database /= "" then
          declare
             S : Session := Factory.Get_Session;
          begin
-            ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+            ADO.Schemas.Entities.Initialize (Factory.Entities.all, S);
          end;
       end if;
    end Create;
@@ -130,14 +135,16 @@ package body ADO.Sessions.Factory is
                      URI     : in String) is
    begin
       Factory.Source.Set_Connection (URI);
-      Factory.Entities := Factory.Entity_Cache'Unchecked_Access;
+      Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
+      Factory.Cache_Values := Factory.Cache'Unchecked_Access;
+      Factory.Cache.Add_Cache (ENTITY_CACHE_NAME, Factory.Entities.all'Access);
       Initialize_Sequences (Factory);
 
       if Factory.Source.Get_Database /= "" then
          declare
             S : Session := Factory.Get_Session;
          begin
-            ADO.Schemas.Entities.Initialize (Factory.Entity_Cache, S);
+            ADO.Schemas.Entities.Initialize (Factory.Entities.all, S);
          end;
       end if;
    end Create;
