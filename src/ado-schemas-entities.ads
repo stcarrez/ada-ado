@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-entities -- Entity types cache
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,20 @@ with Ada.Containers;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with ADO.Sessions;
+with ADO.Parameters;
 package ADO.Schemas.Entities is
 
    No_Entity_Type : exception;
 
    --  The entity cache maintains a static cache of database entities.
-   type Entity_Cache is private;
+   type Entity_Cache is new ADO.Caches.Cache_Type with private;
+
+   --  Expand the name into a target parameter value to be used in the SQL query.
+   --  The Expander can return a T_NULL when a value is not found or
+   --  it may also raise some exception.
+   overriding
+   function Expand (Instance : in out Entity_Cache;
+                    Name     : in String) return ADO.Parameters.Parameter;
 
    --  Find the entity type index associated with the given database table.
    --  Raises the No_Entity_Type exception if no such mapping exist.
@@ -49,7 +57,7 @@ private
                                             Hash            => Ada.Strings.Hash,
                                             Equivalent_Keys => "=");
 
-   type Entity_Cache is record
+   type Entity_Cache is new ADO.Caches.Cache_Type with record
       Entities : Entity_Map.Map;
    end record;
 
