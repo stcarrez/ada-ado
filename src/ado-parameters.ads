@@ -97,7 +97,9 @@ package ADO.Parameters is
    type Expander_Access is access all Expander'Class;
 
    --  Expand the name from the given group into a target parameter value to be used in
-   --  the SQL query.  The expander can look in a cache or in some configuration.
+   --  the SQL query.  The expander can look in a cache or in some configuration to find
+   --  the value associated with the name and return it.  The Expander can return a
+   --  T_NULL when a value is not found or it may also raise some exception.
    function Expand (Instance : in Expander;
                     Group    : in String;
                     Name     : in String) return Parameter is abstract;
