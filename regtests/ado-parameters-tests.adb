@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-parameters-tests -- Test query parameters and SQL expansion
---  Copyright (C) 2011, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,13 @@
 
 with Util.Test_Caller;
 with Util.Measures;
+with ADO.Caches.Discrete;
+with ADO.Caches;
 package body ADO.Parameters.Tests is
 
    use Util.Tests;
+
+   package Int_Cache is new ADO.Caches.Discrete (Element_Type => Integer);
 
    type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
 
@@ -151,6 +155,8 @@ package body ADO.Parameters.Tests is
                        Test_Bind_Param_Unbounded_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Parameters.Bind_Param (Entity_Type)",
                        Test_Bind_Param_Entity_Type'Access);
+      Caller.Add_Test (Suite, "Test ADO.Parameters.Expand (cache expander)",
+                       Test_Expand_With_Expander'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -301,5 +307,47 @@ package body ADO.Parameters.Tests is
          Util.Measures.Report (T, "Expand (1000 calls with 10 parameters)");
       end;
    end Test_Expand_Perf;
+
+   --  ------------------------------
+   --  Test expand with cache expander.
+   --  ------------------------------
+   procedure Test_Expand_With_Expander (T : in out Test) is
+      procedure Check (Content : in String;
+                       Expect  : in String);
+
+      SQL : ADO.Parameters.List;
+      D   : aliased Dialect;
+      C   : aliased ADO.Caches.Cache_Manager;
+      M   : access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
+      P   : access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
+
+      procedure Check (Content : in String;
+                       Expect  : in String) is
+         S : constant String := SQL.Expand (Content);
+      begin
+         Util.Tests.Assert_Equals (T, Expect, S, "Invalid expand for SQL '" & Content & "'");
+      end Check;
+
+   begin
+      C.Add_Cache ("test-group", M.all'Access);
+      C.Add_Cache ("G2", P.all'Access);
+      SQL.Expander := C'Unchecked_Access;
+      M.Insert ("value-1", 123);
+      M.Insert ("2", 2);
+      M.Insert ("a name", 10);
+      P.Insert ("1", 10);
+      P.Insert ("a", 0);
+      P.Insert ("c", 1);
+      SQL.Set_Dialect (D'Unchecked_Access);
+      Check ("$test-group[2]", "2");
+      Check ("$test-group[a name]", "10");
+      Check ("SELECT * FROM user WHERE id = $test-group[2]+$test-group[value-1]",
+             "SELECT * FROM user WHERE id = 2+123");
+      Check ("SELECT * FROM user WHERE id = $G2[a]+$test-group[value-1]",
+             "SELECT * FROM user WHERE id = 0+123");
+      P.Insert ("a", 1, True);
+      Check ("SELECT * FROM user WHERE id = $G2[a]+$test-group[value-1]",
+             "SELECT * FROM user WHERE id = 1+123");
+   end Test_Expand_With_Expander;
 
 end ADO.Parameters.Tests;
