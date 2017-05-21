@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 with ADO.Databases;
 with ADO.Schemas.Entities;
 with ADO.Sequences;
+with ADO.Caches;
 
 --  === Session Factory ===
 --  The session factory is the entry point to obtain a database session.
@@ -44,6 +45,8 @@ with ADO.Sequences;
 package ADO.Sessions.Factory is
 
    pragma Elaborate_Body;
+
+   ENTITY_CACHE_NAME : constant String := "entity_type";
 
    --  ------------------------------
    --  Session factory
@@ -88,8 +91,10 @@ private
       Source       : ADO.Databases.DataSource;
       Sequences    : Factory_Access := null;
       Seq_Factory  : aliased ADO.Sequences.Factory;
-      Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
+      --  Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
       Entities     : ADO.Sessions.Entity_Cache_Access := null;
+      Cache        : aliased ADO.Caches.Cache_Manager;
+      Cache_Values : ADO.Caches.Cache_Manager_Access;
    end record;
 
    --  Initialize the sequence factory associated with the session factory.
