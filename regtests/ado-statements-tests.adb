@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-tests -- Test statements package
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -154,6 +154,8 @@ package body ADO.Statements.Tests is
                        Test_Query_Get_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Entity_Type",
                        Test_Query_Get_Nullable_Entity_Type'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Create_Statement (using $entity_type[])",
+                       Test_Entity_Types'Access);
    end Add_Tests;
 
    function Get_Sum (T : in Test;
@@ -211,5 +213,18 @@ package body ADO.Statements.Tests is
       Util.Tests.Assert_Equals (T, 385, Get_Sum (T, "test_table", List),
                                 "The SUM query returns an invalid value for test_table");
    end Test_Save;
+
+   --  ------------------------------
+   --  Test queries using the $entity_type[] cache group.
+   --  ------------------------------
+   procedure Test_Entity_Types (T : in out Test) is
+      DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Stmt : ADO.Statements.Query_Statement;
+   begin
+      Stmt := DB.Create_Statement ("SELECT * FROM entity_type "
+                                   & "WHERE entity_type.id = $entity_type[test_user]");
+      Stmt.Execute;
+      Util.Tests.Assert_Equals (T, 1, Stmt.Get_Row_Count, "Query must return one row");
+   end Test_Entity_Types;
 
 end ADO.Statements.Tests;
