@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,13 @@ limited with ADO.Schemas.Entities;
 --  == Session ==
 --  The <tt>ADO.Sessions</tt> package defines the control and management of database sessions.
 --  The database session is represented by the <tt>Session</tt> or <tt>Master_Session</tt> types.
+--  It provides operation to create a database statement that can be executed.
+--  The <tt>Session</tt> type is used to represent read-only database sessions.  It provides
+--  operations to query the database but it does not allow to update or delete content.
+--  The <tt>Master_Session</tt> type extends the <tt>Session</tt> type to provide write
+--  access and it provides operations to get update or delete statements.  The differentiation
+--  between the two sessions is provided for the support of database replications with
+--  databases such as MySQL.
 --
 --  @include ado-sessions-factory.ads
 --
@@ -168,12 +175,6 @@ private
       A : Integer;
    end record;
    type Object_Factory_Access is access all Object_Factory'Class;
---
---     type Session_Proxy is limited record
---        Counter : Util.Concurrent.Counters.Counter;
---        Session : Session_Record_Access;
---        Factory : Object_Factory_Access;
---     end record;
 
    --  The <b>Session_Record</b> maintains the connection information to the database for
    --  the duration of the session.  It also maintains a cache of application objects
