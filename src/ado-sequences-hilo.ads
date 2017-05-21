@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences Hilo-- HiLo Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  === HiLo Sequence Generator ===
 --  The HiLo sequence generator.  This sequence generator uses a database table
 --  <b>sequence</b> to allocate blocks of identifiers for a given sequence name.
 --  The sequence table contains one row for each sequence.  It keeps track of
