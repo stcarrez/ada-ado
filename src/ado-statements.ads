@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +29,10 @@ private with System;
 private with Interfaces.C;
 private with Interfaces.C.Strings;
 
---
---  Represents SQL statements (prepared or not) and their result upon execution
+--  == Database Statements ==
+--  The <tt>ADO.Statements</tt> package provides high level operations to construct database
+--  statements and execute them.  They allow to represents SQL statements (prepared or not)
+--  and provide support to execute them and retreive their result.
 --
 --
 --  Stmt : Query_Statement := Connection.Create_Statement
@@ -43,6 +45,7 @@ private with Interfaces.C.Strings;
 --     ...
 --  end loop;
 --
+--  @include ado-parameters.ads
 package ADO.Statements is
 
    use Ada.Strings.Unbounded;
