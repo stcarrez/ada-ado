@@ -25,6 +25,7 @@ with ADO.Objects.Cache;
 with ADO.Databases;
 with ADO.Queries;
 with ADO.SQL;
+with ADO.Caches;
 
 with Util.Concurrent.Counters;
 limited with ADO.Sequences;
@@ -169,7 +170,7 @@ package ADO.Sessions is
 
 private
 
-   type Entity_Cache_Access is access constant ADO.Schemas.Entities.Entity_Cache;
+   type Entity_Cache_Access is access ADO.Schemas.Entities.Entity_Cache;
 
    type Object_Factory is tagged record
       A : Integer;
@@ -192,6 +193,7 @@ private
       Proxy    : ADO.Objects.Session_Proxy_Access;
       Cache    : ADO.Objects.Cache.Object_Cache;
       Entities : Entity_Cache_Access;
+      Values   : ADO.Caches.Cache_Manager_Access;
    end record;
 
    type Session is new Ada.Finalization.Controlled with record
