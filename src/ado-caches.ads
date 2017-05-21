@@ -20,6 +20,7 @@ with Ada.Strings.Unbounded;
 with Ada.Finalization;
 
 with ADO.Parameters;
+with Util.Log.Loggers;
 
 --  == Database Caches ==
 --  The ADO cache manager allows to create and maintain cache of values and use the cache
@@ -76,6 +77,8 @@ package ADO.Caches is
    procedure Finalize (Manager : in out Cache_Manager);
 
 private
+
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Caches");
 
    type Cache_Type is abstract limited new Ada.Finalization.Limited_Controlled with record
       Next : Cache_Type_Access;
