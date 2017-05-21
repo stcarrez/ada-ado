@@ -230,6 +230,7 @@ package ADO.Parameters is
    --         after each occurrence of ? character.
    --     <li>:nnn is replaced by the parameter at index <b>nnn</b>.
    --     <li>:name is replaced by the parameter with the name <b>name</b>
+   --     <li>$group[var-name] is replaced by using the expander interface.
    --  </ul>
    --  Parameter strings are escaped.  When a parameter is not found, an empty string is used.
    --  Returns the expanded SQL string.
