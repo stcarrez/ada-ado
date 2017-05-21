@@ -38,14 +38,38 @@ private with Interfaces.C.Strings;
 --  Stmt : Query_Statement := Connection.Create_Statement
 --              ("select * from user where name = :name");
 --
---  Stmt.Bind_Param ("name", name);
---  Stmt.Execute;
---  while Stmt.Has_Elements loop
---     Id := Stmt.Get_Identifier (1);
---     ...
---  end loop;
---
 --  @include ado-parameters.ads
+--
+--  === Query Statement ===
+--  The database query statement is represented by the <tt>Query_Statement</tt> type.
+--  The <tt>Create_Statement</tt> operation is provided on the <tt>Session</tt> type
+--  and it gets the SQL to execute as parameter.  For example:
+--
+--    Stmt : ADO.Statements.Query_Statement := Session.Create_Statement
+--              ("select * from user where name = :name");
+--
+--  After the creation of the query statement, the parameters for the SQL query are provided
+--  by using either the <tt>Bind_Param</tt> or <tt>Add_Param</tt> procedures as follows:
+--
+--    Stmt.Bind_Param ("name", name);
+--
+--  Once all the parameters are defined, the query statement is executed by calling the
+--  <tt>Execute</tt> procedure:
+--
+--    Stmt.Execute;
+--
+--  Several operations are provided to retrieve the result.  First, the <tt>Has_Elements</tt>
+--  function will indicate whether some database rows are available in the result.  It is then
+--  possible to retrieve each row and proceed to the next one by calling the <tt>Next</tt>
+--  procedure.  The number of rows is also returned by the <tt>Get_Row_Count</tt> function.
+--  A simple loop to iterate over the query result looks like:
+--
+--    while Stmt.Has_Elements loop
+--       Id := Stmt.Get_Identifier (1);
+--       ...
+--       Stmt.Next;
+--    end loop;
+--
 package ADO.Statements is
 
    use Ada.Strings.Unbounded;
