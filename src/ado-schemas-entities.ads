@@ -21,6 +21,7 @@ with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with ADO.Sessions;
 with ADO.Parameters;
+with ADO.Caches;
 package ADO.Schemas.Entities is
 
    No_Entity_Type : exception;
