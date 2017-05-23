@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -173,16 +173,13 @@ package body ADO.Tests is
    --  ------------------------------
    procedure Test_Create_Save (T : in out Test) is
       use ADO.Objects;
-      use type ADO.Databases.Connection_Status;
+      use type ADO.Sessions.Connection_Status;
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-      Conn : constant ADO.Databases.Connection'Class := DB.Get_Connection;
       Ref  : Regtests.Simple.Model.Allocate_Ref;
       Ref2 : Regtests.Simple.Model.Allocate_Ref;
    begin
-      T.Assert (Conn.Get_Status = ADO.Databases.OPEN,
-                "The database connection is open");
-      T.Assert (DB.Get_Status = ADO.Databases.OPEN,
+      T.Assert (DB.Get_Status = ADO.Sessions.OPEN,
                 "The database connection is open");
 
       Ref.Set_Name ("Testing the allocation");
