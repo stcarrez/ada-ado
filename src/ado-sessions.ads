@@ -22,7 +22,7 @@ with ADO.Schemas;
 with ADO.Statements;
 with ADO.Objects;
 with ADO.Objects.Cache;
-with ADO.Databases;
+with ADO.Drivers.Connections;
 with ADO.Queries;
 with ADO.SQL;
 with ADO.Caches;
@@ -61,6 +61,9 @@ package ADO.Sessions is
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
 
+   --  The database connection status
+   type Connection_Status is (OPEN, CLOSED);
+
    type Object_Factory is tagged private;
 
    --  ---------
@@ -71,13 +74,16 @@ package ADO.Sessions is
    type Session is tagged private;
 
    --  Get the session status.
-   function Get_Status (Database : in Session) return ADO.Databases.Connection_Status;
+   function Get_Status (Database : in Session) return Connection_Status;
+
+   --  Get the database driver which manages this connection.
+   function Get_Driver (Database : in Session) return ADO.Drivers.Connections.Driver_Access;
 
    --  Close the session.
    procedure Close (Database : in out Session);
 
    --  Get the database connection.
-   function Get_Connection (Database : in Session) return ADO.Databases.Connection'Class;
+   --  function Get_Connection (Database : in Session) return ADO.Databases.Connection'Class;
 
    --  Attach the object to the session.
    procedure Attach (Database : in out Session;
@@ -189,7 +195,7 @@ private
    --  unlinked from the session record.
    type Session_Record is limited record
       Counter  : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
-      Database : ADO.Databases.Master_Connection;
+      Database : ADO.Drivers.Connections.Ref.Ref;
       Proxy    : ADO.Objects.Session_Proxy_Access;
       Cache    : ADO.Objects.Cache.Object_Cache;
       Entities : Entity_Cache_Access;
