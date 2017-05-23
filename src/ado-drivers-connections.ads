@@ -42,6 +42,9 @@ package ADO.Drivers.Connections is
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 
+   --  Get the database driver index.
+   function Get_Driver_Index (Database : in Database_Connection) return Driver_Index;
+
    function Create_Statement (Database : in Database_Connection;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access is abstract;
