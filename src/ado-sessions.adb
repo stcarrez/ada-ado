@@ -91,6 +91,17 @@ package body ADO.Sessions is
    end Close;
 
    --  ------------------------------
+   --  Insert a new cache in the manager.  The cache is identified by the given name.
+   --  ------------------------------
+   procedure Add_Cache (Database : in out Session;
+                        Name     : in String;
+                        Cache    : in ADO.Caches.Cache_Type_Access) is
+   begin
+      Check_Session (Database);
+      Database.Impl.Values.Add_Cache (Name, Cache);
+   end Add_Cache;
+
+   --  ------------------------------
    --  Attach the object to the session.
    --  ------------------------------
    procedure Attach (Database : in out Session;
