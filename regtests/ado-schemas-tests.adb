@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -170,7 +170,7 @@ package body ADO.Schemas.Tests is
       S      : constant ADO.Sessions.Session := Regtests.Get_Database;
       Schema : Schema_Definition;
       Table  : Table_Definition;
-      Driver : constant String := S.Get_Connection.Get_Driver.Get_Driver_Name;
+      Driver : constant String := S.Get_Driver.Get_Driver_Name;
    begin
       S.Load_Schema (Schema);
 
