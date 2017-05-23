@@ -82,8 +82,10 @@ package ADO.Sessions is
    --  Close the session.
    procedure Close (Database : in out Session);
 
-   --  Get the database connection.
-   --  function Get_Connection (Database : in Session) return ADO.Databases.Connection'Class;
+   --  Insert a new cache in the manager.  The cache is identified by the given name.
+   procedure Add_Cache (Database : in out Session;
+                        Name     : in String;
+                        Cache    : in ADO.Caches.Cache_Type_Access);
 
    --  Attach the object to the session.
    procedure Attach (Database : in out Session;
