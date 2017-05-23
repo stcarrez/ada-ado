@@ -218,13 +218,19 @@ package body ADO.Statements.Tests is
    --  Test queries using the $entity_type[] cache group.
    --  ------------------------------
    procedure Test_Entity_Types (T : in out Test) is
-      DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-      Stmt : ADO.Statements.Query_Statement;
+      DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Stmt  : ADO.Statements.Query_Statement;
+      Count : Natural := 0;
    begin
-      Stmt := DB.Create_Statement ("SELECT * FROM entity_type "
+      Stmt := DB.Create_Statement ("SELECT name FROM entity_type "
                                    & "WHERE entity_type.id = $entity_type[test_user]");
       Stmt.Execute;
-      Util.Tests.Assert_Equals (T, 1, Stmt.Get_Row_Count, "Query must return one row");
+      while Stmt.Has_Elements loop
+         Util.Tests.Assert_Equals (T, "test_user", Stmt.Get_String (0), "Invalid query response");
+         Count := Count + 1;
+         Stmt.Next;
+      end loop;
+      Util.Tests.Assert_Equals (T, 1, Count, "Query must return one row");
    end Test_Entity_Types;
 
 end ADO.Statements.Tests;
