@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Tests -- Database sequence generator
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,14 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Databases;
 with ADO.Sessions;
-
+with ADO.Sessions.Sources;
 package Regtests is
 
    --  ------------------------------
    --  Get the database manager to be used for the unit tests
    --  ------------------------------
-   function Get_Controller return ADO.Databases.DataSource'Class;
+   function Get_Controller return ADO.Sessions.Sources.Data_Source'Class;
 
    --  ------------------------------
    --  Get the readonly connection database to be used for the unit tests
