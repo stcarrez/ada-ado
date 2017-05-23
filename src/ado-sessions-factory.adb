@@ -18,11 +18,7 @@
 
 with ADO.Sequences.Hilo;
 
---  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
---  sessions.
 package body ADO.Sessions.Factory is
-
-   use ADO.Databases;
 
    --  ------------------------------
    --  Open a session
@@ -30,9 +26,8 @@ package body ADO.Sessions.Factory is
    procedure Open_Session (Factory  : in out Session_Factory;
                            Database : out Session) is
       S  : constant Session_Record_Access := new Session_Record;
-      DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
    begin
-      S.Database := Master_Connection (DB);
+      Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       Database.Impl := S;
@@ -44,9 +39,8 @@ package body ADO.Sessions.Factory is
    function Get_Session (Factory : in Session_Factory) return Session is
       R  : Session;
       S  : constant Session_Record_Access := new Session_Record;
-      DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
    begin
-      S.Database := Master_Connection (DB);
+      Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       R.Impl := S;
@@ -73,12 +67,11 @@ package body ADO.Sessions.Factory is
    --  ------------------------------
    function Get_Master_Session (Factory : in Session_Factory) return Master_Session is
       R  : Master_Session;
-      DB : constant Master_Connection'Class := Factory.Source.Get_Connection;
       S  : constant Session_Record_Access   := new Session_Record;
    begin
       R.Impl := S;
       R.Sequences := Factory.Sequences;
-      S.Database := Master_Connection (DB);
+      Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       return R;
@@ -110,7 +103,7 @@ package body ADO.Sessions.Factory is
    --  by the data source.
    --  ------------------------------
    procedure Create (Factory : out Session_Factory;
-                     Source  : in ADO.Databases.DataSource) is
+                     Source  : in ADO.Sessions.Sources.Data_Source) is
    begin
       Factory.Source := Source;
       Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
