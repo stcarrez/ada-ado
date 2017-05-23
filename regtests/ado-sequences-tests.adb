@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +21,10 @@ with Util.Test_Caller;
 with ADO.Drivers;
 with ADO.Sessions;
 with ADO.SQL;
-with ADO.Databases;
 with Regtests.Simple.Model;
 
 with ADO.Sequences.Hilo;
+with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
 package body ADO.Sequences.Tests is
 
@@ -79,7 +79,7 @@ package body ADO.Sequences.Tests is
       Seq_Factory : ADO.Sequences.Factory;
       Obj         : Test_Impl;
       Factory     : aliased ADO.Sessions.Factory.Session_Factory;
-      Controller  : aliased ADO.Databases.DataSource;
+      Controller  : aliased ADO.Sessions.Sources.Data_Source;
       Prev_Id     : Identifier := ADO.NO_IDENTIFIER;
    begin
       Seq_Factory.Set_Default_Generator (ADO.Sequences.Hilo.Create_HiLo_Generator'Access,
