@@ -36,6 +36,15 @@ package body ADO.Parameters is
    end Set_Dialect;
 
    --  --------------------
+   --  Set the cache expander to be used when expanding the SQL.
+   --  --------------------
+   procedure Set_Expander (Params   : in out Abstract_List;
+                           Expander : in ADO.Parameters.Expander_Access) is
+   begin
+      Params.Expander := Expander;
+   end Set_Expander;
+
+   --  --------------------
    --  Get the SQL dialect description object.
    --  --------------------
    function Get_Dialect (From : in Abstract_List) return ADO.Drivers.Dialects.Dialect_Access is
