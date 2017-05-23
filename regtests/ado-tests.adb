@@ -21,7 +21,6 @@ with Ada.Calendar;
 
 with ADO.Statements;
 with ADO.Objects;
-with ADO.Databases;
 with ADO.Sessions;
 with ADO.Utils;
 with Regtests;
