@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -322,6 +322,7 @@ package body ADO.Statements.Sqlite is
       Result.Connection := Database;
       Result.Table  := Table;
       Result.Update := Result.This_Query'Access;
+      Result.Query  := Result.This_Query'Access;
       Result.This_Query.Set_Dialect (Sqlite_Dialect'Access);
       ADO.SQL.Set_Insert_Mode (Result.This_Query);
       return Result.all'Access;
@@ -648,6 +649,7 @@ package body ADO.Statements.Sqlite is
    begin
       Result.Connection := Database;
       Result.Query      := Result.This_Query'Access;
+      Result.This_Query.Set_Dialect (Sqlite_Dialect'Access);
       Append (Query => Result.all, SQL => Query);
       return Result.all'Access;
    end Create_Statement;
