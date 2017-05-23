@@ -22,6 +22,7 @@ with Ada.Unchecked_Deallocation;
 
 with ADO.Drivers;
 with ADO.Sequences;
+with ADO.Statements.Create;
 package body ADO.Sessions is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Sessions");
@@ -34,7 +35,7 @@ package body ADO.Sessions is
          raise NOT_OPEN;
       end if;
       if Message'Length > 0 then
-         Log.Info (Message, Database.Impl.Database.Get_Ident);
+         Log.Info (Message, Database.Impl.Database.Value.Ident);
       end if;
    end Check_Session;
 
@@ -45,13 +46,26 @@ package body ADO.Sessions is
    --  ------------------------------
    --  Get the session status.
    --  ------------------------------
-   function Get_Status (Database : in Session) return ADO.Databases.Connection_Status is
+   function Get_Status (Database : in Session) return Connection_Status is
    begin
-      if Database.Impl = null then
-         return ADO.Databases.CLOSED;
+      if Database.Impl = null or else Database.Impl.Database.Is_Null then
+         return CLOSED;
+      else
+         return OPEN;
       end if;
-      return Database.Impl.Database.Get_Status;
    end Get_Status;
+
+   --  ------------------------------
+   --  Get the database driver which manages this connection.
+   --  ------------------------------
+   function Get_Driver (Database : in Session) return ADO.Drivers.Connections.Driver_Access is
+   begin
+      if Database.Impl = null or else Database.Impl.Database.Is_Null then
+         return null;
+      else
+         return Database.Impl.Database.Value.Get_Driver;
+      end if;
+   end Get_Driver;
 
    --  ------------------------------
    --  Close the session.
@@ -67,7 +81,7 @@ package body ADO.Sessions is
       Log.Info ("Closing session");
       if Database.Impl /= null then
          ADO.Objects.Release_Proxy (Database.Impl.Proxy);
-         Database.Impl.Database.Close;
+         Database.Impl.Database.Value.Close;
          Util.Concurrent.Counters.Decrement (Database.Impl.Counter, Is_Zero);
          if Is_Zero then
             Free (Database.Impl);
@@ -75,15 +89,6 @@ package body ADO.Sessions is
          Database.Impl := null;
       end if;
    end Close;
-
-   --  ------------------------------
-   --  Get the database connection.
-   --  ------------------------------
-   function Get_Connection (Database : in Session) return ADO.Databases.Connection'Class is
-   begin
-      Check_Session (Database);
-      return Database.Impl.Database;
-   end Get_Connection;
 
    --  ------------------------------
    --  Attach the object to the session.
@@ -123,7 +128,11 @@ package body ADO.Sessions is
                               return Query_Statement is
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (Table);
+      declare
+         Query : constant Query_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+      begin
+         return ADO.Statements.Create.Create_Statement (Query, Database.Impl.Values.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------
@@ -134,7 +143,11 @@ package body ADO.Sessions is
                               return Query_Statement is
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (Query);
+      declare
+         Stmt : constant Query_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Query);
+      begin
+         return ADO.Statements.Create.Create_Statement (Stmt, Database.Impl.Values.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------
@@ -146,8 +159,8 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         SQL  : constant String := Query.Get_SQL (Database.Impl.Database.Get_Driver_Index);
-         Stmt : Query_Statement := Database.Impl.Database.Create_Statement (SQL);
+         SQL  : constant String := Query.Get_SQL (Database.Impl.Database.Value.Get_Driver_Index);
+         Stmt : Query_Statement := Database.Create_Statement (SQL);
       begin
          Stmt.Set_Parameters (Query);
          return Stmt;
@@ -163,10 +176,10 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+         Index : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Value.Get_Driver_Index;
          SQL   : constant String := ADO.Queries.Get_SQL (Query, Index, False);
       begin
-         return Database.Impl.Database.Create_Statement (SQL);
+         return Database.Create_Statement (SQL);
       end;
    end Create_Statement;
 
@@ -180,11 +193,11 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Stmt : Query_Statement := Database.Impl.Database.Create_Statement (Table);
+         Stmt : Query_Statement := Database.Create_Statement (Table);
       begin
          if Query in ADO.Queries.Context'Class then
             declare
-               Pos : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Get_Driver_Index;
+               Pos : constant ADO.Drivers.Driver_Index := Database.Impl.Database.Value.Get_Driver_Index;
                SQL : constant String := ADO.Queries.Context'Class (Query).Get_SQL (Pos);
             begin
                ADO.SQL.Append (Stmt.Get_Query.SQL, SQL);
@@ -202,7 +215,7 @@ package body ADO.Sessions is
                           Schema   : out ADO.Schemas.Schema_Definition) is
    begin
       Check_Session (Database, "Loading schema {0}");
-      Database.Impl.Database.Load_Schema (Schema);
+      Database.Impl.Database.Value.Load_Schema (Schema);
    end Load_Schema;
 
    --  ---------
@@ -215,7 +228,7 @@ package body ADO.Sessions is
    procedure Begin_Transaction (Database : in out Master_Session) is
    begin
       Check_Session (Database, "Begin transaction {0}");
-      Database.Impl.Database.Begin_Transaction;
+      Database.Impl.Database.Value.Begin_Transaction;
    end Begin_Transaction;
 
    --  ------------------------------
@@ -224,7 +237,7 @@ package body ADO.Sessions is
    procedure Commit (Database : in out Master_Session) is
    begin
       Check_Session (Database, "Commit transaction {0}");
-      Database.Impl.Database.Commit;
+      Database.Impl.Database.Value.Commit;
    end Commit;
 
    --  ------------------------------
@@ -233,7 +246,7 @@ package body ADO.Sessions is
    procedure Rollback (Database : in out Master_Session) is
    begin
       Check_Session (Database, "Rollback transaction {0}");
-      Database.Impl.Database.Rollback;
+      Database.Impl.Database.Value.Rollback;
    end Rollback;
 
    --  ------------------------------
@@ -273,7 +286,9 @@ package body ADO.Sessions is
          Util.Concurrent.Counters.Decrement (Object.Impl.Counter, Is_Zero);
          if Is_Zero then
             ADO.Objects.Release_Proxy (Object.Impl.Proxy, Detach => True);
-            Object.Impl.Database.Close;
+            if not Object.Impl.Database.Is_Null then
+               Object.Impl.Database.Value.Close;
+            end if;
             Free (Object.Impl);
          end if;
          Object.Impl := null;
@@ -288,7 +303,11 @@ package body ADO.Sessions is
                               return Delete_Statement is
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (Table);
+      declare
+         Stmt : constant Delete_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+      begin
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------
@@ -299,7 +318,11 @@ package body ADO.Sessions is
                               return Update_Statement is
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (Table);
+      declare
+         Stmt : constant Update_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+      begin
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------
@@ -310,7 +333,11 @@ package body ADO.Sessions is
                               return Insert_Statement is
    begin
       Check_Session (Database);
-      return Database.Impl.Database.Create_Statement (Table);
+      declare
+         Stmt : constant Insert_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+      begin
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+      end;
    end Create_Statement;
 
    --  ------------------------------
