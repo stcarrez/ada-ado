@@ -249,6 +249,14 @@ package body ADO.Drivers.Connections is
 
    end Create_Connection;
 
+   --  Get the database driver index.
+   function Get_Driver_Index (Database : in Database_Connection) return Driver_Index is
+      Driver : constant ADO.Drivers.Connections.Driver_Access
+         := Database_Connection'Class (Database).Get_Driver;
+   begin
+      return Driver.Get_Driver_Index;
+   end Get_Driver_Index;
+
    package Driver_List is
      new Ada.Containers.Doubly_Linked_Lists (Element_Type => Driver_Access);
 
