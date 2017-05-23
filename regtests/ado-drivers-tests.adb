@@ -20,7 +20,7 @@ with Ada.Exceptions;
 with Util.Test_Caller;
 
 with ADO.Statements;
-with ADO.Databases;
+with ADO.Sessions;
 with ADO.Drivers.Connections;
 package body ADO.Drivers.Tests is
 
@@ -220,47 +220,47 @@ package body ADO.Drivers.Tests is
    --  Test the connection operations on an empty connection.
    --  ------------------------------
    procedure Test_Empty_Connection (T : in out Test) is
-      use ADO.Databases;
+      use type ADO.Sessions.Connection_Status;
 
-      C    : ADO.Databases.Connection;
+      C    : ADO.Sessions.Session;
       Stmt : ADO.Statements.Query_Statement;
 
       pragma Unreferenced (Stmt);
    begin
-      T.Assert (ADO.Databases.Get_Status (C) = ADO.Databases.CLOSED,
+      T.Assert (C.Get_Status = ADO.Sessions.CLOSED,
                 "The database connection must be closed for an empty connection");
 
-      Util.Tests.Assert_Equals (T, "null", ADO.Databases.Get_Ident (C),
-                                "Get_Ident must return null");
+--      Util.Tests.Assert_Equals (T, "null", ADO.Databases.Get_Ident (C),
+--                                "Get_Ident must return null");
 
       --  Create_Statement must raise NOT_OPEN.
       begin
-         Stmt := ADO.Databases.Create_Statement (C, null);
+         Stmt := C.Create_Statement ("");
          T.Fail ("No exception raised for Create_Statement");
 
       exception
-         when NOT_OPEN =>
+         when ADO.Sessions.NOT_OPEN =>
             null;
       end;
 
       --  Create_Statement must raise NOT_OPEN.
       begin
-         Stmt := ADO.Databases.Create_Statement (C, "select");
+         Stmt := C.Create_Statement ("select");
          T.Fail ("No exception raised for Create_Statement");
 
       exception
-         when NOT_OPEN =>
+         when ADO.Sessions.NOT_OPEN =>
             null;
       end;
 
       --  Get_Driver must raise NOT_OPEN.
-      begin
-         T.Assert (ADO.Databases.Get_Driver (C) /= null, "Get_Driver must raise an exception");
+--      begin
+--         T.Assert (ADO.Databases.Get_Driver (C) /= null, "Get_Driver must raise an exception");
 
-      exception
-         when NOT_OPEN =>
-            null;
-      end;
+--      exception
+--         when ADO.Sessions.NOT_OPEN =>
+--            null;
+--      end;
 
    end Test_Empty_Connection;
 
