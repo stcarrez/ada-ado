@@ -16,10 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Databases;
 with ADO.Schemas.Entities;
 with ADO.Sequences;
 with ADO.Caches;
+with ADO.Sessions.Sources;
 
 --  === Session Factory ===
 --  The session factory is the entry point to obtain a database session.
@@ -71,7 +71,7 @@ package ADO.Sessions.Factory is
    --  Create the session factory to connect to the database represented
    --  by the data source.
    procedure Create (Factory : out Session_Factory;
-                     Source  : in ADO.Databases.DataSource);
+                     Source  : in ADO.Sessions.Sources.Data_Source);
 
    --  Create the session factory to connect to the database identified
    --  by the URI.
@@ -88,7 +88,7 @@ private
    --  factory (implementation is thread-safe).  The factory also contains the entity type
    --  cache which is initialized when the factory is created.
    type Session_Factory is tagged limited record
-      Source       : ADO.Databases.DataSource;
+      Source       : ADO.Sessions.Sources.Data_Source;
       Sequences    : Factory_Access := null;
       Seq_Factory  : aliased ADO.Sequences.Factory;
       --  Entity_Cache : aliased ADO.Schemas.Entities.Entity_Cache;
