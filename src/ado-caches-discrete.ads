@@ -28,6 +28,7 @@ package ADO.Caches.Discrete is
 
    --  The cache type that maintains a cache of name/value pairs.
    type Cache_Type is new ADO.Caches.Cache_Type with private;
+   type Cache_Type_Access is access all Cache_Type'Class;
 
    --  Expand the name into a target parameter value to be used in the SQL query.
    --  The Expander can return a T_NULL when a value is not found or
