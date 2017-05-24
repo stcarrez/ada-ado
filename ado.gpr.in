@@ -21,14 +21,15 @@ library project Ado is
                               "ADO.Drivers", "ADO.Drivers.Connections", "ADO.Drivers.Dialects",
                               "ADO.Schemas", "ADO.Schemas.Entities", "ADO.Sql",
                               "ADO.Objects", "ADO.Objects.Cache",
+                              "ADO.Caches",
                               "ADO.Sequences", "ADO.Sequences.Hilo",
-                              "ADO.Databases",
                               "ADO.Datasets",
                               "ADO.Utils",
                               "ADO.Statements", "ADO.Statements.Create",
                               "ADO.Parameters",
                               "ADO.Queries", "ADO.Queries.Loaders",
-                              "ADO.Sessions", "ADO.Sessions.Factory", "ADO.Sessions.Entities");
+                              "ADO.Sessions", "ADO.Sessions.Sources",
+                              "ADO.Sessions.Factory", "ADO.Sessions.Entities");
 
       when others =>
          for Source_Dirs use Project'Source_Dirs & ("src/static"@ADO_DATABASES_SRC_DIR@);
