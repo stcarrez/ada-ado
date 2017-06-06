@@ -31,11 +31,23 @@ private with Interfaces.C.Strings;
 
 --  == Database Statements ==
 --  The <tt>ADO.Statements</tt> package provides high level operations to construct database
---  statements and execute them.  They allow to represents SQL statements (prepared or not)
---  and provide support to execute them and retreive their result.
+--  statements and execute them.  They allow to represent SQL statements (prepared or not)
+--  and provide support to execute them and retreive their result.  The SQL statements are
+--  represented by several Ada types depending on their behavior:
 --
+--  The <tt>Statement</tt> type represents the base type for all the SQL statements.
+--  The <tt>Query_Statement</tt> type is intended to be used for database query statements
+--  and provides additional operations to retrieve results.
+--  The <tt>Update_Statement</tt> type targets the database update statements and it
+--  provides specific operations to update fields.  The <tt>Insert_Statement</tt>
+--  extends the <tt>Update_Statement</tt> type and is intended for database insertion.
+--  The <tt>Delete_Statement</tt> type is intended to be used to remove elements
+--  from the database.
 --
---  Stmt : Query_Statement := Connection.Create_Statement
+--  The database statements are created by using the database session and by providing
+--  the SQL or the query to be used.
+--
+--    Stmt : Query_Statement := Session.Create_Statement
 --              ("select * from user where name = :name");
 --
 --  @include ado-parameters.ads
