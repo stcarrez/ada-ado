@@ -21,6 +21,7 @@ with Interfaces.C.Strings;
 
 with Util.Log;
 with Util.Log.Loggers;
+with ADO.C;
 with ADO.Statements.Sqlite;
 with ADO.Schemas.Sqlite;
 
@@ -148,14 +149,14 @@ package body ADO.Drivers.Connections.Sqlite is
                       SQL      : in Query_String) is
       use type Strings.chars_ptr;
 
-      SQL_Stat  : Strings.chars_ptr := Strings.New_String (SQL);
+      SQL_Stat  : ADO.C.String_Ptr := ADO.C.To_String_Ptr (SQL);
       Result    : int;
       Error_Msg : Strings.chars_ptr;
    begin
       Log.Debug ("Execute: {0}", SQL);
 
       for Retry in 1 .. 100 loop
-         Result := Sqlite3_H.sqlite3_exec (Database.Server, SQL_Stat, No_Callback,
+         Result := Sqlite3_H.sqlite3_exec (Database.Server, ADO.C.To_C (SQL_Stat), No_Callback,
                                            System.Null_Address, Error_Msg'Address);
 
          exit when Result /= Sqlite3_H.SQLITE_BUSY;
@@ -168,7 +169,7 @@ package body ADO.Drivers.Connections.Sqlite is
       end if;
 
       --  Free
-      Strings.Free (SQL_Stat);
+      --  Strings.Free (SQL_Stat);
    end Execute;
 
    --  ------------------------------
