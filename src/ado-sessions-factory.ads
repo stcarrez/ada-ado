@@ -42,6 +42,13 @@ with ADO.Sessions.Sources;
 --
 --    DB : ADO.Sessions.Session := Sess_Factory.Get_Session;
 --
+--  The session factory is also responsible for maintaining some data that is shared by
+--  all the database connections.  This includes:
+--
+--  o the sequence generators used to allocate unique identifiers for database tables,
+--  o the entity cache,
+--  o some application specific global cache.
+--
 package ADO.Sessions.Factory is
 
    pragma Elaborate_Body;
