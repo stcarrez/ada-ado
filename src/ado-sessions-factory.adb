@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with ADO.Sequences.Hilo;
+with ADO.Schemas.Entities;
 
 package body ADO.Sessions.Factory is
 
