@@ -149,7 +149,7 @@ package body ADO.Drivers.Connections.Sqlite is
                       SQL      : in Query_String) is
       use type Strings.chars_ptr;
 
-      SQL_Stat  : ADO.C.String_Ptr := ADO.C.To_String_Ptr (SQL);
+      SQL_Stat  : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (SQL);
       Result    : int;
       Error_Msg : Strings.chars_ptr;
    begin
