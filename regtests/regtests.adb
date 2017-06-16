@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
 
 package body Regtests is
