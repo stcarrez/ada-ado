@@ -319,8 +319,8 @@ package body ADO.Parameters.Tests is
       SQL : ADO.Parameters.List;
       D   : aliased Dialect;
       C   : aliased ADO.Caches.Cache_Manager;
-      M   : access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
-      P   : access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
+      M   : constant access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
+      P   : constant access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
 
       procedure Check (Content : in String;
                        Expect  : in String) is
