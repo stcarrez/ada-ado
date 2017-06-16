@@ -218,7 +218,7 @@ package body ADO.Statements.Tests is
    --  Test queries using the $entity_type[] cache group.
    --  ------------------------------
    procedure Test_Entity_Types (T : in out Test) is
-      DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      DB    : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Stmt  : ADO.Statements.Query_Statement;
       Count : Natural := 0;
    begin
