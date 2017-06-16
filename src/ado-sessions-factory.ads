@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Schemas.Entities;
 with ADO.Sequences;
 with ADO.Caches;
 with ADO.Sessions.Sources;
