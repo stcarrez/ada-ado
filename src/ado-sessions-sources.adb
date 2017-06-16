@@ -16,15 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Util.Log;
-with Util.Log.Loggers;
-
 package body ADO.Sessions.Sources is
 
    use ADO.Drivers;
    use type ADO.Drivers.Connections.Database_Connection_Access;
-
-   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Databases");
 
    --  ------------------------------
    --  Set the master data source
