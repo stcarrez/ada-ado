@@ -129,6 +129,12 @@ package ADO.Sessions is
    procedure Load_Schema (Database : in Session;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
+   --  Internal method to get the session proxy associated with the given database session.
+   --  The session proxy is associated with some ADO objects to be able to retrieve the database
+   --  session for the implementation of lazy loading.  The session proxy is kept until the
+   --  session exist and at least one ADO object is refering to it.
+   function Get_Session_Proxy (Database : in Session) return ADO.Objects.Session_Proxy_Access;
+
    --  ---------
    --  Master Session
    --  ---------
@@ -166,12 +172,6 @@ package ADO.Sessions is
    function Create_Statement (Database : in Master_Session;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement;
-
-   --  Internal method to get the session proxy associated with the given database session.
-   --  The session proxy is associated with some ADO objects to be able to retrieve the database
-   --  session for the implementation of lazy loading.  The session proxy is kept until the
-   --  session exist and at least one ADO object is refering to it.
-   function Get_Session_Proxy (Database : in Session) return ADO.Objects.Session_Proxy_Access;
 
    type Session_Record is limited private;
    type Session_Record_Access is access all Session_Record;
