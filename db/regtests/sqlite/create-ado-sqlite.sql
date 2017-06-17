@@ -1,3 +1,4 @@
+pragma synchronous=OFF;
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
 /* Entity types */

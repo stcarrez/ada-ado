@@ -17,7 +17,7 @@ CREATE TABLE TEST_COMMENTS (
   /* the entity type that correspond to the entity associated with this comment. */
   `ENTITY__TYPE_FK` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*  */
 CREATE TABLE test_image (
   /* the image identifier */
@@ -29,7 +29,7 @@ CREATE TABLE test_image (
   /* the image data */
   `image` BLOB ,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
 CREATE TABLE allocate (
   /* the user id */
@@ -39,7 +39,7 @@ CREATE TABLE allocate (
   /* the sequence value */
   `NAME` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
 CREATE TABLE test_user (
   /* the user id */
@@ -53,7 +53,7 @@ CREATE TABLE test_user (
   /* the user name */
   `select` VARCHAR(255) ,
   PRIMARY KEY (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
 CREATE TABLE test_nullable_table (
   /* the user id */
@@ -73,7 +73,7 @@ CREATE TABLE test_nullable_table (
   /* an entity value */
   `ENTITY_VALUE` INTEGER ,
   PRIMARY KEY (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
 CREATE TABLE test_table (
   /* the user id */
@@ -93,7 +93,7 @@ CREATE TABLE test_table (
   /* an entity value */
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT INTO entity_type (name) VALUES
 ("TEST_COMMENTS")
 ,("test_image")
