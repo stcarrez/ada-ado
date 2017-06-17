@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-pragma Warnings (Off, "unit * is not referenced");
+pragma Warnings (Off);
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -31,8 +31,11 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
-pragma Warnings (On, "unit * is not referenced");
+pragma Warnings (On);
 package Regtests.Images.Model is
+
+   pragma Style_Checks ("-mr");
+
    type Image_Ref is new ADO.Objects.Object_Ref with null record;
 
    --  Create an object key for Image.
@@ -151,7 +154,7 @@ private
       := IMAGE_DEF'Access;
 
    Null_Image : constant Image_Ref
-      := Image_Ref'(ADO.Objects.Object_Ref with others => <>);
+      := Image_Ref'(ADO.Objects.Object_Ref with null record);
 
    type Image_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,

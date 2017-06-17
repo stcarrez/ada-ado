@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-pragma Warnings (Off, "unit * is not referenced");
+pragma Warnings (Off);
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -32,8 +32,11 @@ with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
 with Regtests.Simple.Model;
-pragma Warnings (On, "unit * is not referenced");
+pragma Warnings (On);
 package Regtests.Comments is
+
+   pragma Style_Checks ("-mr");
+
    type Comment_Ref is new ADO.Objects.Object_Ref with null record;
 
    --  --------------------
@@ -190,7 +193,7 @@ private
       := COMMENT_DEF'Access;
 
    Null_Comment : constant Comment_Ref
-      := Comment_Ref'(ADO.Objects.Object_Ref with others => <>);
+      := Comment_Ref'(ADO.Objects.Object_Ref with null record);
 
    type Comment_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
