@@ -251,11 +251,12 @@ package body ADO.Drivers.Connections.Sqlite is
       declare
          Database : constant Database_Connection_Access := new Database_Connection;
 
-         procedure Configure (Name, Item : in Util.Properties.Value);
+         procedure Configure (Name : in String;
+                              Item : in Util.Properties.Value);
          function Escape (Value : in Util.Properties.Value) return String;
 
          function Escape (Value : in Util.Properties.Value) return String is
-            S : constant String := To_String (Value);
+            S : constant String := Util.Properties.To_String (Value);
          begin
             if S'Length > 0 and then S (S'First) >= '0' and then S (S'First) <= '9' then
                return S;
@@ -266,8 +267,9 @@ package body ADO.Drivers.Connections.Sqlite is
             end if;
          end Escape;
 
-         procedure Configure (Name, Item : in Util.Properties.Value) is
-            SQL : constant String := "PRAGMA " & To_String (Name) & "=" & Escape (Item);
+         procedure Configure (Name : in String;
+                              Item : in Util.Properties.Value) is
+            SQL : constant String := "PRAGMA " & Name & "=" & Escape (Item);
          begin
             Log.Info ("Configure database with {0}", SQL);
             Database.Execute (SQL);
