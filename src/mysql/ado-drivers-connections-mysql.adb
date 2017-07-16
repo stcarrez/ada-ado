@@ -270,10 +270,12 @@ package body ADO.Drivers.Connections.Mysql is
          Ident    : constant String := Util.Strings.Image (D.Id);
          Database : constant Database_Connection_Access := new Database_Connection;
 
-         procedure Configure (Name, Item : in Util.Properties.Value);
+         procedure Configure (Name : in String;
+                              Item : in Util.Properties.Value);
 
-         procedure Configure (Name, Item : in Util.Properties.Value) is
-            Value : constant String := To_String (Item);
+         procedure Configure (Name : in String;
+                              Item : in Util.Properties.Value) is
+            Value : constant String := Util.Properties.To_String (Item);
          begin
             if Name = "encoding" then
                Database.Execute ("SET NAMES " & Value);
@@ -282,7 +284,7 @@ package body ADO.Drivers.Connections.Mysql is
                Database.Execute ("SET CHARACTER_SET_DATABASE = '" & Value & "'");
 
             elsif Name /= "user" and Name /= "password" then
-               Database.Execute ("SET " & To_String (Name) & "='" & Value & "'");
+               Database.Execute ("SET " & Name & "='" & Value & "'");
             end if;
          end Configure;
 
