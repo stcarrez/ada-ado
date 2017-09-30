@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -239,6 +239,7 @@ package body ADO.Queries.Loaders is
       Loader     : aliased Query_Loader;
       Sql_Mapper : aliased Query_Mapper.Mapper;
       Reader     : Util.Serialize.IO.XML.Parser;
+      Mapper     : Util.Serialize.Mappers.Processing;
    begin
       Log.Info ("Reading XML query {0}", Into.Path.all);
       Loader.File   := Into;
@@ -253,13 +254,13 @@ package body ADO.Queries.Loaders is
       Sql_Mapper.Add_Mapping ("query/sql/@driver", FIELD_SQL_DRIVER);
       Sql_Mapper.Add_Mapping ("query/sql-count", FIELD_SQL_COUNT);
       Sql_Mapper.Add_Mapping ("query", FIELD_QUERY);
-      Reader.Add_Mapping ("query-mapping", Sql_Mapper'Unchecked_Access);
+      Mapper.Add_Mapping ("query-mapping", Sql_Mapper'Unchecked_Access);
 
       --  Set the context for Set_Member.
-      Query_Mapper.Set_Context (Reader, Loader'Access);
+      Query_Mapper.Set_Context (Mapper, Loader'Access);
 
       --  Read the XML query file.
-      Reader.Parse (Into.Path.all);
+      Reader.Parse (Into.Path.all, Mapper);
 
       Into.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
 
