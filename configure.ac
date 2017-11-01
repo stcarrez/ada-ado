@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Database Objects
-dnl Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+dnl Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -147,8 +147,7 @@ ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
 ADO_DATABASES_SRC_DIR=''
 if test -z "$DB"; then
-  echo "configure: Warning: no database supported."
-  echo "configure: Warning: try to install mysql or sqlite development libraries"
+  AC_MSG_ERROR([No database supported.  Try to install mysql or sqlite development libraries])
 else
   ADO_DATABASES_SRC_DIR=
   for i in $DB; do
