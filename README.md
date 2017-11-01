@@ -17,8 +17,8 @@ section to install them and run the configure again after the installation.
 
 To build ADO, you will need:
 
-* Ada Util (https://github.com/stcarrez/ada-util)
-* XML/Ada  (http://libre.adacore.com/libre/tools/xmlada/)
+* [Ada Util](https://github.com/stcarrez/ada-util)
+* [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
 
 You should have installed either MySQL or SQLite before
 running the configure script.  For Windows, please read
@@ -60,8 +60,8 @@ For SQLite, use:
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
   * https://github.com/stcarrez/ada-ado/wiki
-  * [[ADO Sessions|ADO_Sessions]]
-  * [[ADO Drivers|ADO_Drivers]]
+  * [ADO Sessions](https://https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
+  * [ADO Drivers](https://https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
 
 
 # Database Drivers
