@@ -61,6 +61,7 @@ The Ada Database Objects sources as well as a wiki documentation is provided on:
 
   * https://github.com/stcarrez/ada-ado/wiki
   * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
+  * [ADO Statements](https://github.com/stcarrez/ada-ado/wiki/ADO_Statements)
   * [ADO Drivers](https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
 
 
