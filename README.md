@@ -60,8 +60,8 @@ For SQLite, use:
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
   * https://github.com/stcarrez/ada-ado/wiki
-  * [ADO Sessions](https://https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
-  * [ADO Drivers](https://https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
+  * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
+  * [ADO Drivers](https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
 
 
 # Database Drivers
