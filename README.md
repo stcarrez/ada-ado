@@ -12,7 +12,7 @@ The library supports MySQL, SQLite as databases.
 Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
 You need at least one of these databases (or both).  The configure script will now
-fail if no supported database was found.  Check the [Database Drivers](#Database-Drivers)
+fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
 To build ADO, you will need:
@@ -59,8 +59,9 @@ For SQLite, use:
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
-   https://github.com/stcarrez/ada-ado/wiki
-
+  * https://github.com/stcarrez/ada-ado/wiki
+  * [[ADO Sessions|ADO_Sessions]]
+  * [[ADO Drivers|ADO_Drivers]]
 
 
 # Database Drivers
