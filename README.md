@@ -11,7 +11,9 @@ object relational mapping to access a database in Ada05.
 The library supports MySQL, SQLite as databases.
 Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
-You need at least one of these databases (or both).
+You need at least one of these databases (or both).  The configure script will now
+fail if no supported database was found.  Check the [Database Drivers](#Database-Drivers)
+section to install them and run the configure again after the installation.
 
 To build ADO, you will need:
 
@@ -75,7 +77,7 @@ SQLite Development installation
 ```
       sudo apt-get install libsqlite3-dev
 ```
-For Windows, check win32/README to install the libraries.
+For Windows, check [win32/README](win32/README.md) to install the libraries.
 
 
 ## Database Creation
@@ -111,3 +113,4 @@ To create manually the database, you can proceed to the following steps:
          mysql> use ado_test
          mysql> source db/regtests/mysql/create-ado-mysql.sql
 ```
+
