@@ -3393,8 +3393,7 @@ ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
 ADO_DATABASES_SRC_DIR=''
 if test -z "$DB"; then
-  echo "configure: Warning: no database supported."
-  echo "configure: Warning: try to install mysql or sqlite development libraries"
+  as_fn_error $? "No database supported.  Try to install mysql or sqlite development libraries" "$LINENO" 5
 else
   ADO_DATABASES_SRC_DIR=
   for i in $DB; do
