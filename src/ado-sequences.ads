@@ -31,15 +31,15 @@ limited with ADO.Sessions.Factory;
 --  The sequence factory is shared by several sessions and the
 --  implementation is thread-safe.
 --
---  The HiLoGenerator implements a simple High Low sequence generator
+--  The `HiLoGenerator` implements a simple High Low sequence generator
 --  by using sequences that avoid to access the database.
 --
 --  Example:
 --
 --    F  : Factory;
 --    Id : Identifier;
---
---    Allocate (Manager => F, Name => "user", Id => Id);
+--    ...
+--      Allocate (Manager => F, Name => "user", Id => Id);
 --
 --  @include ado-sequences-hilo.ads
 package ADO.Sequences is
