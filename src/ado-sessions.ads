@@ -32,17 +32,18 @@ limited with ADO.Sequences;
 limited with ADO.Schemas.Entities;
 
 --  == Session ==
---  The <tt>ADO.Sessions</tt> package defines the control and management of database sessions.
---  The database session is represented by the <tt>Session</tt> or <tt>Master_Session</tt> types.
+--  The `ADO.Sessions` package defines the control and management of database sessions.
+--  The database session is represented by the `Session` or `Master_Session` types.
 --  It provides operation to create a database statement that can be executed.
---  The <tt>Session</tt> type is used to represent read-only database sessions.  It provides
+--  The `Session` type is used to represent read-only database sessions.  It provides
 --  operations to query the database but it does not allow to update or delete content.
---  The <tt>Master_Session</tt> type extends the <tt>Session</tt> type to provide write
+--  The `Master_Session` type extends the `Session` type to provide write
 --  access and it provides operations to get update or delete statements.  The differentiation
 --  between the two sessions is provided for the support of database replications with
 --  databases such as MySQL.
 --
 --  @include ado-sessions-factory.ads
+--  @include ado-sequences.ads
 --
 package ADO.Sessions is
 
