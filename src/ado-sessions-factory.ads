@@ -20,23 +20,23 @@ with ADO.Sequences;
 with ADO.Caches;
 with ADO.Sessions.Sources;
 
---  === Session Factory ===
+--  == Session Factory ==
 --  The session factory is the entry point to obtain a database session.
---  The <b>ADO.Sessions.Factory</b> package defines the factory for creating
+--  The `ADO.Sessions.Factory` package defines the factory for creating
 --  sessions.
 --
 --    with ADO.Sessions.Factory;
 --    ...
 --    Sess_Factory : ADO.Sessions.Factory;
 --
---  The session factory can be initialized by using the <tt>Create</tt> operation and
+--  The session factory can be initialized by using the `Create` operation and
 --  by giving a URI string that identifies the driver and the information to connect
 --  to the database.  The session factory is created only once when the application starts.
 --
 --    ADO.Sessions.Factory.Create (Sess_Factory, "mysql://localhost:3306/ado_test?user=test");
 --
---  Having a session factory, one can get a database by using the <tt>Get_Session</tt> or
---  <tt>Get_Master_Session</tt> function.  Each time this operation is called, a new session
+--  Having a session factory, one can get a database by using the `Get_Session` or
+--  `Get_Master_Session` function.  Each time this operation is called, a new session
 --  is returned.  The session is released when the session variable is finalized.
 --
 --    DB : ADO.Sessions.Session := Sess_Factory.Get_Session;
@@ -44,9 +44,9 @@ with ADO.Sessions.Sources;
 --  The session factory is also responsible for maintaining some data that is shared by
 --  all the database connections.  This includes:
 --
---  o the sequence generators used to allocate unique identifiers for database tables,
---  o the entity cache,
---  o some application specific global cache.
+--    * the sequence generators used to allocate unique identifiers for database tables,
+--    * the entity cache,
+--    * some application specific global cache.
 --
 package ADO.Sessions.Factory is
 
