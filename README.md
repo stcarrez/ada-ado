@@ -59,9 +59,10 @@ For SQLite, use:
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
-  * https://github.com/stcarrez/ada-ado/wiki
+  * [ADO Documentation](https://github.com/stcarrez/ada-ado/wiki)
   * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
   * [ADO Statements](https://github.com/stcarrez/ada-ado/wiki/ADO_Statements)
+  * [ADO Queries](https://github.com/stcarrez/ada-ado/wiki/ADO_Queries)
   * [ADO Drivers](https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
 
 
