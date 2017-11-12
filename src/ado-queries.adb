@@ -97,7 +97,7 @@ package body ADO.Queries is
    --  Get the SQL query that correspond to the query context.
    --  ------------------------------
    function Get_SQL (From   : in Context;
-                     Manager : in Query_Manager_Access) return String is
+                     Manager : in Query_Manager'Class) return String is
    begin
       if From.Query_Def = null then
          return ADO.SQL.To_String (From.SQL);
@@ -124,11 +124,11 @@ package body ADO.Queries is
    end Find_Query;
 
    function Get_SQL (From      : in Query_Definition_Access;
-                     Manager   : in Query_Manager_Access;
+                     Manager   : in Query_Manager;
                      Use_Count : in Boolean) return String is
       Query : Query_Info_Ref.Ref;
    begin
-      ADO.Queries.Loaders.Read_Query (Manager.all, From);
+      ADO.Queries.Loaders.Read_Query (Manager, From);
       Query := Manager.Queries (From.Query).Get;
       if Query.Is_Null then
          return "";
@@ -145,5 +145,11 @@ package body ADO.Queries is
          return To_String (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
       end if;
    end Get_SQL;
+
+   overriding
+   procedure Finalize (Manager : in out Query_Manager) is
+   begin
+      null;
+   end Finalize;
 
 end ADO.Queries;
