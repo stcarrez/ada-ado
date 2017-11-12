@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with ADO.Drivers.Connections;
 package ADO.Queries.Loaders is
 
    generic
@@ -24,13 +24,7 @@ package ADO.Queries.Loaders is
    package File is
       Name : aliased constant String := Path;
       Hash : aliased constant String := Sha1;
-      File : aliased Query_File := Query_File '(Name          => Name'Access,
-                                                Path          => null,
-                                                Sha1_Map      => Hash'Access,
-                                                Next_Check    => 0,
-                                                Last_Modified => 0,
-                                                Next          => null,
-                                                Queries       => null);
+      File : aliased Query_File;
    end File;
 
    generic
@@ -38,14 +32,12 @@ package ADO.Queries.Loaders is
       File : Query_File_Access;
    package Query is
       Query_Name : aliased constant String := Name;
-      Query : aliased Query_Definition := Query_Definition '(Name  => Query_Name'Access,
-                                                             Query => Null_Query_Info_Ref,
-                                                             File  => File,
-                                                             Next  => null);
+      Query      : aliased Query_Definition;
    end Query;
 
    --  Read the query definition.
-   procedure Read_Query (Into : in Query_Definition_Access);
+   procedure Read_Query (Manager : in out Query_Manager;
+                         Into    : in Query_Definition_Access);
 
    --  Register the query definition in the query file.  Registration is done
    --  in the package elaboration phase.
@@ -56,8 +48,8 @@ package ADO.Queries.Loaders is
    --  Each search directory is separated by ';' (yes, even on Unix).
    --  When <b>Load</b> is true, read the XML query file and initialize the query
    --  definitions from that file.
-   procedure Initialize (Paths : in String;
-                         Load  : in Boolean);
+   procedure Initialize (Manager : in out Query_Manager_Access;
+                         Config  : in ADO.Drivers.Connections.Configuration'Class);
 
    --  Find the query identified by the given name.
    function Find_Query (Name : in String) return Query_Definition_Access;
@@ -65,9 +57,10 @@ package ADO.Queries.Loaders is
 private
 
    --  Returns True if the XML query file must be reloaded.
-   function Is_Modified (Query : in Query_Definition_Access) return Boolean;
+   function Is_Modified (File : in out Query_File_Info) return Boolean;
 
    --  Read the query file and all the associated definitions.
-   procedure Read_Query (Into : in Query_File_Access);
+   procedure Read_Query (Manager : in out Query_Manager;
+                         File    : in out Query_File_Info);
 
 end ADO.Queries.Loaders;
