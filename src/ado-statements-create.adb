@@ -22,7 +22,8 @@ package body ADO.Statements.Create is
    --  Create the query statement
    --  ------------------------------
    function Create_Statement (Proxy    : in Query_Statement_Access;
-                              Expander : in ADO.Parameters.Expander_Access := null) return Query_Statement is
+                              Expander : in ADO.Parameters.Expander_Access := null)
+                              return Query_Statement is
    begin
       Proxy.Set_Expander (Expander);
       Proxy.Query.Set_Expander (Expander);
@@ -37,7 +38,8 @@ package body ADO.Statements.Create is
    --  Create the delete statement
    --  ------------------------------
    function Create_Statement (Proxy    : in Delete_Statement_Access;
-                              Expander : in ADO.Parameters.Expander_Access := null) return Delete_Statement is
+                              Expander : in ADO.Parameters.Expander_Access := null)
+                              return Delete_Statement is
    begin
       Proxy.Set_Expander (Expander);
       Proxy.Query.Set_Expander (Expander);
@@ -52,7 +54,8 @@ package body ADO.Statements.Create is
    --  Create an update statement
    --  ------------------------------
    function Create_Statement (Proxy    : in Update_Statement_Access;
-                              Expander : in ADO.Parameters.Expander_Access := null) return Update_Statement is
+                              Expander : in ADO.Parameters.Expander_Access := null)
+                              return Update_Statement is
    begin
       Proxy.Set_Expander (Expander);
       Proxy.Update.Set_Expander (Expander);
@@ -68,7 +71,8 @@ package body ADO.Statements.Create is
    --  Create the insert statement.
    --  ------------------------------
    function Create_Statement (Proxy    : in Update_Statement_Access;
-                              Expander : in ADO.Parameters.Expander_Access := null) return Insert_Statement is
+                              Expander : in ADO.Parameters.Expander_Access := null)
+                              return Insert_Statement is
    begin
       Proxy.Set_Expander (Expander);
       Proxy.Update.Set_Expander (Expander);
