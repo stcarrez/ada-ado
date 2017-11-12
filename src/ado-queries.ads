@@ -23,6 +23,7 @@ with ADO.Drivers;
 
 with Interfaces;
 with Ada.Strings.Unbounded;
+with Ada.Finalization;
 
 --  == Introduction ==
 --  Ada Database Objects provides a small framework which helps in
@@ -127,8 +128,7 @@ package ADO.Queries is
 
    type Query_Info_Ref_Access is private;
 
-   type Query_Manager (Query_Count : Query_Index;
-                       File_Count  : File_Index) is limited private;
+   type Query_Manager is limited new Ada.Finalization.Limited_Controlled with private;
    type Query_Manager_Access is access all Query_Manager;
 
    Null_Query_Info_Ref : constant Query_Info_Ref_Access;
@@ -174,10 +174,10 @@ package ADO.Queries is
 
    --  Get the SQL query that correspond to the query context.
    function Get_SQL (From    : in Context;
-                     Manager : in Query_Manager_Access) return String;
+                     Manager : in Query_Manager'Class) return String;
 
    function Get_SQL (From      : in Query_Definition_Access;
-                     Manager   : in Query_Manager_Access;
+                     Manager   : in Query_Manager;
                      Use_Count : in Boolean) return String;
 
 private
@@ -283,15 +283,26 @@ private
                         Name : in String) return Query_Definition_Access;
 
    type Query_Table is array (Query_Index_Table range <>) of Query_Info_Ref.Atomic_Ref;
+   type Query_Table_Access is access all Query_Table;
 
    type File_Table is array (File_Index_Table range <>) of Query_File_Info;
+   type File_Table_Access is access all File_Table;
+--
+--     type Query_Manager (Query_Count : Query_Index;
+--                         File_Count  : File_Index) is limited record
+--        Driver  : ADO.Drivers.Driver_Index;
+--        Queries : Query_Table (1 .. Query_Count);
+--        Files   : File_Table (1 .. File_Count);
+--     end record;
 
-   type Query_Manager (Query_Count : Query_Index;
-                       File_Count  : File_Index) is limited record
+   type Query_Manager is limited new Ada.Finalization.Limited_Controlled with record
       Driver  : ADO.Drivers.Driver_Index;
-      Queries : Query_Table (1 .. Query_Count);
-      Files   : File_Table (1 .. File_Count);
+      Queries : Query_Table_Access;
+      Files   : File_Table_Access;
    end record;
+
+   overriding
+   procedure Finalize (Manager : in out Query_Manager);
 
    Null_Query_Info_Ref : constant Query_Info_Ref_Access := null;
 
