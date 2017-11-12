@@ -21,7 +21,7 @@ with Util.Refs;
 with ADO.SQL;
 with ADO.Drivers;
 
-with Interfaces;
+private with Interfaces;
 with Ada.Strings.Unbounded;
 with Ada.Finalization;
 
