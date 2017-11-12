@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -97,12 +97,12 @@ package body ADO.Queries is
    --  Get the SQL query that correspond to the query context.
    --  ------------------------------
    function Get_SQL (From   : in Context;
-                     Driver : in ADO.Drivers.Driver_Index) return String is
+                     Manager : in Query_Manager_Access) return String is
    begin
       if From.Query_Def = null then
          return ADO.SQL.To_String (From.SQL);
       else
-         return Get_SQL (From.Query_Def, Driver, From.Is_Count);
+         return Get_SQL (From.Query_Def, Manager, From.Is_Count);
       end if;
    end Get_SQL;
 
@@ -110,9 +110,9 @@ package body ADO.Queries is
    --  Find the query with the given name.
    --  Returns the query definition that matches the name or null if there is none
    --  ------------------------------
-   function Find_Query (File : in Query_File;
+   function Find_Query (File : in Query_File_Info;
                         Name : in String) return Query_Definition_Access is
-      Query : Query_Definition_Access := File.Queries;
+      Query : Query_Definition_Access := File.File.Queries;
    begin
       while Query /= null loop
          if Query.Name.all = Name then
@@ -124,23 +124,23 @@ package body ADO.Queries is
    end Find_Query;
 
    function Get_SQL (From      : in Query_Definition_Access;
-                     Driver    : in ADO.Drivers.Driver_Index;
+                     Manager   : in Query_Manager_Access;
                      Use_Count : in Boolean) return String is
       Query : Query_Info_Ref.Ref;
    begin
-      ADO.Queries.Loaders.Read_Query (From);
-      Query := From.Query.Get;
+      ADO.Queries.Loaders.Read_Query (Manager.all, From);
+      Query := Manager.Queries (From.Query).Get;
       if Query.Is_Null then
          return "";
       end if;
       if Use_Count then
-         if Length (Query.Value.Count_Query (Driver).SQL) > 0 then
-            return To_String (Query.Value.Count_Query (Driver).SQL);
+         if Length (Query.Value.Count_Query (Manager.Driver).SQL) > 0 then
+            return To_String (Query.Value.Count_Query (Manager.Driver).SQL);
          else
             return To_String (Query.Value.Count_Query (ADO.Drivers.Driver_Index'First).SQL);
          end if;
-      elsif Length (Query.Value.Main_Query (Driver).SQL) > 0 then
-         return To_String (Query.Value.Main_Query (Driver).SQL);
+      elsif Length (Query.Value.Main_Query (Manager.Driver).SQL) > 0 then
+         return To_String (Query.Value.Main_Query (Manager.Driver).SQL);
       else
          return To_String (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
       end if;
