@@ -30,6 +30,9 @@ package body ADO.Statements.Tests is
    procedure Populate (Tst : in out Test);
    function Get_Sum (T     : in Test;
                      Table : in String) return Natural;
+   function Get_Sum (T     : in Test;
+                     Table : in String;
+                     Ids   : in ADO.Utils.Identifier_Vector) return Natural;
 
    --  Test the query statement Get_Xxx operation for various types.
    generic
