@@ -36,7 +36,7 @@ package ADO.Queries.Loaders is
    end Query;
 
    --  Read the query definition.
-   procedure Read_Query (Manager : in out Query_Manager;
+   procedure Read_Query (Manager : in Query_Manager;
                          Into    : in Query_Definition_Access);
 
    --  Register the query definition in the query file.  Registration is done
@@ -48,7 +48,7 @@ package ADO.Queries.Loaders is
    --  Each search directory is separated by ';' (yes, even on Unix).
    --  When <b>Load</b> is true, read the XML query file and initialize the query
    --  definitions from that file.
-   procedure Initialize (Manager : in out Query_Manager_Access;
+   procedure Initialize (Manager : in out Query_Manager;
                          Config  : in ADO.Drivers.Connections.Configuration'Class);
 
    --  Find the query identified by the given name.
@@ -60,7 +60,7 @@ private
    function Is_Modified (File : in out Query_File_Info) return Boolean;
 
    --  Read the query file and all the associated definitions.
-   procedure Read_Query (Manager : in out Query_Manager;
+   procedure Read_Query (Manager : in Query_Manager;
                          File    : in out Query_File_Info);
 
 end ADO.Queries.Loaders;
