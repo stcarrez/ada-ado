@@ -101,6 +101,7 @@ private
       Entities     : ADO.Sessions.Entity_Cache_Access := null;
       Cache        : aliased ADO.Caches.Cache_Manager;
       Cache_Values : ADO.Caches.Cache_Manager_Access;
+      Queries      : ADO.Queries.Query_Manager_Access;
    end record;
 
    --  Initialize the sequence factory associated with the session factory.
