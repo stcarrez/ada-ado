@@ -165,11 +165,7 @@ package body ADO.Queries.Tests is
    --  ------------------------------
    procedure Test_Set_Limit (T : in out Test) is
       Query : ADO.Queries.Context;
-      Props : constant Util.Properties.Manager := Util.Tests.Get_Properties;
-      Config        : ADO.Drivers.Connections.Configuration;
-      Manager : Query_Manager;
    begin
-      ADO.Queries.Loaders.Initialize (Manager, Config);
       Query.Set_Query ("index");
       Query.Set_Limit (0, 10);
       Assert_Equals (T, 0, Query.Get_First_Row_Index, "Invalid first row index");
