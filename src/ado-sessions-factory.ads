@@ -66,14 +66,6 @@ package ADO.Sessions.Factory is
    --  Get a read-write session from the factory.
    function Get_Master_Session (Factory : in Session_Factory) return Master_Session;
 
-   --  Open a session
-   procedure Open_Session (Factory : in out Session_Factory;
-                           Database : out Session);
-
-   --  Open a session
-   procedure Open_Session (Factory : in Session_Factory;
-                           Database : out Master_Session);
-
    --  Create the session factory to connect to the database represented
    --  by the data source.
    procedure Create (Factory : out Session_Factory;
