@@ -160,7 +160,7 @@ package body ADO.Queries.Loaders is
       Into.SQL := Util.Beans.Objects.To_Unbounded_String (Value);
    end Set_Query_Pattern;
 
-   procedure Read_Query (Manager : in out Query_Manager;
+   procedure Read_Query (Manager : in Query_Manager;
                          File    : in out Query_File_Info) is
 
       type Query_Info_Fields is (FIELD_CLASS_NAME, FIELD_PROPERTY_TYPE,
@@ -281,7 +281,7 @@ package body ADO.Queries.Loaders is
    --  ------------------------------
    --  Read the query definition.
    --  ------------------------------
-   procedure Read_Query (Manager : in out Query_Manager;
+   procedure Read_Query (Manager : in Query_Manager;
                          Into    : in Query_Definition_Access) is
    begin
       if Manager.Queries (Into.Query).Get.Is_Null or else Is_Modified (Manager.Files (Into.File.File)) then
@@ -295,7 +295,7 @@ package body ADO.Queries.Loaders is
    --  When <b>Load</b> is true, read the XML query file and initialize the query
    --  definitions from that file.
    --  ------------------------------
-   procedure Initialize (Manager : in out Query_Manager_Access;
+   procedure Initialize (Manager : in out Query_Manager;
                          Config  : in ADO.Drivers.Connections.Configuration'Class) is
       procedure Free is
          new Ada.Unchecked_Deallocation (Object => String,
@@ -308,9 +308,13 @@ package body ADO.Queries.Loaders is
    begin
       Log.Info ("Initializing query search paths to {0}", Paths);
 
-      if Manager = null then
-         Manager := new Query_Manager (Last_Query, Last_File);
+      if Manager.Queries = null then
+         Manager.Queries := new Query_Table (1 .. Last_Query);
       end if;
+      if Manager.Files = null then
+         Manager.Files := new File_Table (1 .. Last_File);
+      end if;
+      Manager.Driver := Config.Get_Driver;
       while File /= null loop
          declare
             Path : constant String := Util.Files.Find_File_Path (Name  => File.Name.all,
@@ -321,7 +325,7 @@ package body ADO.Queries.Loaders is
             Manager.Files (File.File).Path := new String '(Path);
 
             if Load then
-               Read_Query (Manager.all, Manager.Files (File.File));
+               Read_Query (Manager, Manager.Files (File.File));
             end if;
          end;
          File := File.Next;
