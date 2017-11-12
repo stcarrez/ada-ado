@@ -450,7 +450,7 @@ package body ADO.Parameters is
       --  Find and replace the variable by using the expander and looking up in the
       --  group identified by <tt>Group</tt> a value with the name <tt>Name</tt>.
       procedure Replace_Expander (Group : in String;
-                                  Name  : in STring);
+                                  Name  : in String);
 
       --  ------------------------------
       --  Format and append the date to the buffer.
@@ -560,7 +560,7 @@ package body ADO.Parameters is
       --  group identified by <tt>Group</tt> a value with the name <tt>Name</tt>.
       --  ------------------------------
       procedure Replace_Expander (Group : in String;
-                                  Name  : in STring) is
+                                  Name  : in String) is
       begin
          if Params.Expander = null then
             Log.Warn ("There is no expander to evaluate ${0}[{1}]", Group, Name);
