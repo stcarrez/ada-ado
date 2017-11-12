@@ -203,6 +203,7 @@ private
       Cache    : ADO.Objects.Cache.Object_Cache;
       Entities : Entity_Cache_Access;
       Values   : ADO.Caches.Cache_Manager_Access;
+      Queries  : ADO.Queries.Query_Manager_Access;
    end record;
 
    type Session is new Ada.Finalization.Controlled with record
