@@ -116,12 +116,13 @@ package body ADO.Queries.Loaders is
    --  Get the modification time of the XML query file associated with the query.
    --  ------------------------------
    function Modification_Time (File : in Query_File_Info) return Unsigned_32 is
+      Path : constant String := To_String (File.Path);
    begin
-      return To_Unsigned_32 (Ada.Directories.Modification_Time (File.Path.all));
+      return To_Unsigned_32 (Ada.Directories.Modification_Time (Path));
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Log.Error ("XML query file '{0}' does not exist", File.Path.all);
+         Log.Error ("XML query file '{0}' does not exist", Path);
          return 0;
    end Modification_Time;
 
@@ -248,8 +249,9 @@ package body ADO.Queries.Loaders is
       Sql_Mapper : aliased Query_Mapper.Mapper;
       Reader     : Util.Serialize.IO.XML.Parser;
       Mapper     : Util.Serialize.Mappers.Processing;
+      Path       : constant String := To_String (File.Path);
    begin
-      Log.Info ("Reading XML query {0}", File.Path.all);
+      Log.Info ("Reading XML query {0}", Path);
       --  Loader.File   := Into;
       Loader.Driver := 0;
 
@@ -268,13 +270,13 @@ package body ADO.Queries.Loaders is
       Query_Mapper.Set_Context (Mapper, Loader'Access);
 
       --  Read the XML query file.
-      Reader.Parse (File.Path.all, Mapper);
+      Reader.Parse (Path, Mapper);
 
       File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Log.Error ("XML query file '{0}' does not exist", File.Path.all);
+         Log.Error ("XML query file '{0}' does not exist", Path);
 
    end Read_Query;
 
@@ -322,7 +324,7 @@ package body ADO.Queries.Loaders is
             Query : Query_Definition_Access := File.Queries;
          begin
             Manager.Files (File.File).File := File;
-            Manager.Files (File.File).Path := new String '(Path);
+            Manager.Files (File.File).Path := To_Unbounded_String (Path);
 
             if Load then
                Read_Query (Manager, Manager.Files (File.File));
