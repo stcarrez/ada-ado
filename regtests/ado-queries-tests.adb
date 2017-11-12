@@ -31,6 +31,8 @@ package body ADO.Queries.Tests is
    begin
       Caller.Add_Test (Suite, "Test ADO.Queries.Read_Query",
                        Test_Load_Queries'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Find_Query",
+                       Test_Find_Query'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Initialize",
                        Test_Initialize'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Set_Query",
@@ -171,5 +173,15 @@ package body ADO.Queries.Tests is
       Assert_Equals (T, 0, Query.Get_First_Row_Index, "Invalid first row index");
       Assert_Equals (T, 10, Query.Get_Last_Row_Index, "Invalid last row index");
    end Test_Set_Limit;
+
+   --  ------------------------------
+   --  Test the Find_Query operation.
+   --  ------------------------------
+   procedure Test_Find_Query (T : in out Test) is
+      Q : Query_Definition_Access;
+   begin
+      Q := ADO.Queries.Loaders.Find_Query ("this query does not exist");
+      T.Assert (Q = null, "Find_Query should return null for unkown query");
+   end Test_Find_Query;
 
 end ADO.Queries.Tests;
