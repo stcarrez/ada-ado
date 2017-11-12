@@ -276,7 +276,7 @@ private
    function Find_Query (File : in Query_File_Info;
                         Name : in String) return Query_Definition_Access;
 
-   type Query_Table is array (Query_Index_Table range <>) of Query_Info_Ref.Atomic_Ref;
+   type Query_Table is array (Query_Index_Table range <>) of Query_Info_Ref.Ref;
    type Query_Table_Access is access all Query_Table;
 
    type File_Table is array (File_Index_Table range <>) of Query_File_Info;
