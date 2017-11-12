@@ -32,7 +32,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
-      S.Queries  := Factory.Queries;
+      S.Queries  := Factory.Queries'Unchecked_Access;
       Database.Impl := S;
    end Open_Session;
 
@@ -46,7 +46,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
-      S.Queries  := Factory.Queries;
+      S.Queries  := Factory.Queries'Unrestricted_Access;
       R.Impl := S;
       return R;
    end Get_Session;
@@ -78,7 +78,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
-      S.Queries  := Factory.Queries;
+      S.Queries  := Factory.Queries'Unrestricted_Access;
       return R;
    end Get_Master_Session;
 
@@ -114,7 +114,7 @@ package body ADO.Sessions.Factory is
       Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
       Factory.Cache_Values := Factory.Cache'Unchecked_Access;
       Factory.Cache.Add_Cache (ENTITY_CACHE_NAME, Factory.Entities.all'Access);
-      ADO.Queries.Loaders.Initialize (Factory.Queries, Source);
+      ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
       if Factory.Source.Get_Database /= "" then
@@ -137,6 +137,7 @@ package body ADO.Sessions.Factory is
       Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
       Factory.Cache_Values := Factory.Cache'Unchecked_Access;
       Factory.Cache.Add_Cache (ENTITY_CACHE_NAME, Factory.Entities.all'Access);
+      ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
       if Factory.Source.Get_Database /= "" then
