@@ -129,7 +129,7 @@ package body ADO.Queries is
       Query : Query_Info_Ref.Ref;
    begin
       ADO.Queries.Loaders.Read_Query (Manager, From);
-      Query := Manager.Queries (From.Query).Get;
+      Query := Manager.Queries (From.Query);
       if Query.Is_Null then
          return "";
       end if;
