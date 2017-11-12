@@ -225,6 +225,18 @@ package body ADO.Drivers.Connections is
    end Get_Driver;
 
    --  ------------------------------
+   --  Get the database driver index.
+   --  ------------------------------
+   function Get_Driver (Controller : in Configuration) return Driver_Index is
+   begin
+      if Controller.Driver /= null then
+         return Controller.Driver.Index;
+      else
+         return Driver_Index'First;
+      end if;
+   end Get_Driver;
+
+   --  ------------------------------
    --  Create a new connection using the configuration parameters.
    --  ------------------------------
    procedure Create_Connection (Config : in Configuration'Class;
