@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,10 +57,6 @@ package body ADO.Datasets.Tests is
       Data   : ADO.Datasets.Dataset;
       Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
-      --  Configure the XML query loader.
-      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
-                                      Props.Get ("ado.queries.load", "false") = "true");
-
       Query.Set_Count_Query (User_List_Query.Query'Access);
       Query.Bind_Param ("filter", String '("test-list"));
       Count := ADO.Datasets.Get_Count (DB, Query);
@@ -121,9 +117,6 @@ package body ADO.Datasets.Tests is
       Count  : Natural;
       Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
-      --  Configure the XML query loader.
-      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
-                                      Props.Get ("ado.queries.load", "false") = "true");
       Query.Set_Query (User_List_Count_Query.Query'Access);
       Count := ADO.Datasets.Get_Count (DB, Query);
       T.Assert (Count > 0,
@@ -136,9 +129,6 @@ package body ADO.Datasets.Tests is
       Count  : Natural;
       Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
-      --  Configure the XML query loader.
-      ADO.Queries.Loaders.Initialize (Props.Get ("ado.queries.paths", ".;db"),
-                                      Props.Get ("ado.queries.load", "false") = "true");
       Query.Set_Count_Query (User_List_Query.Query'Access);
       Query.Bind_Param ("filter", String '("test-list"));
       Count := ADO.Datasets.Get_Count (DB, Query);
