@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,16 +112,24 @@ with Ada.Strings.Unbounded;
 --  of elements if the SQL query was not limited.
 package ADO.Queries is
 
-   type Query_File;
+   type Query_Index is new Natural;
+
+   type File_Index is new Natural;
+
+   type Query_File is limited private;
    type Query_File_Access is access all Query_File;
 
-   type Query_Definition;
+   type Query_Definition is limited private;
    type Query_Definition_Access is access all Query_Definition;
 
    type Query_Info is limited private;
    type Query_Info_Access is access all Query_Info;
 
    type Query_Info_Ref_Access is private;
+
+   type Query_Manager (Query_Count : Query_Index;
+                       File_Count  : File_Index) is limited private;
+   type Query_Manager_Access is access all Query_Manager;
 
    Null_Query_Info_Ref : constant Query_Info_Ref_Access;
 
@@ -165,8 +173,14 @@ package ADO.Queries is
    function Get_Max_Row_Count (From : in Context) return Natural;
 
    --  Get the SQL query that correspond to the query context.
-   function Get_SQL (From   : in Context;
-                     Driver : in ADO.Drivers.Driver_Index) return String;
+   function Get_SQL (From    : in Context;
+                     Manager : in Query_Manager_Access) return String;
+
+   function Get_SQL (From      : in Query_Definition_Access;
+                     Manager   : in Query_Manager_Access;
+                     Use_Count : in Boolean) return String;
+
+private
 
    --  ------------------------------
    --  Query Definition
@@ -189,12 +203,9 @@ package ADO.Queries is
       Next   : Query_Definition_Access;
 
       --  The SQL query pattern (initialized when reading the XML query file).
-      Query  : Query_Info_Ref_Access;
+      --  Query  : Query_Info_Ref_Access;
+      Query  : Query_Index := 0;
    end record;
-
-   function Get_SQL (From      : in Query_Definition_Access;
-                     Driver    : in ADO.Drivers.Driver_Index;
-                     Use_Count : in Boolean) return String;
 
    --  ------------------------------
    --  Query File
@@ -208,26 +219,18 @@ package ADO.Queries is
       --  Query relative path name
       Name          : Util.Strings.Name_Access;
 
-      --  Query absolute path name (after path resolution).
-      Path          : Ada.Strings.Unbounded.String_Access;
-
       --  The SHA1 hash of the query map section.
       Sha1_Map      : Util.Strings.Name_Access;
-
-      --  Stamp when the query file will be checked.
-      Next_Check    : Interfaces.Unsigned_32;
-
-      --  Stamp identifying the modification date of the query file.
-      Last_Modified : Interfaces.Unsigned_32;
 
       --  The first query defined for that file.
       Queries       : Query_Definition_Access;
 
       --  The next XML query file registered in the application.
       Next          : Query_File_Access;
-   end record;
 
-private
+      --  The unique file index.
+      File          : File_Index := 0;
+   end record;
 
    type Context is new ADO.SQL.Query with record
       First      : Natural := 0;
@@ -237,11 +240,6 @@ private
       Query_Def  : Query_Definition_Access := null;
       Is_Count   : Boolean := False;
    end record;
-
-   --  Find the query with the given name.
-   --  Returns the query definition that matches the name or null if there is none
-   function Find_Query (File : in Query_File;
-                        Name : in String) return Query_Definition_Access;
 
    use Ada.Strings.Unbounded;
 
@@ -261,6 +259,39 @@ private
       new Util.Refs.References (Query_Info, Query_Info_Access);
 
    type Query_Info_Ref_Access is access all Query_Info_Ref.Atomic_Ref;
+
+   subtype Query_Index_Table is Query_Index range 1 .. Query_Index'Last;
+   subtype File_Index_Table is File_Index range 1 .. File_Index'Last;
+
+   type Query_File_Info is record
+      --  Query absolute path name (after path resolution).
+      Path          : Ada.Strings.Unbounded.String_Access;
+
+      --  File
+      File          : Query_File_Access;
+
+      --  Stamp when the query file will be checked.
+      Next_Check    : Interfaces.Unsigned_32;
+
+      --  Stamp identifying the modification date of the query file.
+      Last_Modified : Interfaces.Unsigned_32;
+   end record;
+
+   --  Find the query with the given name.
+   --  Returns the query definition that matches the name or null if there is none
+   function Find_Query (File : in Query_File_Info;
+                        Name : in String) return Query_Definition_Access;
+
+   type Query_Table is array (Query_Index_Table range <>) of Query_Info_Ref.Atomic_Ref;
+
+   type File_Table is array (File_Index_Table range <>) of Query_File_Info;
+
+   type Query_Manager (Query_Count : Query_Index;
+                       File_Count  : File_Index) is limited record
+      Driver  : ADO.Drivers.Driver_Index;
+      Queries : Query_Table (1 .. Query_Count);
+      Files   : File_Table (1 .. File_Count);
+   end record;
 
    Null_Query_Info_Ref : constant Query_Info_Ref_Access := null;
 
