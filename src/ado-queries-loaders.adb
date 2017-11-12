@@ -232,7 +232,7 @@ package body ADO.Queries.Loaders is
          when FIELD_QUERY =>
             if Into.Query_Def /= null then
                --  Now we can safely setup the query info associated with the query definition.
-               Manager.Queries (Into.Query_Def.Query).Set (Into.Query);
+               Manager.Queries (Into.Query_Def.Query) := Into.Query;
             end if;
             Into.Query_Def := null;
 
@@ -286,7 +286,7 @@ package body ADO.Queries.Loaders is
    procedure Read_Query (Manager : in Query_Manager;
                          Into    : in Query_Definition_Access) is
    begin
-      if Manager.Queries (Into.Query).Get.Is_Null or else Is_Modified (Manager.Files (Into.File.File)) then
+      if Manager.Queries (Into.Query).Is_Null or else Is_Modified (Manager.Files (Into.File.File)) then
          Read_Query (Manager, Manager.Files (Into.File.File));
       end if;
    end Read_Query;
