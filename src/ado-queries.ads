@@ -123,11 +123,6 @@ package ADO.Queries is
    type Query_Definition is limited private;
    type Query_Definition_Access is access all Query_Definition;
 
-   type Query_Info is limited private;
-   type Query_Info_Access is access all Query_Info;
-
-   type Query_Info_Ref_Access is private;
-
    type Query_Manager is limited new Ada.Finalization.Limited_Controlled with private;
    type Query_Manager_Access is access all Query_Manager;
 
@@ -252,6 +247,7 @@ private
       Main_Query  : Query_Pattern_Array;
       Count_Query : Query_Pattern_Array;
    end record;
+   type Query_Info_Access is access all Query_Info;
 
    package Query_Info_Ref is
       new Util.Refs.References (Query_Info, Query_Info_Access);
@@ -285,13 +281,6 @@ private
 
    type File_Table is array (File_Index_Table range <>) of Query_File_Info;
    type File_Table_Access is access all File_Table;
---
---     type Query_Manager (Query_Count : Query_Index;
---                         File_Count  : File_Index) is limited record
---        Driver  : ADO.Drivers.Driver_Index;
---        Queries : Query_Table (1 .. Query_Count);
---        Files   : File_Table (1 .. File_Count);
---     end record;
 
    type Query_Manager is limited new Ada.Finalization.Limited_Controlled with record
       Driver  : ADO.Drivers.Driver_Index;
