@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Unchecked_Deallocation;
 with ADO.Queries.Loaders;
 package body ADO.Queries is
 
@@ -148,8 +148,15 @@ package body ADO.Queries is
 
    overriding
    procedure Finalize (Manager : in out Query_Manager) is
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => File_Table,
+                                        Name   => File_Table_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Object => Query_Table,
+                                        Name   => Query_Table_Access);
    begin
-      null;
+      Free (Manager.Queries);
+      Free (Manager.Files);
    end Finalize;
 
 end ADO.Queries;
