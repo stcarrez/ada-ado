@@ -305,8 +305,7 @@ package body ADO.Queries.Loaders is
 
       Paths : constant String := Config.Get_Property ("ado.queries.paths");
       Load  : constant Boolean := Config.Get_Property ("ado.queries.load") = "true";
-      File : Query_File_Access := Query_Files;
-      Pos  : Query_Index_Table := 1;
+      File  : Query_File_Access := Query_Files;
    begin
       Log.Info ("Initializing query search paths to {0}", Paths);
 
@@ -366,9 +365,7 @@ package body ADO.Queries.Loaders is
    package body Query is
    begin
       Query.Name := Query_Name'Access;
-      Query.Query := 0;
-      Query.File  := File;
-      Query.Next  := null;
+      Query.File := File;
       Register (File  => File, Query => Query'Access);
    end Query;
 
