@@ -259,7 +259,7 @@ private
 
    type Query_File_Info is record
       --  Query absolute path name (after path resolution).
-      Path          : Ada.Strings.Unbounded.String_Access;
+      Path          : Ada.Strings.Unbounded.Unbounded_String;
 
       --  File
       File          : Query_File_Access;
