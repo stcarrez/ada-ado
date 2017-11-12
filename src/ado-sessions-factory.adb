@@ -23,20 +23,6 @@ with ADO.Queries.Loaders;
 package body ADO.Sessions.Factory is
 
    --  ------------------------------
-   --  Open a session
-   --  ------------------------------
-   procedure Open_Session (Factory  : in out Session_Factory;
-                           Database : out Session) is
-      S  : constant Session_Record_Access := new Session_Record;
-   begin
-      Factory.Source.Create_Connection (S.Database);
-      S.Entities := Factory.Entities;
-      S.Values   := Factory.Cache_Values;
-      S.Queries  := Factory.Queries'Unchecked_Access;
-      Database.Impl := S;
-   end Open_Session;
-
-   --  ------------------------------
    --  Get a read-only session from the factory.
    --  ------------------------------
    function Get_Session (Factory : in Session_Factory) return Session is
@@ -81,15 +67,6 @@ package body ADO.Sessions.Factory is
       S.Queries  := Factory.Queries'Unrestricted_Access;
       return R;
    end Get_Master_Session;
-
-   --  ------------------------------
-   --  Open a session
-   --  ------------------------------
-   procedure Open_Session (Factory : in Session_Factory;
-                           Database : out Master_Session) is
-   begin
-      null;
-   end Open_Session;
 
    --  ------------------------------
    --  Initialize the sequence factory associated with the session factory.
