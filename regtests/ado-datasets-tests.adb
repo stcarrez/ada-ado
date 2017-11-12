@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Test_Caller;
-with Util.Properties;
 
 with Regtests.Simple.Model;
 with Regtests.Statements.Model;
@@ -55,7 +54,6 @@ package body ADO.Datasets.Tests is
       Query  : ADO.Queries.Context;
       Count  : Natural;
       Data   : ADO.Datasets.Dataset;
-      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       Query.Set_Count_Query (User_List_Query.Query'Access);
       Query.Bind_Param ("filter", String '("test-list"));
@@ -115,7 +113,6 @@ package body ADO.Datasets.Tests is
       DB     : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Query  : ADO.Queries.Context;
       Count  : Natural;
-      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       Query.Set_Query (User_List_Count_Query.Query'Access);
       Count := ADO.Datasets.Get_Count (DB, Query);
@@ -127,7 +124,6 @@ package body ADO.Datasets.Tests is
       DB     : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Query  : ADO.Queries.Context;
       Count  : Natural;
-      Props  : constant Util.Properties.Manager := Util.Tests.Get_Properties;
    begin
       Query.Set_Count_Query (User_List_Query.Query'Access);
       Query.Bind_Param ("filter", String '("test-list"));
