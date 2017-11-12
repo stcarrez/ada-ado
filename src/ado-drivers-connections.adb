@@ -122,7 +122,7 @@ package body ADO.Drivers.Connections is
                else
                   Controller.Properties.Set (URI (Pos + 1 .. Pos2 - 1),
                                              URI (Pos2 + 1 .. URI'Last));
-                 if not Is_Hidden then
+                  if not Is_Hidden then
                      Append (Controller.Log_URI, URI (Pos2 + 1 .. URI'Last));
                   end if;
                   Pos := URI'Last;
