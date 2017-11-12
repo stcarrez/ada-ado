@@ -140,7 +140,8 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Query : constant Query_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+         Query : constant Query_Statement_Access
+           := Database.Impl.Database.Value.all.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Query, Database.Impl.Values.all'Access);
       end;
@@ -155,7 +156,8 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Stmt : constant Query_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Query);
+         Stmt : constant Query_Statement_Access
+           := Database.Impl.Database.Value.all.Create_Statement (Query);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt, Database.Impl.Values.all'Access);
       end;
@@ -314,9 +316,11 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Stmt : constant Delete_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+         Stmt : constant Delete_Statement_Access
+           := Database.Impl.Database.Value.all.Create_Statement (Table);
       begin
-         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
       end;
    end Create_Statement;
 
@@ -329,9 +333,11 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Stmt : constant Update_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+         Stmt : constant Update_Statement_Access
+           := Database.Impl.Database.Value.all.Create_Statement (Table);
       begin
-         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
       end;
    end Create_Statement;
 
@@ -344,9 +350,11 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         Stmt : constant Insert_Statement_Access := Database.Impl.Database.Value.all.Create_Statement (Table);
+         Stmt : constant Insert_Statement_Access
+           := Database.Impl.Database.Value.all.Create_Statement (Table);
       begin
-         return ADO.Statements.Create.Create_Statement (Stmt.all'Access, Database.Impl.Values.all'Access);
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
       end;
    end Create_Statement;
 
