@@ -48,12 +48,15 @@ package body ADO.Queries.Loaders is
    --  The list of query files defined by the application.
    Query_Files : Query_File_Access := null;
 
+   Last_Query  : Query_Index := 0;
+   Last_File   : File_Index := 0;
+
    --  Convert a Time to an Unsigned_32.
    function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32;
    pragma Inline_Always (To_Unsigned_32);
 
    --  Get the modification time of the XML query file associated with the query.
-   function Modification_Time (Query : in Query_Definition_Access) return Unsigned_32;
+   function Modification_Time (File : in Query_File_Info) return Unsigned_32;
 
    --  Initialize the query SQL pattern with the value
    procedure Set_Query_Pattern (Into  : in out Query_Pattern;
@@ -66,11 +69,15 @@ package body ADO.Queries.Loaders is
    procedure Register (File  : in Query_File_Access;
                        Query : in Query_Definition_Access) is
    begin
+      Last_Query   := Last_Query + 1;
       Query.File   := File;
       Query.Next   := File.Queries;
+      Query.Query  := Last_Query;
       File.Queries := Query;
       if File.Next = null and then Query_Files /= File then
+         Last_File := Last_File + 1;
          File.Next := Query_Files;
+         File.File := Last_File;
          Query_Files := File;
       end if;
    end Register;
@@ -108,38 +115,38 @@ package body ADO.Queries.Loaders is
    --  ------------------------------
    --  Get the modification time of the XML query file associated with the query.
    --  ------------------------------
-   function Modification_Time (Query : in Query_Definition_Access) return Unsigned_32 is
+   function Modification_Time (File : in Query_File_Info) return Unsigned_32 is
    begin
-      return To_Unsigned_32 (Ada.Directories.Modification_Time (Query.File.Path.all));
+      return To_Unsigned_32 (Ada.Directories.Modification_Time (File.Path.all));
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Log.Error ("XML query file '{0}' does not exist", Query.File.Path.all);
+         Log.Error ("XML query file '{0}' does not exist", File.Path.all);
          return 0;
    end Modification_Time;
 
    --  ------------------------------
    --  Returns True if the XML query file must be reloaded.
    --  ------------------------------
-   function Is_Modified (Query : in Query_Definition_Access) return Boolean is
+   function Is_Modified (File : in out Query_File_Info) return Boolean is
       Now : constant Unsigned_32 := To_Unsigned_32 (Ada.Calendar.Clock);
    begin
       --  Have we passed the next check time?
-      if Query.File.Next_Check > Now then
+      if File.Next_Check > Now then
          return False;
       end if;
 
       --  Next check in N seconds (60 by default).
-      Query.File.Next_Check := Now + FILE_CHECK_DELTA_TIME;
+      File.Next_Check := Now + FILE_CHECK_DELTA_TIME;
 
       --  See if the file was changed.
       declare
-         M : constant Unsigned_32 := Modification_Time (Query);
+         M : constant Unsigned_32 := Modification_Time (File);
       begin
-         if Query.File.Last_Modified = M then
+         if File.Last_Modified = M then
             return False;
          end if;
-         Query.File.Last_Modified := M;
+         File.Last_Modified := M;
          return True;
       end;
    end Is_Modified;
@@ -153,7 +160,8 @@ package body ADO.Queries.Loaders is
       Into.SQL := Util.Beans.Objects.To_Unbounded_String (Value);
    end Set_Query_Pattern;
 
-   procedure Read_Query (Into : in Query_File_Access) is
+   procedure Read_Query (Manager : in out Query_Manager;
+                         File    : in out Query_File_Info) is
 
       type Query_Info_Fields is (FIELD_CLASS_NAME, FIELD_PROPERTY_TYPE,
                                  FIELD_PROPERTY_NAME, FIELD_QUERY_NAME,
@@ -163,7 +171,7 @@ package body ADO.Queries.Loaders is
       --  The Query_Loader holds context and state information for loading
       --  the XML query file and initializing the Query_Definition.
       type Query_Loader is record
-         File       : Query_File_Access;
+         --  File       : Query_File_Access;
          Hash_Value : Unbounded_String;
          Query_Def  : Query_Definition_Access;
          Query      : Query_Info_Ref.Ref;
@@ -197,7 +205,7 @@ package body ADO.Queries.Loaders is
             Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
 
          when FIELD_QUERY_NAME =>
-            Into.Query_Def  := Find_Query (Into.File.all, Util.Beans.Objects.To_String (Value));
+            Into.Query_Def  := Find_Query (File, Util.Beans.Objects.To_String (Value));
             Into.Driver := 0;
             if Into.Query_Def /= null then
                Into.Query := Query_Info_Ref.Create;
@@ -223,7 +231,7 @@ package body ADO.Queries.Loaders is
          when FIELD_QUERY =>
             if Into.Query_Def /= null then
                --  Now we can safely setup the query info associated with the query definition.
-               Into.Query_Def.Query.Set (Into.Query);
+               Manager.Queries (Into.Query_Def.Query).Set (Into.Query);
             end if;
             Into.Query_Def := null;
 
@@ -241,8 +249,8 @@ package body ADO.Queries.Loaders is
       Reader     : Util.Serialize.IO.XML.Parser;
       Mapper     : Util.Serialize.Mappers.Processing;
    begin
-      Log.Info ("Reading XML query {0}", Into.Path.all);
-      Loader.File   := Into;
+      Log.Info ("Reading XML query {0}", File.Path.all);
+      --  Loader.File   := Into;
       Loader.Driver := 0;
 
       --  Create the mapping to load the XML query file.
@@ -260,23 +268,24 @@ package body ADO.Queries.Loaders is
       Query_Mapper.Set_Context (Mapper, Loader'Access);
 
       --  Read the XML query file.
-      Reader.Parse (Into.Path.all, Mapper);
+      Reader.Parse (File.Path.all, Mapper);
 
-      Into.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+      File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Log.Error ("XML query file '{0}' does not exist", Into.Path.all);
+         Log.Error ("XML query file '{0}' does not exist", File.Path.all);
 
    end Read_Query;
 
    --  ------------------------------
    --  Read the query definition.
    --  ------------------------------
-   procedure Read_Query (Into : in Query_Definition_Access) is
+   procedure Read_Query (Manager : in out Query_Manager;
+                         Into    : in Query_Definition_Access) is
    begin
-      if Into.Query = null or else Is_Modified (Into)  then
-         Read_Query (Into.File);
+      if Manager.Queries (Into.Query).Get.Is_Null or else Is_Modified (Manager.Files (Into.File.File)) then
+         Read_Query (Manager, Manager.Files (Into.File.File));
       end if;
    end Read_Query;
 
@@ -286,34 +295,33 @@ package body ADO.Queries.Loaders is
    --  When <b>Load</b> is true, read the XML query file and initialize the query
    --  definitions from that file.
    --  ------------------------------
-   procedure Initialize (Paths : in String;
-                         Load  : in Boolean) is
+   procedure Initialize (Manager : in out Query_Manager_Access;
+                         Config  : in ADO.Drivers.Connections.Configuration'Class) is
       procedure Free is
          new Ada.Unchecked_Deallocation (Object => String,
                                          Name   => Ada.Strings.Unbounded.String_Access);
 
+      Paths : constant String := Config.Get_Property ("ado.queries.paths");
+      Load  : constant Boolean := Config.Get_Property ("ado.queries.load") = "true";
       File : Query_File_Access := Query_Files;
+      Pos  : Query_Index_Table := 1;
    begin
       Log.Info ("Initializing query search paths to {0}", Paths);
 
+      if Manager = null then
+         Manager := new Query_Manager (Last_Query, Last_File);
+      end if;
       while File /= null loop
          declare
             Path : constant String := Util.Files.Find_File_Path (Name  => File.Name.all,
                                                                  Paths => Paths);
             Query : Query_Definition_Access := File.Queries;
          begin
-            Free (File.Path);
-            File.Path := new String '(Path);
+            Manager.Files (File.File).File := File;
+            Manager.Files (File.File).Path := new String '(Path);
 
-            --  Allocate the atomic reference for each query.
-            while Query /= null loop
-               if Query.Query = null then
-                  Query.Query := new Query_Info_Ref.Atomic_Ref;
-               end if;
-               Query := Query.Next;
-            end loop;
             if Load then
-               Read_Query (File);
+               Read_Query (Manager.all, Manager.Files (File.File));
             end if;
          end;
          File := File.Next;
@@ -343,8 +351,18 @@ package body ADO.Queries.Loaders is
       return null;
    end Find_Query;
 
+   package body File is
+   begin
+      File.Name := Name'Access;
+      File.Sha1_Map := Hash'Access;
+   end File;
+
    package body Query is
    begin
+      Query.Name := Query_Name'Access;
+      Query.Query := 0;
+      Query.File  := File;
+      Query.Next  := null;
       Register (File  => File, Query => Query'Access);
    end Query;
 
