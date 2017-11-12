@@ -35,6 +35,8 @@ package body ADO.Queries.Tests is
                        Test_Find_Query'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Initialize",
                        Test_Initialize'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Read_Query (reload)",
+                       Test_Reload_Queries'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Set_Query",
                        Test_Set_Query'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Set_Limit",
@@ -113,6 +115,30 @@ package body ADO.Queries.Tests is
    end Test_Load_Queries;
 
    --  ------------------------------
+   --  Test re-loading queries.
+   --  ------------------------------
+   procedure Test_Reload_Queries (T : in out Test) is
+      Config  : ADO.Drivers.Connections.Configuration;
+      Manager : Query_Manager;
+      Query   : ADO.Queries.Context;
+   begin
+      --  Configure the XML query loader.
+      ADO.Queries.Loaders.Initialize (Manager, Config);
+      for I in 1 .. 10 loop
+         Query.Set_Query ("simple-query");
+
+         declare
+            SQL : constant String := Query.Get_SQL (Manager);
+         begin
+            Assert_Equals (T, "select count(*) from user", SQL, "Invalid query for 'simple-query'");
+         end;
+         for J in Manager.Files'Range loop
+            Manager.Files (J).Next_Check := 0;
+         end loop;
+      end loop;
+   end Test_Reload_Queries;
+
+   --  ------------------------------
    --  Test the Initialize operation called several times
    --  ------------------------------
    procedure Test_Initialize (T : in out Test) is
@@ -136,11 +162,6 @@ package body ADO.Queries.Tests is
                T.Assert (not Query.Is_Null, "Query must have been loaded");
             end if;
          end loop;
-         if Pass = 3 then
-            for I in Manager.Files'Range loop
-               Manager.Files (I).Next_Check := 0;
-            end loop;
-         end if;
       end loop;
 
    end Test_Initialize;
