@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Log.Loggers;
 
 with Ada.IO_Exceptions;
 
-with ADO.Queries.Loaders;
 package body ADO.Drivers is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Drivers");
@@ -55,11 +54,6 @@ package body ADO.Drivers is
 
       --  Initialize the drivers.
       ADO.Drivers.Initialize;
-
-      --  Configure the XML query loader.
-      ADO.Queries.Loaders.Initialize (Global_Config.Get ("ado.queries.paths", ".;db"),
-                                      Global_Config.Get ("ado.queries.load", "false") = "true");
-
    end Initialize;
 
    --  ------------------------------
