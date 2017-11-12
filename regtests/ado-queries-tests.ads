@@ -25,6 +25,9 @@ package ADO.Queries.Tests is
 
    procedure Test_Load_Queries (T : in out Test);
 
+   --  Test re-loading queries.
+   procedure Test_Reload_Queries (T : in out Test);
+
    --  Test the Initialize operation called several times
    procedure Test_Initialize (T : in out Test);
 
