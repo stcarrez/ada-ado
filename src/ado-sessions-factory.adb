@@ -18,6 +18,7 @@
 
 with ADO.Sequences.Hilo;
 with ADO.Schemas.Entities;
+with ADO.Queries.Loaders;
 
 package body ADO.Sessions.Factory is
 
@@ -31,6 +32,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
+      S.Queries  := Factory.Queries;
       Database.Impl := S;
    end Open_Session;
 
@@ -44,6 +46,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
+      S.Queries  := Factory.Queries;
       R.Impl := S;
       return R;
    end Get_Session;
@@ -75,6 +78,7 @@ package body ADO.Sessions.Factory is
       Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
+      S.Queries  := Factory.Queries;
       return R;
    end Get_Master_Session;
 
@@ -110,6 +114,7 @@ package body ADO.Sessions.Factory is
       Factory.Entities := new ADO.Schemas.Entities.Entity_Cache;
       Factory.Cache_Values := Factory.Cache'Unchecked_Access;
       Factory.Cache.Add_Cache (ENTITY_CACHE_NAME, Factory.Entities.all'Access);
+      ADO.Queries.Loaders.Initialize (Factory.Queries, Source);
       Initialize_Sequences (Factory);
 
       if Factory.Source.Get_Database /= "" then
