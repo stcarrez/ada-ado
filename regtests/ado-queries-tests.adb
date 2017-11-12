@@ -124,23 +124,25 @@ package body ADO.Queries.Tests is
       Info  : Query_Info_Ref.Ref;
    begin
       --  Configure and load the XML queries.
-      ADO.Queries.Loaders.Initialize (Manager, Config);
-      --  T.Assert (not Simple_Query.Query.Query.Get.Is_Null, "The simple query was not loaded");
-      --  T.Assert (not Index_Query.Query.Query.Get.Is_Null, "The index query was not loaded");
---        Info := Simple_Query.Query.Query.Get;
+      for Pass in 1 .. 10 loop
+         Config.Set_Property ("ado.queries.load", (if Pass = 1 then "false" else "true"));
+         ADO.Queries.Loaders.Initialize (Manager, Config);
+         T.Assert (Manager.Queries /= null, "The queries table is allocated");
+         T.Assert (Manager.Files /= null, "The files table is allocated");
+         for Query of Manager.Queries.all loop
+            if Pass = 1 then
+               T.Assert (Query.Is_Null, "Query must not be loaded");
+            else
+               T.Assert (not Query.Is_Null, "Query must have been loaded");
+            end if;
+         end loop;
+         if Pass = 3 then
+            for I in Manager.Files'Range loop
+               Manager.Files (I).Next_Check := 0;
+            end loop;
+         end if;
+      end loop;
 
-      --  Re-configure but do not reload.
-      ADO.Queries.Loaders.Initialize (Manager, Config);
---        T.Assert (Info.Value = Simple_Query.Query.Query.Get.Value,
---                  "The simple query instance was not changed");
-
-      --  Configure again and reload.  The query info must have changed.
-      ADO.Queries.Loaders.Initialize (Manager, Config);
---        T.Assert (Info.Value /= Simple_Query.Query.Query.Get.Value,
---                  "The simple query instance was not changed");
-
-      --  Due to the reference held by 'Info', it refers to the data loaded first.
---        T.Assert (Length (Info.Value.Main_Query (0).SQL) > 0, "The old query is not valid");
    end Test_Initialize;
 
    --  ------------------------------
