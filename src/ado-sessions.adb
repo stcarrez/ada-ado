@@ -170,7 +170,7 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         SQL  : constant String := Query.Get_SQL (Database.Impl.Queries);
+         SQL  : constant String := Query.Get_SQL (Database.Impl.Queries.all);
          Stmt : Query_Statement := Database.Create_Statement (SQL);
       begin
          Stmt.Set_Parameters (Query);
@@ -187,7 +187,7 @@ package body ADO.Sessions is
    begin
       Check_Session (Database);
       declare
-         SQL   : constant String := ADO.Queries.Get_SQL (Query, Database.Impl.Queries, False);
+         SQL   : constant String := ADO.Queries.Get_SQL (Query, Database.Impl.Queries.all, False);
       begin
          return Database.Create_Statement (SQL);
       end;
@@ -208,7 +208,7 @@ package body ADO.Sessions is
          if Query in ADO.Queries.Context'Class then
             declare
                SQL : constant String
-                 := ADO.Queries.Context'Class (Query).Get_SQL (Database.Impl.Queries);
+                 := ADO.Queries.Context'Class (Query).Get_SQL (Database.Impl.Queries.all);
             begin
                ADO.SQL.Append (Stmt.Get_Query.SQL, SQL);
             end;
