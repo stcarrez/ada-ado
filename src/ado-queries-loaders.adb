@@ -20,9 +20,6 @@ with Interfaces;
 
 with Ada.IO_Exceptions;
 with Ada.Directories;
-with Ada.Unchecked_Deallocation;
-
-with ADO.Drivers.Connections;
 
 with Util.Files;
 with Util.Log.Loggers;
@@ -286,7 +283,9 @@ package body ADO.Queries.Loaders is
    procedure Read_Query (Manager : in Query_Manager;
                          Into    : in Query_Definition_Access) is
    begin
-      if Manager.Queries (Into.Query).Is_Null or else Is_Modified (Manager.Files (Into.File.File)) then
+      if Manager.Queries (Into.Query).Is_Null
+        or else Is_Modified (Manager.Files (Into.File.File))
+      then
          Read_Query (Manager, Manager.Files (Into.File.File));
       end if;
    end Read_Query;
@@ -299,10 +298,6 @@ package body ADO.Queries.Loaders is
    --  ------------------------------
    procedure Initialize (Manager : in out Query_Manager;
                          Config  : in ADO.Drivers.Connections.Configuration'Class) is
-      procedure Free is
-         new Ada.Unchecked_Deallocation (Object => String,
-                                         Name   => Ada.Strings.Unbounded.String_Access);
-
       Paths : constant String := Config.Get_Property ("ado.queries.paths");
       Load  : constant Boolean := Config.Get_Property ("ado.queries.load") = "true";
       File  : Query_File_Access := Query_Files;
@@ -320,7 +315,6 @@ package body ADO.Queries.Loaders is
          declare
             Path : constant String := Util.Files.Find_File_Path (Name  => File.Name.all,
                                                                  Paths => Paths);
-            Query : Query_Definition_Access := File.Queries;
          begin
             Manager.Files (File.File).File := File;
             Manager.Files (File.File).Path := To_Unbounded_String (Path);
