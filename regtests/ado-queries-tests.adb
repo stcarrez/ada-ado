@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Util.Test_Caller;
-with Util.Properties;
 
 with ADO.Drivers.Connections;
 with ADO.Queries.Loaders;
@@ -76,7 +75,6 @@ package body ADO.Queries.Tests is
 
       Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
       Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
-      Props         : constant Util.Properties.Manager := Util.Tests.Get_Properties;
       Config        : ADO.Drivers.Connections.Configuration;
       Manager       : Query_Manager;
    begin
@@ -130,7 +128,8 @@ package body ADO.Queries.Tests is
          declare
             SQL : constant String := Query.Get_SQL (Manager);
          begin
-            Assert_Equals (T, "select count(*) from user", SQL, "Invalid query for 'simple-query'");
+            Assert_Equals (T, "select count(*) from user", SQL,
+                           "Invalid query for 'simple-query'");
          end;
          for J in Manager.Files'Range loop
             Manager.Files (J).Next_Check := 0;
@@ -142,12 +141,8 @@ package body ADO.Queries.Tests is
    --  Test the Initialize operation called several times
    --  ------------------------------
    procedure Test_Initialize (T : in out Test) is
-      use ADO.Drivers.Connections;
-
-      Props : constant Util.Properties.Manager := Util.Tests.Get_Properties;
-      Config        : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Drivers.Connections.Configuration;
       Manager : Query_Manager;
-      Info  : Query_Info_Ref.Ref;
    begin
       --  Configure and load the XML queries.
       for Pass in 1 .. 10 loop
@@ -170,10 +165,9 @@ package body ADO.Queries.Tests is
    --  Test the Set_Query operation.
    --  ------------------------------
    procedure Test_Set_Query (T : in out Test) is
-      Query : ADO.Queries.Context;
-      Props : constant Util.Properties.Manager := Util.Tests.Get_Properties;
+      Query   : ADO.Queries.Context;
       Manager : Query_Manager;
-      Config        : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Drivers.Connections.Configuration;
    begin
       ADO.Queries.Loaders.Initialize (Manager, Config);
       Query.Set_Query ("simple-query");
