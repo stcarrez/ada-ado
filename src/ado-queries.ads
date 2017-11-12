@@ -131,8 +131,6 @@ package ADO.Queries is
    type Query_Manager is limited new Ada.Finalization.Limited_Controlled with private;
    type Query_Manager_Access is access all Query_Manager;
 
-   Null_Query_Info_Ref : constant Query_Info_Ref_Access;
-
    --  ------------------------------
    --  Query Context
    --  ------------------------------
@@ -303,7 +301,5 @@ private
 
    overriding
    procedure Finalize (Manager : in out Query_Manager);
-
-   Null_Query_Info_Ref : constant Query_Info_Ref_Access := null;
 
 end ADO.Queries;
