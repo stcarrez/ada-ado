@@ -5,7 +5,7 @@ ADO_LIBRARY_TYPE=static
 
 # You may edit this makefile as long as you keep these original 
 # target names defined.
-MODE=distrib
+MODE=debug
 GNATMAKE=@GNATMAKE@
 GNATCLEAN=@GNATCLEAN@
 GPRINSTALL=@GPRINSTALL@
@@ -173,8 +173,32 @@ analyze:
 # Clean, then build executables for all mains defined by the project.
 rebuild: clean build
 
-doc:
+doc:  ado-book.pdf
 	$(DYNAMO) build-doc -markdown wiki
+
+ADO_DOC= \
+  doc/title.md \
+  doc/pagebreak.tex \
+  doc/intro.md \
+  doc/pagebreak.tex \
+  wiki/Installation.md \
+  doc/pagebreak.tex \
+  wiki/Tutorial.md \
+  doc/pagebreak.tex \
+  doc/ADO_Sessions.md \
+  doc/pagebreak.tex \
+  doc/ADO_Queries.md \
+  doc/pagebreak.tex \
+  doc/ADO_Statements.md \
+  doc/pagebreak.tex \
+  doc/ADO_Drivers.md
+
+DOC_OPTIONS=-f markdown -o ado-book.pdf --listings --number-sections --toc
+
+ado-book.pdf: $(ADO_DOC)
+	test -d wiki || git clone git@github.com:stcarrez/ada-ado.wiki.git wiki
+	$(DYNAMO) build-doc -pandoc doc
+	pandoc $(DOC_OPTIONS) --template=./doc/eisvogel.tex $(ADO_DOC)
 
 GENERATOR=dynamo
 
@@ -317,3 +341,5 @@ else
 	rm -f ${projectdir}/ado_sqlite.gpr
 endif
 	rm -rf ${dynamodir}/ado
+
+.PHONY: doc
