@@ -127,3 +127,8 @@ To create manually the database, you can proceed to the following steps:
          mysql> source db/regtests/mysql/create-ado-mysql.sql
 ```
 
+# Building documentation
+
+```
+      sudo apt-get install pandoc xsltproc texlive-latex-base texlive-latex-extra texlive-fonts-extra
+```
