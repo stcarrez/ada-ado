@@ -193,12 +193,26 @@ ADO_DOC= \
   doc/pagebreak.tex \
   doc/ADO_Drivers.md
 
+ADO_DOC_DEP= \
+  doc/pagebreak.tex \
+  doc/title.md \
+  doc/intro.md \
+  wiki/Installation.md \
+  wiki/Tutorial.md \
+  doc/ADO_Sessions.md \
+  doc/ADO_Queries.md \
+  doc/ADO_Statements.md \
+  doc/ADO_Drivers.md
+
 DOC_OPTIONS=-f markdown -o ado-book.pdf --listings --number-sections --toc
 
-ado-book.pdf: $(ADO_DOC)
-	test -d wiki || git clone git@github.com:stcarrez/ada-ado.wiki.git wiki
+ado-book.pdf: $(ADO_DOC_DEP)
 	$(DYNAMO) build-doc -pandoc doc
 	pandoc $(DOC_OPTIONS) --template=./doc/eisvogel.tex $(ADO_DOC)
+
+$(ADO_DOC_DEP):
+	test -d wiki || git clone git@github.com:stcarrez/ada-ado.wiki.git wiki
+	$(DYNAMO) build-doc -pandoc doc
 
 GENERATOR=dynamo
 
