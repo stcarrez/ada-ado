@@ -24,7 +24,7 @@ To build ADO, you will need:
 
 You should have installed either MySQL or SQLite before
 running the configure script.  For Windows, please read
-the file 'win32/README' that gives some installation hints.
+the file [win32/README](win32/README.md) that gives some installation hints.
 
 Build with the following commands:
 ```

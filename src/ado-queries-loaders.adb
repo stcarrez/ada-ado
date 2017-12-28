@@ -317,6 +317,8 @@ package body ADO.Queries.Loaders is
                                                                  Paths => Paths);
          begin
             Manager.Files (File.File).File := File;
+            Manager.Files (File.File).Last_Modified := 0;
+            Manager.Files (File.File).Next_Check := 0;
             Manager.Files (File.File).Path := To_Unbounded_String (Path);
 
             if Load then
