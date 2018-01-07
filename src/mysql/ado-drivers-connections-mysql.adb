@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -283,7 +283,9 @@ package body ADO.Drivers.Connections.Mysql is
                Database.Execute ("SET CHARACTER_SET_SERVER = '" & Value & "'");
                Database.Execute ("SET CHARACTER_SET_DATABASE = '" & Value & "'");
 
-            elsif Name /= "user" and Name /= "password" then
+            elsif Util.Strings.Index (Name, '.') = 0
+              and Name /= "user" and Name /= "password"
+            then
                Database.Execute ("SET " & Name & "='" & Value & "'");
             end if;
          end Configure;
