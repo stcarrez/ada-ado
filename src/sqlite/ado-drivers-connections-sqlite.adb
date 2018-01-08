@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -271,8 +271,10 @@ package body ADO.Drivers.Connections.Sqlite is
                               Item : in Util.Properties.Value) is
             SQL : constant String := "PRAGMA " & Name & "=" & Escape (Item);
          begin
-            Log.Info ("Configure database with {0}", SQL);
-            Database.Execute (SQL);
+            if Util.Strings.Index (Name, '.') = 0 then
+               Log.Info ("Configure database with {0}", SQL);
+               Database.Execute (SQL);
+            end if;
          end Configure;
 
       begin
