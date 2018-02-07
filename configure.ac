@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Database Objects
-dnl Copyright (C) 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+dnl Copyright (C) 2010 - 2018 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,6 +51,9 @@ AC_MSG_CHECKING([number of processors])
 NR_CPUS=`getconf _NPROCESSORS_CONF 2>/dev/null || getconf NPROCESSORS_CONF 2>/dev/null || echo 1`
 AC_MSG_RESULT($NR_CPUS)
 AC_SUBST(NR_CPUS)
+
+AC_CHECK_PROG(HAVE_PANDOC,pandoc,yes)
+AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
 
 AC_ARG_ENABLE(mysql,
 [  --enable-mysql          build MySQL support],
