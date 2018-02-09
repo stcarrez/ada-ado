@@ -201,7 +201,7 @@ DOC_OPTIONS=-f markdown -o docs/ado-book.pdf --listings --number-sections --toc
 HTML_OPTIONS=-f markdown -o docs/ado-book.html --listings --number-sections --toc --css docs/pandoc.css
 
 docs/ado-book.pdf: $(ADO_DOC_DEP) force
-	$(DYNAMO) build-doc -pandoc doc
+	$(DYNAMO) build-doc -pandoc docs
 	pandoc $(DOC_OPTIONS) --template=./docs/eisvogel.tex $(ADO_DOC)
 
 docs/ado-book.html: docs/ado-book.pdf force
