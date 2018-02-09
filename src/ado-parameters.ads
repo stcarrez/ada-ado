@@ -24,7 +24,7 @@ with Ada.Containers.Indefinite_Vectors;
 with ADO.Utils;
 with ADO.Drivers.Dialects;
 
---  === Query Parameters ===
+--  == Query Parameters ==
 --  Query parameters are represented by the <tt>Parameter</tt> type which can represent almost
 --  all database types including boolean, numbers, strings, dates and blob.  Parameters are
 --  put in a list represented by the <tt>Abstract_List</tt> or <tt>List</tt> types.
