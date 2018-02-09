@@ -31,7 +31,7 @@ with Util.Concurrent.Counters;
 limited with ADO.Sequences;
 limited with ADO.Schemas.Entities;
 
---  == Session ==
+--  = Session =
 --  The `ADO.Sessions` package defines the control and management of database sessions.
 --  The database session is represented by the `Session` or `Master_Session` types.
 --  It provides operation to create a database statement that can be executed.
@@ -42,9 +42,9 @@ limited with ADO.Schemas.Entities;
 --  between the two sessions is provided for the support of database replications with
 --  databases such as MySQL.
 --
+--  @include ado-sessions-sources.ads
 --  @include ado-sessions-factory.ads
---  @include ado-sequences.ads
---
+--  @include ado-caches.ads
 package ADO.Sessions is
 
    use ADO.Statements;
