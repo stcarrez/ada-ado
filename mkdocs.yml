@@ -1,0 +1,10 @@
+site_name: Ada Database Objects
+docs_dir: docs
+pages:
+  - Introduction: index.md
+  - Installation: Installation.md
+  - Tutorial: Tutorial.md
+  - Objects: ADO_Objects.md
+  - Session: ADO_Sessions.md
+  - Statements: ADO_Statements.md
+theme: readthedocs
