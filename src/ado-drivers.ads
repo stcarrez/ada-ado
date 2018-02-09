@@ -18,7 +18,7 @@
 
 with Util.Properties;
 
---  == Introduction ==
+--  = Database Drivers ==
 --  The <b>ADO.Drivers</b> package represents the database driver that will create
 --  database connections and provide the database specific implementation.  The driver
 --  is either statically linked to the application and can be loaded dynamically if it was
@@ -26,7 +26,7 @@ with Util.Properties;
 --  prefixed by <b>libada_ado_</b>.  For example, for a <tt>mysql</tt> driver, the shared
 --  library name is <tt>libada_ado_mysql.so</tt>.
 --
---  === Initialization ===
+--  == Initialization ==
 --  The <b>ADO</b> runtime must be initialized by calling one of the <b>Initialize</b> operation.
 --  A property file contains the configuration for the database drivers and the database
 --  connection properties.
@@ -37,16 +37,6 @@ with Util.Properties;
 --  operation.
 --
 --    URI : constant String := ADO.Drivers.Get_Config ("ado.database");
---
---  === Connection string ===
---  The database connection string is an URI that specifies the database driver to use as well
---  as the information for the database driver to connect to the database.
---  The driver connection is a string of the form:
---
---    driver://[host][:port]/[database][?property1][=value1]...
---
---  The database connection string is passed to the session factory that maintains connections
---  to the database (see ADO.Sessions.Factory).
 --
 package ADO.Drivers is
 
