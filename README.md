@@ -2,6 +2,7 @@
 
 [![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
 [![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
+[![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](http://ada-ado.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.1.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-1.1.0.tar.gz)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 ![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/1.1.0.svg)
@@ -69,6 +70,7 @@ For SQLite, use:
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
+  * [Ada Database Objects Programmer's Guide](http://ada-ado.readthedocs.io/en/latest/)
   * [ADO Documentation](https://github.com/stcarrez/ada-ado/wiki)
   * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
   * [ADO Statements](https://github.com/stcarrez/ada-ado/wiki/ADO_Statements)
