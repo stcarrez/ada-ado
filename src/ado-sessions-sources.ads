@@ -16,6 +16,16 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  == Connection string ==
+--  The database connection string is an URI that specifies the database driver to use as well
+--  as the information for the database driver to connect to the database.
+--  The driver connection is a string of the form:
+--
+--    driver://[host][:port]/[database][?property1][=value1]...
+--
+--  The database connection string is passed to the session factory that maintains connections
+--  to the database (see ADO.Sessions.Factory).
+--
 package ADO.Sessions.Sources is
 
    --  ------------------------------
