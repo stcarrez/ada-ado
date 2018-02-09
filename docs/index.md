@@ -14,7 +14,7 @@ tables directly in the target programming language: Ada05 in our case.  The deve
   * You generate the SQL database tables by using the same tool,
   * You write your application on top of the generated code that gives you direct and simplified access to your database.
 
-![ORM Development Model](wiki/images/ado-orm.png)
+![ORM Development Model](images/ado-orm.png)
 
 This document describes how to build the library and how you can use
 the different features to simplify and help you access databases
