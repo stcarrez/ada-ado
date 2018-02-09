@@ -28,6 +28,19 @@ with Util.Beans.Objects;
 with Util.Strings;
 with Util.Concurrent.Counters;
 limited with ADO.Sessions;
+
+--  = Objects =
+--  When a database table is represented by an Ada type, the `ADO.Objects.Object_Record`
+--  tagged record is used as the root type for the model representation.  The type provides
+--  operations to.
+--
+--  The `Object_Ref` type is the root type of any database record reference.
+--
+--  == Object Creation ==
+--
+--  == Object Deletion ==
+--
+--  @include ado-sequences.ads
 package ADO.Objects is
 
    --  The object was modified by a another transaction.
