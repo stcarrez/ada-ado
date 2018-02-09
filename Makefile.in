@@ -183,15 +183,15 @@ doc:  doc/ado-book.pdf doc/ado-book.html
 ADO_DOC= \
   doc/title.md \
   doc/pagebreak.tex \
-  doc/intro.md \
+  doc/index.md \
   doc/pagebreak.tex \
-  wiki/Installation.md \
+  doc/Installation.md \
   doc/pagebreak.tex \
-  wiki/Tutorial.md \
+  doc/Tutorial.md \
   doc/pagebreak.tex \
   doc/ADO_Sessions.md \
   doc/pagebreak.tex \
-  doc/ADO_Queries.md \
+  doc/ADO_Objects.md \
   doc/pagebreak.tex \
   doc/ADO_Statements.md \
   doc/pagebreak.tex \
