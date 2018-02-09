@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,51 +29,48 @@ private with System;
 private with Interfaces.C;
 private with Interfaces.C.Strings;
 
---  == Database Statements ==
---  The <tt>ADO.Statements</tt> package provides high level operations to construct database
+--  = Database Statements =
+--  The `ADO.Statements` package provides high level operations to construct database
 --  statements and execute them.  They allow to represent SQL statements (prepared or not)
 --  and provide support to execute them and retreive their result.  The SQL statements are
 --  represented by several Ada types depending on their behavior:
 --
---  The <tt>Statement</tt> type represents the base type for all the SQL statements.
---  The <tt>Query_Statement</tt> type is intended to be used for database query statements
---  and provides additional operations to retrieve results.
---  The <tt>Update_Statement</tt> type targets the database update statements and it
---  provides specific operations to update fields.  The <tt>Insert_Statement</tt>
---  extends the <tt>Update_Statement</tt> type and is intended for database insertion.
---  The <tt>Delete_Statement</tt> type is intended to be used to remove elements
---  from the database.
+--  * The `Statement` type represents the base type for all the SQL statements.
+--  * The `Query_Statement` type is intended to be used for database query statements
+--    and provides additional operations to retrieve results.
+--  * The `Update_Statement` type targets the database update statements and it
+--    provides specific operations to update fields.  The `Insert_Statement`
+--    extends the `Update_Statement` type and is intended for database insertion.
+--  * The `Delete_Statement` type is intended to be used to remove elements
+--    from the database.
 --
 --  The database statements are created by using the database session and by providing
---  the SQL or the query to be used.
---
---    Stmt : Query_Statement := Session.Create_Statement
---              ("select * from user where name = :name");
+--  the SQL or the named query to be used.
 --
 --  @include ado-parameters.ads
 --
---  === Query Statement ===
---  The database query statement is represented by the <tt>Query_Statement</tt> type.
---  The <tt>Create_Statement</tt> operation is provided on the <tt>Session</tt> type
+--  == Query Statement ==
+--  The database query statement is represented by the `Query_Statement` type.
+--  The `Create_Statement` operation is provided on the `Session` type
 --  and it gets the SQL to execute as parameter.  For example:
 --
 --    Stmt : ADO.Statements.Query_Statement := Session.Create_Statement
 --              ("select * from user where name = :name");
 --
 --  After the creation of the query statement, the parameters for the SQL query are provided
---  by using either the <tt>Bind_Param</tt> or <tt>Add_Param</tt> procedures as follows:
+--  by using either the `Bind_Param` or `Add_Param` procedures as follows:
 --
 --    Stmt.Bind_Param ("name", name);
 --
 --  Once all the parameters are defined, the query statement is executed by calling the
---  <tt>Execute</tt> procedure:
+--  `Execute` procedure:
 --
 --    Stmt.Execute;
 --
---  Several operations are provided to retrieve the result.  First, the <tt>Has_Elements</tt>
+--  Several operations are provided to retrieve the result.  First, the `Has_Elements`
 --  function will indicate whether some database rows are available in the result.  It is then
---  possible to retrieve each row and proceed to the next one by calling the <tt>Next</tt>
---  procedure.  The number of rows is also returned by the <tt>Get_Row_Count</tt> function.
+--  possible to retrieve each row and proceed to the next one by calling the `Next`
+--  procedure.  The number of rows is also returned by the `Get_Row_Count` function.
 --  A simple loop to iterate over the query result looks like:
 --
 --    while Stmt.Has_Elements loop
@@ -82,6 +79,7 @@ private with Interfaces.C.Strings;
 --       Stmt.Next;
 --    end loop;
 --
+--  @include ado-queries.ads
 package ADO.Statements is
 
    use Ada.Strings.Unbounded;
