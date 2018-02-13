@@ -181,31 +181,31 @@ doc:  docs/ado-book.pdf docs/ado-book.html
 	$(DYNAMO) build-doc -markdown wiki
 
 ADO_DOC= \
-  docs/title.md \
-  docs/pagebreak.tex \
-  docs/index.md \
-  docs/pagebreak.tex \
-  docs/Installation.md \
-  docs/pagebreak.tex \
-  docs/Tutorial.md \
-  docs/pagebreak.tex \
-  docs/ADO_Sessions.md \
-  docs/pagebreak.tex \
-  docs/ADO_Objects.md \
-  docs/pagebreak.tex \
-  docs/ADO_Statements.md \
-  docs/pagebreak.tex \
-  docs/ADO_Drivers.md
+  title.md \
+  pagebreak.tex \
+  index.md \
+  pagebreak.tex \
+  Installation.md \
+  pagebreak.tex \
+  Tutorial.md \
+  pagebreak.tex \
+  ADO_Sessions.md \
+  pagebreak.tex \
+  ADO_Objects.md \
+  pagebreak.tex \
+  ADO_Statements.md \
+  pagebreak.tex \
+  ADO_Drivers.md
 
-DOC_OPTIONS=-f markdown -o docs/ado-book.pdf --listings --number-sections --toc
-HTML_OPTIONS=-f markdown -o docs/ado-book.html --listings --number-sections --toc --css docs/pandoc.css
+DOC_OPTIONS=-f markdown -o ado-book.pdf --listings --number-sections --toc
+HTML_OPTIONS=-f markdown -o ado-book.html --listings --number-sections --toc --css pandoc.css
 
 docs/ado-book.pdf: $(ADO_DOC_DEP) force
 	$(DYNAMO) build-doc -pandoc docs
-	pandoc $(DOC_OPTIONS) --template=./docs/eisvogel.tex $(ADO_DOC)
+	cd docs && pandoc $(DOC_OPTIONS) --template=./eisvogel.tex $(ADO_DOC)
 
 docs/ado-book.html: docs/ado-book.pdf force
-	pandoc $(HTML_OPTIONS) $(ADO_DOC)
+	cd docs && pandoc $(HTML_OPTIONS) $(ADO_DOC)
 
 endif
 endif
