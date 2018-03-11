@@ -177,6 +177,8 @@ AC_SUBST(WITH_ADO_SQLITE)
 # Check to enable/disable shared library
 ##########################################
 AM_SHARED_LIBRARY_SUPPORT
+AM_DISTRIB_SUPPORT
+AM_COVERAGE_SUPPORT
 
 ##########################################
 # Ada Util library
