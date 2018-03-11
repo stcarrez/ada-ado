@@ -592,6 +592,9 @@ GPRINSTALL
 ADO_SQLITE_LIBRARY_OPTIONS
 ADO_MYSQL_LIBRARY_OPTIONS
 UTIL_DIR
+BUILDS_COVERAGE
+MODE
+BUILDS_DISTRIB
 BUILDS_SHARED
 WITH_ADO_SQLITE
 WITH_ADO_MYSQL
@@ -687,6 +690,8 @@ enable_mariadb
 enable_sqlite
 with_mysql
 enable_shared
+enable_distrib
+enable_coverage
 with_ada_util
 enable_link_options_mysql
 enable_link_options_sqlite
@@ -1326,6 +1331,8 @@ Optional Features:
   --enable-mariadb        build MariaDB support (MySQL alternative)
   --enable-sqlite         build SQLite support
   --enable-shared         Enable the shared libraries (disabled)
+  --enable-distrib        build for distribution, optimized and strip symbols (enabled)
+  --enable-coverage       build with coverage support -fprofile-arcs -ftest-coverage (disabled)
   --enable-link-options-mysql=opts
                           Add some linker options when building the MySQL driver shared library (disabled)
   --enable-link-options-sqlite=opts
@@ -3523,6 +3530,48 @@ fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${ac_enable_shared}" >&5
 $as_echo "${ac_enable_shared}" >&6; }
   BUILDS_SHARED=$ac_enable_shared
+
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking distribution build" >&5
+$as_echo_n "checking distribution build... " >&6; }
+  ac_enable_distrib=yes
+  ac_build_mode=distrib
+  # Check whether --enable-distrib was given.
+if test "${enable_distrib+set}" = set; then :
+  enableval=$enable_distrib; case "${enableval}" in
+      no|none)  ac_enable_distrib=no
+                ac_build_mode=debug
+                ;;
+      *)        ac_enable_distrib=yes
+                ac_build_mode=distrib
+                ;;
+    esac
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${ac_enable_distrib}" >&5
+$as_echo "${ac_enable_distrib}" >&6; }
+  BUILDS_DISTRIB=$ac_enable_distrib
+
+
+  MODE=$ac_build_mode
+
+
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking coverage support" >&5
+$as_echo_n "checking coverage support... " >&6; }
+  ac_enable_coverage=no
+  # Check whether --enable-coverage was given.
+if test "${enable_coverage+set}" = set; then :
+  enableval=$enable_coverage; case "${enableval}" in
+      no|none)  ac_enable_coverage=no ;;
+      *)        ac_enable_coverage=yes ;;
+    esac
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: ${ac_enable_coverage}" >&5
+$as_echo "${ac_enable_coverage}" >&6; }
+  BUILDS_COVERAGE=$ac_enable_coverage
 
 
 
