@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,6 @@ with Util.Log.Loggers;
 
 with ADO.Drivers.Dialects;
 package body ADO.Statements.Sqlite is
-
-   use Ada.Calendar;
 
    use type ADO.Schemas.Class_Mapping_Access;
 
@@ -92,7 +90,6 @@ package body ADO.Statements.Sqlite is
                          Buffer : in out Unbounded_String;
                          Item   : in ADO.Blob_Ref) is
       pragma Unreferenced (D);
-      use type Ada.Streams.Stream_Element;
 
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
@@ -352,9 +349,6 @@ package body ADO.Statements.Sqlite is
    --  Execute the query
    --  ------------------------------
    procedure Execute (Query : in out Sqlite_Query_Statement) is
-      use Sqlite3_H;
-      use System;
-
       Result : int;
    begin
       if Query.This_Query.Has_Join then
