@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-parameters-tests -- Test query parameters and SQL expansion
---  Copyright (C) 2011, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -319,8 +319,8 @@ package body ADO.Parameters.Tests is
       SQL : ADO.Parameters.List;
       D   : aliased Dialect;
       C   : aliased ADO.Caches.Cache_Manager;
-      M   : constant access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
-      P   : constant access Int_Cache.Cache_Type := new Int_Cache.Cache_Type;
+      M   : constant Int_Cache.Cache_Type_Access := new Int_Cache.Cache_Type;
+      P   : constant Int_Cache.Cache_Type_Access := new Int_Cache.Cache_Type;
 
       procedure Check (Content : in String;
                        Expect  : in String) is
