@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-tests -- Test statements package
---  Copyright (C) 2015, 2017 Stephane Carrez
+--  Copyright (C) 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,8 +24,6 @@ with ADO.Sessions;
 
 with Regtests.Statements.Model;
 package body ADO.Statements.Tests is
-
-   use Util.Tests;
 
    procedure Populate (Tst : in out Test);
    function Get_Sum (T     : in Test;
