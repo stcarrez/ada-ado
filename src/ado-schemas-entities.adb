@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-entities -- Entity types cache
---  Copyright (C) 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,7 @@ with ADO.Statements;
 with ADO.Model;
 package body ADO.Schemas.Entities is
 
-   use Util.Log;
-
-   Log : constant Loggers.Logger := Loggers.Create ("ADO.Schemas.Entities");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Schemas.Entities");
 
    --  ------------------------------
    --  Expand the name into a target parameter value to be used in the SQL query.
@@ -77,8 +75,6 @@ package body ADO.Schemas.Entities is
    --  ------------------------------
    procedure Initialize (Cache   : in out Entity_Cache;
                          Session : in out ADO.Sessions.Session'Class) is
-      use type Ada.Containers.Count_Type;
-
       Query : ADO.SQL.Query;
       Stmt  : ADO.Statements.Query_Statement
         := Session.Create_Statement (ADO.Model.ENTITY_TYPE_TABLE'Access);
