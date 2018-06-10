@@ -21,7 +21,7 @@ library project Ado is
                               "ADO.Drivers", "ADO.Drivers.Connections", "ADO.Drivers.Dialects",
                               "ADO.Schemas", "ADO.Schemas.Entities", "ADO.Sql",
                               "ADO.Objects", "ADO.Objects.Cache",
-                              "ADO.Caches",
+                              "ADO.Caches", "ADO.Caches.Discrete",
                               "ADO.Sequences", "ADO.Sequences.Hilo",
                               "ADO.Datasets",
                               "ADO.Utils",
