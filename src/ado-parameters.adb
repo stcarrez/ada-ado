@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -432,7 +432,6 @@ package body ADO.Parameters is
    --  ------------------------------
    function Expand (Params : in Abstract_List'Class;
                     SQL    : in String) return String is
-      use ADO.Parameters;
 
       --  Format and append the date to the buffer.
       procedure Append_Date (Buffer : in out Unbounded_String;
