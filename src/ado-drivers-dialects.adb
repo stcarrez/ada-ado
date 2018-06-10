@@ -54,7 +54,6 @@ package body ADO.Drivers.Dialects is
                          Buffer : in out Unbounded_String;
                          Item   : in ADO.Blob_Ref) is
       pragma Unreferenced (D);
-      use type Ada.Streams.Stream_Element;
 
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
