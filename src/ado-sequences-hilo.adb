@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ package body ADO.Sequences.Hilo is
 
    use Util.Log;
    use ADO.Sessions;
-   use Sequence_Maps;
    use ADO.Model;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Sequences.Hilo");
