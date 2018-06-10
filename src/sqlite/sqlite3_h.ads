@@ -7,7 +7,7 @@ package Sqlite3_H is
    pragma Preelaborate;
 
    pragma Warnings (Off);
-   pragma Warnings (Off, "*style*");
+   pragma Style_Checks ("N");
 
   --  unsupported macro: SQLITE_EXTERN extern
 
