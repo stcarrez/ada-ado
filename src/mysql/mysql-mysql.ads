@@ -25,7 +25,7 @@ with Mysql.Com;
 package Mysql.Mysql is
    pragma Preelaborate;
    pragma Warnings (Off);
-   pragma Warnings (Off, "*style*");
+   pragma Style_Checks ("N");
 
    use Mysql;
 
