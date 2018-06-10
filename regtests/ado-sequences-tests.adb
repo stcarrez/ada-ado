@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,6 @@ with ADO.Sequences.Hilo;
 with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
 package body ADO.Sequences.Tests is
-
-   use Util.Tests;
 
    type Test_Impl is
      new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
