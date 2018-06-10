@@ -66,10 +66,11 @@ package ADO.Parameters is
 
    type Parameter (T   : Parameter_Type;
                    Len : Natural;
-                   Value_Len : Natural) is record
-      Position : Natural := 0;
-      Name     : String (1 .. Len);
-      case T is
+                   Value_Len : Natural) is
+      record
+         Position : Natural := 0;
+         Name     : String (1 .. Len);
+         case T is
          when T_NULL =>
             null;
 
@@ -90,8 +91,8 @@ package ADO.Parameters is
 
          when others =>
             Str : String (1 .. Value_Len);
-      end case;
-   end record;
+         end case;
+      end record;
 
    type Expander is limited interface;
    type Expander_Access is access all Expander'Class;
