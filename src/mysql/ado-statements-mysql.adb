@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,6 @@ with ADO.Drivers.Dialects;
 package body ADO.Statements.Mysql is
 
    use Util.Log;
-   use Ada.Calendar;
    use System.Storage_Elements;
    use type ADO.Schemas.Class_Mapping_Access;
 
@@ -139,7 +138,6 @@ package body ADO.Statements.Mysql is
                          Buffer : in out Unbounded_String;
                          Item   : in ADO.Blob_Ref) is
       pragma Unreferenced (D);
-      use type Ada.Streams.Stream_Element;
 
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
@@ -412,8 +410,6 @@ package body ADO.Statements.Mysql is
    --  ------------------------------
    function Get_Field_Length (Query  : in Mysql_Query_Statement'Class;
                               Column : in Natural) return Natural is
-      use System;
-
       R : System_Access;
    begin
       if Query.Row = null then
@@ -432,8 +428,6 @@ package body ADO.Statements.Mysql is
    --  ------------------------------
    overriding
    procedure Execute (Stmt : in out Mysql_Query_Statement) is
-      use System;
-
       Result : int;
    begin
       if Stmt.This_Query.Has_Join then
@@ -492,7 +486,6 @@ package body ADO.Statements.Mysql is
    --  ------------------------------
    overriding
    function Has_Elements (Query : in Mysql_Query_Statement) return Boolean is
-      use System;
    begin
       if Query.Status = DONE
         or else Query.Status = ERROR
@@ -747,7 +740,6 @@ package body ADO.Statements.Mysql is
 
    overriding
    procedure Finalize (Query : in out Mysql_Query_Statement) is
-      use System;
    begin
       if Query.Result /= null then
          Mysql_Free_Result (Query.Result);
