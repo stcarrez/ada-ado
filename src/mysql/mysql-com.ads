@@ -24,7 +24,7 @@ package Mysql.Com is
    pragma Preelaborate;
 
    pragma Warnings (Off);
-   pragma Warnings (Off, "*style*");
+   pragma Style_Checks ("N");
 
    subtype my_socket is int;  -- /usr/include/mysql/mysql.h:66:13
 
