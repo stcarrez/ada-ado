@@ -223,7 +223,6 @@ package body ADO.Drivers.Connections.Sqlite is
                                 Result : in out Ref.Ref'Class) is
       pragma Unreferenced (D);
       use Strings;
-      use type System.Address;
 
       Name     : constant String := To_String (Config.Database);
       Filename : Strings.chars_ptr;
