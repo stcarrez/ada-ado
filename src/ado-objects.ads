@@ -447,8 +447,7 @@ private
    --
    type Object_Record (Key_Type : Object_Key_Type;
                        Of_Class : ADO.Schemas.Class_Mapping_Access) is
-     abstract new Ada.Finalization.Limited_Controlled
-       with record
+     abstract new Ada.Finalization.Limited_Controlled with record
       Counter    : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
       Session    : Session_Proxy_Access := null;
       Key        : Object_Key (Of_Type => Key_Type, Of_Class => Of_Class);
