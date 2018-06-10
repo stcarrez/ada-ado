@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,8 +39,6 @@ package body ADO.Tests is
 
    use Ada.Exceptions;
    use ADO.Statements;
-   use type Regtests.Simple.Model.User_Ref;
-   use type Regtests.Simple.Model.Allocate_Ref;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Tests");
 
@@ -171,7 +169,6 @@ package body ADO.Tests is
    --    Object.Save (update)
    --  ------------------------------
    procedure Test_Create_Save (T : in out Test) is
-      use ADO.Objects;
       use type ADO.Sessions.Connection_Status;
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
@@ -197,10 +194,7 @@ package body ADO.Tests is
    --    Object.Save (with creation)
    --  ------------------------------
    procedure Test_Perf_Create_Save (T : in out Test) is
-      use ADO.Objects;
-
       DB : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-
       S  : Util.Measures.Stamp;
    begin
       DB.Begin_Transaction;
@@ -236,7 +230,6 @@ package body ADO.Tests is
    --  Test string insert.
    --  ------------------------------
    procedure Test_String (T : in out Test) is
-      use ADO.Objects;
       use Ada.Strings.Unbounded;
 
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
@@ -266,7 +259,6 @@ package body ADO.Tests is
    --  Test blob insert.
    --  ------------------------------
    procedure Test_Blob (T : in out Test) is
-      use ADO.Objects;
       use Ada.Streams;
 
       procedure Assert_Equals is
