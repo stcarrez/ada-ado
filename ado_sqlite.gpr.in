@@ -23,8 +23,8 @@ project Ado_Sqlite is
 
    end case;
 
-   for Library_Dir use "lib/ado-sqlite/" & Project'Library_Kind;
-   for Object_Dir use "obj/ado-sqlite/" & Project'Library_Kind;
+   for Library_Dir use "lib/ado_sqlite/" & Project'Library_Kind;
+   for Object_Dir use "obj/ado_sqlite/" & Project'Library_Kind;
 
    package Linker is
       for Linker_Options use ("-lsqlite3");
