@@ -22,19 +22,11 @@ AC_INIT(src/ado.ads)
 AC_CANONICAL_SYSTEM
 dnl AM_MAINTAINER_MODE
 
-AM_GNAT_CHECK_GPRBUILD
-
 # Current release settings
 ADO_MAJOR_VERSION=1
 ADO_MINOR_VERSION=2
 ADO_MICRO_VERSION=0
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
-
-# checking for local tools
-AC_PROG_CC
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-AC_PROG_LN_S
 
 AC_SUBST(ADO_VERSION)
 AC_SUBST(ADO_MAJOR_VERSION)
@@ -46,11 +38,6 @@ AC_SUBST(EXEC_PREFIX)
 
 ADO_LIBDIR="lib"
 AC_SUBST(ADO_LIBDIR)
-
-AC_MSG_CHECKING([number of processors])
-NR_CPUS=`getconf _NPROCESSORS_CONF 2>/dev/null || getconf NPROCESSORS_CONF 2>/dev/null || echo 1`
-AC_MSG_RESULT($NR_CPUS)
-AC_SUBST(NR_CPUS)
 
 AC_CHECK_PROG(HAVE_PANDOC,pandoc,yes)
 AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
@@ -176,9 +163,7 @@ AC_SUBST(WITH_ADO_SQLITE)
 ##########################################
 # Check to enable/disable shared library
 ##########################################
-AM_SHARED_LIBRARY_SUPPORT
-AM_DISTRIB_SUPPORT
-AM_COVERAGE_SUPPORT
+AM_GNAT_LIBRARY_PROJECT(ado)
 
 ##########################################
 # Ada Util library
@@ -222,8 +207,6 @@ else
 fi
 AC_MSG_RESULT($opts)
 AC_SUBST(ADO_SQLITE_LIBRARY_OPTIONS)
-
-AM_UTIL_CHECK_INSTALL
 
 AC_OUTPUT(
 Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
