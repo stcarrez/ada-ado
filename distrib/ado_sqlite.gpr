@@ -12,8 +12,8 @@ project Ado_Sqlite is
    case Library_Type is
       when "dynamic" | "relocatable" =>
          for Library_Name use "ada_ado_sqlite";
-	     for Source_Dirs use (Util_Config.Includedir & "/ada-ado-sqlite");
-		 for Library_ALI_Dir use Util_Config.Alidir & "/ada-ado-sqlite/";
+	     for Source_Dirs use (Util_Config.Includedir & "/ado_sqlite");
+		 for Library_ALI_Dir use Util_Config.Alidir & "/ado_sqlite/";
 		 for Library_Dir use Util_Config.Libdir;
 		 for Library_Kind use Library_Type;
 

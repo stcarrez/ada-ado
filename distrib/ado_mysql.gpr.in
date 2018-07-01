@@ -12,8 +12,8 @@ project Ado_Mysql is
    case Library_Type is
       when "dynamic" | "relocatable" =>
          for Library_Name use "ada_ado_mysql";
-	     for Source_Dirs use (Util_Config.Includedir & "/ada-ado-mysql");
-		 for Library_ALI_Dir use Util_Config.Alidir & "/ada-ado-mysql/";
+	     for Source_Dirs use (Util_Config.Includedir & "/ado_mysql");
+		 for Library_ALI_Dir use Util_Config.Alidir & "/ado_mysql/";
 		 for Library_Dir use Util_Config.Libdir;
 		 for Library_Kind use Library_Type;
 
