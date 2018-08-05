@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -170,13 +170,15 @@ package body ADO.Objects is
    --  ------------------------------
    overriding
    procedure Finalize (Object : in out Object_Ref) is
+      procedure Free is new
+        Ada.Unchecked_Deallocation (Object => Object_Record'Class,
+                                    Name   => Object_Record_Access);
       Is_Zero : Boolean;
    begin
       if Object.Object /= null then
          Util.Concurrent.Counters.Decrement (Object.Object.Counter, Is_Zero);
          if Is_Zero then
-            Destroy (Object.Object);
-            Object.Object := null;
+            Free (Object.Object);
          end if;
       end if;
    end Finalize;
@@ -557,6 +559,39 @@ package body ADO.Objects is
    begin
       if Into /= Value then
          Ada.Strings.Unbounded.Set_Unbounded_String (Into, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_String;
+
+   procedure Set_Field_String (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out ADO.Nullable_String;
+                               Value  : in String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Into.Is_Null or else Into.Value /= Value then
+         Into.Is_Null := False;
+         Ada.Strings.Unbounded.Set_Unbounded_String (Into.Value, Value);
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_String;
+
+   procedure Set_Field_String (Object : in out Object_Record'Class;
+                               Field  : in Positive;
+                               Into   : in out ADO.Nullable_String;
+                               Value  : in ADO.Nullable_String) is
+      use Ada.Strings.Unbounded;
+   begin
+      if Into.Is_Null then
+         if not Value.Is_Null then
+            Into := Value;
+            Object.Modified (Field) := True;
+         end if;
+      elsif Value.Is_Null then
+         Into.Is_Null := True;
+         Object.Modified (Field) := True;
+      elsif Into.Value /= Value.Value then
+         Into.Value := Value.Value;
          Object.Modified (Field) := True;
       end if;
    end Set_Field_String;
