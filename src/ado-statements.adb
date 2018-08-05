@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -556,6 +556,27 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Nullable_String</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Nullable_String (Query  : Query_Statement;
+                                 Column : Natural) return Nullable_String is
+   begin
+      if Query.Proxy = null then
+         return Result : Nullable_String do
+            Result.Is_Null := Query_Statement'Class (Query).Is_Null (Column);
+            if not Result.Is_Null then
+               Result.Value := Query_Statement'Class (Query).Get_Unbounded_String (Column);
+            end if;
+         end return;
+      else
+         return Query.Proxy.Get_Nullable_String (Column);
+      end if;
+   end Get_Nullable_String;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -871,6 +892,21 @@ package body ADO.Statements is
                          Value  : in Unbounded_String) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_String) is
+   begin
+      if Value.Is_Null then
+         Update.Save_Null_Field (Name);
+      else
+         Update.Save_Field (Name, Value.Value);
+      end if;
    end Save_Field;
 
    --  ------------------------------
