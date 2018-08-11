@@ -150,6 +150,11 @@ if test "${ENABLE_POSTGRESQL}" = "yes" ; then
     ADO_HAVE_POSTGRESQL=yes
     WITH_ADO_POSTGRESQL="with \"ado_postgresql\";";
   ])
+
+  AC_CHECK_PROG(PSQL_CHECK,psql,yes)
+  if test x"$PSQL_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install psql command line to use Postgresql.])
+  fi
 fi
 
 
