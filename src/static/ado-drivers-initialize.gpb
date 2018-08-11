@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers Initialize -- Database driver initialization for static libraries
---  Copyright (C) 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,9 @@ with ADO.Drivers.Connections.Mysql;
 #if HAVE_SQLITE
 with ADO.Drivers.Connections.Sqlite;
 #end if;
+#if HAVE_POSTGRESQL
+with ADO.Drivers.Connections.Postgresql;
+#end if;
 
 separate (ADO.Drivers)
 
@@ -33,5 +36,8 @@ begin
 #end if;
 #if HAVE_SQLITE
    ADO.Drivers.Connections.Sqlite.Initialize;
+#end if;
+#if HAVE_POSTGRESQL
+   ADO.Drivers.Connections.Postgresql.Initialize;
 #end if;
 end Initialize;
