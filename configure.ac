@@ -59,6 +59,11 @@ AC_ARG_ENABLE(sqlite,
 ENABLE_SQLITE=$enableval,
 ENABLE_SQLITE=yes)
 
+AC_ARG_ENABLE(postgresql,
+[  --enable-postgresql     build Postgresql support],
+ENABLE_POSTGRESQL=$enableval,
+ENABLE_POSTGRESQL=yes)
+
 DB=""
 WITH_ADO_MYSQL=""
 ADO_HAVE_MYSQL=no
@@ -132,12 +137,22 @@ if test "${ENABLE_SQLITE}" = "yes" ; then
 fi
 
 
+WITH_ADO_POSTGRESQL=""
+ADO_HAVE_POSTGRESQL=no
+if test "${ENABLE_POSTGRESQL}" = "yes" ; then
+  AC_CHECK_LIB(pq,PQexec,[
+    DB="$DB postgresql"
+    ADO_HAVE_POSTGRESQL=yes
+    WITH_ADO_POSTGRESQL="with \"ado_postgresql\";";
+  ])
+fi
+
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
 ADO_DATABASES_SRC_DIR=''
 if test -z "$DB"; then
-  AC_MSG_ERROR([No database supported.  Try to install mysql or sqlite development libraries])
+  AC_MSG_ERROR([No database supported.  Try to install mysql, sqlite or postgresql development libraries])
 else
   ADO_DATABASES_SRC_DIR=
   for i in $DB; do
@@ -155,10 +170,12 @@ AC_SUBST(ADO_TESTS_SRC_DIR)
 AC_SUBST(ADO_TESTS_HARNESS)
 AC_SUBST(ADO_HAVE_MYSQL)
 AC_SUBST(ADO_HAVE_SQLITE)
+AC_SUBST(ADO_HAVE_POSTGRESQL)
 AC_SUBST(MYSQL_LIBNAME)
 AC_SUBST(MYSQL_LIBS)
 AC_SUBST(WITH_ADO_MYSQL)
 AC_SUBST(WITH_ADO_SQLITE)
+AC_SUBST(WITH_ADO_POSTGRESQL)
 
 ##########################################
 # Check to enable/disable shared library
@@ -208,6 +225,23 @@ fi
 AC_MSG_RESULT($opts)
 AC_SUBST(ADO_SQLITE_LIBRARY_OPTIONS)
 
+AC_ARG_ENABLE(link-options-postgresql,
+[  --enable-link-options-postgresql=opts
+                          Add some linker options when building the Postgresql driver shared library (disabled)],
+[
+  ADO_POSTGRESQL_LIBRARY_OPTIONS=${enableval}
+])
+AC_MSG_CHECKING([for additional linker options for libada_ado_postgresql])
+if test "T${ADO_POSTGRESQL_LIBRARY_OPTIONS}" != T; then
+    ADO_POSTGRESQL_LIBRARY_OPTIONS="\"-Wl,${ADO_POSTGRESQL_LIBRARY_OPTIONS}\""
+    opts=${ADO_POSTGRESQL_LIBRARY_OPTIONS}
+else
+    opts=none
+fi
+AC_MSG_RESULT($opts)
+AC_SUBST(ADO_POSTGRESQL_LIBRARY_OPTIONS)
+
 AC_OUTPUT(
 Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
+ado_postgresql.gpr
 )
