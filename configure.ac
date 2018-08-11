@@ -134,6 +134,11 @@ if test "${ENABLE_SQLITE}" = "yes" ; then
     ADO_HAVE_SQLITE=yes
 	WITH_ADO_SQLITE="with \"ado_sqlite\";";
   ])
+
+  AC_CHECK_PROG(SQLITE3_CHECK,sqlite3,yes)
+  if test x"$SQLITE3_CHECK" != x"yes" ; then
+    AC_MSG_ERROR([Please install sqlite3 command line to use SQLite.])
+  fi
 fi
 
 
