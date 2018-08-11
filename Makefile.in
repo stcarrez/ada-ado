@@ -15,6 +15,7 @@ DYNAMO=dynamo
 GPRPATH=ado.gpr
 ADO_MYSQL_GPRPATH=ado_mysql.gpr
 ADO_SQLITE_GPRPATH=ado_sqlite.gpr
+ADO_POSTGRESQL_GPRPATH=ado_postgresql.gpr
 
 version=@ADO_VERSION@
 
@@ -26,6 +27,7 @@ DIST_FILE=ada-ado-@ADO_VERSION@.tar.gz
 
 HAVE_MYSQL=@ADO_HAVE_MYSQL@
 HAVE_SQLITE=@ADO_HAVE_SQLITE@
+HAVE_POSTGRESQL=@ADO_HAVE_POSTGRESQL@
 HAVE_PANDOC=@HAVE_PANDOC@
 HAVE_DYNAMO=@HAVE_DYNAMO@
 
@@ -85,6 +87,7 @@ endif
 
 mysql_src_dir=${srcdir}/src/mysql
 sqlite_src_dir=${srcdir}/src/sqlite
+postgresql_src_dir=${srcdir}/src/postgresql
 
 ifeq (${BUILDS_SHARED},yes)
 all:     static shared
@@ -102,6 +105,9 @@ ifeq (${HAVE_SQLITE},yes)
 endif
 ifeq (${HAVE_MYSQL},yes)
 	$(GNATMAKE) -m -p -P"$(ADO_MYSQL_GPRPATH)" $(MAKE_ARGS)
+endif
+ifeq (${HAVE_POSTGRESQL},yes)
+	$(GNATMAKE) -m -p -P"$(ADO_POSTGRESQL_GPRPATH)" $(MAKE_ARGS)
 endif
 	$(GNATMAKE) -m -p -Pado_tests $(MAKE_ARGS) -largs -Llib/ado/${ADO_LIBRARY_TYPE}
 
@@ -127,8 +133,10 @@ autobuild:
 src/static/ado-drivers-initialize.adb: src/static/ado-drivers-initialize.gpb Makefile
 	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
 	sqlite=`(test T$(HAVE_SQLITE) = Tyes && echo True) || echo False`; \
+	postgresql=`(test T$(HAVE_POSTGRESQL) = Tyes && echo True) || echo False`; \
 	gnatprep -DHAVE_MYSQL=$$mysql \
 	          -DHAVE_SQLITE=$$sqlite \
+	          -DHAVE_POSTGRESQL=$$postgresql \
 		  src/static/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
@@ -139,12 +147,14 @@ src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile
 regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile
 	mysql=`(test T$(HAVE_MYSQL) = Tyes && echo True) || echo False`; \
 	sqlite=`(test T$(HAVE_SQLITE) = Tyes && echo True) || echo False`; \
+	postgresql=`(test T$(HAVE_POSTGRESQL) = Tyes && echo True) || echo False`; \
 	gnatprep -DHAVE_MYSQL=$$mysql \
 	         -DHAVE_SQLITE=$$sqlite \
+	         -DHAVE_POSTGRESQL=$$postgresql \
 		 regtests/ado-testsuite-drivers.gpb $@
 
 # Build and run the unit tests
-test:	test-sqlite test-mysql
+test:	test-sqlite test-mysql test-postgresql
 
 test-sqlite:		build regtests.db
 ifeq (${HAVE_SQLITE},yes)
@@ -154,6 +164,11 @@ endif
 test-mysql:		build create-mysql-tests
 ifeq (${HAVE_MYSQL},yes)
 	bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
+endif
+
+test-postgresql:	build create-postgresql-tests
+ifeq (${HAVE_POSTGRESQL},yes)
+	bin/ado_harness -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
 CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
@@ -236,6 +251,12 @@ ifeq (${HAVE_MYSQL},yes)
 	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
 endif
 
+create-postgresql-tests:
+ifeq (${HAVE_POSTGRESQL},yes)
+	psql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
+	psql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
+endif
+
 dist:
 	git archive -o $(DIST_FILE) --prefix=$(distdir)/ HEAD
 
@@ -260,31 +281,41 @@ ifeq (${HAVE_SQLITE},yes)
 	    $(MAKE_ARGS) \
 		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_SQLITE_GPRPATH)
 endif
+ifeq (${HAVE_POSTGRESQL},yes)
+	$(GPRINSTALL) -p -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
+		--build-name=$(ADO_LIBRARY_TYPE) $(ADO_POSTGRESQL_GPRPATH)
+endif
 else
 	rm -rf ${alidir}/ada-ado-mysql \
 	       ${alidir}/ada-ado-sqlite \
+	       ${alidir}/ada-ado-postgresql \
 	       ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 	$(MKDIR) -p ${includedir}/ada-ado ${includedir}/ada-ado/static ${includedir}/ada-ado/dynamic
 	$(MKDIR) -p ${projectdir}/
 	${MKDIR} -p ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${includedir}/ada-ado-sqlite
+	test T${HAVE_POSTGRESQL} = Tno || ${MKDIR} -p ${includedir}/ada-ado-postgresql
 	${CP} -p src/*.ad[bs] ${includedir}/ada-ado
 	${CP} -p src/dynamic/*.ad[bs] ${includedir}/ada-ado/dynamic
 	${CP} -p src/static/*.ad[bs] ${includedir}/ada-ado/static
 	${CP} -p src/model/*.ad[bs] ${includedir}/ada-ado
 	test T${HAVE_MYSQL} = Tno || ${CP} -p ${mysql_src_dir}/*.ad[bs] ${includedir}/ada-ado-mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} -p ${sqlite_src_dir}/*.ad[bs] ${includedir}/ada-ado-sqlite
+	test T${HAVE_POSTGRESQL} = Tno || ${CP} -p ${postgresql_src_dir}/*.ad[bs] ${includedir}/ada-ado-postgresql
 	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" < distrib/ado.gpr > ${projectdir}/ado.gpr
 	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_mysql.gpr > ${projectdir}/ado_mysql.gpr
 	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
 		< distrib/ado_sqlite.gpr > ${projectdir}/ado_sqlite.gpr
+	sed -e "s,xLIBRARY_TYPE,$(ADO_LIBRARY_TYPE),g" \
+		< distrib/ado_postgresql.gpr > ${projectdir}/ado_postgresql.gpr
 	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/*.ali ${alidir}/ada-ado/$(ADO_LIBRARY_TYPE)
 ifeq ($(ADO_LIBRARY_TYPE),static)
 	${CP} lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).a ${libdir}/
 else
-	${MKDIR} -p ${alidir}/ada-ado-mysql ${alidir}/ada-ado-sqlite
+	${MKDIR} -p ${alidir}/ada-ado-mysql ${alidir}/ada-ado-sqlite ${alidir}/ada-ado-postgresql
 	${CP} -p lib/ado/$(ADO_LIBRARY_TYPE)/$(libname).$(LIBVER) ${libdir}/
 	test T${HAVE_MYSQL} = Tno || ${CP} -p lib/ado-mysql/$(ADO_LIBRARY_TYPE)/$(libprefix)mysql.$(LIBVER) ${libdir}/
 	test T${HAVE_SQLITE} = Tno || ${CP} -p lib/ado-sqlite/$(ADO_LIBRARY_TYPE)/$(libprefix)sqlite.$(LIBVER) ${libdir}/
@@ -312,9 +343,11 @@ install_dynamo:
 	${MKDIR} -p ${dynamodir}/ado/db
 	${CP} db/*.xml ${dynamodir}/ado/db/
 	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql
+	test T${HAVE_POSTGRESQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/postgresql
 	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
 	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
 	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
+	test T${HAVE_POSTGRESQL} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/postgresql
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
@@ -333,22 +366,31 @@ ifeq (${HAVE_SQLITE},yes)
 	    $(MAKE_ARGS) \
 		--uninstall $(ADO_SQLITE_GPRPATH)
 endif
+ifeq (${HAVE_POSTGRESQL},yes)
+	-$(GPRINSTALL) -q -f --prefix=${prefix} \
+	    $(MAKE_ARGS) \
+		--uninstall $(ADO_POSTGRESQL_GPRPATH)
+endif
 else
 	rm -rf ${includedir}/ada-ado
 	rm -rf ${includedir}/ada-ado-mysql
 	rm -rf ${includedir}/ada-ado-sqlite
+	rm -rf ${includedir}/ada-ado-postgresql
 	rm -rf ${alidir}/ada-ado
 	rm -rf ${alidir}/ada-ado-mysql
 	rm -rf ${alidir}/ada-ado-sqlite
 	rm -f ${libdir}/$(libname).a
 	rm -f ${libdir}/$(libprefix)mysql.a
 	rm -f ${libdir}/$(libprefix)sqlite.a
+	rm -f ${libdir}/$(libprefix)postgresql.a
 	rm -f ${libdir}/$(libname).so.${version}
 	rm -f ${libdir}/$(libprefix)mysql.so.${version}
 	rm -f ${libdir}/$(libprefix)sqlite.so.${version}
+	rm -f ${libdir}/$(libprefix)postgresql.so.${version}
 	rm -f ${projectdir}/ado.gpr
 	rm -f ${projectdir}/ado_mysql.gpr
 	rm -f ${projectdir}/ado_sqlite.gpr
+	rm -f ${projectdir}/ado_postgresql.gpr
 endif
 	rm -rf ${dynamodir}/ado
 
