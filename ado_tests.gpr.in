@@ -4,6 +4,7 @@ with "@UTIL_DIR@util_unit";
 with "ado";
 @WITH_ADO_SQLITE@
 @WITH_ADO_MYSQL@
+@WITH_ADO_POSTGRESQL@
 
 project Ado_Tests is
 
