@@ -584,6 +584,7 @@ PACKAGE_URL=
 ac_unique_file="src/ado.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+ADO_POSTGRESQL_LIBRARY_OPTIONS
 ADO_SQLITE_LIBRARY_OPTIONS
 ADO_MYSQL_LIBRARY_OPTIONS
 UTIL_DIR
@@ -606,10 +607,12 @@ GNATCLEAN
 GPRCLEAN
 GNATMAKE
 GPRBUILD
+WITH_ADO_POSTGRESQL
 WITH_ADO_SQLITE
 WITH_ADO_MYSQL
 MYSQL_LIBS
 MYSQL_LIBNAME
+ADO_HAVE_POSTGRESQL
 ADO_HAVE_SQLITE
 ADO_HAVE_MYSQL
 ADO_TESTS_HARNESS
@@ -688,6 +691,7 @@ enable_option_checking
 enable_mysql
 enable_mariadb
 enable_sqlite
+enable_postgresql
 with_mysql
 enable_shared
 enable_distrib
@@ -695,6 +699,7 @@ enable_coverage
 with_ada_util
 enable_link_options_mysql
 enable_link_options_sqlite
+enable_link_options_postgresql
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1330,6 +1335,7 @@ Optional Features:
   --enable-mysql          build MySQL support
   --enable-mariadb        build MariaDB support (MySQL alternative)
   --enable-sqlite         build SQLite support
+  --enable-postgresql     build Postgresql support
   --enable-shared         Enable the shared libraries (disabled)
   --enable-distrib        build for distribution, optimized and strip symbols (enabled)
   --enable-coverage       build with coverage support -fprofile-arcs -ftest-coverage (disabled)
@@ -1337,6 +1343,8 @@ Optional Features:
                           Add some linker options when building the MySQL driver shared library (disabled)
   --enable-link-options-sqlite=opts
                           Add some linker options when building the SQLite driver shared library (disabled)
+  --enable-link-options-postgresql=opts
+                          Add some linker options when building the Postgresql driver shared library (disabled)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -2125,6 +2133,14 @@ if test "${enable_sqlite+set}" = set; then :
   enableval=$enable_sqlite; ENABLE_SQLITE=$enableval
 else
   ENABLE_SQLITE=yes
+fi
+
+
+# Check whether --enable-postgresql was given.
+if test "${enable_postgresql+set}" = set; then :
+  enableval=$enable_postgresql; ENABLE_POSTGRESQL=$enableval
+else
+  ENABLE_POSTGRESQL=yes
 fi
 
 
@@ -3156,12 +3172,61 @@ fi
 fi
 
 
+WITH_ADO_POSTGRESQL=""
+ADO_HAVE_POSTGRESQL=no
+if test "${ENABLE_POSTGRESQL}" = "yes" ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PQexec in -lpq" >&5
+$as_echo_n "checking for PQexec in -lpq... " >&6; }
+if ${ac_cv_lib_pq_PQexec+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpq  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char PQexec ();
+int
+main ()
+{
+return PQexec ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_pq_PQexec=yes
+else
+  ac_cv_lib_pq_PQexec=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pq_PQexec" >&5
+$as_echo "$ac_cv_lib_pq_PQexec" >&6; }
+if test "x$ac_cv_lib_pq_PQexec" = xyes; then :
+
+    DB="$DB postgresql"
+    ADO_HAVE_POSTGRESQL=yes
+    WITH_ADO_POSTGRESQL="with \"ado_postgresql\";";
+
+fi
+
+fi
+
 
 ADO_TESTS_HARNESS=''
 ADO_TESTS_SRC_DIR=''
 ADO_DATABASES_SRC_DIR=''
 if test -z "$DB"; then
-  as_fn_error $? "No database supported.  Try to install mysql or sqlite development libraries" "$LINENO" 5
+  as_fn_error $? "No database supported.  Try to install mysql, sqlite or postgresql development libraries" "$LINENO" 5
 else
   ADO_DATABASES_SRC_DIR=
   for i in $DB; do
@@ -3173,6 +3238,8 @@ else
     ADO_TESTS_HARNESS="$ADO_TESTS_HARNESS \"ado_${i}_harness\""
   done
 fi
+
+
 
 
 
@@ -4150,7 +4217,26 @@ fi
 $as_echo "$opts" >&6; }
 
 
-ac_config_files="$ac_config_files Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr"
+# Check whether --enable-link-options-postgresql was given.
+if test "${enable_link_options_postgresql+set}" = set; then :
+  enableval=$enable_link_options_postgresql;
+  ADO_POSTGRESQL_LIBRARY_OPTIONS=${enableval}
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for additional linker options for libada_ado_postgresql" >&5
+$as_echo_n "checking for additional linker options for libada_ado_postgresql... " >&6; }
+if test "T${ADO_POSTGRESQL_LIBRARY_OPTIONS}" != T; then
+    ADO_POSTGRESQL_LIBRARY_OPTIONS="\"-Wl,${ADO_POSTGRESQL_LIBRARY_OPTIONS}\""
+    opts=${ADO_POSTGRESQL_LIBRARY_OPTIONS}
+else
+    opts=none
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $opts" >&5
+$as_echo "$opts" >&6; }
+
+
+ac_config_files="$ac_config_files Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr ado_postgresql.gpr"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -4866,6 +4952,7 @@ do
     "distrib/ado_mysql.gpr") CONFIG_FILES="$CONFIG_FILES distrib/ado_mysql.gpr" ;;
     "ado_mysql.gpr") CONFIG_FILES="$CONFIG_FILES ado_mysql.gpr" ;;
     "ado_sqlite.gpr") CONFIG_FILES="$CONFIG_FILES ado_sqlite.gpr" ;;
+    "ado_postgresql.gpr") CONFIG_FILES="$CONFIG_FILES ado_postgresql.gpr" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
