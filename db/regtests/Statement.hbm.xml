@@ -29,7 +29,7 @@
         </property>
         <property name="time_value" type="Time">
             <comment>a time value</comment>
-            <column name="TIME_VALUE" not-null="true" unique="false" sql-type="DATETIME"/>
+            <column name="TIME_VALUE" not-null="true" unique="false"/>
         </property>
         <property name="entity_value" type="ADO.Entity_Type">
             <comment>an entity value</comment>
@@ -66,7 +66,7 @@
         </property>
         <property name="time_value" type="Nullable_Time">
             <comment>a time value</comment>
-            <column name="TIME_VALUE" not-null="false" unique="false" sql-type="DATETIME"/>
+            <column name="TIME_VALUE" not-null="false" unique="false"/>
         </property>
         <property name="entity_value" type="ADO.Entity_Type">
             <comment>an entity value</comment>
