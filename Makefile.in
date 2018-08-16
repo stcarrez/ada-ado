@@ -253,8 +253,8 @@ endif
 
 create-postgresql-tests:
 ifeq (${HAVE_POSTGRESQL},yes)
-	psql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
-	psql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
+	psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/drop-ado-postgresql.sql
+	psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
 dist:
@@ -345,9 +345,9 @@ install_dynamo:
 	test T${HAVE_MYSQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/mysql
 	test T${HAVE_POSTGRESQL} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/postgresql
 	test T${HAVE_SQLITE} = Tno || ${MKDIR} -p ${dynamodir}/ado/db/sqlite
-	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/*.sql ${dynamodir}/ado/db/mysql
-	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/sqlite
-	test T${HAVE_POSTGRESQL} = Tno || ${CP} db/sqlite/*.sql ${dynamodir}/ado/db/postgresql
+	test T${HAVE_MYSQL} = Tno || ${CP} db/mysql/ado-*.sql ${dynamodir}/ado/db/mysql
+	test T${HAVE_SQLITE} = Tno || ${CP} db/sqlite/ado-*.sql ${dynamodir}/ado/db/sqlite
+	test T${HAVE_POSTGRESQL} = Tno || ${CP} db/postgresql/ado-*.sql ${dynamodir}/ado/db/postgresql
 	${CP} dynamo.xml ${dynamodir}/ado/
 	${CP} NOTICE.txt ${dynamodir}/ado/
 	${CP} LICENSE.txt ${dynamodir}/ado/
