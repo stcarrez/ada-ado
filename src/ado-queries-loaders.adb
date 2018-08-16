@@ -260,6 +260,7 @@ package body ADO.Queries.Loaders is
       Sql_Mapper.Add_Mapping ("query/sql", FIELD_SQL);
       Sql_Mapper.Add_Mapping ("query/sql/@driver", FIELD_SQL_DRIVER);
       Sql_Mapper.Add_Mapping ("query/sql-count", FIELD_SQL_COUNT);
+      Sql_Mapper.Add_Mapping ("query/sql-count/@driver", FIELD_SQL_DRIVER);
       Sql_Mapper.Add_Mapping ("query", FIELD_QUERY);
       Mapper.Add_Mapping ("query-mapping", Sql_Mapper'Unchecked_Access);
 
