@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015, 2016 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,10 +76,11 @@ package body ADO.Drivers.Tests is
    --  Test the Get_Driver operation.
    --  ------------------------------
    procedure Test_Get_Driver (T : in out Test) is
-      Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
+      Mysql_Driver  : constant Driver_Access := Drivers.Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("sqlite");
+      Postgres_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("postgresql");
    begin
-      T.Assert (Mysql_Driver /= null or Sqlite_Driver /= null,
+      T.Assert (Mysql_Driver /= null or Sqlite_Driver /= null or Postgres_Driver /= null,
                 "No database driver was found!");
    end Test_Get_Driver;
 
@@ -97,8 +98,9 @@ package body ADO.Drivers.Tests is
    --  Test the Get_Driver_Index operation.
    --  ------------------------------
    procedure Test_Get_Driver_Index (T : in out Test) is
-      Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
+      Mysql_Driver  : constant Driver_Access := Drivers.Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("sqlite");
+      Postgres_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("postgresql");
    begin
       if Mysql_Driver /= null then
          T.Assert (Mysql_Driver.Get_Driver_Index > 0, "The driver index must be positive");
@@ -106,8 +108,19 @@ package body ADO.Drivers.Tests is
       if Sqlite_Driver /= null then
          T.Assert (Sqlite_Driver.Get_Driver_Index > 0, "The driver index must be positive");
       end if;
+      if Postgres_Driver /= null then
+         T.Assert (Postgres_Driver.Get_Driver_Index > 0, "The driver index must be positive");
+      end if;
       if Mysql_Driver /= null and Sqlite_Driver /= null then
          T.Assert (Mysql_Driver.Get_Driver_Index /= Sqlite_Driver.Get_Driver_Index,
+                   "Two drivers must have different driver indexes");
+      end if;
+      if Mysql_Driver /= null and Postgres_Driver /= null then
+         T.Assert (Mysql_Driver.Get_Driver_Index /= Postgres_Driver.Get_Driver_Index,
+                   "Two drivers must have different driver indexes");
+      end if;
+      if Sqlite_Driver /= null and Postgres_Driver /= null then
+         T.Assert (Sqlite_Driver.Get_Driver_Index /= Postgres_Driver.Get_Driver_Index,
                    "Two drivers must have different driver indexes");
       end if;
    end Test_Get_Driver_Index;
@@ -190,6 +203,12 @@ package body ADO.Drivers.Tests is
       Controller.Set_Server ("server-name");
       Util.Tests.Assert_Equals (T, "server-name", Controller.Get_Server,
                                 "Configuration Set_Server returned invalid value");
+
+   exception
+      when E : ADO.Drivers.Connection_Error =>
+         Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
+                                   Ada.Exceptions.Exception_Message (E),
+                                   "Invalid exception message");
    end Test_Set_Connection_Server;
 
    --  ------------------------------
@@ -202,6 +221,12 @@ package body ADO.Drivers.Tests is
       Controller.Set_Port (1234);
       Util.Tests.Assert_Equals (T, 1234, Controller.Get_Port,
                                 "Configuration Set_Port returned invalid value");
+
+   exception
+      when E : ADO.Drivers.Connection_Error =>
+         Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
+                                   Ada.Exceptions.Exception_Message (E),
+                                   "Invalid exception message");
    end Test_Set_Connection_Port;
 
    --  ------------------------------
@@ -214,6 +239,12 @@ package body ADO.Drivers.Tests is
       Controller.Set_Database ("test-database");
       Util.Tests.Assert_Equals (T, "test-database", Controller.Get_Database,
                                 "Configuration Set_Database returned invalid value");
+
+   exception
+      when E : ADO.Drivers.Connection_Error =>
+         Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
+                                   Ada.Exceptions.Exception_Message (E),
+                                   "Invalid exception message");
    end Test_Set_Connection_Database;
 
    --  ------------------------------
