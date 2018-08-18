@@ -1,0 +1,43 @@
+with "@UTIL_DIR@config";
+with "ado";
+
+project Ado_Postgresql is
+   Version := Ado.Version;
+   Library_Dir := Ado.Library_Dir;
+
+   Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
+
+   case Library_Type is
+      when "relocatable" =>
+          for Library_Name use "ada_ado_postgresql";
+          for Library_Kind use Library_Type;
+          for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
+          for Library_Options use (@ADO_MYSQL_LIBRARY_OPTIONS@);
+          for Source_Dirs use ("src/postgresql");
+          for Library_Interface use ("ADO.Drivers.Connections.Postgresql", "ADO.Schemas.Postgresql",
+                                     "ADO.Statements.Postgresql");
+
+      when others =>
+          for Source_Dirs use ();
+
+   end case;
+
+   for Library_Dir use "lib/ado_postgresql/" & Project'Library_Kind;
+   for Object_Dir use "obj/ado_postgresqll/" & Project'Library_Kind;
+
+   --  For a shared library, we want the library to be initialized automatically (Library_Auto_Init = true).
+   --  The 'gnatmake' tool invokes 'gnatbind' correctly and the pragma Linker_Constructor (ada_adoinit) is
+   --  generated.  However, when using 'gprbuild', this is not the case and we have to force that with the
+   --  'gnatbind' option "-a".  For a static link library, the following is not used.
+   package Binder is
+       for Default_Switches ("Ada") use Config.Binder'Default_Switches ("Ada") & ("-a");
+   end Binder;
+
+--   package Linker is
+--      for Linker_Options use ("@POSTGRESQL_LIBNAME@");
+--   end Linker;
+
+   package Builder renames Config.Builder;
+   package Compiler renames Config.Compiler;
+
+end Ado_Postgresql;
