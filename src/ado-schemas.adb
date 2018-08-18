@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
+with Ada.Strings.Equal_Case_Insensitive;
 package body ADO.Schemas is
 
    procedure Free is new
@@ -167,7 +168,7 @@ package body ADO.Schemas is
       Column : Column_Definition := Table.First_Column;
    begin
       while Column /= null loop
-         if To_String (Column.Name) = Name then
+         if Ada.Strings.Equal_Case_Insensitive (To_String (Column.Name), Name) then
             return Column;
          end if;
          Column := Column.Next_Column;
@@ -219,7 +220,7 @@ package body ADO.Schemas is
       if Schema.Schema /= null then
          Table := Schema.Schema.First_Table;
          while Table /= null loop
-            if To_String (Table.Name) = Name then
+            if Ada.Strings.Equal_Case_Insensitive (To_String (Table.Name), Name) then
                return Table;
             end if;
             Table := Table.Next_Table;
