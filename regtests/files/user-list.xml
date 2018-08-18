@@ -28,8 +28,23 @@
     order by
         u.name asc
        </sql>
+       <sql driver="postgresql">
+    select
+        u.id as ID,
+        u.name as NAME,
+        u.value as VALUE
+    from
+        test_user u
+    where
+        u."select" = :filter
+    order by
+        u.name asc
+       </sql>
        <sql-count driver='mysql'>
           select count(*) from test_user as u where u.`select` = :filter
+       </sql-count>
+       <sql-count driver='postgresql'>
+          select count(*) from test_user as u where u."select" = :filter
        </sql-count>
        <sql-count>
           select count(*) from test_user as u where u.`select` = :filter
@@ -56,5 +71,18 @@
     order by
         u.name asc
        </sql>
-    </query>
+
+       <sql driver="postgresql">
+    select
+        u.id as ID,
+        u.name as NAME,
+        u.value as VALUE
+    from
+        test_user u
+    where
+        u."select" = :filter
+    order by
+        u.name asc
+       </sql>
+</query>
 </query-mapping>
