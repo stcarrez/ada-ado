@@ -494,14 +494,10 @@ package body ADO.Parameters is
                Append (Buffer, Param.Str);
 
             when T_BLOB =>
-               Append (Buffer, ''');
                Params.Dialect.Escape_Sql (Buffer, Param.Data);
-               Append (Buffer, ''');
 
             when others =>
-               Append (Buffer, ''');
                Params.Dialect.Escape_Sql (Buffer, Param.Str);
-               Append (Buffer, ''');
          end case;
       end Replace_Parameter;
 
