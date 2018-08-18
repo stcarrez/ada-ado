@@ -1,0 +1,104 @@
+/* File generated automatically by dynamo */
+/* The Comment table records a user comment associated with a database entity.
+                 The comment can be associated with any other database record. */
+CREATE TABLE TEST_COMMENTS (
+  /* the comment identifier */
+  "id" INTEGER ,
+  /* the comment version. */
+  "version" int NOT NULL,
+  /* the comment publication date. */
+  "date" TIMESTAMP NOT NULL,
+  /* the comment message. */
+  "message" VARCHAR(256) NOT NULL,
+  /* the entity identifier to which this comment is associated. */
+  "entity_id" INTEGER NOT NULL,
+  /* the user who posted this comment */
+  "user_fk" INTEGER NOT NULL,
+  /* the entity type that correspond to the entity associated with this comment. */
+  "entity__type_fk" INTEGER NOT NULL,
+  PRIMARY KEY ("id")
+);
+/*  */
+CREATE TABLE test_image (
+  /* the image identifier */
+  "id" INTEGER ,
+  /* the image version. */
+  "version" int NOT NULL,
+  /* the message creation date */
+  "create_date" TIMESTAMP NOT NULL,
+  /* the image data */
+  "image" BYTEA ,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
+CREATE TABLE allocate (
+  /* the user id */
+  "id" BIGINT NOT NULL,
+  /* the allocate version. */
+  "version" int NOT NULL,
+  /* the sequence value */
+  "name" VARCHAR(255) ,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
+CREATE TABLE test_user (
+  /* the user id */
+  "id" BIGINT NOT NULL,
+  /* the comment version. */
+  "version" int NOT NULL,
+  /* the sequence value */
+  "value" BIGINT NOT NULL,
+  /* the user name */
+  "name" VARCHAR(255) ,
+  /* the user name */
+  "select" VARCHAR(255) ,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
+CREATE TABLE test_nullable_table (
+  /* the user id */
+  "id" BIGINT NOT NULL,
+  /* the comment version. */
+  "version" int NOT NULL,
+  /* an identifier value */
+  "id_value" BIGINT ,
+  /* an integer value */
+  "int_value" INTEGER ,
+  /* a boolean value */
+  "bool_value" INTEGER ,
+  /* a string value */
+  "string_value" VARCHAR(255) ,
+  /* a time value */
+  "time_value" TIMESTAMP ,
+  /* an entity value */
+  "entity_value" INTEGER ,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
+CREATE TABLE test_table (
+  /* the user id */
+  "id" BIGINT NOT NULL,
+  /* the comment version. */
+  "version" int NOT NULL,
+  /* an identifier value */
+  "id_value" BIGINT NOT NULL,
+  /* an integer value */
+  "int_value" INTEGER NOT NULL,
+  /* a boolean value */
+  "bool_value" INTEGER NOT NULL,
+  /* a string value */
+  "string_value" VARCHAR(255) NOT NULL,
+  /* a time value */
+  "time_value" TIMESTAMP NOT NULL,
+  /* an entity value */
+  "entity_value" INTEGER NOT NULL,
+  PRIMARY KEY ("id")
+);
+INSERT INTO entity_type (name) VALUES
+('TEST_COMMENTS')
+,('test_image')
+,('allocate')
+,('test_user')
+,('test_nullable_table')
+,('test_table')
+;
