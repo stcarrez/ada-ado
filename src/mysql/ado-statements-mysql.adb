@@ -104,6 +104,7 @@ package body ADO.Statements.Mysql is
 
       C  : Character;
    begin
+      Append (Buffer, ''');
       for I in Item'Range loop
          C := Item (I);
          case C is
@@ -128,6 +129,7 @@ package body ADO.Statements.Mysql is
 
          end case;
       end loop;
+      Append (Buffer, ''');
    end Escape_Sql;
 
    --  ------------------------------
@@ -142,6 +144,7 @@ package body ADO.Statements.Mysql is
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
    begin
+      Append (Buffer, ''');
       for I in Blob.Data'Range loop
          C := Blob.Data (I);
          case C is
@@ -165,6 +168,7 @@ package body ADO.Statements.Mysql is
                Append (Buffer, Character'Val (C));
          end case;
       end loop;
+      Append (Buffer, ''');
    end Escape_Sql;
 
    --  ------------------------------
