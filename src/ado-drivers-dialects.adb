@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Dialects -- Driver support for basic SQL Generation
---  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,7 @@ package body ADO.Drivers.Dialects is
 
       C  : Character;
    begin
+      Append (Buffer, ''');
       for I in Item'Range loop
          C := Item (I);
          if C = ''' then
@@ -45,6 +46,7 @@ package body ADO.Drivers.Dialects is
          end if;
          Append (Buffer, C);
       end loop;
+      Append (Buffer, ''');
    end Escape_Sql;
 
    --  ------------------------------
@@ -58,6 +60,7 @@ package body ADO.Drivers.Dialects is
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
    begin
+      Append (Buffer, ''');
       for I in Blob.Data'Range loop
          C := Blob.Data (I);
          case C is
@@ -81,6 +84,7 @@ package body ADO.Drivers.Dialects is
                Append (Buffer, Character'Val (C));
          end case;
       end loop;
+      Append (Buffer, ''');
    end Escape_Sql;
 
 end ADO.Drivers.Dialects;
