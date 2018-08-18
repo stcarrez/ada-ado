@@ -12,7 +12,9 @@ ChangeLog
 configure.lineno
 Makefile
 ado.gpr
-tests.gpr
+ado_postgresql.gpr
+ado_tests.gpr
+samples.gpr
 tests.xml
 ado-tests.xml
 ado-mysql-aunit.xml
