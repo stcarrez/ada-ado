@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -199,7 +199,9 @@ package body ADO.Objects.Tests is
          U2 : Regtests.Simple.Model.User_Ref;
       begin
          U2.Load (S, User.Get_Id);
-         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (U2.Get_Name),
+         T.Assert (not U2.Get_Name.Is_Null,
+                   "Cannot load created object");
+         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (U2.Get_Name.Value),
                         "Cannot load created object");
          Assert_Equals (T, Integer (0), Integer (U2.Get_Value), "Invalid load");
          T.Assert (User.Get_Key = U2.Get_Key, "Invalid key after load");
@@ -237,7 +239,7 @@ package body ADO.Objects.Tests is
 --           T.Assert (not C2.Get_Entity_Type.Is_Null, "Entity type was not set");
 
          --  Check that we can access the user name (lazy load)
-         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (C2.Get_User.Get_Name),
+         Assert_Equals (T, "Joe", Ada.Strings.Unbounded.To_String (C2.Get_User.Get_Name.Value),
                         "Cannot load created object");
       end;
    end Test_Create_Object;
