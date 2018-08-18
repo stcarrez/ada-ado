@@ -27,7 +27,7 @@ CREATE TABLE test_image (
   /* the message creation date */
   `create_date` DATETIME NOT NULL,
   /* the image data */
-  `image` BLOB ,
+  `image` LONGBLOB ,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
