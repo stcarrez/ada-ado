@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,13 +89,13 @@ package Regtests.Statements.Model is
 
    --  Set a string value
    procedure Set_String_Value (Object : in out Nullable_Table_Ref;
-                               Value  : in Ada.Strings.Unbounded.Unbounded_String);
+                               Value  : in ADO.Nullable_String);
    procedure Set_String_Value (Object : in out Nullable_Table_Ref;
                                Value : in String);
 
    --  Get a string value
    function Get_String_Value (Object : in Nullable_Table_Ref)
-                 return Ada.Strings.Unbounded.Unbounded_String;
+                 return ADO.Nullable_String;
    function Get_String_Value (Object : in Nullable_Table_Ref)
                  return String;
 
@@ -307,14 +307,14 @@ package Regtests.Statements.Model is
 
 private
    NULLABLE_TABLE_NAME : aliased constant String := "test_nullable_table";
-   COL_0_1_NAME : aliased constant String := "ID";
+   COL_0_1_NAME : aliased constant String := "id";
    COL_1_1_NAME : aliased constant String := "version";
-   COL_2_1_NAME : aliased constant String := "ID_VALUE";
-   COL_3_1_NAME : aliased constant String := "INT_VALUE";
-   COL_4_1_NAME : aliased constant String := "BOOL_VALUE";
-   COL_5_1_NAME : aliased constant String := "STRING_VALUE";
-   COL_6_1_NAME : aliased constant String := "TIME_VALUE";
-   COL_7_1_NAME : aliased constant String := "ENTITY_VALUE";
+   COL_2_1_NAME : aliased constant String := "id_value";
+   COL_3_1_NAME : aliased constant String := "int_value";
+   COL_4_1_NAME : aliased constant String := "bool_value";
+   COL_5_1_NAME : aliased constant String := "string_value";
+   COL_6_1_NAME : aliased constant String := "time_value";
+   COL_7_1_NAME : aliased constant String := "entity_value";
 
    NULLABLE_TABLE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 8,
@@ -344,7 +344,7 @@ private
        Id_Value : ADO.Identifier;
        Int_Value : ADO.Nullable_Integer;
        Bool_Value : Boolean;
-       String_Value : Ada.Strings.Unbounded.Unbounded_String;
+       String_Value : ADO.Nullable_String;
        Time_Value : ADO.Nullable_Time;
        Entity_Value : ADO.Nullable_Entity_Type;
    end record;
@@ -381,14 +381,14 @@ private
    procedure Set_Field (Object : in out Nullable_Table_Ref'Class;
                         Impl   : out Nullable_Table_Access);
    TABLE_NAME : aliased constant String := "test_table";
-   COL_0_2_NAME : aliased constant String := "ID";
+   COL_0_2_NAME : aliased constant String := "id";
    COL_1_2_NAME : aliased constant String := "version";
-   COL_2_2_NAME : aliased constant String := "ID_VALUE";
-   COL_3_2_NAME : aliased constant String := "INT_VALUE";
-   COL_4_2_NAME : aliased constant String := "BOOL_VALUE";
-   COL_5_2_NAME : aliased constant String := "STRING_VALUE";
-   COL_6_2_NAME : aliased constant String := "TIME_VALUE";
-   COL_7_2_NAME : aliased constant String := "ENTITY_VALUE";
+   COL_2_2_NAME : aliased constant String := "id_value";
+   COL_3_2_NAME : aliased constant String := "int_value";
+   COL_4_2_NAME : aliased constant String := "bool_value";
+   COL_5_2_NAME : aliased constant String := "string_value";
+   COL_6_2_NAME : aliased constant String := "time_value";
+   COL_7_2_NAME : aliased constant String := "entity_value";
 
    TABLE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 8,

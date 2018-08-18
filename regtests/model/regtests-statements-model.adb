@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,7 @@ package body Regtests.Statements.Model is
       Impl.Id_Value := ADO.NO_IDENTIFIER;
       Impl.Int_Value.Is_Null := True;
       Impl.Bool_Value := False;
+      Impl.String_Value.Is_Null := True;
       Impl.Time_Value.Is_Null := True;
       Impl.Entity_Value.Is_Null := True;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
@@ -164,20 +165,25 @@ package body Regtests.Statements.Model is
    end Set_String_Value;
 
    procedure Set_String_Value (Object : in out Nullable_Table_Ref;
-                               Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+                               Value  : in ADO.Nullable_String) is
       Impl : Nullable_Table_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 6, Impl.String_Value, Value);
+      ADO.Objects.Set_Field_String (Impl.all, 6, Impl.String_Value, Value);
    end Set_String_Value;
 
    function Get_String_Value (Object : in Nullable_Table_Ref)
                  return String is
+      Value : constant ADO.Nullable_String := Object.Get_String_Value;
    begin
-      return Ada.Strings.Unbounded.To_String (Object.Get_String_Value);
+      if Value.Is_Null then
+          return "";
+      else
+          return Ada.Strings.Unbounded.To_String (Value.Value);
+      end if;
    end Get_String_Value;
    function Get_String_Value (Object : in Nullable_Table_Ref)
-                  return Ada.Strings.Unbounded.Unbounded_String is
+                  return ADO.Nullable_String is
       Impl : constant Nullable_Table_Access
          := Nullable_Table_Impl (Object.Get_Load_Object.all)'Access;
    begin
@@ -493,7 +499,11 @@ package body Regtests.Statements.Model is
       elsif Name = "bool_value" then
          return Util.Beans.Objects.To_Object (Impl.Bool_Value);
       elsif Name = "string_value" then
-         return Util.Beans.Objects.To_Object (Impl.String_Value);
+         if Impl.String_Value.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Impl.String_Value.Value);
+         end if;
       elsif Name = "time_value" then
          if Impl.Time_Value.Is_Null then
             return Util.Beans.Objects.Null_Object;
@@ -545,7 +555,7 @@ package body Regtests.Statements.Model is
       Object.Int_Value := Stmt.Get_Nullable_Integer (3);
       Object.Bool_Value := Stmt.Get_Boolean (4);
       Object.Bool_Value := Stmt.Get_Boolean (4);
-      Object.String_Value := Stmt.Get_Unbounded_String (5);
+      Object.String_Value := Stmt.Get_Nullable_String (5);
       Object.Time_Value := Stmt.Get_Time (6);
       Object.Entity_Value := Stmt.Get_Nullable_Entity_Type (7);
       Object.Version := Stmt.Get_Integer (1);

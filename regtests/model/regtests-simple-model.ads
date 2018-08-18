@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,13 +64,13 @@ package Regtests.Simple.Model is
 
    --  Set the sequence value
    procedure Set_Name (Object : in out Allocate_Ref;
-                       Value  : in Ada.Strings.Unbounded.Unbounded_String);
+                       Value  : in ADO.Nullable_String);
    procedure Set_Name (Object : in out Allocate_Ref;
                        Value : in String);
 
    --  Get the sequence value
    function Get_Name (Object : in Allocate_Ref)
-                 return Ada.Strings.Unbounded.Unbounded_String;
+                 return ADO.Nullable_String;
    function Get_Name (Object : in Allocate_Ref)
                  return String;
 
@@ -163,25 +163,25 @@ package Regtests.Simple.Model is
 
    --  Set the user name
    procedure Set_Name (Object : in out User_Ref;
-                       Value  : in Ada.Strings.Unbounded.Unbounded_String);
+                       Value  : in ADO.Nullable_String);
    procedure Set_Name (Object : in out User_Ref;
                        Value : in String);
 
    --  Get the user name
    function Get_Name (Object : in User_Ref)
-                 return Ada.Strings.Unbounded.Unbounded_String;
+                 return ADO.Nullable_String;
    function Get_Name (Object : in User_Ref)
                  return String;
 
    --  Set the user name
    procedure Set_Select_Name (Object : in out User_Ref;
-                              Value  : in Ada.Strings.Unbounded.Unbounded_String);
+                              Value  : in ADO.Nullable_String);
    procedure Set_Select_Name (Object : in out User_Ref;
                               Value : in String);
 
    --  Get the user name
    function Get_Select_Name (Object : in User_Ref)
-                 return Ada.Strings.Unbounded.Unbounded_String;
+                 return ADO.Nullable_String;
    function Get_Select_Name (Object : in User_Ref)
                  return String;
 
@@ -246,9 +246,9 @@ package Regtests.Simple.Model is
 
 private
    ALLOCATE_NAME : aliased constant String := "allocate";
-   COL_0_1_NAME : aliased constant String := "ID";
+   COL_0_1_NAME : aliased constant String := "id";
    COL_1_1_NAME : aliased constant String := "version";
-   COL_2_1_NAME : aliased constant String := "NAME";
+   COL_2_1_NAME : aliased constant String := "name";
 
    ALLOCATE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 3,
@@ -270,7 +270,7 @@ private
                                      Of_Class => ALLOCATE_DEF'Access)
    with record
        Version : Integer;
-       Name : Ada.Strings.Unbounded.Unbounded_String;
+       Name : ADO.Nullable_String;
    end record;
 
    type Allocate_Access is access all Allocate_Impl;
@@ -305,10 +305,10 @@ private
    procedure Set_Field (Object : in out Allocate_Ref'Class;
                         Impl   : out Allocate_Access);
    USER_NAME : aliased constant String := "test_user";
-   COL_0_2_NAME : aliased constant String := "ID";
+   COL_0_2_NAME : aliased constant String := "id";
    COL_1_2_NAME : aliased constant String := "version";
-   COL_2_2_NAME : aliased constant String := "VALUE";
-   COL_3_2_NAME : aliased constant String := "NAME";
+   COL_2_2_NAME : aliased constant String := "value";
+   COL_3_2_NAME : aliased constant String := "name";
    COL_4_2_NAME : aliased constant String := "select";
 
    USER_DEF : aliased constant ADO.Schemas.Class_Mapping :=
@@ -334,8 +334,8 @@ private
    with record
        Version : Integer;
        Value : ADO.Identifier;
-       Name : Ada.Strings.Unbounded.Unbounded_String;
-       Select_Name : Ada.Strings.Unbounded.Unbounded_String;
+       Name : ADO.Nullable_String;
+       Select_Name : ADO.Nullable_String;
    end record;
 
    type User_Access is access all User_Impl;

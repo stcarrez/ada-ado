@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,6 +64,7 @@ package body Regtests.Simple.Model is
    begin
       Impl := new Allocate_Impl;
       Impl.Version := 0;
+      Impl.Name.Is_Null := True;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
@@ -106,20 +107,25 @@ package body Regtests.Simple.Model is
    end Set_Name;
 
    procedure Set_Name (Object : in out Allocate_Ref;
-                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+                       Value  : in ADO.Nullable_String) is
       Impl : Allocate_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 3, Impl.Name, Value);
+      ADO.Objects.Set_Field_String (Impl.all, 3, Impl.Name, Value);
    end Set_Name;
 
    function Get_Name (Object : in Allocate_Ref)
                  return String is
+      Value : constant ADO.Nullable_String := Object.Get_Name;
    begin
-      return Ada.Strings.Unbounded.To_String (Object.Get_Name);
+      if Value.Is_Null then
+          return "";
+      else
+          return Ada.Strings.Unbounded.To_String (Value.Value);
+      end if;
    end Get_Name;
    function Get_Name (Object : in Allocate_Ref)
-                  return Ada.Strings.Unbounded.Unbounded_String is
+                  return ADO.Nullable_String is
       Impl : constant Allocate_Access
          := Allocate_Impl (Object.Get_Load_Object.all)'Access;
    begin
@@ -351,7 +357,11 @@ package body Regtests.Simple.Model is
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
       elsif Name = "name" then
-         return Util.Beans.Objects.To_Object (Impl.Name);
+         if Impl.Name.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Impl.Name.Value);
+         end if;
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -387,7 +397,7 @@ package body Regtests.Simple.Model is
       pragma Unreferenced (Session);
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
-      Object.Name := Stmt.Get_Unbounded_String (2);
+      Object.Name := Stmt.Get_Nullable_String (2);
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
    end Load;
@@ -427,6 +437,8 @@ package body Regtests.Simple.Model is
       Impl := new User_Impl;
       Impl.Version := 0;
       Impl.Value := ADO.NO_IDENTIFIER;
+      Impl.Name.Is_Null := True;
+      Impl.Select_Name.Is_Null := True;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
@@ -486,20 +498,25 @@ package body Regtests.Simple.Model is
    end Set_Name;
 
    procedure Set_Name (Object : in out User_Ref;
-                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+                       Value  : in ADO.Nullable_String) is
       Impl : User_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 4, Impl.Name, Value);
+      ADO.Objects.Set_Field_String (Impl.all, 4, Impl.Name, Value);
    end Set_Name;
 
    function Get_Name (Object : in User_Ref)
                  return String is
+      Value : constant ADO.Nullable_String := Object.Get_Name;
    begin
-      return Ada.Strings.Unbounded.To_String (Object.Get_Name);
+      if Value.Is_Null then
+          return "";
+      else
+          return Ada.Strings.Unbounded.To_String (Value.Value);
+      end if;
    end Get_Name;
    function Get_Name (Object : in User_Ref)
-                  return Ada.Strings.Unbounded.Unbounded_String is
+                  return ADO.Nullable_String is
       Impl : constant User_Access
          := User_Impl (Object.Get_Load_Object.all)'Access;
    begin
@@ -516,20 +533,25 @@ package body Regtests.Simple.Model is
    end Set_Select_Name;
 
    procedure Set_Select_Name (Object : in out User_Ref;
-                              Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+                              Value  : in ADO.Nullable_String) is
       Impl : User_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Unbounded_String (Impl.all, 5, Impl.Select_Name, Value);
+      ADO.Objects.Set_Field_String (Impl.all, 5, Impl.Select_Name, Value);
    end Set_Select_Name;
 
    function Get_Select_Name (Object : in User_Ref)
                  return String is
+      Value : constant ADO.Nullable_String := Object.Get_Select_Name;
    begin
-      return Ada.Strings.Unbounded.To_String (Object.Get_Select_Name);
+      if Value.Is_Null then
+          return "";
+      else
+          return Ada.Strings.Unbounded.To_String (Value.Value);
+      end if;
    end Get_Select_Name;
    function Get_Select_Name (Object : in User_Ref)
-                  return Ada.Strings.Unbounded.Unbounded_String is
+                  return ADO.Nullable_String is
       Impl : constant User_Access
          := User_Impl (Object.Get_Load_Object.all)'Access;
    begin
@@ -779,9 +801,17 @@ package body Regtests.Simple.Model is
       elsif Name = "value" then
          return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Value));
       elsif Name = "name" then
-         return Util.Beans.Objects.To_Object (Impl.Name);
+         if Impl.Name.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Impl.Name.Value);
+         end if;
       elsif Name = "select_name" then
-         return Util.Beans.Objects.To_Object (Impl.Select_Name);
+         if Impl.Select_Name.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Impl.Select_Name.Value);
+         end if;
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -818,8 +848,8 @@ package body Regtests.Simple.Model is
    begin
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Value := Stmt.Get_Identifier (2);
-      Object.Name := Stmt.Get_Unbounded_String (3);
-      Object.Select_Name := Stmt.Get_Unbounded_String (4);
+      Object.Name := Stmt.Get_Nullable_String (3);
+      Object.Select_Name := Stmt.Get_Nullable_String (4);
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
    end Load;

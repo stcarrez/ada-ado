@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -168,13 +168,13 @@ package Regtests.Comments is
 
 private
    COMMENT_NAME : aliased constant String := "TEST_COMMENTS";
-   COL_0_1_NAME : aliased constant String := "ID";
+   COL_0_1_NAME : aliased constant String := "id";
    COL_1_1_NAME : aliased constant String := "version";
-   COL_2_1_NAME : aliased constant String := "DATE";
-   COL_3_1_NAME : aliased constant String := "MESSAGE";
-   COL_4_1_NAME : aliased constant String := "ENTITY_ID";
-   COL_5_1_NAME : aliased constant String := "USER_FK";
-   COL_6_1_NAME : aliased constant String := "ENTITY__TYPE_FK";
+   COL_2_1_NAME : aliased constant String := "date";
+   COL_3_1_NAME : aliased constant String := "message";
+   COL_4_1_NAME : aliased constant String := "entity_id";
+   COL_5_1_NAME : aliased constant String := "user_fk";
+   COL_6_1_NAME : aliased constant String := "entity__type_fk";
 
    COMMENT_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 7,
