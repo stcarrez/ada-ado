@@ -235,15 +235,16 @@ package body ADO.Tests is
       DB   : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       User : Regtests.Simple.Model.User_Ref;
       Usr2 : Regtests.Simple.Model.User_Ref;
-      Name : Unbounded_String;
+      Name : Nullable_String;
    begin
+      Name.Is_Null := False;
       for I in 1 .. 127 loop
-         Append (Name, Character'Val (I));
+         Append (Name.Value, Character'Val (I));
       end loop;
-      Append (Name, ' ');
-      Append (Name, ' ');
-      Append (Name, ' ');
-      Append (Name, ' ');
+      Append (Name.Value, ' ');
+      Append (Name.Value, ' ');
+      Append (Name.Value, ' ');
+      Append (Name.Value, ' ');
       DB.Begin_Transaction;
       User.Set_Name (Name);
       User.Save (DB);
@@ -251,7 +252,7 @@ package body ADO.Tests is
 
       --  Check that we can load the image and the blob.
       Usr2.Load (DB, User.Get_Id);
-      Util.Tests.Assert_Equals (T, To_String (Name), String '(Usr2.Get_Name),
+      Util.Tests.Assert_Equals (T, To_String (Name.Value), String '(Usr2.Get_Name),
                                 "Invalid name inserted for user");
    end Test_String;
 
