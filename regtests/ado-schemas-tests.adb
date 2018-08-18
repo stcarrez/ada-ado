@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Test_Caller;
+with Util.Strings.Transforms;
 
 with ADO.Sessions;
 with ADO.Schemas.Entities;
@@ -26,6 +27,9 @@ with Regtests.Simple.Model;
 package body ADO.Schemas.Tests is
 
    use Util.Tests;
+
+   function To_Lower_Case (S : in String) return String
+     renames Util.Strings.Transforms.To_Lower_Case;
 
    package Caller is new Util.Test_Caller (Test, "ADO.Schemas");
 
@@ -133,7 +137,7 @@ package body ADO.Schemas.Tests is
          C : constant Column_Definition := Find_Column (Table, "ID");
       begin
          T.Assert (C /= null, "Cannot find column 'id' in table schema");
-         Assert_Equals (T, "ID", Get_Name (C), "Invalid column name");
+         Assert_Equals (T, "id", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_LONG_INTEGER, "Invalid column type");
          T.Assert (not Is_Null (C), "Column is null");
       end;
@@ -142,7 +146,7 @@ package body ADO.Schemas.Tests is
          C : constant Column_Definition := Find_Column (Table, "NAME");
       begin
          T.Assert (C /= null, "Cannot find column 'NAME' in table schema");
-         Assert_Equals (T, "NAME", Get_Name (C), "Invalid column name");
+         Assert_Equals (T, "name", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_VARCHAR, "Invalid column type");
          T.Assert (Is_Null (C), "Column is null");
       end;
@@ -151,7 +155,7 @@ package body ADO.Schemas.Tests is
          C : constant Column_Definition := Find_Column (Table, "version");
       begin
          T.Assert (C /= null, "Cannot find column 'version' in table schema");
-         Assert_Equals (T, "version", Get_Name (C), "Invalid column name");
+         Assert_Equals (T, "version", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_INTEGER, "Invalid column type");
          T.Assert (not Is_Null (C), "Column is null");
       end;
@@ -198,6 +202,9 @@ package body ADO.Schemas.Tests is
             Util.Tests.Assert_Equals (T, 15, Count,
                                       "Invalid number of tables found in the schema");
          elsif Driver = "mysql" then
+            Util.Tests.Assert_Equals (T, 8, Count,
+                                      "Invalid number of tables found in the schema");
+         elsif Driver = "postgresql" then
             Util.Tests.Assert_Equals (T, 8, Count,
                                       "Invalid number of tables found in the schema");
          end if;
