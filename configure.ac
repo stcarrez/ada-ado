@@ -255,3 +255,4 @@ AC_OUTPUT(
 Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
 ado_postgresql.gpr
 )
+AC_MSG_NOTICE([supported databases: $DB])
