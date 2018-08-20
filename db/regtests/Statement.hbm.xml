@@ -21,7 +21,7 @@
         </property>
         <property name="bool_value" type="Boolean">
             <comment>a boolean value</comment>
-            <column name="BOOL_VALUE" not-null="true" unique="false" sql-type="INTEGER"/>
+            <column name="BOOL_VALUE" not-null="true" unique="false"/>
         </property>
         <property name="string_value" type="String">
             <comment>a string value</comment>

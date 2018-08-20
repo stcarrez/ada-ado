@@ -32,7 +32,7 @@ CREATE TABLE TEST_COMMENTS (
   /* the comment identifier */
   "id" INTEGER ,
   /* the comment version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* the comment publication date. */
   "date" TIMESTAMP NOT NULL,
   /* the comment message. */
@@ -50,7 +50,7 @@ CREATE TABLE test_image (
   /* the image identifier */
   "id" INTEGER ,
   /* the image version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* the message creation date */
   "create_date" TIMESTAMP NOT NULL,
   /* the image data */
@@ -62,7 +62,7 @@ CREATE TABLE allocate (
   /* the user id */
   "id" BIGINT NOT NULL,
   /* the allocate version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* the sequence value */
   "name" VARCHAR(255) ,
   PRIMARY KEY ("id")
@@ -72,7 +72,7 @@ CREATE TABLE test_user (
   /* the user id */
   "id" BIGINT NOT NULL,
   /* the comment version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* the sequence value */
   "value" BIGINT NOT NULL,
   /* the user name */
@@ -86,7 +86,7 @@ CREATE TABLE test_nullable_table (
   /* the user id */
   "id" BIGINT NOT NULL,
   /* the comment version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* an identifier value */
   "id_value" BIGINT ,
   /* an integer value */
@@ -106,13 +106,13 @@ CREATE TABLE test_table (
   /* the user id */
   "id" BIGINT NOT NULL,
   /* the comment version. */
-  "version" int NOT NULL,
+  "version" INTEGER NOT NULL,
   /* an identifier value */
   "id_value" BIGINT NOT NULL,
   /* an integer value */
   "int_value" INTEGER NOT NULL,
   /* a boolean value */
-  "bool_value" INTEGER NOT NULL,
+  "bool_value" BOOLEAN NOT NULL,
   /* a string value */
   "string_value" VARCHAR(255) NOT NULL,
   /* a time value */
