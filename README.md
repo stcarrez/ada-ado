@@ -23,7 +23,7 @@ language: Ada05 in our case.  The development process is the following:
   * You generate the SQL database tables by using the same tool,
   * You write your application on top of the generated code that gives you direct and simplified access to your database.
 
-![](images/ado-orm.png)
+![](wiki/images/ado-orm.png)
 
 You need at least one of these databases (or all of then).  The configure script will now
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
