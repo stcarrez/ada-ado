@@ -12,6 +12,19 @@ object relational mapping to access a database in Ada05.
 The library supports Postgresql, MySQL, SQLite as databases.
 Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
+The ORM uses an YAML, XML mapping file or an UML model, a code generator and a runtime library
+for the implementation.  It provides a database driver for [Postgresql](https://www.postgresql.org/),
+[MySQL](http://www.mysql.com/) and [SQLite](http://www.sqlite.org/).  The ORM helps your
+application by providing a mapping of your database tables directly in the target programming
+language: Ada05 in our case.  The development process is the following:
+
+  * You design your database model either using a UML tool or by writing a YAML or XML description,
+  * You generate the Ada05 mapping files by using the [Dynamo](https://github.com/stcarrez/dynamo) code generator,
+  * You generate the SQL database tables by using the same tool,
+  * You write your application on top of the generated code that gives you direct and simplified access to your database.
+
+![](images/ado-orm.png)
+
 You need at least one of these databases (or all of then).  The configure script will now
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
