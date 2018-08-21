@@ -132,15 +132,16 @@ if test "${ENABLE_SQLITE}" = "yes" ; then
   AC_CHECK_LIB(sqlite3,sqlite3_open,[
     DB="$DB sqlite"
     ADO_HAVE_SQLITE=yes
-	WITH_ADO_SQLITE="with \"ado_sqlite\";";
+    WITH_ADO_SQLITE="with \"ado_sqlite\";";
   ])
 
+fi
+if test "${ADO_HAVE_SQLITE}" = "yes" ; then
   AC_CHECK_PROG(SQLITE3_CHECK,sqlite3,yes)
   if test x"$SQLITE3_CHECK" != x"yes" ; then
     AC_MSG_ERROR([Please install sqlite3 command line to use SQLite.])
   fi
 fi
-
 
 WITH_ADO_POSTGRESQL=""
 ADO_HAVE_POSTGRESQL=no
@@ -150,7 +151,8 @@ if test "${ENABLE_POSTGRESQL}" = "yes" ; then
     ADO_HAVE_POSTGRESQL=yes
     WITH_ADO_POSTGRESQL="with \"ado_postgresql\";";
   ])
-
+fi
+if test "${ADO_HAVE_POSTGRESQL}" = "yes" ; then
   AC_CHECK_PROG(PSQL_CHECK,psql,yes)
   if test x"$PSQL_CHECK" != x"yes" ; then
     AC_MSG_ERROR([Please install psql command line to use Postgresql.])
