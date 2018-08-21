@@ -89,7 +89,7 @@ the ADO driver.  The configure script will use them to enable the ADO drivers.
 
 Postgresql Development installation
 ```
-      sudo apt-get install postgresql-client-9.5 libpq-dev
+      sudo apt-get install postgresql-client libpq-dev
 ```
 
 MySQL Development installation
