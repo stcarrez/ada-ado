@@ -102,17 +102,17 @@ the ADO driver.  The configure script will use them to enable the ADO drivers.
 
 Postgresql Development installation
 ```
-      sudo apt-get install postgresql-client libpq-dev
+sudo apt-get install postgresql-client libpq-dev
 ```
 
 MySQL Development installation
 ```
-      sudo apt-get install mariadb-client libmariadb-client-lgpl-dev
+sudo apt-get install mariadb-client libmariadb-client-lgpl-dev
 ```
 
 SQLite Development installation
 ```
-      sudo apt-get install sqlite3 libsqlite3-dev
+sudo apt-get install sqlite3 libsqlite3-dev
 ```
 For Windows, check [win32/README](win32/README.md) to install the libraries.
 
@@ -124,31 +124,52 @@ Create the tests database by using the Dynamo command.
 Note: change 'root' and 'password' to a MySQL user that has admin access rights
 ('create database' and 'grant option' privileges).
 ```
-      dynamo create-database db/regtests root password
+dynamo create-database db/regtests root password
 ```
 The default database connection string is defined in dynamo.xml.
 You can also specify the connection string and create the schema by using:
 ```
-      dynamo create-database db/regtests 'mysql://localhost:3306/ado_test?user=ado' root password
+dynamo create-database db/regtests 'mysql://localhost:3306/ado_test?user=ado' root password
 ```
+
+### MySQL setup
+
 To create manually the database, you can proceed to the following steps:
 
 1. Create the 'ado_test' database in MySQL
 ```
-         mysql -u root
-         mysql> create database ado_test;
+mysql -u root
+mysql> create database ado_test;
 ```
 2. Create the 'ado' user and give the access rights:
 ```
-         mysql> grant select, insert, update, delete,
-                      create, drop, create temporary tables, execute,
-                      show view on `ado_test`.* to ado@'localhost';
-         mysql> flush privileges;
+mysql> grant select, insert, update, delete,
+       create, drop, create temporary tables, execute,
+       show view on `ado_test`.* to ado@'localhost';
+mysql> flush privileges;
 ```
 3. Create the tables
 ```
-         mysql> use ado_test
-         mysql> source db/regtests/mysql/create-ado-mysql.sql
+mysql> use ado_test
+mysql> source db/regtests/mysql/create-ado-mysql.sql
+```
+
+### Postgresql setup
+
+To create manually the database, you can proceed to the following steps:
+
+1. Create the 'ado' user and configure the password:
+```
+sudo -u postgresql createuser ado --pwprompt
+```
+2. Create the 'ado_test' database in Postgresql
+```
+sudo -u postgresql createdb -O ado ado_test
+```
+3. Create the tables
+```
+psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" \
+  --file=db/regtests/postgresql/create-ado-postgresql.sql
 ```
 
 # Building documentation
