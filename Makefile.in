@@ -253,8 +253,8 @@ endif
 
 create-postgresql-tests:
 ifeq (${HAVE_POSTGRESQL},yes)
-	psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/drop-ado-postgresql.sql
-	psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
+	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/drop-ado-postgresql.sql
+	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
 dist:
