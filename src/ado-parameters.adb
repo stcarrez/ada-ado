@@ -478,11 +478,7 @@ package body ADO.Parameters is
                Append (Buffer, Util.Strings.Image (Param.Num));
 
             when T_BOOLEAN =>
-               if Param.Bool then
-                  Append (Buffer, '1');
-               else
-                  Append (Buffer, '0');
-               end if;
+               Params.Dialect.Escape_Sql (Buffer, Param.Bool);
 
             when T_DATE =>
                Append_Date (Buffer, Param.Time);
