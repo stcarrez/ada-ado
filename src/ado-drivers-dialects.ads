@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Dialects -- Driver support for basic SQL Generation
---  Copyright (C) 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +49,11 @@ package ADO.Drivers.Dialects is
    procedure Escape_Sql (D      : in Dialect;
                          Buffer : in out Unbounded_String;
                          Item   : in ADO.Blob_Ref);
+
+   --  Append the boolean item in the buffer.
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in Boolean);
 
 private
 
