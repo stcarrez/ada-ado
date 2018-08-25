@@ -167,7 +167,11 @@ package body ADO.Statements.Tests is
    begin
       Stmt.Execute;
       T.Assert (Stmt.Has_Elements, "The query statement must return a value for table " & Table);
-      return Stmt.Get_Integer (0);
+      if Stmt.Is_Null (0) then
+         return 0;
+      else
+         return Stmt.Get_Integer (0);
+      end if;
    end Get_Sum;
 
    function Get_Sum (T     : in Test;
@@ -181,7 +185,11 @@ package body ADO.Statements.Tests is
       Stmt.Bind_Param ("ids", Ids);
       Stmt.Execute;
       T.Assert (Stmt.Has_Elements, "The query statement must return a value for table " & Table);
-      return Stmt.Get_Integer (0);
+      if Stmt.Is_Null (0) then
+         return 0;
+      else
+         return Stmt.Get_Integer (0);
+      end if;
    end Get_Sum;
 
    --  ------------------------------
