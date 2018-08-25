@@ -87,4 +87,15 @@ package body ADO.Drivers.Dialects is
       Append (Buffer, ''');
    end Escape_Sql;
 
+   --  ------------------------------
+   --  Append the boolean item in the buffer.
+   --  ------------------------------
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in Boolean) is
+      pragma Unreferenced (D);
+   begin
+      Append (Buffer, (if Item then '1' else '0'));
+   end Escape_Sql;
+
 end ADO.Drivers.Dialects;
