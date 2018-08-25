@@ -55,6 +55,12 @@ package body ADO.Statements.Postgresql is
                          Buffer : in out Unbounded_String;
                          Item   : in ADO.Blob_Ref);
 
+   --  Append the boolean item in the buffer.
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in Boolean);
+
    --  Get the quote character to escape an identifier.
    overriding
    function Get_Identifier_Quote (D : in Dialect) return Character;
@@ -139,6 +145,9 @@ package body ADO.Statements.Postgresql is
                          Item   : in ADO.Blob_Ref) is
       pragma Unreferenced (D);
 
+      use type Ada.Streams.Stream_Element;
+
+      Hex  : constant String := "0123456789ABCDEF";
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
    begin
@@ -163,11 +172,28 @@ package body ADO.Statements.Postgresql is
                Append (Buffer, '\');
                Append (Buffer, Character'Val (C));
 
+            when 16#80# .. 16#ff# =>
+               Append (Buffer, '\');
+               Append (Buffer, 'x');
+               Append (Buffer, Hex (1 + Natural (C / 16)));
+               Append (Buffer, Hex (1 + Natural (C mod 16)));
+
             when others =>
                Append (Buffer, Character'Val (C));
          end case;
       end loop;
       Append (Buffer, ''');
+   end Escape_Sql;
+
+   --  ------------------------------
+   --  Append the boolean item in the buffer.
+   --  ------------------------------
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in Boolean) is
+      pragma Unreferenced (D);
+   begin
+      Append (Buffer, (if Item then "TRUE" else "FALSE"));
    end Escape_Sql;
 
    function Get_Affected_Rows (Result : in PQ.PGresult_Access) return Natural is
