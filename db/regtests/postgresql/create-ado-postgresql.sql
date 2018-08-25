@@ -92,7 +92,7 @@ CREATE TABLE test_nullable_table (
   /* an integer value */
   "int_value" INTEGER ,
   /* a boolean value */
-  "bool_value" INTEGER ,
+  "bool_value" BOOLEAN ,
   /* a string value */
   "string_value" VARCHAR(255) ,
   /* a time value */
