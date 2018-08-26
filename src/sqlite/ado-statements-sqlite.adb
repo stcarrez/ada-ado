@@ -377,12 +377,15 @@ package body ADO.Statements.Sqlite is
          Result := Sqlite3_H.sqlite3_step (Query.Stmt);
          if Result = Sqlite3_H.SQLITE_ROW then
             Query.Status := HAS_ROW;
+            Query.Max_Column := Natural (Sqlite3_H.sqlite3_column_count (Query.Stmt));
 
          elsif Result = Sqlite3_H.SQLITE_DONE then
             Query.Status := DONE;
+            Query.Max_Column := 0;
 
          else
             Query.Status := ERROR;
+            Query.Max_Column := 0;
             declare
                Error   : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Query.Connection);
                Message : constant String := Strings.Value (Error);
@@ -459,6 +462,9 @@ package body ADO.Statements.Sqlite is
       Result : constant Sqlite3_H.sqlite_int64
         := Sqlite3_H.sqlite3_column_int64 (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       return Int64 (Result);
    end Get_Int64;
 
@@ -476,6 +482,9 @@ package body ADO.Statements.Sqlite is
       Text : constant Strings.chars_ptr
         := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       if Text = Strings.Null_Ptr then
          return Null_Unbounded_String;
       else
@@ -497,6 +506,9 @@ package body ADO.Statements.Sqlite is
       Text : constant Strings.chars_ptr
         := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       if Text = Strings.Null_Ptr then
          return "";
       else
@@ -517,6 +529,9 @@ package body ADO.Statements.Sqlite is
         := Sqlite3_H.sqlite3_column_blob (Query.Stmt, int (Column));
       Len  : constant int := Sqlite3_H.sqlite3_column_bytes (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       if Text = System.Null_Address or Len <= 0 then
          return Null_Blob;
       else
@@ -536,6 +551,9 @@ package body ADO.Statements.Sqlite is
       Text : constant Strings.chars_ptr
         := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       return ADO.Statements.Get_Time (ADO.Statements.To_Chars_Ptr (Text));
    end Get_Time;
 
@@ -548,6 +566,9 @@ package body ADO.Statements.Sqlite is
                              return ADO.Schemas.Column_Type is
       Res : constant int := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       case Res is
          when Sqlite3_H.SQLITE_NULL =>
             return ADO.Schemas.T_NULL;
@@ -583,6 +604,9 @@ package body ADO.Statements.Sqlite is
       Name : constant Interfaces.C.Strings.chars_ptr
         := Sqlite3_H.sqlite3_column_name (Query.Stmt, int (Column));
    begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
       if Name = Interfaces.C.Strings.Null_Ptr then
          return "";
       else
@@ -597,7 +621,7 @@ package body ADO.Statements.Sqlite is
    function Get_Column_Count (Query  : in Sqlite_Query_Statement)
                               return Natural is
    begin
-      return Natural (Sqlite3_H.sqlite3_column_count (Query.Stmt));
+      return Query.Max_Column;
    end Get_Column_Count;
 
    --  ------------------------------
