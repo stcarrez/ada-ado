@@ -157,6 +157,8 @@ package body ADO.Statements.Tests is
                        Test_Query_Get_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Create_Statement (using $entity_type[])",
                        Test_Entity_Types'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_Integer (raise Invalid_Column)",
+                       Test_Invalid_Column'Access);
    end Add_Tests;
 
    function Get_Sum (T : in Test;
@@ -241,5 +243,51 @@ package body ADO.Statements.Tests is
       end loop;
       Util.Tests.Assert_Equals (T, 1, Count, "Query must return one row");
    end Test_Entity_Types;
+
+   --  ------------------------------
+   --  Test executing a SQL query and getting an invalid column.
+   --  ------------------------------
+   procedure Test_Invalid_Column (T : in out Test) is
+      DB    : constant ADO.Sessions.Session := Regtests.Get_Database;
+      Stmt  : ADO.Statements.Query_Statement;
+      Count : Natural := 0;
+      Name  : Ada.Strings.Unbounded.Unbounded_String;
+      Value : Integer := 123456789;
+   begin
+      Stmt := DB.Create_Statement ("SELECT name FROM entity_type");
+      Stmt.Execute;
+      while Stmt.Has_Elements loop
+         Name := Stmt.Get_Unbounded_String (0);
+         T.Assert (Ada.Strings.Unbounded.Length (Name) > 0, "Invalid entity_type name");
+         begin
+            Value := Stmt.Get_Integer (1);
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Integer");
+
+         exception
+            when ADO.Statements.Invalid_Column =>
+               null;
+         end;
+         begin
+            Name := Stmt.Get_Unbounded_String (1);
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Unbounded_String");
+
+         exception
+            when ADO.Statements.Invalid_Column =>
+               null;
+         end;
+         begin
+            T.Assert (Stmt.Get_Boolean (1), "Get_Boolean");
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Unbounded_String");
+
+         exception
+            when ADO.Statements.Invalid_Column =>
+               null;
+         end;
+         Util.Tests.Assert_Equals (T, 123456789, Value, "Value was corrupted");
+         Count := Count + 1;
+         Stmt.Next;
+      end loop;
+      T.Assert (Count > 0, "Query must return at least on entity_type");
+   end Test_Invalid_Column;
 
 end ADO.Statements.Tests;
