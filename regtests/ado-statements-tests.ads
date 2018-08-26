@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-tests -- Test statements package
---  Copyright (C) 2015, 2017 Stephane Carrez
+--  Copyright (C) 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,5 +28,8 @@ package ADO.Statements.Tests is
 
    --  Test queries using the $entity_type[] cache group.
    procedure Test_Entity_Types (T : in out Test);
+
+   --  Test executing a SQL query and getting an invalid column.
+   procedure Test_Invalid_Column (T : in out Test);
 
 end ADO.Statements.Tests;
