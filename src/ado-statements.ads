@@ -86,8 +86,10 @@ package ADO.Statements is
 
    Invalid_Statement : exception;
 
+   --  Exception raised when a column number is invalid.
    Invalid_Column    : exception;
 
+   --  Exception raised when a value cannot be converted to the target type.
    Invalid_Type      : exception;
 
    --  ---------
