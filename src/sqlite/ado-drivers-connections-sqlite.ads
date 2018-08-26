@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,11 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with System;
+with Sqlite3_H;
 with Interfaces.C;
 package ADO.Drivers.Connections.Sqlite is
 
-   subtype Sqlite_Access is System.Address;
+   subtype Sqlite3 is Sqlite3_H.sqlite3;
 
    --  The database connection manager
    type Sqlite_Driver is limited private;
@@ -29,14 +29,14 @@ package ADO.Drivers.Connections.Sqlite is
    procedure Initialize;
 
    --  Check for an error after executing a sqlite statement.
-   procedure Check_Error (Connection : in Sqlite_Access;
+   procedure Check_Error (Connection : access Sqlite3;
                           Result     : in Interfaces.C.int);
 
 private
 
    --  Database connection implementation
    type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
-      Server : aliased Sqlite_Access;
+      Server : aliased access Sqlite3_H.sqlite3;
       Name   : Unbounded_String;
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
