@@ -220,6 +220,9 @@ package body ADO.Statements is
          P := P + 1;
          C := P.all;
       end loop;
+      if C /= ASCII.NUL then
+         raise Invalid_Type;
+      end if;
       return Result;
    end Get_Uint64;
 
@@ -285,7 +288,7 @@ package body ADO.Statements is
          for I in 1 .. Nb_Digits loop
             C := Ptr.all;
             if not (C >= '0' and C <= '9') then
-               raise Constraint_Error with "Invalid date format";
+               raise Invalid_Type with "Invalid date format";
             end if;
             Result := Result * 10 + Character'Pos (C) - Character'Pos ('0');
             Ptr := Ptr + 1;
@@ -306,7 +309,7 @@ package body ADO.Statements is
             Field := Field + 4;
             C := Field.all;
             if C /= '-' then
-               raise Constraint_Error with "Invalid date format";
+               raise Invalid_Type with "Invalid date format";
             end if;
             Field := Field + 1;
 
@@ -317,7 +320,7 @@ package body ADO.Statements is
             Field := Field + 2;
             C := Field.all;
             if C /= '-' then
-               raise Constraint_Error with "Invalid date format";
+               raise Invalid_Type with "Invalid date format";
             end if;
             Field := Field + 1;
 
@@ -329,7 +332,7 @@ package body ADO.Statements is
             C := Field.all;
             if C /= ASCII.NUL then
                if C /= ' ' then
-                  raise Constraint_Error with "Invalid date format";
+                  raise Invalid_Type with "Invalid date format";
                end if;
                Field := Field + 1;
 
@@ -337,7 +340,7 @@ package body ADO.Statements is
                Field := Field + 2;
                C := Field.all;
                if C /= ':' then
-                  raise Constraint_Error with "Invalid date format";
+                  raise Invalid_Type with "Invalid date format";
                end if;
                Field := Field + 1;
 
@@ -345,7 +348,7 @@ package body ADO.Statements is
                Field := Field + 2;
                C := Field.all;
                if C /= ':' then
-                  raise Constraint_Error with "Invalid date format";
+                  raise Invalid_Type with "Invalid date format";
                end if;
                Field := Field + 1;
 
@@ -353,7 +356,7 @@ package body ADO.Statements is
                Field := Field + 2;
                C := Field.all;
                if C /= '.' and C /= ASCII.NUL then
-                  raise Constraint_Error with "Invalid date format";
+                  raise Invalid_Type with "Invalid date format";
                end if;
                Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);
             end if;
