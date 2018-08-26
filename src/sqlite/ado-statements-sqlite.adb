@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Sqlite3_H;
 with Sqlite3_H.Perfect_Hash;
 
 with Interfaces.C.Strings;
@@ -49,14 +48,12 @@ package body ADO.Statements.Sqlite is
 
    Sqlite_Dialect : aliased Dialect;
 
-   procedure Execute (Connection : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
-                      SQL        : in String;
-                      Result     : out int;
-                      Stmt       : out System.Address);
+   function Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                     SQL        : in String) return access Sqlite3_H.sqlite3_stmt;
 
    --  Releases the sqlite statement
-   procedure Release_Stmt (Connection : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
-                           Stmt       : in out System.Address);
+   procedure Release_Stmt (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                           Stmt       : access Sqlite3_H.sqlite3_stmt);
 
    procedure Prepare (Stmt  : in out Sqlite_Query_Statement;
                       Query : in String);
@@ -116,20 +113,18 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Releases the sqlite statement
    --  ------------------------------
-   procedure Release_Stmt (Connection : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
-                           Stmt       : in out System.Address) is
-      use System;
-
+   procedure Release_Stmt (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                           Stmt       : access Sqlite3_H.sqlite3_stmt) is
       Result : int;
    begin
-      if Stmt /= System.Null_Address then
+      if Stmt /= null then
          Result := Sqlite3_H.sqlite3_reset (Stmt);
          ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
 
          Result := Sqlite3_H.sqlite3_finalize (Stmt);
          ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
 
-         Stmt := System.Null_Address;
+         --  Stmt := System.Null_Address;
       end if;
    end Release_Stmt;
 
@@ -156,24 +151,27 @@ package body ADO.Statements.Sqlite is
 
       declare
          Sql_Query : constant String := Stmt.Query.Expand;
-         Handle    : aliased System.Address;
+         Handle    : access Sqlite3_H.sqlite3_stmt;
          Res       : int;
       begin
-         Execute (Connection => Stmt.Connection,
-                  SQL        => Sql_Query,
-                  Result     => Res,
-                  Stmt       => Handle);
-         ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
+         Handle := Execute (Connection => Stmt.Connection,
+                            SQL        => Sql_Query);
+         if Handle = null then
+            Result := 0;
+         else
+            Res := Sqlite3_H.sqlite3_step (Handle);
+            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
 
-         Release_Stmt (Stmt.Connection, Handle);
-         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+            Release_Stmt (Stmt.Connection, Handle);
+            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         end if;
       end;
    end Execute;
 
    --  ------------------------------
    --  Create the delete statement
    --  ------------------------------
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access is
       Result : constant Sqlite_Delete_Statement_Access := new Sqlite_Delete_Statement;
@@ -185,12 +183,11 @@ package body ADO.Statements.Sqlite is
       return Result.all'Access;
    end Create_Statement;
 
-   procedure Execute (Connection : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
-                      SQL        : in String;
-                      Result     : out int;
-                      Stmt       : out System.Address) is
+   function Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                     SQL        : in String) return access Sqlite3_H.sqlite3_stmt is
       ZSql   : Strings.chars_ptr := Strings.New_String (SQL);
-      Handle : aliased System.Address;
+      Handle : aliased access Sqlite3_H.sqlite3_stmt;
+      Result : int;
    begin
       Log.Debug ("Execute: {0}", SQL);
 
@@ -200,13 +197,13 @@ package body ADO.Statements.Sqlite is
                                               ppStmt => Handle'Address,
                                               pzTail => System.Null_Address);
       Strings.Free (ZSql);
-      Stmt := Handle;
       if Result /= Sqlite3_H.SQLITE_OK then
          ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
-         return;
+         return null;
       end if;
 
-      Result := Sqlite3_H.sqlite3_step (Handle);
+      --  Result := Sqlite3_H.sqlite3_step (Handle);
+      return Handle;
    end Execute;
 
    --  ------------------------------
@@ -244,24 +241,28 @@ package body ADO.Statements.Sqlite is
 
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
-         Handle    : aliased System.Address;
+         Handle    : access Sqlite3_H.sqlite3_stmt;
          Res       : int;
       begin
-         Execute (Connection => Stmt.Connection,
-                  SQL        => Sql_Query,
-                  Result     => Res,
-                  Stmt       => Handle);
-         ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
+         Handle := Execute (Connection => Stmt.Connection,
+                            SQL        => Sql_Query);
 
-         Release_Stmt (Stmt.Connection, Handle);
-         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         if Handle = null then
+            Result := 0;
+         else
+            Res := Sqlite3_H.sqlite3_step (Handle);
+            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
+
+            Release_Stmt (Stmt.Connection, Handle);
+            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         end if;
       end;
    end Execute;
 
    --  ------------------------------
    --  Create an update statement
    --  ------------------------------
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access is
       Result : constant Sqlite_Update_Statement_Access := new Sqlite_Update_Statement;
@@ -296,24 +297,27 @@ package body ADO.Statements.Sqlite is
       end if;
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
-         Handle    : aliased System.Address;
+         Handle    : access Sqlite3_H.sqlite3_stmt;
          Res       : int;
       begin
-         Execute (Connection => Stmt.Connection,
-                  SQL        => Sql_Query,
-                  Result     => Res,
-                  Stmt       => Handle);
-         ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
+         Handle := Execute (Connection => Stmt.Connection,
+                            SQL        => Sql_Query);
+         if Handle = null then
+            Result := 0;
+         else
+            Res := Sqlite3_H.sqlite3_step (Handle);
+            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
 
-         Release_Stmt (Stmt.Connection, Handle);
-         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+            Release_Stmt (Stmt.Connection, Handle);
+            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         end if;
       end;
    end Execute;
 
    --  ------------------------------
    --  Create an insert statement.
    --  ------------------------------
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access is
       Result : constant Sqlite_Insert_Statement_Access := new Sqlite_Insert_Statement;
@@ -331,7 +335,7 @@ package body ADO.Statements.Sqlite is
                       Query : in String) is
       Sql    : Strings.chars_ptr := Strings.New_String (Query);
       Result : int;
-      Handle : aliased System.Address;
+      Handle : aliased access Sqlite3_H.sqlite3_stmt;
    begin
       Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Stmt.Connection,
                                               zSql   => Sql,
@@ -395,9 +399,8 @@ package body ADO.Statements.Sqlite is
    --  Returns True if there is more data (row) to fetch
    --  ------------------------------
    function Has_Elements (Query : in Sqlite_Query_Statement) return Boolean is
-      use type System.Address;
    begin
-      return Query.Stmt /= System.Null_Address and then Query.Status = HAS_ROW;
+      return Query.Stmt /= null and then Query.Status = HAS_ROW;
    end Has_Elements;
 
    --  ------------------------------
@@ -405,11 +408,9 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    overriding
    procedure Next (Query : in out Sqlite_Query_Statement) is
-      use type System.Address;
-
       Result : int;
    begin
-      if Query.Stmt = System.Null_Address then
+      if Query.Stmt = null then
          Query.Status := ERROR;
       else
          Result := Sqlite3_H.sqlite3_step (Query.Stmt);
@@ -611,7 +612,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Create the query statement.
    --  ------------------------------
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access is
       Result : constant Sqlite_Query_Statement_Access := new Sqlite_Query_Statement;
@@ -638,7 +639,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Create the query statement.
    --  ------------------------------
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Query    : in String)
                               return Query_Statement_Access is
       Result : constant Sqlite_Query_Statement_Access := new Sqlite_Query_Statement;
