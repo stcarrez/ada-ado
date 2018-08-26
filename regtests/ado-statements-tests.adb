@@ -41,6 +41,15 @@ package body ADO.Statements.Tests is
       Column : String;
    procedure Test_Query_Get_Value_T (Tst   : in out Test);
 
+   --  Test the query statement Get_Xxx operation called on a null column.
+   generic
+      type T (<>) is private;
+      with function Get_Value (Stmt   : in ADO.Statements.Query_Statement;
+                               Column : in Natural) return T is <>;
+      Name   : String;
+      Column : String;
+   procedure Test_Query_Get_Value_On_Null_T (Tst   : in out Test);
+
    procedure Populate (Tst : in out Test) is
       DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
    begin
@@ -106,8 +115,53 @@ package body ADO.Statements.Tests is
 
    end Test_Query_Get_Value_T;
 
+   --  ------------------------------
+   --  Test the query statement Get_Xxx operation for various types.
+   --  ------------------------------
+   procedure Test_Query_Get_Value_On_Null_T (Tst   : in out Test) is
+      Stmt : ADO.Statements.Query_Statement;
+      DB   : constant ADO.Sessions.Session := Regtests.Get_Database;
+   begin
+      Populate (Tst);
+
+      --  Execute a query to fetch one column as NULL and one row.
+      if DB.Get_Driver.Get_Driver_Name = "mysql" then
+         Stmt := DB.Create_Statement ("SELECT " & Column & ", COUNT(*) FROM test_table "
+                                      & "WHERE id = -1");
+      else
+         Stmt := DB.Create_Statement ("SELECT " & Column & ", COUNT(*) FROM test_table "
+                                      & "WHERE id = -1 GROUP BY " & Column);
+      end if;
+      Stmt.Execute;
+
+      --  Verify the query result and the Get_Value operation.
+      Tst.Assert (Stmt.Has_Elements, "The query statement must return a value " & Name);
+      Tst.Assert (Stmt.Is_Null (0), "The query statement must return null value for "
+                  & Name & ":" & Column);
+      Tst.Assert (not Stmt.Is_Null (1), "The query statement must return non null value for "
+                  & Name & " and the COUNT(*)");
+      Util.Tests.Assert_Equals (Tst, Column,
+                                Util.Strings.Transforms.To_Lower_Case (Stmt.Get_Column_Name (0)),
+                                "The query returns an invalid column name");
+      declare
+         V : T := Get_Value (Stmt, 0);
+         pragma Unreferenced (V);
+      begin
+         Tst.Fail ("No Invalid_Type exception is raised for " & Name);
+         Stmt.Clear;
+      end;
+
+   exception
+      when ADO.Statements.Invalid_Type =>
+         null;
+
+   end Test_Query_Get_Value_On_Null_T;
+
    procedure Test_Query_Get_Int64 is
      new Test_Query_Get_Value_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "id_value");
+
+   procedure Test_Query_Get_Int64_On_Null is
+     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "id_value");
 
    procedure Test_Query_Get_Integer is
      new Test_Query_Get_Value_T (Integer, ADO.Statements.Get_Integer, "Get_Integer", "int_value");
@@ -133,6 +187,10 @@ package body ADO.Statements.Tests is
    procedure Test_Query_Get_String is
      new Test_Query_Get_Value_T (String, ADO.Statements.Get_String, "Get_String", "string_value");
 
+   procedure Test_Query_Get_String_On_Null is
+     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64,
+                                         "Get_String", "string_value");
+
    package Caller is new Util.Test_Caller (Test, "ADO.Statements");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -141,6 +199,8 @@ package body ADO.Statements.Tests is
                        Test_Save'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Int64",
                        Test_Query_Get_Int64'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_Int64 (NULL)",
+                       Test_Query_Get_Int64_On_Null'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Integer",
                        Test_Query_Get_Integer'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Integer",
@@ -153,12 +213,16 @@ package body ADO.Statements.Tests is
                        Test_Query_Get_Boolean'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_String",
                        Test_Query_Get_String'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_String (NULL)",
+                       Test_Query_Get_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Entity_Type",
                        Test_Query_Get_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Create_Statement (using $entity_type[])",
                        Test_Entity_Types'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Integer (raise Invalid_Column)",
                        Test_Invalid_Column'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_Integer (raise Invalid_Type)",
+                       Test_Invalid_Type'Access);
    end Add_Tests;
 
    function Get_Sum (T : in Test;
@@ -289,5 +353,52 @@ package body ADO.Statements.Tests is
       end loop;
       T.Assert (Count > 0, "Query must return at least on entity_type");
    end Test_Invalid_Column;
+
+   --  ------------------------------
+   --  Test executing a SQL query and getting an invalid value.
+   --  ------------------------------
+   procedure Test_Invalid_Type (T : in out Test) is
+      DB    : constant ADO.Sessions.Session := Regtests.Get_Database;
+      Stmt  : ADO.Statements.Query_Statement;
+      Count : Natural := 0;
+      Name  : Ada.Strings.Unbounded.Unbounded_String;
+      Value : Integer := 123456789;
+      Time  : Ada.Calendar.Time with Unreferenced;
+   begin
+      Stmt := DB.Create_Statement ("SELECT name, id FROM entity_type");
+      Stmt.Execute;
+      while Stmt.Has_Elements loop
+         Name := Stmt.Get_Unbounded_String (0);
+         T.Assert (Ada.Strings.Unbounded.Length (Name) > 0, "Invalid entity_type name");
+         begin
+            Value := Stmt.Get_Integer (0);
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Integer on a String");
+
+         exception
+            when ADO.Statements.Invalid_Type =>
+               null;
+         end;
+         begin
+            Time := Stmt.Get_Time (1);
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Time on an Integer");
+
+         exception
+            when ADO.Statements.Invalid_Type =>
+               null;
+         end;
+         begin
+            T.Assert (Stmt.Get_Boolean (0), "Get_Boolean");
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Boolean on a String");
+
+         exception
+            when ADO.Statements.Invalid_Type =>
+               null;
+         end;
+         Util.Tests.Assert_Equals (T, 123456789, Value, "Value was corrupted");
+         Count := Count + 1;
+         Stmt.Next;
+      end loop;
+      T.Assert (Count > 0, "Query must return at least on entity_type");
+   end Test_Invalid_Type;
 
 end ADO.Statements.Tests;
