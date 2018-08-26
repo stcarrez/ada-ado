@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010, 2011, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -85,8 +85,12 @@ package body ADO.Schemas.Mysql is
       while Stmt.Has_Elements loop
          Col           := new Column;
          Col.Name      := Stmt.Get_Unbounded_String (0);
-         Col.Collation := Stmt.Get_Unbounded_String (2);
-         Col.Default   := Stmt.Get_Unbounded_String (5);
+         if not Stmt.Is_Null (2) then
+            Col.Collation := Stmt.Get_Unbounded_String (2);
+         end if;
+         if not Stmt.Is_Null (5) then
+            Col.Default   := Stmt.Get_Unbounded_String (5);
+         end if;
          if Last /= null then
             Last.Next_Column := Col;
          else
