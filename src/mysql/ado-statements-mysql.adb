@@ -401,7 +401,7 @@ package body ADO.Statements.Mysql is
          raise Invalid_Statement with "Null statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column";
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       R := Query.Row + Size_T (Column * (R'Size / 8));
       return To_Chars_Ptr (R.all);
@@ -420,7 +420,7 @@ package body ADO.Statements.Mysql is
          raise Invalid_Statement with "Null statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column";
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       R := mysql_fetch_lengths (Query.Result);
       R := R + Size_T (Column * (R'Size / 8));
@@ -629,12 +629,12 @@ package body ADO.Statements.Mysql is
          raise Invalid_Statement with "No statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
       Field := Mysql_Fetch_Field_Direct (Query.Result, MYSQL_FIELD_OFFSET (Column));
       if Field = null then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
       case Field.C_Type is
          when MYSQL_TYPE_DECIMAL | MYSQL_TYPE_NEWDECIMAL =>
@@ -715,12 +715,12 @@ package body ADO.Statements.Mysql is
          raise Invalid_Statement with "No statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
       Field := Mysql_Fetch_Field_Direct (Query.Result, MYSQL_FIELD_OFFSET (Column));
       if Field = null then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
       if Field.name = Interfaces.C.Strings.Null_Ptr then
          return "";
