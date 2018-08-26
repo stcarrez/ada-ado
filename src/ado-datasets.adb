@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets -- Datasets
---  Copyright (C) 2013, 2014 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,8 +37,11 @@ package body ADO.Datasets is
          use ADO.Schemas;
       begin
          for I in Data'Range loop
-            case Stmt.Get_Column_Type (I - 1) is
-               --  Boolean column
+            if Stmt.Is_Null (I - 1) then
+               Data (I) := Util.Beans.Objects.Null_Object;
+            else
+               case Stmt.Get_Column_Type (I - 1) is
+                  --  Boolean column
                when T_BOOLEAN =>
                   Data (I) := Util.Beans.Objects.To_Object (Stmt.Get_Boolean (I - 1));
 
@@ -63,7 +66,8 @@ package body ADO.Datasets is
                when T_SET | T_UNKNOWN | T_NULL =>
                   Data (I) := Util.Beans.Objects.Null_Object;
 
-            end case;
+               end case;
+            end if;
          end loop;
       end Fill;
 
