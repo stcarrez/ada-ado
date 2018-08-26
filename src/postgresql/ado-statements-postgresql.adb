@@ -554,6 +554,82 @@ package body ADO.Statements.Postgresql is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   overriding
+   function Get_Boolean (Query  : Postgresql_Query_Statement;
+                         Column : Natural) return Boolean is
+      Field  : chars_ptr := Query.Get_Field (Column);
+      C      : Character;
+   begin
+      if Field = null then
+         raise Invalid_Type with "Invalid boolean value";
+      end if;
+      C := Field.all;
+      Field := Field + 1;
+      case C is
+         when '0' =>
+            if Field.all /= ASCII.NUL then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            return False;
+
+         when '1' =>
+            if Field.all /= ASCII.NUL then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            return True;
+
+         when 'T' | 't' =>
+            C := Field.all;
+            if C = ASCII.NUL then
+               return True;
+            end if;
+            if C /= 'r' and C /= 'R' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            C := Field.all;
+            if C /= 'u' and C /= 'U' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            C := Field.all;
+            if C /= 'e' and C /= 'E' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            return True;
+
+         when 'F' | 'f' =>
+            C := Field.all;
+            if C = ASCII.NUL then
+               return False;
+            end if;
+            if C /= 'a' and C /= 'A' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            C := Field.all;
+            if C /= 'l' and C /= 'L' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            C := Field.all;
+            if C /= 's' and C /= 'S' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            C := Field.all;
+            if C /= 'e' and C /= 'E' then
+               raise Invalid_Type with "Invalid boolean value";
+            end if;
+            return False;
+
+         when others =>
+            raise Invalid_Type with "Invalid boolean value";
+
+      end case;
+   end Get_Boolean;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
