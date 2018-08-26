@@ -421,7 +421,7 @@ package body ADO.Statements.Postgresql is
       end if;
       if Column > Query.Max_Column then
          Log.Warn ("Column {0} is not valid", Natural'Image (Column));
-         raise Constraint_Error with "Invalid column";
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       if PQ.PQgetisnull (Query.Result, Query.Row, Interfaces.C.int (Column)) = 1 then
          Log.Warn ("Null column {0} in row {1}", Natural'Image (Column),
@@ -445,7 +445,7 @@ package body ADO.Statements.Postgresql is
       end if;
       if Column > Query.Max_Column then
          Log.Warn ("Column {0} is not valid", Natural'Image (Column));
-         raise Constraint_Error with "Invalid column";
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       return Natural (PQ.PQfsize (Query.Result, Interfaces.C.int (Column)));
    end Get_Field_Length;
@@ -637,7 +637,7 @@ package body ADO.Statements.Postgresql is
          raise Invalid_Statement with "No statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
       return ADO.Schemas.T_UNKNOWN;
    end Get_Column_Type;
@@ -657,12 +657,12 @@ package body ADO.Statements.Postgresql is
          raise Invalid_Statement with "No statement";
       end if;
       if Column > Query.Max_Column then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
       Name := PQ.PQfname (Query.Result, Interfaces.C.int (Column));
       if Name = Interfaces.C.Strings.Null_Ptr then
-         raise Constraint_Error with "Invalid column: " & Natural'Image (Column);
+         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       else
          return Interfaces.C.Strings.Value (Name);
       end if;
