@@ -419,7 +419,7 @@ package body ADO.Statements.Postgresql is
       if Query.Result = PQ.Null_PGresult then
          raise Invalid_Statement with "Null statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          Log.Warn ("Column {0} is not valid", Natural'Image (Column));
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
@@ -443,7 +443,7 @@ package body ADO.Statements.Postgresql is
       if Query.Row >= Query.Row_Count then
          raise Invalid_Statement with "Null statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          Log.Warn ("Column {0} is not valid", Natural'Image (Column));
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
@@ -528,7 +528,7 @@ package body ADO.Statements.Postgresql is
       if Query.Result = PQ.Null_PGresult then
          return True;
       end if;
-      if Column > Query.Max_Column or Query.Row >= Query.Row_Count then
+      if Column >= Query.Max_Column or Query.Row >= Query.Row_Count then
          return True;
       end if;
       return PQ.PQgetisnull (Query.Result, Query.Row, Interfaces.C.int (Column)) = 1;
@@ -636,7 +636,7 @@ package body ADO.Statements.Postgresql is
       if Query.Result = PQ.Null_PGresult then
          raise Invalid_Statement with "No statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
       return ADO.Schemas.T_UNKNOWN;
@@ -656,7 +656,7 @@ package body ADO.Statements.Postgresql is
       if Query.Result = PQ.Null_PGresult then
          raise Invalid_Statement with "No statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
