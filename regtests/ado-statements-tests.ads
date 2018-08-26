@@ -32,4 +32,7 @@ package ADO.Statements.Tests is
    --  Test executing a SQL query and getting an invalid column.
    procedure Test_Invalid_Column (T : in out Test);
 
+   --  Test executing a SQL query and getting an invalid value.
+   procedure Test_Invalid_Type (T : in out Test);
+
 end ADO.Statements.Tests;
