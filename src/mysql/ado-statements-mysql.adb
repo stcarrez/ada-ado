@@ -400,7 +400,7 @@ package body ADO.Statements.Mysql is
       if Query.Row = null then
          raise Invalid_Statement with "Null statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       R := Query.Row + Size_T (Column * (R'Size / 8));
@@ -419,7 +419,7 @@ package body ADO.Statements.Mysql is
       if Query.Row = null then
          raise Invalid_Statement with "Null statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       R := mysql_fetch_lengths (Query.Result);
@@ -628,7 +628,7 @@ package body ADO.Statements.Mysql is
       if Query.Result = null then
          raise Invalid_Statement with "No statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
@@ -714,7 +714,7 @@ package body ADO.Statements.Mysql is
       if Query.Result = null then
          raise Invalid_Statement with "No statement";
       end if;
-      if Column > Query.Max_Column then
+      if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
       end if;
 
