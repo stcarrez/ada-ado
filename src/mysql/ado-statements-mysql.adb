@@ -537,7 +537,7 @@ package body ADO.Statements.Mysql is
       Field  : constant chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
-         return 0;
+         raise Invalid_Type with "NULL cannot be converted to Integer";
       else
          return Get_Int64 (Field);
       end if;
@@ -555,7 +555,7 @@ package body ADO.Statements.Mysql is
       Field  : chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
-         return Null_Unbounded_String;
+         raise Invalid_Type with "NULL cannot be converted to String";
       end if;
       declare
          Result : Unbounded_String;
@@ -597,6 +597,7 @@ package body ADO.Statements.Mysql is
          return Get_Blob (Size => Query.Get_Field_Length (Column),
                           Data => Field);
       else
+         --  A Blob_Ref can hold a NULL so this is ok to return a Null_Blob value.
          return Null_Blob;
       end if;
    end Get_Blob;
