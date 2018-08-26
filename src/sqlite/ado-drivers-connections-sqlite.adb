@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Sqlite3_H;
+with System;
 with Interfaces.C.Strings;
 
 with Util.Log;
@@ -53,7 +53,7 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    --  Check for an error after executing a sqlite statement.
    --  ------------------------------
-   procedure Check_Error (Connection : in Sqlite_Access;
+   procedure Check_Error (Connection : access Sqlite3;
                           Result     : in int) is
    begin
       if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
@@ -198,8 +198,10 @@ package body ADO.Drivers.Connections.Sqlite is
    begin
       Log.Debug ("Release connection");
 
-      Result := Sqlite3_H.sqlite3_close (Database.Server);
-      Database.Server := System.Null_Address;
+      if Database.Server /= null then
+         Result := Sqlite3_H.sqlite3_close (Database.Server);
+         Database.Server := null;
+      end if;
       pragma Unreferenced (Result);
    end Finalize;
 
@@ -227,7 +229,7 @@ package body ADO.Drivers.Connections.Sqlite is
       Name     : constant String := To_String (Config.Database);
       Filename : Strings.chars_ptr;
       Status   : int;
-      Handle   : aliased System.Address;
+      Handle   : aliased access Sqlite3;
       Flags    : constant int := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
 
    begin
@@ -238,12 +240,18 @@ package body ADO.Drivers.Connections.Sqlite is
          return;
       end if;
       Filename := Strings.New_String (Name);
-      Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Access,
+      Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Address,
                                            Flags,
                                            Strings.Null_Ptr);
 
       Strings.Free (Filename);
       if Status /= Sqlite3_H.SQLITE_OK then
+--          declare
+--              Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
+--              Msg   : constant String := Strings.Value (Error);
+--           begin
+--              Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
+--           end;
          raise DB_Error;
       end if;
 
