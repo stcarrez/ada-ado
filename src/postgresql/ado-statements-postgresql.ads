@@ -110,6 +110,14 @@ package ADO.Statements.Postgresql is
                        Column : Natural) return Int64;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   overriding
+   function Get_Boolean (Query  : Postgresql_Query_Statement;
+                         Column : Natural) return Boolean;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
@@ -172,12 +180,6 @@ package ADO.Statements.Postgresql is
 private
    type State is (HAS_ROW, HAS_MORE, DONE, ERROR);
 
-   type Fields is array (Natural) of System.Address;
-   type Row_Fields is access Fields;
-
-   type Lengths is array (Natural) of Natural;
-   type Lengths_Access is access Lengths;
-
    type Postgresql_Query_Statement is new Query_Statement with record
       This_Query : aliased ADO.SQL.Query;
       Connection : PQ.PGconn_Access;
@@ -186,7 +188,6 @@ private
       Row_Count  : Interfaces.C.int := 0;
       Counter    : Natural := 1;
       Status     : State := DONE;
-      Lengths    : Lengths_Access;
       Max_Column : Natural;
    end record;
 
