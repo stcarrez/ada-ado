@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with System;
+with Sqlite3_H;
 with ADO.Drivers.Connections.Sqlite;
 package ADO.Statements.Sqlite is
 
@@ -34,7 +34,7 @@ package ADO.Statements.Sqlite is
                       Result : out Natural);
 
    --  Create the delete statement
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access;
 
@@ -54,7 +54,7 @@ package ADO.Statements.Sqlite is
                       Result : out Integer);
 
    --  Create an update statement
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access;
 
@@ -70,7 +70,7 @@ package ADO.Statements.Sqlite is
                       Result : out Integer);
 
    --  Create an insert statement.
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access;
 
@@ -162,12 +162,12 @@ package ADO.Statements.Sqlite is
    procedure Finalize (Query : in out Sqlite_Query_Statement);
 
    --  Create the query statement.
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access;
 
    --  Create the query statement.
-   function Create_Statement (Database : in ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+   function Create_Statement (Database : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                               Query    : in String)
                               return Query_Statement_Access;
 
@@ -176,27 +176,27 @@ private
 
    type Sqlite_Query_Statement is new Query_Statement with record
       This_Query : aliased ADO.SQL.Query;
-      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
-      Stmt       : ADO.Drivers.Connections.Sqlite.Sqlite_Access := System.Null_Address;
+      Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+      Stmt       : access Sqlite3_H.sqlite3_stmt;
       Counter    : Natural := 1;
       Status     : State := DONE;
       Max_Column : Natural;
    end record;
 
    type Sqlite_Delete_Statement is new Delete_Statement with record
-      Connection   : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+      Connection   : access ADO.Drivers.Connections.Sqlite.Sqlite3;
       Table        : ADO.Schemas.Class_Mapping_Access;
       Delete_Query : aliased ADO.SQL.Query;
    end record;
 
    type Sqlite_Update_Statement is new Update_Statement with record
-      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+      Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
       This_Query : aliased ADO.SQL.Update_Query;
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
 
    type Sqlite_Insert_Statement is new Insert_Statement with record
-      Connection : ADO.Drivers.Connections.Sqlite.Sqlite_Access;
+      Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
       This_Query : aliased ADO.SQL.Update_Query;
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
