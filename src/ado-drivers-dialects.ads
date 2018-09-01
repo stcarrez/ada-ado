@@ -37,7 +37,7 @@ package ADO.Drivers.Dialects is
                          Name : String) return Boolean is abstract;
 
    --  Get the quote character to escape an identifier.
-   function Get_Identifier_Quote (D : in Dialect) return Character;
+   function Get_Identifier_Quote (D : in Dialect) return Character is abstract;
 
    --  Append the item in the buffer escaping some characters if necessary.
    --  The default implementation only escapes the single quote ' by doubling them.
