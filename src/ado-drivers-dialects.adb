@@ -18,15 +18,6 @@
 
 package body ADO.Drivers.Dialects is
 
-   --  --------------------
-   --  Get the quote character to escape an identifier.
-   --  --------------------
-   function Get_Identifier_Quote (D : in Dialect) return Character is
-      pragma Unreferenced (D);
-   begin
-      return '`';
-   end Get_Identifier_Quote;
-
    --  ------------------------------
    --  Append the item in the buffer escaping some characters if necessary.
    --  The default implementation only escapes the single quote ' by doubling them.
