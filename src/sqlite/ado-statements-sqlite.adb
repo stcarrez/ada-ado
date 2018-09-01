@@ -22,6 +22,7 @@ with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
 
+with ADO.Sessions;
 with ADO.Drivers.Dialects;
 package body ADO.Statements.Sqlite is
 
@@ -111,17 +112,68 @@ package body ADO.Statements.Sqlite is
    end Escape_Sql;
 
    --  ------------------------------
+   --  Check for an error after executing a sqlite statement.
+   --  ------------------------------
+   procedure Check_Error (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                          Result     : in int) is
+   begin
+      if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
+         declare
+            Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
+            Msg   : constant String := Strings.Value (Error);
+         begin
+            Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
+            raise ADO.Statements.SQL_Error with "SQL error: " & Msg;
+         end;
+      end if;
+   end Check_Error;
+
+   function Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                     SQL        : in String) return access Sqlite3_H.sqlite3_stmt is
+      ZSql   : Strings.chars_ptr := Strings.New_String (SQL);
+      Handle : aliased access Sqlite3_H.sqlite3_stmt;
+      Result : int;
+   begin
+      Log.Debug ("Execute: {0}", SQL);
+
+      Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Connection,
+                                              zSql   => ZSql,
+                                              nByte  => int (SQL'Length + 1),
+                                              ppStmt => Handle'Address,
+                                              pzTail => System.Null_Address);
+      Strings.Free (ZSql);
+      if Result /= Sqlite3_H.SQLITE_OK then
+         Check_Error (Connection, Result);
+      end if;
+
+      return Handle;
+   end Execute;
+
+   --  ------------------------------
+   --  Execute SQL statement.
+   --  ------------------------------
+   procedure Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                      SQL        : in String) is
+      Handle    : access Sqlite3_H.sqlite3_stmt;
+      Res       : int;
+   begin
+      Handle := Execute (Connection => Connection,
+                         SQL        => SQL);
+
+      Res := Sqlite3_H.sqlite3_step (Handle);
+      Release_Stmt (Connection, Handle);
+      Check_Error (Connection, Res);
+   end Execute;
+
+   --  ------------------------------
    --  Releases the sqlite statement
    --  ------------------------------
    procedure Release_Stmt (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                            Stmt       : access Sqlite3_H.sqlite3_stmt) is
       Result : int;
    begin
-      Result := Sqlite3_H.sqlite3_reset (Stmt);
-      ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
-
       Result := Sqlite3_H.sqlite3_finalize (Stmt);
-      ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
+      Check_Error (Connection, Result);
    end Release_Stmt;
 
    --  ------------------------------
@@ -135,6 +187,9 @@ package body ADO.Statements.Sqlite is
    procedure Execute (Stmt   : in out Sqlite_Delete_Statement;
                       Result : out Natural) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
       ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
       if Stmt.Query.Has_Join then
@@ -152,14 +207,14 @@ package body ADO.Statements.Sqlite is
       begin
          Handle := Execute (Connection => Stmt.Connection,
                             SQL        => Sql_Query);
-         if Handle = null then
-            Result := 0;
-         else
-            Res := Sqlite3_H.sqlite3_step (Handle);
-            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
 
-            Release_Stmt (Stmt.Connection, Handle);
-            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         Res := Sqlite3_H.sqlite3_step (Handle);
+         Release_Stmt (Stmt.Connection, Handle);
+         Check_Error (Stmt.Connection, Res);
+
+         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Deleted {0} rows", Natural'Image (Result));
          end if;
       end;
    end Execute;
@@ -178,29 +233,6 @@ package body ADO.Statements.Sqlite is
       Result.Delete_Query.Set_Dialect (Sqlite_Dialect'Access);
       return Result.all'Access;
    end Create_Statement;
-
-   function Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
-                     SQL        : in String) return access Sqlite3_H.sqlite3_stmt is
-      ZSql   : Strings.chars_ptr := Strings.New_String (SQL);
-      Handle : aliased access Sqlite3_H.sqlite3_stmt;
-      Result : int;
-   begin
-      Log.Debug ("Execute: {0}", SQL);
-
-      Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Connection,
-                                              zSql   => ZSql,
-                                              nByte  => int (SQL'Length + 1),
-                                              ppStmt => Handle'Address,
-                                              pzTail => System.Null_Address);
-      Strings.Free (ZSql);
-      if Result /= Sqlite3_H.SQLITE_OK then
-         ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
-         return null;
-      end if;
-
-      --  Result := Sqlite3_H.sqlite3_step (Handle);
-      return Handle;
-   end Execute;
 
    --  ------------------------------
    --  Update statement
@@ -223,6 +255,9 @@ package body ADO.Statements.Sqlite is
    procedure Execute (Stmt   : in out Sqlite_Update_Statement;
                       Result : out Integer) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
       ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
@@ -243,14 +278,13 @@ package body ADO.Statements.Sqlite is
          Handle := Execute (Connection => Stmt.Connection,
                             SQL        => Sql_Query);
 
-         if Handle = null then
-            Result := 0;
-         else
-            Res := Sqlite3_H.sqlite3_step (Handle);
-            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
+         Res := Sqlite3_H.sqlite3_step (Handle);
+         Release_Stmt (Stmt.Connection, Handle);
+         Check_Error (Stmt.Connection, Res);
 
-            Release_Stmt (Stmt.Connection, Handle);
-            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Updated {0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
@@ -282,6 +316,9 @@ package body ADO.Statements.Sqlite is
    procedure Execute (Stmt   : in out Sqlite_Insert_Statement;
                       Result : out Integer) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       if Stmt.Table /= null then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "INSERT INTO ");
          ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
@@ -298,14 +335,14 @@ package body ADO.Statements.Sqlite is
       begin
          Handle := Execute (Connection => Stmt.Connection,
                             SQL        => Sql_Query);
-         if Handle = null then
-            Result := 0;
-         else
-            Res := Sqlite3_H.sqlite3_step (Handle);
-            ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Res);
 
-            Release_Stmt (Stmt.Connection, Handle);
-            Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         Res := Sqlite3_H.sqlite3_step (Handle);
+         Release_Stmt (Stmt.Connection, Handle);
+         Check_Error (Stmt.Connection, Res);
+
+         Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Inserted {0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
@@ -339,12 +376,8 @@ package body ADO.Statements.Sqlite is
                                               ppStmt => Handle'Address,
                                               pzTail => System.Null_Address);
       Strings.Free (Sql);
-      if Result = Sqlite3_H.SQLITE_OK then
-         Stmt.Stmt := Handle;
-      else
-         ADO.Drivers.Connections.Sqlite.Check_Error (Stmt.Connection, Result);
-      end if;
-
+      Check_Error (Stmt.Connection, Result);
+      Stmt.Stmt := Handle;
    end Prepare;
 
    --  ------------------------------
@@ -353,6 +386,9 @@ package body ADO.Statements.Sqlite is
    procedure Execute (Query : in out Sqlite_Query_Statement) is
       Result : int;
    begin
+      if Query.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       if Query.This_Query.Has_Join then
          ADO.SQL.Append (Target => Query.This_Query.SQL, SQL => " ");
          ADO.SQL.Append (Target => Query.This_Query.SQL, SQL => Query.This_Query.Get_Join);
@@ -388,7 +424,7 @@ package body ADO.Statements.Sqlite is
             begin
                Log.Error ("Query failed: '{0}'", Expanded_Query);
                Log.Error ("  with error: '{0}'", Message);
-               raise Invalid_Statement with "Query failed: " & Message;
+               raise ADO.Statements.SQL_Error with "Query failed: " & Message;
             end;
          end if;
       end;
@@ -420,7 +456,7 @@ package body ADO.Statements.Sqlite is
             Query.Status := DONE;
 
          else
-            ADO.Drivers.Connections.Sqlite.Check_Error (Query.Connection, Result);
+            Check_Error (Query.Connection, Result);
             Query.Status := ERROR;
          end if;
       end if;

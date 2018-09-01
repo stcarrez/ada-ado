@@ -16,12 +16,10 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with System;
 with Interfaces.C.Strings;
 
 with Util.Log;
 with Util.Log.Loggers;
-with ADO.C;
 with ADO.Sessions;
 with ADO.Statements.Sqlite;
 with ADO.Schemas.Sqlite;
@@ -38,8 +36,6 @@ package body ADO.Drivers.Connections.Sqlite is
    Driver_Name : aliased constant String := "sqlite";
    Driver      : aliased Sqlite_Driver;
 
-   No_Callback : constant Sqlite3_H.sqlite3_callback := null;
-
    --  ------------------------------
    --  Get the database driver which manages this connection.
    --  ------------------------------
@@ -50,22 +46,6 @@ package body ADO.Drivers.Connections.Sqlite is
    begin
       return Driver'Access;
    end Get_Driver;
-
-   --  ------------------------------
-   --  Check for an error after executing a sqlite statement.
-   --  ------------------------------
-   procedure Check_Error (Connection : access Sqlite3;
-                          Result     : in int) is
-   begin
-      if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
-         declare
-            Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
-            Msg   : constant String := Strings.Value (Error);
-         begin
-            Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
-         end;
-      end if;
-   end Check_Error;
 
    overriding
    function Create_Statement (Database : in Database_Connection;
@@ -121,7 +101,9 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
-      null;
+      if Database.Server = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
    end Begin_Transaction;
 
    --  ------------------------------
@@ -129,7 +111,9 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Commit (Database : in out Database_Connection) is
    begin
-      null;
+      if Database.Server = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
    end Commit;
 
    --  ------------------------------
@@ -137,59 +121,32 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Rollback (Database : in out Database_Connection) is
    begin
-      null;
-   end Rollback;
-
-   procedure Sqlite3_Free (Arg1 : Strings.chars_ptr);
-   pragma Import (C, sqlite3_free, "sqlite3_free");
-
-   procedure Execute (Database : in out Database_Connection;
-                      SQL      : in Query_String) is
-      use type Strings.chars_ptr;
-
-      SQL_Stat  : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (SQL);
-      Result    : int;
-      Error_Msg : Strings.chars_ptr;
-   begin
-      Log.Debug ("Execute: {0}", SQL);
-
       if Database.Server = null then
-         Log.Warn ("Database connection is closed");
          raise ADO.Sessions.Session_Error with "Database connection is closed";
       end if;
-
-      for Retry in 1 .. 100 loop
-         Result := Sqlite3_H.sqlite3_exec (Database.Server, ADO.C.To_C (SQL_Stat), No_Callback,
-                                           System.Null_Address, Error_Msg'Address);
-
-         exit when Result /= Sqlite3_H.SQLITE_BUSY;
-         delay 0.01 * Retry;
-      end loop;
-      Check_Error (Database.Server, Result);
-      if Error_Msg /= Strings.Null_Ptr then
-         Log.Error ("Error: {0}", Strings.Value (Error_Msg));
-         Sqlite3_Free (Error_Msg);
-      end if;
-
-      --  Free
-      --  Strings.Free (SQL_Stat);
-   end Execute;
+   end Rollback;
 
    --  ------------------------------
    --  Closes the database connection
    --  ------------------------------
    overriding
    procedure Close (Database : in out Database_Connection) is
-      pragma Unreferenced (Database);
       Result : int;
    begin
-      Log.Info ("Close connection");
+      Log.Info ("Close connection {0}", Database.Name);
 
---        if Database.Count = 1 then
---           Result := Sqlite3_H.sqlite3_close (Database.Server);
---           Database.Server := System.Null_Address;
---        end if;
-      pragma Unreferenced (Result);
+      if Database.Server /= null then
+         Result := Sqlite3_H.sqlite3_close_v2 (Database.Server);
+         if Result /= Sqlite3_H.SQLITE_OK then
+            declare
+               Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Result);
+               Msg   : constant String := Strings.Value (Error);
+            begin
+               Log.Error ("Cannot close database {0}: {1}", To_String (Database.Name), Msg);
+            end;
+         end if;
+         Database.Server := null;
+      end if;
    end Close;
 
    --  ------------------------------
@@ -197,15 +154,12 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    overriding
    procedure Finalize (Database : in out Database_Connection) is
-      Result : int;
    begin
-      Log.Debug ("Release connection");
+      Log.Debug ("Release database connection");
 
       if Database.Server /= null then
-         Result := Sqlite3_H.sqlite3_close (Database.Server);
-         Database.Server := null;
+         Database.Close;
       end if;
-      pragma Unreferenced (Result);
    end Finalize;
 
    --  ------------------------------
@@ -217,8 +171,6 @@ package body ADO.Drivers.Connections.Sqlite is
    begin
       ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
-
-   DB : Ref.Ref;
 
    --  ------------------------------
    --  Initialize the database connection manager.
@@ -234,14 +186,9 @@ package body ADO.Drivers.Connections.Sqlite is
       Status   : int;
       Handle   : aliased access Sqlite3;
       Flags    : constant int := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
-
    begin
       Log.Info ("Opening database {0}", Name);
 
-      if not DB.Is_Null then
-         Result := Ref.Create (DB.Value);
-         return;
-      end if;
       Filename := Strings.New_String (Name);
       Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Address,
                                            Flags,
@@ -283,14 +230,18 @@ package body ADO.Drivers.Connections.Sqlite is
          begin
             if Util.Strings.Index (Name, '.') = 0 then
                Log.Info ("Configure database with {0}", SQL);
-               Database.Execute (SQL);
+               ADO.Statements.Sqlite.Execute (Database.Server, SQL);
             end if;
+
+         exception
+            when SQL_Error =>
+               null;
          end Configure;
 
       begin
          Database.Server := Handle;
          Database.Name   := Config.Database;
-         DB := Ref.Create (Database.all'Access);
+         Result := Ref.Create (Database.all'Access);
 
          --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
          --  Typical configuration includes:
@@ -298,8 +249,6 @@ package body ADO.Drivers.Connections.Sqlite is
          --    temp_store=MEMORY
          --    encoding='UTF-8'
          Config.Properties.Iterate (Process => Configure'Access);
-
-         Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
 
