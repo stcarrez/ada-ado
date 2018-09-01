@@ -231,6 +231,7 @@ package body ADO.Statements.Postgresql is
 
       Sql    : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Query);
       Result : PQ.PGresult_Access;
+      Status : PQ.ExecStatusType;
    begin
       Log.Debug ("Execute {0}", Query);
 
@@ -241,7 +242,8 @@ package body ADO.Statements.Postgresql is
 
       --  Execute the query
       Result := PQ.PQexec (Connection, ADO.C.To_C (Sql));
-      case PQ.PQresultStatus (Result) is
+      Status := PQ.PQresultStatus (Result);
+      case Status is
          when PQ.PGRES_COMMAND_OK | PQ.PGRES_TUPLES_OK =>
             null;
 
@@ -251,6 +253,8 @@ package body ADO.Statements.Postgresql is
                Msg   : constant String := Strings.Value (Error);
             begin
                Log.Error ("Error: {0}", Msg);
+               PQ.PQclear (Result);
+               raise ADO.Statements.SQL_Error with "SQL error: " & Msg;
             end;
 
       end case;
@@ -286,6 +290,9 @@ package body ADO.Statements.Postgresql is
 
          Result := Get_Affected_Rows (Delete_Result);
          PQ.PQclear (Delete_Result);
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Deleted {0} rows", Natural'Image (Result));
+         end if;
       end;
    end Execute;
 
@@ -340,12 +347,11 @@ package body ADO.Statements.Postgresql is
          Update_Result : PQ.PGresult_Access;
       begin
          Update_Result := Execute (Stmt.Connection, Sql_Query);
-         if PQ.PQresultStatus (Update_Result) = PQ.PGRES_COMMAND_OK then
-            Result := Get_Affected_Rows (Update_Result);
-         else
-            Result := -1;
-         end if;
+         Result := Get_Affected_Rows (Update_Result);
          PQ.PQclear (Update_Result);
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Updated {0} rows", Integer'Image (Result));
+         end if;
       end;
    end Execute;
 
@@ -392,6 +398,9 @@ package body ADO.Statements.Postgresql is
          Insert_Result := Execute (Stmt.Connection, Sql_Query);
          Result := Get_Affected_Rows (Insert_Result);
          PQ.PQclear (Insert_Result);
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Inserted {0} rows", Integer'Image (Result));
+         end if;
       end;
    end Execute;
 
