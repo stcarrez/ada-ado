@@ -21,6 +21,7 @@ with Ada.Task_Identification;
 with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
+with ADO.Sessions;
 with ADO.Statements.Mysql;
 with ADO.Schemas.Mysql;
 with ADO.C;
@@ -54,11 +55,6 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement_Access is
    begin
-      if Database.Server = null then
-         Log.Warn ("Cannot create query statement on table {0}: connection is closed",
-                   Table.Table.all);
-         raise Connection_Error with "Database connection is closed";
-      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -67,11 +63,6 @@ package body ADO.Drivers.Connections.Mysql is
                               Query    : in String)
                               return Query_Statement_Access is
    begin
-      if Database.Server = null then
-         Log.Warn ("Cannot create query statement {0}: connection is closed",
-                   Query);
-         raise Connection_Error with "Database connection is closed";
-      end if;
       return Create_Statement (Database => Database.Server, Query => Query);
    end Create_Statement;
 
@@ -83,11 +74,6 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement_Access is
    begin
-      if Database.Server = null then
-         Log.Warn ("Cannot create delete statement on table {0}: connection is closed",
-                   Table.Table.all);
-         raise Connection_Error with "Database connection is closed";
-      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -99,11 +85,6 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement_Access is
    begin
-      if Database.Server = null then
-         Log.Warn ("Cannot create insert statement on table {0}: connection is closed",
-                   Table.Table.all);
-         raise Connection_Error with "Database connection is closed";
-      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
@@ -115,17 +96,13 @@ package body ADO.Drivers.Connections.Mysql is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Update_Statement_Access is
    begin
-      if Database.Server = null then
-         Log.Warn ("Cannot create update statement on table {0}: connection is closed",
-                   Table.Table.all);
-         raise Connection_Error with "Database connection is closed";
-      end if;
       return Create_Statement (Database => Database.Server, Table => Table);
    end Create_Statement;
 
    --  ------------------------------
    --  Start a transaction.
    --  ------------------------------
+   overriding
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
       if Database.Autocommit then
@@ -138,24 +115,34 @@ package body ADO.Drivers.Connections.Mysql is
    --  ------------------------------
    --  Commit the current transaction.
    --  ------------------------------
+   overriding
    procedure Commit (Database : in out Database_Connection) is
       Result : char;
    begin
+      if Database.Server = null then
+         Log.Warn ("Commit while the connection is closed");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       Result := mysql_commit (Database.Server);
       if Result /= nul then
-         raise DB_Error with "Cannot commit transaction";
+         raise Database_Error with "Cannot commit transaction";
       end if;
    end Commit;
 
    --  ------------------------------
    --  Rollback the current transaction.
    --  ------------------------------
+   overriding
    procedure Rollback (Database : in out Database_Connection) is
       Result : char;
    begin
+      if Database.Server = null then
+         Log.Warn ("Rollback while the connection is closed");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       Result := mysql_rollback (Database.Server);
       if Result /= nul then
-         raise DB_Error with "Cannot rollback transaction";
+         raise Database_Error with "Cannot rollback transaction";
       end if;
    end Rollback;
 
@@ -179,8 +166,8 @@ package body ADO.Drivers.Connections.Mysql is
    begin
       Log.Debug ("Execute SQL: {0}", SQL);
       if Database.Server = null then
-         Log.Error ("Database connection is not open");
-         raise Connection_Error with "Database connection is closed";
+         Log.Warn ("Database connection is not open");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
       end if;
 
       Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
