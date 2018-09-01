@@ -19,6 +19,7 @@ with Ada.Exceptions;
 
 with Util.Test_Caller;
 
+with Regtests;
 with ADO.Statements;
 with ADO.Sessions;
 with ADO.Drivers.Connections;
@@ -52,6 +53,8 @@ package body ADO.Drivers.Tests is
                        Test_Set_Connection_Database'Access);
       Caller.Add_Test (Suite, "Test ADO.Databases (Errors)",
                        Test_Empty_Connection'Access);
+      Caller.Add_Test (Suite, "Test ADO.Databases (DB Closed errors)",
+                       Test_Closed_Connection'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -261,38 +264,83 @@ package body ADO.Drivers.Tests is
       T.Assert (C.Get_Status = ADO.Sessions.CLOSED,
                 "The database connection must be closed for an empty connection");
 
---      Util.Tests.Assert_Equals (T, "null", ADO.Databases.Get_Ident (C),
---                                "Get_Ident must return null");
-
-      --  Create_Statement must raise NOT_OPEN.
+      --  Create_Statement must raise Session_Error.
       begin
          Stmt := C.Create_Statement ("");
          T.Fail ("No exception raised for Create_Statement");
 
       exception
-         when ADO.Sessions.NOT_OPEN =>
+         when ADO.Sessions.Session_Error =>
             null;
       end;
 
-      --  Create_Statement must raise NOT_OPEN.
+      --  Create_Statement must raise Session_Error.
       begin
          Stmt := C.Create_Statement ("select");
          T.Fail ("No exception raised for Create_Statement");
 
       exception
-         when ADO.Sessions.NOT_OPEN =>
+         when ADO.Sessions.Session_Error =>
             null;
       end;
 
-      --  Get_Driver must raise NOT_OPEN.
---      begin
---         T.Assert (ADO.Databases.Get_Driver (C) /= null, "Get_Driver must raise an exception");
-
---      exception
---         when ADO.Sessions.NOT_OPEN =>
---            null;
---      end;
-
    end Test_Empty_Connection;
+
+   --  ------------------------------
+   --  Test the connection operations on a closed connection.
+   --  ------------------------------
+   procedure Test_Closed_Connection (T : in out Test) is
+   begin
+      declare
+         DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         DB2   : ADO.Sessions.Master_Session := DB;
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         DB.Close;
+         Stmt := DB2.Create_Statement ("SELECT name FROM test_table");
+         Stmt.Execute;
+         Util.Tests.Fail (T, "No Session_Error exception was raised");
+
+      exception
+         when ADO.Sessions.Session_Error =>
+            null;
+      end;
+      declare
+         DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         DB2   : ADO.Sessions.Master_Session := DB;
+      begin
+         DB.Close;
+         DB2.Begin_Transaction;
+         Util.Tests.Fail (T, "No Session_Error exception was raised");
+
+      exception
+         when ADO.Sessions.Session_Error =>
+            null;
+      end;
+      declare
+         DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         DB2   : ADO.Sessions.Master_Session := DB;
+      begin
+         DB.Close;
+         DB2.Commit;
+         Util.Tests.Fail (T, "No Session_Error exception was raised");
+
+      exception
+         when ADO.Sessions.Session_Error =>
+            null;
+      end;
+      declare
+         DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         DB2   : ADO.Sessions.Master_Session := DB;
+      begin
+         DB.Close;
+         DB2.Rollback;
+         Util.Tests.Fail (T, "No Session_Error exception was raised");
+
+      exception
+         when ADO.Sessions.Session_Error =>
+            null;
+      end;
+   end Test_Closed_Connection;
 
 end ADO.Drivers.Tests;
