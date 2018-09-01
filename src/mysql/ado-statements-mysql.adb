@@ -27,6 +27,7 @@ with Interfaces.C;
 with Mysql.Com;  use Mysql.Com;
 with Mysql.Perfect_Hash; use Mysql;
 with ADO.C;
+with ADO.Sessions;
 with ADO.Drivers.Dialects;
 package body ADO.Statements.Mysql is
 
@@ -183,6 +184,7 @@ package body ADO.Statements.Mysql is
             Msg   : constant String := Strings.Value (Error);
          begin
             Log.Error ("Error: {0}", Msg);
+            raise ADO.Statements.SQL_Error with "SQL error: " & Msg;
          end;
       end if;
    end Check_Error;
@@ -195,6 +197,9 @@ package body ADO.Statements.Mysql is
                      Query      : in String) return int is
       Sql : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Query);
    begin
+      if Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       Log.Debug ("Execute {0}", Query);
 
       --  Execute the query
@@ -212,6 +217,9 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt   : in out Mysql_Delete_Statement;
                       Result : out Natural) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
       ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
       if Stmt.Query.Has_Join then
@@ -267,6 +275,9 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt   : in out Mysql_Update_Statement;
                       Result : out Integer) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
       ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
@@ -323,6 +334,9 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt   : in out Mysql_Insert_Statement;
                       Result : out Integer) is
    begin
+      if Stmt.Connection = null then
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       if Stmt.Table /= null then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "INSERT INTO ");
          ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
@@ -344,7 +358,6 @@ package body ADO.Statements.Mysql is
             Result := 0;
          end if;
       end;
---        Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
    end Execute;
 
    --  ------------------------------
@@ -434,6 +447,10 @@ package body ADO.Statements.Mysql is
    procedure Execute (Stmt : in out Mysql_Query_Statement) is
       Result : int;
    begin
+      if Stmt.Connection = null then
+         Log.Warn ("Database connection is closed");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
       if Stmt.This_Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " ");
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
@@ -456,7 +473,7 @@ package body ADO.Statements.Mysql is
             begin
                Log.Error ("Query failed: '{0}'", Expanded_Query);
                Log.Error ("  with error: '{0}'", Message);
-               raise Invalid_Statement with "Query failed: " & Message;
+               raise SQL_Error with "SQL query failed: " & Message;
             end;
          end if;
       end;
@@ -635,7 +652,7 @@ package body ADO.Statements.Mysql is
 
       Field := Mysql_Fetch_Field_Direct (Query.Result, MYSQL_FIELD_OFFSET (Column));
       if Field = null then
-         raise Invalid_Column with "Invalid column: " & Natural'Image (Column);
+         return ADO.Schemas.T_NULL;
       end if;
       case Field.C_Type is
          when MYSQL_TYPE_DECIMAL | MYSQL_TYPE_NEWDECIMAL =>
