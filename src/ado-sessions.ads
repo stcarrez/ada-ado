@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,18 +49,11 @@ package ADO.Sessions is
 
    use ADO.Statements;
 
-   --  Raised for all errors reported by the database
-   DB_Error : exception;
-
    --  Raised if the database connection is not open.
-   NOT_OPEN : exception;
-
-   NOT_FOUND : exception;
-
-   NO_DATABASE : exception;
+   Session_Error : exception;
 
    --  Raised when the connection URI is invalid.
-   Connection_Error : exception;
+   Connection_Error : exception renames ADO.Drivers.Connection_Error;
 
    --  The database connection status
    type Connection_Status is (OPEN, CLOSED);
