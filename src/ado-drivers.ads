@@ -45,8 +45,8 @@ package ADO.Drivers is
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
 
-   --  Raised for all errors reported by the database
-   DB_Error : exception;
+   --  Raised for all errors reported by the database.
+   Database_Error   : exception;
 
    type Driver_Index is new Natural range 0 .. 4;
 
