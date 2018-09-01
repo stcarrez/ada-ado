@@ -33,6 +33,10 @@ package body ADO.Parameters.Tests is
    function Is_Reserved (D    : in Dialect;
                          Name : in String) return Boolean;
 
+   --  Get the quote character to escape an identifier.
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character;
+
    --  Test the Add_Param operation for various types.
    generic
       type T (<>) is private;
@@ -169,6 +173,15 @@ package body ADO.Parameters.Tests is
    begin
       return False;
    end Is_Reserved;
+
+   --  ------------------------------
+   --  Get the quote character to escape an identifier.
+   --  ------------------------------
+   overriding
+   function Get_Identifier_Quote (D : in Dialect) return Character is
+   begin
+      return '`';
+   end Get_Identifier_Quote;
 
    --  ------------------------------
    --  Test expand SQL with parameters.
