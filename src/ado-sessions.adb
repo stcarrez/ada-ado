@@ -32,7 +32,7 @@ package body ADO.Sessions is
    begin
       if Database.Impl = null then
          Log.Error ("Session is closed or not initialized");
-         raise NOT_OPEN;
+         raise Session_Error;
       end if;
       if Message'Length > 0 then
          Log.Info (Message, Database.Impl.Database.Value.Ident);
