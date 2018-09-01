@@ -22,6 +22,7 @@ with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
 with ADO.C;
+with ADO.Sessions;
 with ADO.Statements.Sqlite;
 with ADO.Schemas.Sqlite;
 
@@ -120,7 +121,6 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
---        Database.Execute ("begin transaction;");
       null;
    end Begin_Transaction;
 
@@ -129,7 +129,6 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Commit (Database : in out Database_Connection) is
    begin
---        Database.Execute ("commit transaction;");
       null;
    end Commit;
 
@@ -138,7 +137,6 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    procedure Rollback (Database : in out Database_Connection) is
    begin
---        Database.Execute ("rollback transaction;");
       null;
    end Rollback;
 
@@ -154,6 +152,11 @@ package body ADO.Drivers.Connections.Sqlite is
       Error_Msg : Strings.chars_ptr;
    begin
       Log.Debug ("Execute: {0}", SQL);
+
+      if Database.Server = null then
+         Log.Warn ("Database connection is closed");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
 
       for Retry in 1 .. 100 loop
          Result := Sqlite3_H.sqlite3_exec (Database.Server, ADO.C.To_C (SQL_Stat), No_Callback,
@@ -246,13 +249,13 @@ package body ADO.Drivers.Connections.Sqlite is
 
       Strings.Free (Filename);
       if Status /= Sqlite3_H.SQLITE_OK then
---          declare
---              Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
---              Msg   : constant String := Strings.Value (Error);
---           begin
---              Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
---           end;
-         raise DB_Error;
+         declare
+            Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Status);
+            Msg   : constant String := Strings.Value (Error);
+         begin
+            Log.Error ("Cannot open SQLite database: {0}", Msg);
+            raise Connection_Error with "Cannot open database: " & Msg;
+         end;
       end if;
 
       declare

@@ -117,15 +117,11 @@ package body ADO.Statements.Sqlite is
                            Stmt       : access Sqlite3_H.sqlite3_stmt) is
       Result : int;
    begin
-      if Stmt /= null then
-         Result := Sqlite3_H.sqlite3_reset (Stmt);
-         ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
+      Result := Sqlite3_H.sqlite3_reset (Stmt);
+      ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
 
-         Result := Sqlite3_H.sqlite3_finalize (Stmt);
-         ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
-
-         --  Stmt := System.Null_Address;
-      end if;
+      Result := Sqlite3_H.sqlite3_finalize (Stmt);
+      ADO.Drivers.Connections.Sqlite.Check_Error (Connection, Result);
    end Release_Stmt;
 
    --  ------------------------------
@@ -461,9 +457,13 @@ package body ADO.Statements.Sqlite is
                        Column : in Natural) return Int64 is
       Result : constant Sqlite3_H.sqlite_int64
         := Sqlite3_H.sqlite3_column_int64 (Query.Stmt, int (Column));
+      Res    : constant int := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
+      if Res = Sqlite3_H.SQLITE_NULL then
+         raise Invalid_Type with "NULL cannot be converted to Integer";
       end if;
       return Int64 (Result);
    end Get_Int64;
@@ -486,7 +486,7 @@ package body ADO.Statements.Sqlite is
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       if Text = Strings.Null_Ptr then
-         return Null_Unbounded_String;
+         raise Invalid_Type with "NULL cannot be converted to String";
       else
          return To_Unbounded_String (Interfaces.C.Strings.Value (Text));
       end if;
@@ -510,7 +510,7 @@ package body ADO.Statements.Sqlite is
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
       if Text = Strings.Null_Ptr then
-         return "";
+         raise Invalid_Type with "NULL cannot be converted to String";
       else
          return Interfaces.C.Strings.Value (Text);
       end if;
@@ -548,11 +548,16 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    function Get_Time (Query  : in Sqlite_Query_Statement;
                       Column : in Natural) return Ada.Calendar.Time is
+      use type Interfaces.C.Strings.chars_ptr;
+
       Text : constant Strings.chars_ptr
         := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
+      if Text = Strings.Null_Ptr then
+         raise Invalid_Type with "NULL cannot be converted to Date";
       end if;
       return ADO.Statements.Get_Time (ADO.Statements.To_Chars_Ptr (Text));
    end Get_Time;
@@ -630,7 +635,10 @@ package body ADO.Statements.Sqlite is
    overriding
    procedure Finalize (Query : in out Sqlite_Query_Statement) is
    begin
-      Release_Stmt (Query.Connection, Query.Stmt);
+      if Query.Stmt /= null then
+         Release_Stmt (Query.Connection, Query.Stmt);
+         Query.Stmt := null;
+      end if;
    end Finalize;
 
    --  ------------------------------
