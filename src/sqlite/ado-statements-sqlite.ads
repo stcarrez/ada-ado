@@ -205,4 +205,8 @@ private
       Table      : ADO.Schemas.Class_Mapping_Access;
    end record;
 
+   --  Check for an error after executing a sqlite statement.
+   procedure Check_Error (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                          Result     : in Interfaces.C.int);
+
 end ADO.Statements.Sqlite;

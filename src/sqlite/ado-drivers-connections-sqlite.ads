@@ -28,10 +28,6 @@ package ADO.Drivers.Connections.Sqlite is
    --  Initialize the SQLite driver.
    procedure Initialize;
 
-   --  Check for an error after executing a sqlite statement.
-   procedure Check_Error (Connection : access Sqlite3;
-                          Result     : in Interfaces.C.int);
-
 private
 
    --  Database connection implementation
@@ -98,9 +94,6 @@ private
    --  Releases the sqlite connection if it is open
    overriding
    procedure Finalize (Database : in out Database_Connection);
-
-   procedure Execute (Database : in out Database_Connection;
-                      SQL : in Query_String);
 
    type Sqlite_Driver is new ADO.Drivers.Connections.Driver with null record;
 
