@@ -24,6 +24,7 @@ with Util.Log;
 with Util.Log.Loggers;
 
 with ADO.C;
+with ADO.Sessions;
 with ADO.Drivers.Dialects;
 with PQ.Perfect_Hash;
 package body ADO.Statements.Postgresql is
@@ -226,10 +227,17 @@ package body ADO.Statements.Postgresql is
    --  ------------------------------
    function Execute (Connection : in PQ.PGconn_Access;
                      Query      : in String) return PQ.PGresult_Access is
+      use type PQ.PGconn_Access;
+
       Sql    : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Query);
       Result : PQ.PGresult_Access;
    begin
       Log.Debug ("Execute {0}", Query);
+
+      if Connection = PQ.Null_PGconn then
+         Log.Warn ("Database connection is closed");
+         raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
 
       --  Execute the query
       Result := PQ.PQexec (Connection, ADO.C.To_C (Sql));
@@ -426,7 +434,7 @@ package body ADO.Statements.Postgresql is
       if PQ.PQgetisnull (Query.Result, Query.Row, Interfaces.C.int (Column)) = 1 then
          Log.Warn ("Null column {0} in row {1}", Natural'Image (Column),
                    Interfaces.C.int'Image (Query.Row));
-         raise Constraint_Error with "Null column";
+         raise Invalid_Type with "Null column";
       end if;
       Result := PQ.PQgetvalue (Query.Result, Query.Row, Interfaces.C.int (Column));
       return ADO.Statements.To_Chars_Ptr (Result);
@@ -478,7 +486,7 @@ package body ADO.Statements.Postgresql is
             begin
                Log.Error ("Query failed: '{0}'", Expanded_Query);
                Log.Error ("  with error: '{0}'", Message);
-               raise Invalid_Statement with "Query failed: " & Message;
+               raise ADO.Statements.SQL_Error with "Query failed: " & Message;
             end;
          end if;
          Stmt.Row := 0;
@@ -546,7 +554,7 @@ package body ADO.Statements.Postgresql is
       Field  : constant chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
-         return 0;
+         raise Invalid_Type with "NULL cannot be converted to Integer";
       else
          return Get_Int64 (Field);
       end if;
@@ -565,7 +573,7 @@ package body ADO.Statements.Postgresql is
       C      : Character;
    begin
       if Field = null then
-         raise Invalid_Type with "Invalid boolean value";
+         raise Invalid_Type with "NULL cannot be converted to Boolean";
       end if;
       C := Field.all;
       Field := Field + 1;
@@ -640,7 +648,7 @@ package body ADO.Statements.Postgresql is
       Field  : chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
-         return Null_Unbounded_String;
+         raise Invalid_Type with "NULL cannot be converted to String";
       end if;
       declare
          Result : Unbounded_String;
