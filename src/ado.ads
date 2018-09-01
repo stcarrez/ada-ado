@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,17 +63,23 @@ package ADO is
       Is_Null : Boolean := True;
    end record;
 
+   Null_Integer : constant Nullable_Integer;
+
    --  A string which can be null.
    type Nullable_String is record
       Value   : Ada.Strings.Unbounded.Unbounded_String;
       Is_Null : Boolean := True;
    end record;
 
+   Null_String : constant Nullable_String;
+
    --  A date which can be null.
    type Nullable_Time is record
       Value   : Ada.Calendar.Time;
       Is_Null : Boolean := True;
    end record;
+
+   Null_Time : constant Nullable_Time;
 
    --  Return True if the two nullable times are identical (both null or both same time).
    function "=" (Left, Right : in Nullable_Time) return Boolean;
@@ -82,6 +88,8 @@ package ADO is
       Value   : Entity_Type := 0;
       Is_Null : Boolean := True;
    end record;
+
+   Null_Entity_Type : constant Nullable_Entity_Type;
 
    --  ------------------------------
    --  Blob data type
@@ -117,5 +125,21 @@ private
                                                                       Month   => 1,
                                                                       Day     => 2,
                                                                       Seconds => 0.0);
+
+   Null_Integer : constant Nullable_Integer
+     := Nullable_Integer '(Is_Null => True,
+                           Value   => 0);
+
+   Null_String : constant Nullable_String
+     := Nullable_String '(Is_Null => True,
+                          Value   => Ada.Strings.Unbounded.Null_Unbounded_String);
+
+   Null_Time : constant Nullable_Time
+     := Nullable_Time '(Is_Null => True,
+                        Value   => DEFAULT_TIME);
+
+   Null_Entity_Type : constant Nullable_Entity_Type
+     := Nullable_Entity_Type '(Is_Null => True,
+                               Value   => 0);
 
 end ADO;
