@@ -86,6 +86,9 @@ package ADO.Statements is
 
    Invalid_Statement : exception;
 
+   --  Exception raised when an SQL statement failed.
+   SQL_Error         : exception;
+
    --  Exception raised when a column number is invalid.
    Invalid_Column    : exception;
 
