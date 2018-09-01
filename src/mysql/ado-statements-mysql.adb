@@ -238,6 +238,9 @@ package body ADO.Statements.Mysql is
          Check_Error (Stmt.Connection, Res);
 
          Result := Natural (Mysql_Affected_Rows (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Deleted {0} rows", Natural'Image (Result));
+         end if;
       end;
    end Execute;
 
@@ -293,16 +296,12 @@ package body ADO.Statements.Mysql is
       declare
          Sql_Query : constant String := Stmt.This_Query.Expand;
          Res       : int;
-         Res2      : My_Ulonglong;
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
          Check_Error (Stmt.Connection, Res);
-         if Res = 0 then
-            Res2 := Mysql_Affected_Rows (Stmt.Connection);
-            Log.Info ("Update: {0}", My_Ulonglong'Image (Res2));
-            Result := Integer (Res2);
-         else
-            Result := -1;
+         Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Updated {0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
@@ -352,10 +351,9 @@ package body ADO.Statements.Mysql is
       begin
          Res := Execute (Stmt.Connection, Sql_Query);
          Check_Error (Stmt.Connection, Res);
-         if Res = 0 then
-            Result := 1;
-         else
-            Result := 0;
+         Result := Integer (Mysql_Affected_Rows (Stmt.Connection));
+         if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
+            Log.Debug ("Inserted {0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
