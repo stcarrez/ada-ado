@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,11 +29,11 @@ package body ADO.Sessions.Factory is
       R  : Session;
       S  : constant Session_Record_Access := new Session_Record;
    begin
-      Factory.Source.Create_Connection (S.Database);
+      R.Impl := S;
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       S.Queries  := Factory.Queries'Unrestricted_Access;
-      R.Impl := S;
+      Factory.Source.Create_Connection (S.Database);
       return R;
    end Get_Session;
 
@@ -61,10 +61,10 @@ package body ADO.Sessions.Factory is
    begin
       R.Impl := S;
       R.Sequences := Factory.Sequences;
-      Factory.Source.Create_Connection (S.Database);
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       S.Queries  := Factory.Queries'Unrestricted_Access;
+      Factory.Source.Create_Connection (S.Database);
       return R;
    end Get_Master_Session;
 
