@@ -171,6 +171,10 @@ package ADO.Statements.Sqlite is
                               Query    : in String)
                               return Query_Statement_Access;
 
+   --  Execute SQL statement.
+   procedure Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                      SQL        : in String);
+
 private
    type State is (HAS_ROW, HAS_MORE, DONE, ERROR);
 
