@@ -182,8 +182,8 @@ private
 
    type Postgresql_Query_Statement is new Query_Statement with record
       This_Query : aliased ADO.SQL.Query;
-      Connection : PQ.PGconn_Access;
-      Result     : PQ.PGresult_Access;
+      Connection : PQ.PGconn_Access   := PQ.Null_PGconn;
+      Result     : PQ.PGresult_Access := PQ.Null_PGresult;
       Row        : Interfaces.C.int := 0;
       Row_Count  : Interfaces.C.int := 0;
       Counter    : Natural := 1;

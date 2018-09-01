@@ -44,7 +44,7 @@ private
       Server_Name : Unbounded_String;
       Login_Name  : Unbounded_String;
       Password    : Unbounded_String;
-      Server      : PQ.PGconn_Access;
+      Server      : PQ.PGconn_Access := PQ.Null_PGconn;
       Connected   : Boolean      := False;
    end record;
 
