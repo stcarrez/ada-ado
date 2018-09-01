@@ -67,6 +67,18 @@ package body ADO.Statements.Tests is
             Item.Save (DB);
             Tst.Assert (Item.Is_Inserted, "Item inserted in database");
          end;
+         declare
+            Item : Regtests.Statements.Model.Nullable_Table_Ref;
+         begin
+            Item.Set_Id_Value (ADO.Identifier (I * I));
+            Item.Set_Int_Value (ADO.Null_Integer);
+            Item.Set_Bool_Value ((I mod 2) = 0);
+            Item.Set_String_Value (ADO.Null_String);
+            Item.Set_Time_Value (ADO.Null_Time);
+            Item.Set_Entity_Value (ADO.Null_Entity_Type);
+            Item.Save (DB);
+            Tst.Assert (Item.Is_Inserted, "Item inserted in database");
+         end;
       end loop;
       DB.Commit;
    end Populate;
@@ -125,13 +137,8 @@ package body ADO.Statements.Tests is
       Populate (Tst);
 
       --  Execute a query to fetch one column as NULL and one row.
-      if DB.Get_Driver.Get_Driver_Name = "mysql" then
-         Stmt := DB.Create_Statement ("SELECT " & Column & ", COUNT(*) FROM test_table "
-                                      & "WHERE id = -1");
-      else
-         Stmt := DB.Create_Statement ("SELECT " & Column & ", COUNT(*) FROM test_table "
-                                      & "WHERE id = -1 GROUP BY " & Column);
-      end if;
+      Stmt := DB.Create_Statement ("SELECT " & Column & ", id FROM test_nullable_table "
+                                   & "WHERE " & Column & " IS NULL");
       Stmt.Execute;
 
       --  Verify the query result and the Get_Value operation.
@@ -139,7 +146,7 @@ package body ADO.Statements.Tests is
       Tst.Assert (Stmt.Is_Null (0), "The query statement must return null value for "
                   & Name & ":" & Column);
       Tst.Assert (not Stmt.Is_Null (1), "The query statement must return non null value for "
-                  & Name & " and the COUNT(*)");
+                  & Name & " and the id");
       Util.Tests.Assert_Equals (Tst, Column,
                                 Util.Strings.Transforms.To_Lower_Case (Stmt.Get_Column_Name (0)),
                                 "The query returns an invalid column name");
@@ -161,7 +168,7 @@ package body ADO.Statements.Tests is
      new Test_Query_Get_Value_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "id_value");
 
    procedure Test_Query_Get_Int64_On_Null is
-     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "id_value");
+     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "int_value");
 
    procedure Test_Query_Get_Integer is
      new Test_Query_Get_Value_T (Integer, ADO.Statements.Get_Integer, "Get_Integer", "int_value");
@@ -214,7 +221,7 @@ package body ADO.Statements.Tests is
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_String",
                        Test_Query_Get_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_String (NULL)",
-                       Test_Query_Get_String'Access);
+                       Test_Query_Get_String_On_Null'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Entity_Type",
                        Test_Query_Get_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Create_Statement (using $entity_type[])",
@@ -223,6 +230,8 @@ package body ADO.Statements.Tests is
                        Test_Invalid_Column'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Integer (raise Invalid_Type)",
                        Test_Invalid_Type'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Query (raise Invalid_Statement)",
+                       Test_Invalid_Statement'Access);
    end Add_Tests;
 
    function Get_Sum (T : in Test;
@@ -312,6 +321,8 @@ package body ADO.Statements.Tests is
    --  Test executing a SQL query and getting an invalid column.
    --  ------------------------------
    procedure Test_Invalid_Column (T : in out Test) is
+      use type ADO.Schemas.Column_Type;
+
       DB    : constant ADO.Sessions.Session := Regtests.Get_Database;
       Stmt  : ADO.Statements.Query_Statement;
       Count : Natural := 0;
@@ -347,6 +358,25 @@ package body ADO.Statements.Tests is
             when ADO.Statements.Invalid_Column =>
                null;
          end;
+         begin
+            Util.Tests.Assert_Equals (T, "?", Stmt.Get_Column_Name (1),
+                                      "Get_Column_Name should raise an exception");
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Column_Name");
+
+         exception
+            when ADO.Statements.Invalid_Column =>
+               null;
+         end;
+         begin
+            T.Assert (ADO.Schemas.T_NULL = Stmt.Get_Column_Type (1),
+                      "Get_Column_Type should raise an exception");
+            Util.Tests.Fail (T, "No exception raised for Stmt.Get_Column_Name");
+
+         exception
+            when ADO.Statements.Invalid_Column =>
+               null;
+         end;
+
          Util.Tests.Assert_Equals (T, 123456789, Value, "Value was corrupted");
          Count := Count + 1;
          Stmt.Next;
@@ -400,5 +430,61 @@ package body ADO.Statements.Tests is
       end loop;
       T.Assert (Count > 0, "Query must return at least on entity_type");
    end Test_Invalid_Type;
+
+   --  ------------------------------
+   --  Test executing a SQL query with an invalid SQL.
+   --  ------------------------------
+   procedure Test_Invalid_Statement (T : in out Test) is
+      use type ADO.Schemas.Column_Type;
+
+      DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+   begin
+      declare
+         Stmt  : ADO.Statements.Query_Statement
+           := DB.Create_Statement ("SELECT name FROM ");
+      begin
+         Stmt.Execute;
+         Util.Tests.Fail (T, "No SQL_Error exception was raised");
+
+      exception
+         when ADO.Statements.SQL_Error =>
+            null;
+      end;
+      declare
+         Stmt  : ADO.Statements.Query_Statement
+           := DB.Create_Statement ("INSERT name FROM ");
+      begin
+         Stmt.Execute;
+         Util.Tests.Fail (T, "No SQL_Error exception was raised");
+
+      exception
+         when ADO.Statements.SQL_Error =>
+            null;
+      end;
+      declare
+         Stmt  : ADO.Statements.Query_Statement
+           := DB.Create_Statement ("DELETE name FROM ");
+      begin
+         Stmt.Execute;
+         Util.Tests.Fail (T, "No SQL_Error exception was raised");
+
+      exception
+         when ADO.Statements.SQL_Error =>
+            null;
+      end;
+      declare
+         DB2   : ADO.Sessions.Master_Session := DB;
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         DB.Close;
+         Stmt := DB2.Create_Statement ("SELECT name FROM test_table");
+         Stmt.Execute;
+         Util.Tests.Fail (T, "No SQL_Error exception was raised");
+
+      exception
+         when ADO.Sessions.Session_Error =>
+            null;
+      end;
+   end Test_Invalid_Statement;
 
 end ADO.Statements.Tests;
