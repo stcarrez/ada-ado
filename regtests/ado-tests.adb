@@ -121,7 +121,7 @@ package body ADO.Tests is
          T.Fail ("Master_Connection.Rollback should raise an exception");
 
       exception
-         when E : ADO.Sessions.NOT_OPEN =>
+         when E : ADO.Sessions.Session_Error =>
             Assert_Has_Message (T, E);
       end;
 
@@ -130,7 +130,7 @@ package body ADO.Tests is
          T.Fail ("Master_Connection.Commit should raise an exception");
 
       exception
-         when E : ADO.Sessions.NOT_OPEN =>
+         when E : ADO.Sessions.Session_Error =>
             Assert_Has_Message (T, E);
       end;
 
