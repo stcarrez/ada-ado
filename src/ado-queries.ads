@@ -112,6 +112,9 @@ with Ada.Finalization;
 --  of elements if the SQL query was not limited.
 package ADO.Queries is
 
+   --  Exception raised when a query does not exist or is empty.
+   Query_Error : exception;
+
    type Query_Index is new Natural;
 
    type File_Index is new Natural;
