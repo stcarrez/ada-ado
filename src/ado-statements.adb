@@ -224,7 +224,7 @@ package body ADO.Statements is
          C := P.all;
       end loop;
       if C /= ASCII.NUL then
-         raise Invalid_Type;
+         raise Invalid_Type with "Invalid integer value";
       end if;
       return Result;
    end Get_Uint64;
