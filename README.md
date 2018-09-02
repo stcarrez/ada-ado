@@ -136,7 +136,8 @@ mysql> source db/regtests/mysql/create-ado-mysql.sql
 
 To create manually the database, you can proceed to the following steps:
 
-1. Create the 'ado' user and configure the password:
+1. Create the 'ado' user and configure the password
+(enter 'ado' for the password or update the Makefile as well as the test-postgresql.properties file):
 ```
 sudo -u postgres createuser ado --pwprompt
 ```
