@@ -186,6 +186,9 @@ package body ADO.Statements is
       if not Query_Statement'Class (Query).Has_Elements then
          return 0;
       end if;
+      if Query_Statement'Class (Query).Is_Null (0) then
+         return 0;
+      end if;
       return Query_Statement'Class (Query).Get_Integer (0);
    end Get_Result_Integer;
 
@@ -535,9 +538,17 @@ package body ADO.Statements is
    function Get_Identifier (Query  : Query_Statement;
                             Column : Natural) return Identifier is
    begin
+
       if Query.Proxy = null then
-         return Identifier (Query_Statement'Class (Query).Get_Int64 (Column));
+         if Query_Statement'Class (Query).Is_Null (Column) then
+            return ADO.NO_IDENTIFIER;
+         else
+            return Identifier (Query_Statement'Class (Query).Get_Int64 (Column));
+         end if;
       else
+         if Query.Is_Null (Column) then
+            return ADO.NO_IDENTIFIER;
+         end if;
          return Query.Proxy.Get_Identifier (Column);
       end if;
    end Get_Identifier;
