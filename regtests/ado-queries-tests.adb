@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,6 +40,8 @@ package body ADO.Queries.Tests is
                        Test_Set_Query'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Set_Limit",
                        Test_Set_Limit'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Get_SQL (raise Query_Error)",
+                       Test_Missing_Query'Access);
    end Add_Tests;
 
    package Simple_Query_File is
@@ -48,6 +50,10 @@ package body ADO.Queries.Tests is
 
    package Multi_Query_File is
      new ADO.Queries.Loaders.File (Path => "regtests/files/multi-query.xml",
+                                   Sha1 => "");
+
+   package Missing_Query_File is
+     new ADO.Queries.Loaders.File (Path => "regtests/files/missing-query.xml",
                                    Sha1 => "");
 
    package Simple_Query is
@@ -66,8 +72,28 @@ package body ADO.Queries.Tests is
      new ADO.Queries.Loaders.Query (Name => "value",
                                     File => Multi_Query_File.File'Access);
 
+   package Missing_Query_SQLite is
+     new ADO.Queries.Loaders.Query (Name => "missing-query-sqlite",
+                                    File => Missing_Query_File.File'Access);
+
+   package Missing_Query_MySQL is
+     new ADO.Queries.Loaders.Query (Name => "missing-query-mysql",
+                                    File => Missing_Query_File.File'Access);
+
+   package Missing_Query_Postgresql is
+     new ADO.Queries.Loaders.Query (Name => "missing-query-postgresql",
+                                    File => Missing_Query_File.File'Access);
+
+   package Missing_Query is
+     new ADO.Queries.Loaders.Query (Name => "missing-query",
+                                    File => Missing_Query_File.File'Access);
+
    pragma Warnings (Off, Simple_Query_2);
    pragma Warnings (Off, Value_Query);
+   pragma Warnings (Off, Missing_Query);
+   pragma Warnings (Off, Missing_Query_SQLite);
+   pragma Warnings (Off, Missing_Query_MySQL);
+   pragma Warnings (Off, Missing_Query_Postgresql);
 
    procedure Test_Load_Queries (T : in out Test) is
       use ADO.Drivers.Connections;
@@ -143,6 +169,7 @@ package body ADO.Queries.Tests is
    procedure Test_Initialize (T : in out Test) is
       Config  : ADO.Drivers.Connections.Configuration;
       Manager : Query_Manager;
+      Pos     : Query_Index;
    begin
       --  Configure and load the XML queries.
       for Pass in 1 .. 10 loop
@@ -150,12 +177,16 @@ package body ADO.Queries.Tests is
          ADO.Queries.Loaders.Initialize (Manager, Config);
          T.Assert (Manager.Queries /= null, "The queries table is allocated");
          T.Assert (Manager.Files /= null, "The files table is allocated");
+         Pos := 1;
          for Query of Manager.Queries.all loop
             if Pass = 1 then
                T.Assert (Query.Is_Null, "Query must not be loaded");
-            else
+            elsif Missing_Query.Query.Query /= Pos then
                T.Assert (not Query.Is_Null, "Query must have been loaded");
+            else
+               T.Assert (Query.Is_Null, "Query must not be loaded (not found)");
             end if;
+            Pos := Pos + 1;
          end loop;
       end loop;
 
@@ -200,5 +231,55 @@ package body ADO.Queries.Tests is
       Q := ADO.Queries.Loaders.Find_Query ("this query does not exist");
       T.Assert (Q = null, "Find_Query should return null for unkown query");
    end Test_Find_Query;
+
+   --  ------------------------------
+   --  Test the missing query.
+   --  ------------------------------
+   procedure Test_Missing_Query (T : in out Test) is
+      Query   : ADO.Queries.Context;
+      Manager : Query_Manager;
+      Config  : ADO.Drivers.Connections.Configuration;
+      Count   : Natural := 0;
+   begin
+      ADO.Queries.Loaders.Initialize (Manager, Config);
+      Query.Set_Query ("missing-query");
+
+      begin
+         Assert_Equals (T, "?", Query.Get_SQL (Manager));
+         T.Fail ("No ADO.Queries.Query_Error exception was raised");
+
+      exception
+         when ADO.Queries.Query_Error =>
+            null;
+      end;
+
+      begin
+         Query.Set_Query ("missing-query-sqlite");
+         Assert_Equals (T, "select count(*) from user", Query.Get_SQL (Manager));
+
+      exception
+         when ADO.Queries.Query_Error =>
+            Count := Count + 1;
+      end;
+
+      begin
+         Query.Set_Query ("missing-query-mysql");
+         Assert_Equals (T, "select count(*) from user", Query.Get_SQL (Manager));
+
+      exception
+         when ADO.Queries.Query_Error =>
+            Count := Count + 1;
+      end;
+
+      begin
+         Query.Set_Query ("missing-query-postgresql");
+         Assert_Equals (T, "select count(*) from user", Query.Get_SQL (Manager));
+
+      exception
+         when ADO.Queries.Query_Error =>
+            Count := Count + 1;
+      end;
+      T.Assert (Count > 0, "No Query_Error exception was raised");
+   end Test_Missing_Query;
 
 end ADO.Queries.Tests;
