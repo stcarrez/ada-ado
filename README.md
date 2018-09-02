@@ -138,12 +138,12 @@ To create manually the database, you can proceed to the following steps:
 
 1. Create the 'ado' user and configure the password:
 ```
-sudo -u postgresql createuser ado --pwprompt
+sudo -u postgres createuser ado --pwprompt
 ```
 
 2. Create the 'ado_test' database in Postgresql
 ```
-sudo -u postgresql createdb -O ado ado_test
+sudo -u postgres createdb -O ado ado_test
 ```
 
 3. Create the tables
