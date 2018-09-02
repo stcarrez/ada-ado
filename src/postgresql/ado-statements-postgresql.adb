@@ -152,38 +152,13 @@ package body ADO.Statements.Postgresql is
       C    : Ada.Streams.Stream_Element;
       Blob : constant ADO.Blob_Access := Item.Value;
    begin
-      Append (Buffer, 'E');
-      Append (Buffer, ''');
+      Append (Buffer, "BYTEA(E'\\x");
       for I in Blob.Data'Range loop
          C := Blob.Data (I);
-         case C is
-            when Character'Pos (ASCII.NUL) =>
-               Append (Buffer, '\');
-               Append (Buffer, '0');
-
-            when Character'Pos (ASCII.CR) =>
-               Append (Buffer, '\');
-               Append (Buffer, 'r');
-
-            when Character'Pos (ASCII.LF) =>
-               Append (Buffer, '\');
-               Append (Buffer, 'n');
-
-            when Character'Pos ('\') | Character'Pos (''') | Character'Pos ('"') =>
-               Append (Buffer, '\');
-               Append (Buffer, Character'Val (C));
-
-            when 16#80# .. 16#ff# =>
-               Append (Buffer, '\');
-               Append (Buffer, 'x');
-               Append (Buffer, Hex (1 + Natural (C / 16)));
-               Append (Buffer, Hex (1 + Natural (C mod 16)));
-
-            when others =>
-               Append (Buffer, Character'Val (C));
-         end case;
+         Append (Buffer, Hex (1 + Natural (C / 16)));
+         Append (Buffer, Hex (1 + Natural (C mod 16)));
       end loop;
-      Append (Buffer, ''');
+      Append (Buffer, "')");
    end Escape_Sql;
 
    --  ------------------------------
@@ -464,7 +439,7 @@ package body ADO.Statements.Postgresql is
          Log.Warn ("Column {0} is not valid", Natural'Image (Column));
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
-      return Natural (PQ.PQfsize (Query.Result, Interfaces.C.int (Column)));
+      return Natural (PQ.PQgetlength (Query.Result, Query.Row, Interfaces.C.int (Column)));
    end Get_Field_Length;
 
    --  ------------------------------
