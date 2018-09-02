@@ -12,7 +12,7 @@ project Ado_Tests is
 
    Mains := ("ado_harness");
 
-   for Source_Dirs use ("regtests", "regtests/model"@ADO_TESTS_SRC_DIR@);
+   for Source_Dirs use ("regtests", "regtests/model");
 
    for Main use Mains;
 
