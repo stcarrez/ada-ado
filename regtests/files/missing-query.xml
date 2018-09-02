@@ -1,0 +1,36 @@
+<query-mapping>
+    <description>
+      Get the list of users (compact form).
+    </description>
+    <class name="Samples.User.Model.User_Info">
+        <property type='Identifier' name="id">
+            <comment>the user identifier.</comment>
+        </property>
+        <property type='String' name="name">
+            <comment>the user name.</comment>
+        </property>
+        <property type='String' name="email">
+            <comment>the user email address.</comment>
+        </property>
+    </class>
+
+    <!-- Query does not define a default query and is specific to a driver  -->
+    <query name='missing-query-sqlite'>
+       <comment>Get the list of users</comment>
+       <sql driver='mysql'>select count(*) from user</sql>
+       <sql-count driver='mysql'>select count(*) from user /*Mysql*/</sql-count>
+    </query>
+
+    <query name='missing-query-mysql'>
+       <comment>Get the list of users</comment>
+       <sql driver='postgresql'>select count(*) from user</sql>
+       <sql-count driver='postgresql'>select count(*) from user /*Postgresql*/</sql-count>
+    </query>
+
+    <query name='missing-query-postgresql'>
+       <comment>Get the list of users</comment>
+       <sql driver='sqlite'>select count(*) from user</sql>
+       <sql-count driver='sqlite'>select count(*) from user /*SQLite*/</sql-count>
+    </query>
+
+</query-mapping>
