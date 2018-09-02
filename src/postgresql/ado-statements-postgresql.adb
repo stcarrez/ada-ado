@@ -484,12 +484,14 @@ package body ADO.Statements.Postgresql is
 
       declare
          Expanded_Query : constant String := Stmt.Query.Expand;
+         Status         : PQ.ExecStatusType;
       begin
          --  Execute the query
          Stmt.Result := Execute (Stmt.Connection, Expanded_Query);
 
          --  Report an error if the query failed
-         if PQ.PQresultStatus (Stmt.Result) /= PQ.PGRES_TUPLES_OK then
+         Status := PQ.PQresultStatus (Stmt.Result);
+         if Status /= PQ.PGRES_TUPLES_OK and Status /= PQ.PGRES_COMMAND_OK then
             declare
                Message : constant String := Strings.Value (PQ.PQerrorMessage (Stmt.Connection));
             begin
