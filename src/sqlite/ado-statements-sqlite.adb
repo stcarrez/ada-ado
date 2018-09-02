@@ -501,6 +501,9 @@ package body ADO.Statements.Sqlite is
       if Res = Sqlite3_H.SQLITE_NULL then
          raise Invalid_Type with "NULL cannot be converted to Integer";
       end if;
+      if Res /= Sqlite3_H.SQLITE_INTEGER then
+         raise Invalid_Type with "Invalid integer value";
+      end if;
       return Int64 (Result);
    end Get_Int64;
 
