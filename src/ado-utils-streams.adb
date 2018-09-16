@@ -24,7 +24,7 @@ package body ADO.Utils.Streams is
    --  ------------------------------
    --  Initialize the blob stream to read the content of the blob.
    --  ------------------------------
-   procedure Initialize (Stream : in out Blob_Stream;
+   procedure Initialize (Stream : in out Blob_Input_Stream;
                          Blob   : in ADO.Blob_Ref) is
    begin
       Stream.Data := Blob;
@@ -36,7 +36,7 @@ package body ADO.Utils.Streams is
    --  <b>last</b> the position of the last byte read.
    --  ------------------------------
    overriding
-   procedure Read (Stream : in out Blob_Stream;
+   procedure Read (Stream : in out Blob_Input_Stream;
                    Into   : out Ada.Streams.Stream_Element_Array;
                    Last   : out Ada.Streams.Stream_Element_Offset) is
       Blob  : constant Blob_Access := Stream.Data.Value;
