@@ -42,6 +42,8 @@ AC_SUBST(ADO_LIBDIR)
 AC_CHECK_PROG(HAVE_PANDOC,pandoc,yes)
 AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
 
+AC_PROG_CC
+
 AC_ARG_ENABLE(mysql,
 [  --enable-mysql          build MySQL support],
 ENABLE_MYSQL=$enableval,
