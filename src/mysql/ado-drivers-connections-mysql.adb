@@ -156,6 +156,16 @@ package body ADO.Drivers.Connections.Mysql is
       ADO.Schemas.Mysql.Load_Schema (Database, Schema);
    end Load_Schema;
 
+   --  Create the database and initialize it with the schema SQL file.
+   overriding
+   procedure Create_Database (Database    : in Database_Connection;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+   begin
+      null;
+   end Create_Database;
+
    --  ------------------------------
    --  Execute a simple SQL statement
    --  ------------------------------
@@ -208,12 +218,12 @@ package body ADO.Drivers.Connections.Mysql is
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is
 
-      Host     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Server);
-      Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Database);
+      Host     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Server);
+      Name     : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Database);
       Login    : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_Property ("user"));
       Password : constant ADO.C.String_Ptr := C.To_String_Ptr (Config.Get_Property ("password"));
       Socket   : ADO.C.String_Ptr;
-      Port     : unsigned := unsigned (Config.Port);
+      Port     : unsigned := unsigned (Config.Get_Port);
       Flags    : constant unsigned_long := 0;
       Connection : Mysql_Access;
 
@@ -229,7 +239,7 @@ package body ADO.Drivers.Connections.Mysql is
 
       Log.Info ("Task {0} connecting to {1}:{2}",
                 Ada.Task_Identification.Image (Ada.Task_Identification.Current_Task),
-                To_String (Config.Server), To_String (Config.Database));
+                Config.Get_Server, Config.Get_Database);
       if Config.Get_Property ("password") = "" then
          Log.Debug ("MySQL connection with user={0}", Config.Get_Property ("user"));
       else
@@ -246,9 +256,9 @@ package body ADO.Drivers.Connections.Mysql is
          declare
             Message : constant String := Strings.Value (Mysql_Error (Connection));
          begin
-            Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.Log_URI), Message);
+            Log.Error ("Cannot connect to '{0}': {1}", Config.Get_Log_URI, Message);
             mysql_close (Connection);
-            raise Connection_Error with "Cannot connect to mysql server: " & Message;
+            raise ADO.Configs.Connection_Error with "Cannot connect to mysql server: " & Message;
          end;
       end if;
 
@@ -280,13 +290,13 @@ package body ADO.Drivers.Connections.Mysql is
       begin
          Database.Ident (1 .. Ident'Length) := Ident;
          Database.Server := Server;
-         Database.Name   := Config.Database;
+         Database.Name   := To_Unbounded_String (Config.Get_Database);
 
          --  Configure the connection by setting up the MySQL 'SET X=Y' SQL commands.
          --  Typical configuration includes:
          --    encoding=utf8
          --    collation_connection=utf8_general_ci
-         Config.Properties.Iterate (Process => Configure'Access);
+         Config.Iterate (Process => Configure'Access);
 
          Result := Ref.Create (Database.all'Access);
       end;
