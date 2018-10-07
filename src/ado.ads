@@ -21,6 +21,7 @@ with Ada.Streams;
 with Ada.Calendar;
 
 with Util.Refs;
+with Util.Nullables;
 package ADO is
 
    type Int64 is range -2**63 .. 2**63 - 1;
@@ -58,26 +59,19 @@ package ADO is
    --  or not.
 
    --  An integer which can be null.
-   type Nullable_Integer is record
-      Value   : Integer := 0;
-      Is_Null : Boolean := True;
-   end record;
+   subtype Nullable_Integer is Util.Nullables.Nullable_Integer;
+   function "=" (Left, Right : in Nullable_Integer) return Boolean
+     renames Util.Nullables."=";
 
    Null_Integer : constant Nullable_Integer;
 
    --  A string which can be null.
-   type Nullable_String is record
-      Value   : Ada.Strings.Unbounded.Unbounded_String;
-      Is_Null : Boolean := True;
-   end record;
+   subtype Nullable_String is Util.Nullables.Nullable_String;
 
    Null_String : constant Nullable_String;
 
    --  A date which can be null.
-   type Nullable_Time is record
-      Value   : Ada.Calendar.Time;
-      Is_Null : Boolean := True;
-   end record;
+   subtype Nullable_Time is Util.Nullables.Nullable_Time;
 
    Null_Time : constant Nullable_Time;
 
