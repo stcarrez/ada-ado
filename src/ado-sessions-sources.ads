@@ -38,12 +38,6 @@ package ADO.Sessions.Sources is
    type Data_Source is new ADO.Drivers.Connections.Configuration with private;
    type Data_Source_Access is access all Data_Source'Class;
 
-   --  Attempts to establish a connection with the data source
-   --  that this Data_Source object represents.
---   procedure Create_Connection (Controller : in Data_Source)
---                         return ADO.Master_Connection'Class;
-
-
    --  ------------------------------
    --  Replicated Data Source
    --  ------------------------------
