@@ -19,6 +19,7 @@
 package Mysql.Lib is
 
    pragma Pure;
+   pragma Style_Checks ("-mr");
 
    MYSQL_LIB_NAME : constant String := $MYSQL_LIB;
 
