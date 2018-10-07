@@ -36,6 +36,16 @@ private
       Id : Natural := 0;
    end record;
 
+   --  Create the database and initialize it with the schema SQL file.
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection.
+   overriding
+   procedure Create_Database (D           : in out Mysql_Driver;
+                              Admin       : in Configs.Configuration'Class;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector);
+
    --  Deletes the Mysql driver.
    overriding
    procedure Finalize (D : in out Mysql_Driver);
@@ -116,12 +126,5 @@ private
    overriding
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
-
-   --  Create the database and initialize it with the schema SQL file.
-   overriding
-   procedure Create_Database (Database    : in Database_Connection;
-                              Config      : in Configs.Configuration'Class;
-                              Schema_Path : in String;
-                              Messages    : out Util.Strings.Vectors.Vector);
 
 end ADO.Drivers.Connections.Mysql;
