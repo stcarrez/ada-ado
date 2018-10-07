@@ -31,7 +31,7 @@ package ADO.Drivers.Connections is
 
    use ADO.Statements;
 
-   type Driver is abstract tagged limited private;
+   type Driver;
    type Driver_Access is access all Driver'Class;
 
    --  ------------------------------
@@ -82,12 +82,6 @@ package ADO.Drivers.Connections is
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is abstract;
 
-   --  Create the database and initialize it with the schema SQL file.
-   procedure Create_Database (Database    : in Database_Connection;
-                              Config      : in Configs.Configuration'Class;
-                              Schema_Path : in String;
-                              Messages    : out Util.Strings.Vectors.Vector) is abstract;
-
    --  Get the database driver which manages this connection.
    function Get_Driver (Database : in Database_Connection)
                         return Driver_Access is abstract;
@@ -114,11 +108,21 @@ package ADO.Drivers.Connections is
    --  ------------------------------
    --  Database Driver
    --  ------------------------------
+   type Driver is abstract tagged limited private;
 
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (D      : in out Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is abstract;
+
+   --  Create the database and initialize it with the schema SQL file.
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection.
+   procedure Create_Database (D           : in out Driver;
+                              Admin       : in Configs.Configuration'Class;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is abstract;
 
    --  Get the driver unique index.
    function Get_Driver_Index (D : in Driver) return Driver_Index;
