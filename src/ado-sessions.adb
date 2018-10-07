@@ -359,6 +359,17 @@ package body ADO.Sessions is
    end Create_Statement;
 
    --  ------------------------------
+   --  Internal operation to get access to the database connection.
+   --  ------------------------------
+   procedure Access_Connection (Database : in out Master_Session;
+                                Process  : not null access
+                                  procedure (Connection : in out Database_Connection'Class)) is
+   begin
+      Check_Session (Database);
+      Process (Database.Impl.Database.Value.all);
+   end Access_Connection;
+
+   --  ------------------------------
    --  Internal method to get the session proxy associated with the given database session.
    --  The session proxy is associated with some ADO objects to be able to retrieve the database
    --  session for the implementation of lazy loading.  The session proxy is kept until the
