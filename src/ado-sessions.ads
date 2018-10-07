@@ -18,6 +18,7 @@
 
 with Ada.Finalization;
 
+with ADO.Configs;
 with ADO.Schemas;
 with ADO.Statements;
 with ADO.Objects;
@@ -53,7 +54,7 @@ package ADO.Sessions is
    Session_Error : exception;
 
    --  Raised when the connection URI is invalid.
-   Connection_Error : exception renames ADO.Drivers.Connection_Error;
+   Connection_Error : exception renames ADO.Configs.Connection_Error;
 
    --  The database connection status
    type Connection_Status is (OPEN, CLOSED);
@@ -166,6 +167,13 @@ package ADO.Sessions is
    function Create_Statement (Database : in Master_Session;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement;
+
+   subtype Database_Connection is Drivers.Connections.Database_Connection;
+
+   --  Internal operation to get access to the database connection.
+   procedure Access_Connection (Database : in out Master_Session;
+                                Process  : not null access
+                                  procedure (Connection : in out Database_Connection'Class));
 
    type Session_Record is limited private;
    type Session_Record_Access is access all Session_Record;
