@@ -30,19 +30,24 @@ SQLite Development installation
 sudo apt-get install libsqlite3-dev
 ```
 
+Postgresql Development installation
+```
+sudo apt-get install postgresql-client libpq-dev
+```
+
 ### Windows
 For Windows, the installation is a little bit more complex and manual.
 You may either download the files from MySQL and SQLite download sites
 or you may use the files provided by ADO in the `win32` directory.
 
-If your GNAT 2017 compiler is installed in `C:/GNAT/2017`, you may
+If your GNAT 2018 compiler is installed in `C:/GNAT/2018`, you may
 install the MySQL and SQLite libraries by using msys cp with:
 
 ```
-cp win32/*.dll C:/GNAT/2017/bin
-cp win32/*.dll C:/GNAT/2017/lib
-cp win32/*.lib C:/GNAT/2017/lib
-cp win32/*.a C:/GNAT/2017/lib
+cp win32/*.dll C:/GNAT/2018/bin
+cp win32/*.dll C:/GNAT/2018/lib
+cp win32/*.lib C:/GNAT/2018/lib
+cp win32/*.a C:/GNAT/2018/lib
 ```
 
 ## Configuration
