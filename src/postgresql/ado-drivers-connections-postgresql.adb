@@ -133,31 +133,6 @@ package body ADO.Drivers.Connections.Postgresql is
    end Load_Schema;
 
    --  ------------------------------
-   --  Create the database and initialize it with the schema SQL file.
-   --  ------------------------------
-   overriding
-   procedure Create_Database (Database    : in Database_Connection;
-                              Config      : in Configs.Configuration'Class;
-                              Schema_Path : in String;
-                              Messages    : out Util.Strings.Vectors.Vector) is
-      pragma Unreferenced (Database);
-      Status  : Integer;
-      Command : constant String :=
-        "psql -q '" & Config.Get_URI & "' --file=" & Schema_Path;
-   begin
-      Util.Processes.Tools.Execute (Command, Messages, Status);
-
-      if Status = 0 then
-         Log.Info ("Database schema created successfully.");
-      elsif Status = 255 then
-         Log.Error ("Command not found: {0}", Command);
-      else
-         Log.Error ("Command {0} failed with exit code {1}", Command,
-                    Util.Strings.Image (Status));
-      end if;
-   end Create_Database;
-
-   --  ------------------------------
    --  Execute a simple SQL statement
    --  ------------------------------
    procedure Execute (Database : in out Database_Connection;
@@ -257,6 +232,35 @@ package body ADO.Drivers.Connections.Postgresql is
          Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
+
+   --  ------------------------------
+   --  Create the database and initialize it with the schema SQL file.
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection.
+   --  ------------------------------
+   overriding
+   procedure Create_Database (D           : in out Postgresql_Driver;
+                              Admin       : in Configs.Configuration'Class;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+      pragma Unreferenced (D, Admin);
+
+      Status  : Integer;
+      Command : constant String :=
+        "psql -q '" & Config.Get_URI & "' --file=" & Schema_Path;
+   begin
+      Util.Processes.Tools.Execute (Command, Messages, Status);
+
+      if Status = 0 then
+         Log.Info ("Database schema created successfully.");
+      elsif Status = 255 then
+         Log.Error ("Command not found: {0}", Command);
+      else
+         Log.Error ("Command {0} failed with exit code {1}", Command,
+                    Util.Strings.Image (Status));
+      end if;
+   end Create_Database;
 
    --  ------------------------------
    --  Initialize the Postgresql driver.
