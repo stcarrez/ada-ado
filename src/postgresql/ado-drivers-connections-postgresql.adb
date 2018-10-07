@@ -21,6 +21,7 @@ with Ada.Task_Identification;
 with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Processes.Tools;
 with ADO.Statements.Postgresql;
 with ADO.Schemas.Postgresql;
 with ADO.Sessions;
@@ -132,6 +133,31 @@ package body ADO.Drivers.Connections.Postgresql is
    end Load_Schema;
 
    --  ------------------------------
+   --  Create the database and initialize it with the schema SQL file.
+   --  ------------------------------
+   overriding
+   procedure Create_Database (Database    : in Database_Connection;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+      pragma Unreferenced (Database);
+      Status  : Integer;
+      Command : constant String :=
+        "psql -q '" & Config.Get_URI & "' --file=" & Schema_Path;
+   begin
+      Util.Processes.Tools.Execute (Command, Messages, Status);
+
+      if Status = 0 then
+         Log.Info ("Database schema created successfully.");
+      elsif Status = 255 then
+         Log.Error ("Command not found: {0}", Command);
+      else
+         Log.Error ("Command {0} failed with exit code {1}", Command,
+                    Util.Strings.Image (Status));
+      end if;
+   end Create_Database;
+
+   --  ------------------------------
    --  Execute a simple SQL statement
    --  ------------------------------
    procedure Execute (Database : in out Database_Connection;
@@ -186,12 +212,12 @@ package body ADO.Drivers.Connections.Postgresql is
 
       use type PQ.ConnStatusType;
 
-      URI        : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.URI);
+      URI        : constant ADO.C.String_Ptr := ADO.C.To_String_Ptr (Config.Get_URI);
       Connection : PQ.PGconn_Access;
    begin
       Log.Info ("Task {0} connecting to {1}:{2}",
                 Ada.Task_Identification.Image (Ada.Task_Identification.Current_Task),
-                To_String (Config.Server), To_String (Config.Database));
+                Config.Get_Server, Config.Get_Database);
       if Config.Get_Property ("password") = "" then
          Log.Debug ("Postgresql connection with user={0}", Config.Get_Property ("user"));
       else
@@ -204,8 +230,9 @@ package body ADO.Drivers.Connections.Postgresql is
          declare
             Message : constant String := "memory allocation error";
          begin
-            Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.Log_URI), Message);
-            raise Connection_Error with "Cannot connect to Postgresql server: " & Message;
+            Log.Error ("Cannot connect to '{0}': {1}", Config.Get_Log_URI, Message);
+            raise ADO.Configs.Connection_Error with
+              "Cannot connect to Postgresql server: " & Message;
          end;
       end if;
 
@@ -213,8 +240,9 @@ package body ADO.Drivers.Connections.Postgresql is
          declare
             Message : constant String := Strings.Value (PQ.PQerrorMessage (Connection));
          begin
-            Log.Error ("Cannot connect to '{0}': {1}", To_String (Config.Log_URI), Message);
-            raise Connection_Error with "Cannot connect to Postgresql server: " & Message;
+            Log.Error ("Cannot connect to '{0}': {1}", Config.Get_Log_URI, Message);
+            raise ADO.Configs.Connection_Error with
+              "Cannot connect to Postgresql server: " & Message;
          end;
       end if;
 
@@ -225,7 +253,7 @@ package body ADO.Drivers.Connections.Postgresql is
       begin
          Database.Ident (1 .. Ident'Length) := Ident;
          Database.Server := Connection;
-         Database.Name   := Config.Database;
+         Database.Name   := To_Unbounded_String (Config.Get_Database);
          Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
