@@ -42,9 +42,6 @@ package ADO.Drivers is
 
    use Ada.Strings.Unbounded;
 
-   --  Raised when the connection URI is invalid.
-   Connection_Error : exception;
-
    --  Raised for all errors reported by the database.
    Database_Error   : exception;
 
