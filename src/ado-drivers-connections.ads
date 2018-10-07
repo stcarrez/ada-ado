@@ -31,7 +31,7 @@ package ADO.Drivers.Connections is
 
    use ADO.Statements;
 
-   type Driver;
+   type Driver is abstract tagged limited private;
    type Driver_Access is access all Driver'Class;
 
    --  ------------------------------
@@ -108,7 +108,6 @@ package ADO.Drivers.Connections is
    --  ------------------------------
    --  Database Driver
    --  ------------------------------
-   type Driver is abstract tagged limited private;
 
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (D      : in out Driver;
