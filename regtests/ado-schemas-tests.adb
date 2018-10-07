@@ -20,7 +20,6 @@ with Util.Test_Caller;
 with Util.Strings.Vectors;
 with Util.Strings.Transforms;
 
-with ADO.Configs;
 with ADO.Schemas.Databases;
 with ADO.Sessions.Sources;
 with ADO.Schemas.Entities;
@@ -237,13 +236,14 @@ package body ADO.Schemas.Tests is
       Cfg    : Data_Source := Data_Source (Regtests.Get_Controller);
       Path   : constant String :=
         "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Cfg.Get_Driver & ".sql";
+
+      pragma Unreferenced (T, Msg);
    begin
       Cfg.Set_Database (Cfg.Get_Database & ".test");
       ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
                                              Config      => Cfg,
                                              Schema_Path => Path,
                                              Messages    => Msg);
-
    end Test_Create_Schema;
 
 end ADO.Schemas.Tests;
