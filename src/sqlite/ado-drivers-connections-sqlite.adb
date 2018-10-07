@@ -174,35 +174,6 @@ package body ADO.Drivers.Connections.Sqlite is
    end Load_Schema;
 
    --  ------------------------------
-   --  Create the database and initialize it with the schema SQL file.
-   --  ------------------------------
-   procedure Create_Database (Database    : in Database_Connection;
-                              Config      : in Configs.Configuration'Class;
-                              Schema_Path : in String;
-                              Messages    : out Util.Strings.Vectors.Vector) is
-      pragma Unreferenced (Database);
-
-      Status        : Integer;
-      Database_Path : constant String := Config.Get_Database;
-      Command       : constant String :=
-        "sqlite3 --batch --init " & Schema_Path & " " & Database_Path;
-   begin
-      Log.Info ("Creating SQLite database {0}", Database_Path);
-      Messages.Clear;
-      Util.Processes.Tools.Execute (Command, Messages, Status);
-
-      if Status = 0 then
-         Log.Info ("Database schema created successfully.");
-      elsif Status = 255 then
-         Messages.Append ("Command not found: " & Command);
-         Log.Error ("Command not found: {0}", Command);
-      else
-         Log.Error ("Command {0} failed with exit code {1}", Command,
-                    Util.Strings.Image (Status));
-      end if;
-   end Create_Database;
-
-   --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
    procedure Create_Connection (D      : in out Sqlite_Driver;
@@ -281,6 +252,40 @@ package body ADO.Drivers.Connections.Sqlite is
          Config.Iterate (Process => Configure'Access);
       end;
    end Create_Connection;
+
+   --  ------------------------------
+   --  Create the database and initialize it with the schema SQL file.
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection.
+   --  ------------------------------
+   overriding
+   procedure Create_Database (D           : in out Sqlite_Driver;
+                              Admin       : in Configs.Configuration'Class;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+      pragma Unreferenced (D, Admin);
+
+      Status        : Integer;
+      Database_Path : constant String := Config.Get_Database;
+      Command       : constant String :=
+        "sqlite3 --batch --init " & Schema_Path & " " & Database_Path;
+   begin
+      Log.Info ("Creating SQLite database {0}", Database_Path);
+      Util.Processes.Tools.Execute (Command, Messages, Status);
+
+      if Status = 0 then
+         Log.Info ("Database schema created successfully.");
+      elsif Status = 255 then
+         Messages.Append ("Command not found: " & Command);
+         Log.Error ("Command not found: {0}", Command);
+      else
+         Messages.Append ("Command " & Command & " failed with exit code "
+                            & Util.Strings.Image (Status));
+         Log.Error ("Command {0} failed with exit code {1}", Command,
+                    Util.Strings.Image (Status));
+      end if;
+   end Create_Database;
 
    --  ------------------------------
    --  Initialize the SQLite driver.
