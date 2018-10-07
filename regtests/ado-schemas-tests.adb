@@ -22,7 +22,7 @@ with Util.Strings.Transforms;
 
 with ADO.Configs;
 with ADO.Schemas.Databases;
-with ADO.Sessions;
+with ADO.Sessions.Sources;
 with ADO.Schemas.Entities;
 
 with Regtests;
@@ -231,13 +231,15 @@ package body ADO.Schemas.Tests is
    --  Test the creation of database.
    --  ------------------------------
    procedure Test_Create_Schema (T : in out Test) is
-      S      : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      use ADO.Sessions.Sources;
+
       Msg    : Util.Strings.Vectors.Vector;
-      Cfg    : constant Configs.Configuration := Configs.Configuration (Regtests.Get_Controller);
+      Cfg    : Data_Source := Data_Source (Regtests.Get_Controller);
       Path   : constant String :=
         "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Cfg.Get_Driver & ".sql";
    begin
-      ADO.Schemas.Databases.Create_Database (Session     => S,
+      Cfg.Set_Database (Cfg.Get_Database & ".test");
+      ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
                                              Config      => Cfg,
                                              Schema_Path => Path,
                                              Messages    => Msg);
