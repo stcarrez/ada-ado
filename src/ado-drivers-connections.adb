@@ -20,13 +20,10 @@ with Util.Log.Loggers;
 with Util.Systems.DLLs;
 
 with System;
-with Ada.Strings.Fixed;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
 
 package body ADO.Drivers.Connections is
-
-   use Ada.Strings.Fixed;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Drivers.Connections");
 
@@ -34,205 +31,15 @@ package body ADO.Drivers.Connections is
    procedure Load_Driver (Name : in String);
 
    --  ------------------------------
-   --  Set the connection URL to connect to the database.
-   --  The driver connection is a string of the form:
-   --
-   --   driver://[host][:port]/[database][?property1][=value1]...
-   --
-   --  If the string is invalid or if the driver cannot be found,
-   --  the Connection_Error exception is raised.
+   --  Get the driver index that corresponds to the driver for this database connection string.
    --  ------------------------------
-   procedure Set_Connection (Controller : in out Configuration;
-                             URI        : in String) is
-
-      Pos, Pos2, Slash_Pos, Next : Natural;
-      Is_Hidden : Boolean;
+   function Get_Driver (Config : in Configuration) return Driver_Index is
+      Driver  : constant Driver_Access := Get_Driver (Config.Get_Driver);
    begin
-      Controller.URI := To_Unbounded_String (URI);
-      Pos := Index (URI, "://");
-      if Pos <= 1 then
-         Log.Error ("Invalid connection URI: {0}", URI);
-         raise Connection_Error
-           with "Invalid URI: '" & URI & "'";
-      end if;
-      Controller.Driver := Get_Driver (URI (URI'First .. Pos - 1));
-      if Controller.Driver = null then
-         Log.Error ("No driver found for connection URI: {0}", URI);
-         raise Connection_Error
-           with "Driver '" & URI (URI'First .. Pos - 1) & "' not found";
-      end if;
-
-      Pos := Pos + 3;
-      Slash_Pos := Index (URI, "/", Pos);
-      if Slash_Pos < Pos then
-         Log.Error ("Invalid connection URI: {0}", URI);
-         raise Connection_Error
-           with "Invalid connection URI: '" & URI & "'";
-      end if;
-
-      --  Extract the server and port.
-      Pos2 := Index (URI, ":", Pos);
-      if Pos2 >= Pos then
-         Controller.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
-         begin
-            Controller.Port := Natural'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
-
-         exception
-            when Constraint_Error =>
-               Log.Error ("Invalid port in connection URI: {0}", URI);
-               raise Connection_Error
-                 with "Invalid port in connection URI: '" & URI & "'";
-         end;
-      else
-         Controller.Port := 0;
-         Controller.Server := To_Unbounded_String (URI (Pos .. Slash_Pos - 1));
-      end if;
-
-      --  Extract the database name.
-      Pos := Index (URI, "?", Slash_Pos);
-      if Pos - 1 > Slash_Pos + 1 then
-         Controller.Database := To_Unbounded_String (URI (Slash_Pos + 1 .. Pos - 1));
-      elsif Pos = 0 and Slash_Pos + 1 < URI'Last then
-         Controller.Database := To_Unbounded_String (URI (Slash_Pos + 1 .. URI'Last));
-      else
-         Controller.Database := Null_Unbounded_String;
-      end if;
-
-
-      --  Parse the optional properties
-      if Pos > Slash_Pos then
-         Controller.Log_URI := To_Unbounded_String (URI (URI'First .. Pos));
-         while Pos < URI'Last loop
-            Pos2 := Index (URI, "=", Pos + 1);
-            if Pos2 > Pos then
-               Next := Index (URI, "&", Pos2 + 1);
-               Append (Controller.Log_URI, URI (Pos + 1 .. Pos2));
-               Is_Hidden := URI (Pos + 1 .. Pos2 - 1) = "password";
-               if Is_Hidden then
-                  Append (Controller.Log_URI, "XXXXXXX");
-               end if;
-               if Next > 0 then
-                  Controller.Properties.Set (URI (Pos + 1 .. Pos2 - 1),
-                                             URI (Pos2 + 1 .. Next - 1));
-                  if not Is_Hidden then
-                     Append (Controller.Log_URI, URI (Pos2 + 1 .. Next - 1));
-                  end if;
-                  Append (Controller.Log_URI, "&");
-                  Pos := Next;
-               else
-                  Controller.Properties.Set (URI (Pos + 1 .. Pos2 - 1),
-                                             URI (Pos2 + 1 .. URI'Last));
-                  if not Is_Hidden then
-                     Append (Controller.Log_URI, URI (Pos2 + 1 .. URI'Last));
-                  end if;
-                  Pos := URI'Last;
-               end if;
-            else
-               Controller.Properties.Set (URI (Pos + 1 .. URI'Last), "");
-               Append (Controller.Log_URI, URI (Pos + 1 .. URI'Last));
-               Pos := URI'Last;
-            end if;
-         end loop;
-      else
-         Controller.Log_URI := Controller.URI;
-      end if;
-      Log.Info ("Set connection URI: {0}", Controller.Log_URI);
-   end Set_Connection;
-
-   --  ------------------------------
-   --  Set a property on the datasource for the driver.
-   --  The driver can retrieve the property to configure and open
-   --  the database connection.
-   --  ------------------------------
-   procedure Set_Property (Controller : in out Configuration;
-                           Name       : in String;
-                           Value      : in String) is
-   begin
-      Controller.Properties.Set (Name, Value);
-   end Set_Property;
-
-   --  ------------------------------
-   --  Get a property from the datasource configuration.
-   --  If the property does not exist, an empty string is returned.
-   --  ------------------------------
-   function Get_Property (Controller : in Configuration;
-                          Name       : in String) return String is
-   begin
-      return Controller.Properties.Get (Name, "");
-   end Get_Property;
-
-   --  ------------------------------
-   --  Get the server hostname.
-   --  ------------------------------
-   function Get_Server (Controller : in Configuration) return String is
-   begin
-      return To_String (Controller.Server);
-   end Get_Server;
-
-   --  ------------------------------
-   --  Set the server hostname.
-   --  ------------------------------
-   procedure Set_Server (Controller : in out Configuration;
-                         Server     : in String) is
-   begin
-      Controller.Server := To_Unbounded_String (Server);
-   end Set_Server;
-
-   --  ------------------------------
-   --  Set the server port.
-   --  ------------------------------
-   procedure Set_Port (Controller : in out Configuration;
-                       Port       : in Natural) is
-   begin
-      Controller.Port := Port;
-   end Set_Port;
-
-   --  ------------------------------
-   --  Get the server port.
-   --  ------------------------------
-   function Get_Port (Controller : in Configuration) return Natural is
-   begin
-      return Controller.Port;
-   end Get_Port;
-
-   --  ------------------------------
-   --  Set the database name.
-   --  ------------------------------
-   procedure Set_Database (Controller : in out Configuration;
-                           Database   : in String) is
-   begin
-      Controller.Database := To_Unbounded_String (Database);
-   end Set_Database;
-
-   --  ------------------------------
-   --  Get the database name.
-   --  ------------------------------
-   function Get_Database (Controller : in Configuration) return String is
-   begin
-      return To_String (Controller.Database);
-   end Get_Database;
-
-   --  ------------------------------
-   --  Get the database driver name.
-   --  ------------------------------
-   function Get_Driver (Controller : in Configuration) return String is
-   begin
-      if Controller.Driver /= null then
-         return Get_Driver_Name (Controller.Driver.all);
-      else
-         return "";
-      end if;
-   end Get_Driver;
-
-   --  ------------------------------
-   --  Get the database driver index.
-   --  ------------------------------
-   function Get_Driver (Controller : in Configuration) return Driver_Index is
-   begin
-      if Controller.Driver /= null then
-         return Controller.Driver.Index;
-      else
+      if Driver = null then
          return Driver_Index'First;
+      else
+         return Driver.Get_Driver_Index;
       end if;
    end Get_Driver;
 
@@ -241,22 +48,27 @@ package body ADO.Drivers.Connections is
    --  ------------------------------
    procedure Create_Connection (Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is
+      Driver  : Driver_Access;
+      Log_URI : constant String := Config.Get_Log_URI;
    begin
-      if Config.Driver = null then
-         Log.Error ("No driver found for connection {0}", To_String (Config.Log_URI));
-         raise Connection_Error with "Data source is not initialized: driver not found";
+      Driver := Get_Driver (Config.Get_Driver);
+      if Driver = null then
+         Log.Error ("No driver found for connection {0}", Log_URI);
+         raise ADO.Configs.Connection_Error with
+           "Data source is not initialized: driver '" & Config.Get_Driver & "' not found";
       end if;
-      Config.Driver.Create_Connection (Config, Result);
+      Driver.Create_Connection (Config, Result);
       if Result.Is_Null then
          Log.Error ("Driver {0} failed to create connection {0}",
-                    Config.Driver.Name.all, To_String (Config.Log_URI));
-         raise Connection_Error with "Data source is not initialized: driver error";
+                    Driver.Name.all, Log_URI);
+         raise ADO.Configs.Connection_Error with
+           "Data source is not initialized: driver error";
       end if;
-      Log.Info ("Created connection to '{0}' -> {1}", Config.Log_URI, Result.Value.Ident);
+      Log.Info ("Created connection to '{0}' -> {1}", Log_URI, Result.Value.Ident);
 
    exception
       when others =>
-         Log.Info ("Failed to create connection to '{0}'", Config.Log_URI);
+         Log.Info ("Failed to create connection to '{0}'", Log_URI);
          raise;
 
    end Create_Connection;
