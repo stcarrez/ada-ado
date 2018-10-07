@@ -20,6 +20,7 @@ with Interfaces.C.Strings;
 
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Processes.Tools;
 with ADO.Sessions;
 with ADO.Statements.Sqlite;
 with ADO.Schemas.Sqlite;
@@ -173,6 +174,35 @@ package body ADO.Drivers.Connections.Sqlite is
    end Load_Schema;
 
    --  ------------------------------
+   --  Create the database and initialize it with the schema SQL file.
+   --  ------------------------------
+   procedure Create_Database (Database    : in Database_Connection;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+      pragma Unreferenced (Database);
+
+      Status        : Integer;
+      Database_Path : constant String := Config.Get_Database;
+      Command       : constant String :=
+        "sqlite3 --batch --init " & Schema_Path & " " & Database_Path;
+   begin
+      Log.Info ("Creating SQLite database {0}", Database_Path);
+      Messages.Clear;
+      Util.Processes.Tools.Execute (Command, Messages, Status);
+
+      if Status = 0 then
+         Log.Info ("Database schema created successfully.");
+      elsif Status = 255 then
+         Messages.Append ("Command not found: " & Command);
+         Log.Error ("Command not found: {0}", Command);
+      else
+         Log.Error ("Command {0} failed with exit code {1}", Command,
+                    Util.Strings.Image (Status));
+      end if;
+   end Create_Database;
+
+   --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
    procedure Create_Connection (D      : in out Sqlite_Driver;
@@ -181,7 +211,7 @@ package body ADO.Drivers.Connections.Sqlite is
       pragma Unreferenced (D);
       use Strings;
 
-      Name     : constant String := To_String (Config.Database);
+      Name     : constant String := Config.Get_Database;
       Filename : Strings.chars_ptr;
       Status   : int;
       Handle   : aliased access Sqlite3;
@@ -201,7 +231,7 @@ package body ADO.Drivers.Connections.Sqlite is
             Msg   : constant String := Strings.Value (Error);
          begin
             Log.Error ("Cannot open SQLite database: {0}", Msg);
-            raise Connection_Error with "Cannot open database: " & Msg;
+            raise ADO.Configs.Connection_Error with "Cannot open database: " & Msg;
          end;
       end if;
 
@@ -240,7 +270,7 @@ package body ADO.Drivers.Connections.Sqlite is
 
       begin
          Database.Server := Handle;
-         Database.Name   := Config.Database;
+         Database.Name   := To_Unbounded_String (Config.Get_Database);
          Result := Ref.Create (Database.all'Access);
 
          --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
@@ -248,7 +278,7 @@ package body ADO.Drivers.Connections.Sqlite is
          --    synchronous=OFF
          --    temp_store=MEMORY
          --    encoding='UTF-8'
-         Config.Properties.Iterate (Process => Configure'Access);
+         Config.Iterate (Process => Configure'Access);
       end;
    end Create_Connection;
 
