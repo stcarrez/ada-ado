@@ -110,4 +110,11 @@ private
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
+   --  Create the database and initialize it with the schema SQL file.
+   overriding
+   procedure Create_Database (Database    : in Database_Connection;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector);
+
 end ADO.Drivers.Connections.Postgresql;
