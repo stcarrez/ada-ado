@@ -87,7 +87,7 @@ package body ADO.Sequences.Tests is
          T.Assert (False, "No exception raised.");
 
       exception
-         when ADO.Drivers.Connection_Error =>
+         when ADO.Sessions.Connection_Error =>
             null;  --  Good! An exception is expected because the session factory is empty.
       end;
 
