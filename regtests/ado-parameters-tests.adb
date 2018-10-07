@@ -179,6 +179,7 @@ package body ADO.Parameters.Tests is
    --  ------------------------------
    overriding
    function Get_Identifier_Quote (D : in Dialect) return Character is
+      pragma Unreferenced (D);
    begin
       return '`';
    end Get_Identifier_Quote;
