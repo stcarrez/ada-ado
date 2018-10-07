@@ -168,7 +168,8 @@ package body ADO.Statements.Tests is
      new Test_Query_Get_Value_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "id_value");
 
    procedure Test_Query_Get_Int64_On_Null is
-     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64, "Get_Int64", "int_value");
+     new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64,
+                                         "Get_Int64", "int_value");
 
    procedure Test_Query_Get_Integer is
      new Test_Query_Get_Value_T (Integer, ADO.Statements.Get_Integer, "Get_Integer", "int_value");
@@ -435,8 +436,6 @@ package body ADO.Statements.Tests is
    --  Test executing a SQL query with an invalid SQL.
    --  ------------------------------
    procedure Test_Invalid_Statement (T : in out Test) is
-      use type ADO.Schemas.Column_Type;
-
       DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
    begin
       declare
@@ -473,7 +472,7 @@ package body ADO.Statements.Tests is
             null;
       end;
       declare
-         DB2   : ADO.Sessions.Master_Session := DB;
+         DB2   : constant ADO.Sessions.Master_Session := DB;
          Stmt  : ADO.Statements.Query_Statement;
       begin
          DB.Close;
