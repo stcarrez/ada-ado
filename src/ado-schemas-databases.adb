@@ -22,20 +22,18 @@ package body ADO.Schemas.Databases is
    --  ------------------------------
    --  Create the database and initialize it with the schema SQL file.
    --  ------------------------------
-   procedure Create_Database (Session     : in out Sessions.Master_Session;
-                              Config      : in Configs.Configuration'Class;
+   procedure Create_Database (Admin       : in ADO.Sessions.Sources.Data_Source'Class;
+                              Config      : in ADO.Sessions.Sources.Data_Source'Class;
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector) is
-      procedure Process (Database : in out ADO.Drivers.Connections.Database_Connection'Class);
-
-      procedure Process (Database : in out ADO.Drivers.Connections.Database_Connection'Class) is
-      begin
-         Database.Create_Database (Config      => Config,
-                                   Schema_Path => Schema_Path,
-                                   Messages    => Messages);
-      end Process;
+      Name   : constant String := Config.Get_Driver;
+      Driver : constant Drivers.Connections.Driver_Access := Drivers.Connections.Get_Driver (Name);
    begin
-      Session.Access_Connection (Process'Access);
+      Messages.Clear;
+      Driver.Create_Database (Admin       => Admin,
+                              Config      => Config,
+                              Schema_Path => Schema_Path,
+                              Messages    => Messages);
    end Create_Database;
 
 end ADO.Schemas.Databases;
