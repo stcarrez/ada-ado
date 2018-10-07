@@ -17,13 +17,20 @@
 -----------------------------------------------------------------------
 
 with Util.Strings.Vectors;
-with ADO.Sessions;
-with ADO.Configs;
+with ADO.Sessions.Sources;
 package ADO.Schemas.Databases is
 
    --  Create the database and initialize it with the schema SQL file.
-   procedure Create_Database (Session     : in out Sessions.Master_Session;
-                              Config      : in Configs.Configuration'Class;
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection: this is the
+   --  database that must be created and configured.  The `Schema_Path` is the path
+   --  of the SQL file that can be used to populate the database with the schema.
+   --  The `Messages` vector will contain the messages produced during the setup and
+   --  configuration of the database.
+   --
+   --  For the `sqlite` driver, the `Admin` parameter is not used.
+   procedure Create_Database (Admin       : in ADO.Sessions.Sources.Data_Source'Class;
+                              Config      : in ADO.Sessions.Sources.Data_Source'Class;
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector);
 
