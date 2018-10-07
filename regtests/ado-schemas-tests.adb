@@ -17,8 +17,11 @@
 -----------------------------------------------------------------------
 
 with Util.Test_Caller;
+with Util.Strings.Vectors;
 with Util.Strings.Transforms;
 
+with ADO.Configs;
+with ADO.Schemas.Databases;
 with ADO.Sessions;
 with ADO.Schemas.Entities;
 
@@ -45,6 +48,8 @@ package body ADO.Schemas.Tests is
                        Test_Table_Iterator'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table (Empty schema)",
                        Test_Empty_Schema'Access);
+      Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Create_Database",
+                       Test_Create_Schema'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -221,5 +226,22 @@ package body ADO.Schemas.Tests is
       T.Assert (not Has_Element (Iter), "The Get_Tables must return an empty iterator");
       T.Assert (Schema.Find_Table ("test") = null, "The Find_Table must return null");
    end Test_Empty_Schema;
+
+   --  ------------------------------
+   --  Test the creation of database.
+   --  ------------------------------
+   procedure Test_Create_Schema (T : in out Test) is
+      S      : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Msg    : Util.Strings.Vectors.Vector;
+      Cfg    : constant Configs.Configuration := Configs.Configuration (Regtests.Get_Controller);
+      Path   : constant String :=
+        "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Cfg.Get_Driver & ".sql";
+   begin
+      ADO.Schemas.Databases.Create_Database (Session     => S,
+                                             Config      => Cfg,
+                                             Schema_Path => Path,
+                                             Messages    => Msg);
+
+   end Test_Create_Schema;
 
 end ADO.Schemas.Tests;
