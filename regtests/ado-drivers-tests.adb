@@ -20,11 +20,14 @@ with Ada.Exceptions;
 with Util.Test_Caller;
 
 with Regtests;
+
+with ADO.Configs;
 with ADO.Statements;
 with ADO.Sessions;
 with ADO.Drivers.Connections;
 package body ADO.Drivers.Tests is
 
+   use ADO.Configs;
    use ADO.Drivers.Connections;
 
    package Caller is new Util.Test_Caller (Test, "ADO.Drivers");
@@ -208,7 +211,7 @@ package body ADO.Drivers.Tests is
                                 "Configuration Set_Server returned invalid value");
 
    exception
-      when E : ADO.Drivers.Connection_Error =>
+      when E : ADO.Configs.Connection_Error =>
          Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
                                    Ada.Exceptions.Exception_Message (E),
                                    "Invalid exception message");
@@ -226,7 +229,7 @@ package body ADO.Drivers.Tests is
                                 "Configuration Set_Port returned invalid value");
 
    exception
-      when E : ADO.Drivers.Connection_Error =>
+      when E : ADO.Configs.Connection_Error =>
          Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
                                    Ada.Exceptions.Exception_Message (E),
                                    "Invalid exception message");
@@ -244,7 +247,7 @@ package body ADO.Drivers.Tests is
                                 "Configuration Set_Database returned invalid value");
 
    exception
-      when E : ADO.Drivers.Connection_Error =>
+      when E : ADO.Configs.Connection_Error =>
          Util.Tests.Assert_Equals (T, "Driver 'mysql' not found",
                                    Ada.Exceptions.Exception_Message (E),
                                    "Invalid exception message");
@@ -293,7 +296,7 @@ package body ADO.Drivers.Tests is
    begin
       declare
          DB    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
-         DB2   : ADO.Sessions.Master_Session := DB;
+         DB2   : constant ADO.Sessions.Master_Session := DB;
          Stmt  : ADO.Statements.Query_Statement;
       begin
          DB.Close;
