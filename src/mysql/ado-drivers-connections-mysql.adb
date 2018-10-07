@@ -17,13 +17,18 @@
 -----------------------------------------------------------------------
 
 with Ada.Task_Identification;
+with Ada.Directories;
 
 with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
-with ADO.Sessions;
+with Util.Processes.Tools;
+with ADO.Sessions.Sources;
+with ADO.Sessions.Factory;
 with ADO.Statements.Mysql;
 with ADO.Schemas.Mysql;
+with ADO.Parameters;
+with ADO.Queries;
 with ADO.C;
 with Mysql.Lib; use Mysql.Lib;
 package body ADO.Drivers.Connections.Mysql is
@@ -155,16 +160,6 @@ package body ADO.Drivers.Connections.Mysql is
    begin
       ADO.Schemas.Mysql.Load_Schema (Database, Schema);
    end Load_Schema;
-
-   --  Create the database and initialize it with the schema SQL file.
-   overriding
-   procedure Create_Database (Database    : in Database_Connection;
-                              Config      : in Configs.Configuration'Class;
-                              Schema_Path : in String;
-                              Messages    : out Util.Strings.Vectors.Vector) is
-   begin
-      null;
-   end Create_Database;
 
    --  ------------------------------
    --  Execute a simple SQL statement
@@ -301,6 +296,181 @@ package body ADO.Drivers.Connections.Mysql is
          Result := Ref.Create (Database.all'Access);
       end;
    end Create_Connection;
+
+   --  ------------------------------
+   --  Create the database and initialize it with the schema SQL file.
+   --  The `Admin` parameter describes the database connection with administrator access.
+   --  The `Config` parameter describes the target database connection.
+   --  ------------------------------
+   overriding
+   procedure Create_Database (D           : in out Mysql_Driver;
+                              Admin       : in Configs.Configuration'Class;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector) is
+      pragma Unreferenced (D);
+
+      --  Create the MySQL tables in the database.  The tables are created by launching
+      --  the external command 'mysql' and using the create-xxx-mysql.sql generated scripts.
+      procedure Create_Mysql_Tables (Path   : in String;
+                                     Config : in Configs.Configuration'Class);
+
+      --  Create the database identified by the given name.
+      procedure Create_Database (DB   : in ADO.Sessions.Master_Session;
+                                 Name : in String);
+
+      --  Create the user and grant him access to the database.
+      procedure Create_User_Grant (DB       : in ADO.Sessions.Master_Session;
+                                   Name     : in String;
+                                   User     : in String;
+                                   Password : in String);
+
+      --  ------------------------------
+      --  Check if the database with the given name exists.
+      --  ------------------------------
+      function Has_Database (DB   : in ADO.Sessions.Session'Class;
+                             Name : in String) return Boolean is
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         Stmt := DB.Create_Statement ("SHOW DATABASES");
+         Stmt.Execute;
+         while Stmt.Has_Elements loop
+            declare
+               D : constant String := Stmt.Get_String (0);
+            begin
+               if Name = D then
+                  return True;
+               end if;
+            end;
+            Stmt.Next;
+         end loop;
+         return False;
+      end Has_Database;
+
+      --  ------------------------------
+      --  Check if the database with the given name has some tables.
+      --  ------------------------------
+      function Has_Tables (DB   : in ADO.Sessions.Session'Class;
+                           Name : in String) return Boolean is
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         Stmt := DB.Create_Statement ("SHOW TABLES FROM `:name`");
+         Stmt.Bind_Param ("name", ADO.Parameters.Token (Name));
+         Stmt.Execute;
+         return Stmt.Has_Elements;
+      end Has_Tables;
+
+      --  ------------------------------
+      --  Create the database identified by the given name.
+      --  ------------------------------
+      procedure Create_Database (DB   : in ADO.Sessions.Master_Session;
+                                 Name : in String) is
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         Log.Info ("Creating database '{0}'", Name);
+
+         Stmt := DB.Create_Statement ("CREATE DATABASE `:name`");
+         Stmt.Bind_Param ("name", ADO.Parameters.Token (Name));
+         Stmt.Execute;
+      end Create_Database;
+
+      --  ------------------------------
+      --  Create the user and grant him access to the database.
+      --  ------------------------------
+      procedure Create_User_Grant (DB       : in ADO.Sessions.Master_Session;
+                                   Name     : in String;
+                                   User     : in String;
+                                   Password : in String) is
+         Query : ADO.Queries.Context;
+         Stmt  : ADO.Statements.Query_Statement;
+      begin
+         Log.Info ("Granting access for user '{0}' to database '{1}'", User, Name);
+
+         if Password'Length > 0 then
+            Query.Set_SQL ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, "
+                           & "CREATE TEMPORARY TABLES, EXECUTE, SHOW VIEW ON "
+                           & "`:name`.* to `:user`@'localhost' IDENTIFIED BY :password");
+         else
+            Query.Set_SQL ("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, "
+                           & "CREATE TEMPORARY TABLES, EXECUTE, SHOW VIEW ON "
+                           & "`:name`.* to `:user`@'localhost'");
+         end if;
+
+         Stmt := DB.Create_Statement (Query);
+         Stmt.Bind_Param ("name", ADO.Parameters.Token (Name));
+         Stmt.Bind_Param ("user", ADO.Parameters.Token (User));
+         if Password'Length > 0 then
+            Stmt.Bind_Param ("password", Password);
+         end if;
+         Stmt.Execute;
+
+         Stmt := DB.Create_Statement ("FLUSH PRIVILEGES");
+         Stmt.Execute;
+      end Create_User_Grant;
+
+      --  ------------------------------
+      --  Create the MySQL tables in the database.  The tables are created by launching
+      --  the external command 'mysql' and using the create-xxx-mysql.sql generated scripts.
+      --  ------------------------------
+      procedure Create_Mysql_Tables (Path   : in String;
+                                     Config : in Configs.Configuration'Class) is
+         Database : constant String := Config.Get_Database;
+         Username : constant String := Config.Get_Property ("user");
+         Password : constant String := Config.Get_Property ("password");
+         Status   : Integer;
+      begin
+         Log.Info ("Creating database tables using schema '{0}'", Path);
+
+         if not Ada.Directories.Exists (Path) then
+            Log.Error ("SQL file '{0}' does not exist.", Path);
+            Log.Error ("Please, run the following command: dynamo generate db");
+            return;
+         end if;
+
+         if Password'Length > 0 then
+            Util.Processes.Tools.Execute ("mysql --user='" & Username & "' --password='"
+                                          & Password & "' "
+                                          & Database, Path, Messages, Status);
+         else
+            Util.Processes.Tools.Execute ("mysql --user='" & Username & "' "
+                                          & Database, Path, Messages, Status);
+         end if;
+      end Create_Mysql_Tables;
+
+      Factory : ADO.Sessions.Factory.Session_Factory;
+   begin
+      Log.Info ("Connecting to {0} for database setup", Admin.Get_Log_URI);
+
+      --  Initialize the session factory to connect to the
+      --  database defined by root connection (which should allow the database creation).
+      Factory.Create (ADO.Sessions.Sources.Data_Source (Admin));
+
+      declare
+         DB   : constant ADO.Sessions.Master_Session := Factory.Get_Master_Session;
+      begin
+         --  Create the database only if it does not already exists.
+         if not Has_Database (DB, Config.Get_Database) then
+            Create_Database (DB, Config.Get_Database);
+         end if;
+
+         --  If some tables exist, don't try to create tables again.
+         --  We could improve by reading the current database schema, comparing with our
+         --  schema and create what is missing (new tables, new columns).
+         if Has_Tables (DB, Config.Get_Database) then
+            Log.Error ("The database {0} exists", Config.Get_Database);
+         else
+            if "" /= Config.Get_Property ("user") then
+               --  Create the user grant.  On MySQL, it is safe to do this several times.
+               Create_User_Grant (DB, Config.Get_Database,
+                                  Config.Get_Property ("user"),
+                                  Config.Get_Property ("password"));
+            end if;
+
+            --  And now create the tables by using the SQL script.
+            Create_Mysql_Tables (Schema_Path, Config);
+         end if;
+      end;
+   end Create_Database;
 
    --  ------------------------------
    --  Initialize the Mysql driver.
