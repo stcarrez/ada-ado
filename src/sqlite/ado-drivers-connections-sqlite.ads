@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 with Sqlite3_H;
-with Interfaces.C;
 package ADO.Drivers.Connections.Sqlite is
 
    subtype Sqlite3 is Sqlite3_H.sqlite3;
@@ -86,6 +85,13 @@ private
    overriding
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
+
+   --  Create the database and initialize it with the schema SQL file.
+   overriding
+   procedure Create_Database (Database    : in Database_Connection;
+                              Config      : in Configs.Configuration'Class;
+                              Schema_Path : in String;
+                              Messages    : out Util.Strings.Vectors.Vector);
 
    --  Closes the database connection
    overriding
