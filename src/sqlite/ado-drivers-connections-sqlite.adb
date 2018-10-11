@@ -132,9 +132,18 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    overriding
    procedure Close (Database : in out Database_Connection) is
-      Result : int;
    begin
       Log.Info ("Close connection {0}", Database.Name);
+   end Close;
+
+   --  ------------------------------
+   --  Releases the sqlite connection if it is open
+   --  ------------------------------
+   overriding
+   procedure Finalize (Database : in out Database_Connection) is
+      Result : int;
+   begin
+      Log.Debug ("Release database connection");
 
       if Database.Server /= null then
          Result := Sqlite3_H.sqlite3_close_v2 (Database.Server);
@@ -148,19 +157,6 @@ package body ADO.Drivers.Connections.Sqlite is
          end if;
          Database.Server := null;
       end if;
-   end Close;
-
-   --  ------------------------------
-   --  Releases the sqlite connection if it is open
-   --  ------------------------------
-   overriding
-   procedure Finalize (Database : in out Database_Connection) is
-   begin
-      Log.Debug ("Release database connection");
-
-      if Database.Server /= null then
-         Database.Close;
-      end if;
    end Finalize;
 
    --  ------------------------------
@@ -173,84 +169,112 @@ package body ADO.Drivers.Connections.Sqlite is
       ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
 
+   protected body Sqlite_Connections is
+
+      procedure Open (Config : in Configuration'Class;
+                      Result : in out Ref.Ref'Class) is
+         use Strings;
+
+         URI : constant String := Config.Get_URI;
+         Pos : Database_List.Cursor := Database_List.First (List);
+         C   : Database_Connection_Access;
+      begin
+         --  Look first in the database list.
+         while Database_List.Has_Element (Pos) loop
+            C := Database_Connection'Class (Database_List.Element (Pos).Value.all)'Access;
+            if C.URI = URI then
+               Result := Ref.Ref'Class (Database_List.Element (Pos));
+               return;
+            end if;
+            Database_List.Next (Pos);
+         end loop;
+
+         --  Now we can open a new database connection.
+         declare
+            Name     : constant String := Config.Get_Database;
+            Filename : Strings.chars_ptr;
+            Status   : int;
+            Handle   : aliased access Sqlite3;
+            Flags    : constant int
+              := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
+         begin
+            Filename := Strings.New_String (Name);
+            Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Address,
+                                                 Flags,
+                                                 Strings.Null_Ptr);
+
+            Strings.Free (Filename);
+            if Status /= Sqlite3_H.SQLITE_OK then
+               declare
+                  Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Status);
+                  Msg   : constant String := Strings.Value (Error);
+               begin
+                  Log.Error ("Cannot open SQLite database: {0}", Msg);
+                  raise ADO.Configs.Connection_Error with "Cannot open database: " & Msg;
+               end;
+            end if;
+
+            declare
+               Database : constant Database_Connection_Access := new Database_Connection;
+
+               procedure Configure (Name : in String;
+                                    Item : in Util.Properties.Value);
+               function Escape (Value : in Util.Properties.Value) return String;
+
+               function Escape (Value : in Util.Properties.Value) return String is
+                  S : constant String := Util.Properties.To_String (Value);
+               begin
+                  if S'Length > 0 and then S (S'First) >= '0' and then S (S'First) <= '9' then
+                     return S;
+                  elsif S'Length > 0 and then S (S'First) = ''' then
+                     return S;
+                  else
+                     return "'" & S & "'";
+                  end if;
+               end Escape;
+
+               procedure Configure (Name : in String;
+                                    Item : in Util.Properties.Value) is
+                  SQL : constant String := "PRAGMA " & Name & "=" & Escape (Item);
+               begin
+                  if Util.Strings.Index (Name, '.') = 0 then
+                     Log.Info ("Configure database with {0}", SQL);
+                     ADO.Statements.Sqlite.Execute (Database.Server, SQL);
+                  end if;
+
+               exception
+                  when SQL_Error =>
+                     null;
+               end Configure;
+
+            begin
+               Database.Server := Handle;
+               Database.Name   := To_Unbounded_String (Config.Get_Database);
+               Database.URI    := To_Unbounded_String (URI);
+               Result := Ref.Create (Database.all'Access);
+
+               Database_List.Prepend (Container => List, New_Item => Ref.Ref (Result));
+
+               --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
+               --  Typical configuration includes:
+               --    synchronous=OFF
+               --    temp_store=MEMORY
+               --    encoding='UTF-8'
+               Config.Iterate (Process => Configure'Access);
+            end;
+         end;
+      end Open;
+
+   end Sqlite_Connections;
+
    --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is
-      pragma Unreferenced (D);
-      use Strings;
-
-      Name     : constant String := Config.Get_Database;
-      Filename : Strings.chars_ptr;
-      Status   : int;
-      Handle   : aliased access Sqlite3;
-      Flags    : constant int := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
    begin
-      Log.Info ("Opening database {0}", Name);
-
-      Filename := Strings.New_String (Name);
-      Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Address,
-                                           Flags,
-                                           Strings.Null_Ptr);
-
-      Strings.Free (Filename);
-      if Status /= Sqlite3_H.SQLITE_OK then
-         declare
-            Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Status);
-            Msg   : constant String := Strings.Value (Error);
-         begin
-            Log.Error ("Cannot open SQLite database: {0}", Msg);
-            raise ADO.Configs.Connection_Error with "Cannot open database: " & Msg;
-         end;
-      end if;
-
-      declare
-         Database : constant Database_Connection_Access := new Database_Connection;
-
-         procedure Configure (Name : in String;
-                              Item : in Util.Properties.Value);
-         function Escape (Value : in Util.Properties.Value) return String;
-
-         function Escape (Value : in Util.Properties.Value) return String is
-            S : constant String := Util.Properties.To_String (Value);
-         begin
-            if S'Length > 0 and then S (S'First) >= '0' and then S (S'First) <= '9' then
-               return S;
-            elsif S'Length > 0 and then S (S'First) = ''' then
-               return S;
-            else
-               return "'" & S & "'";
-            end if;
-         end Escape;
-
-         procedure Configure (Name : in String;
-                              Item : in Util.Properties.Value) is
-            SQL : constant String := "PRAGMA " & Name & "=" & Escape (Item);
-         begin
-            if Util.Strings.Index (Name, '.') = 0 then
-               Log.Info ("Configure database with {0}", SQL);
-               ADO.Statements.Sqlite.Execute (Database.Server, SQL);
-            end if;
-
-         exception
-            when SQL_Error =>
-               null;
-         end Configure;
-
-      begin
-         Database.Server := Handle;
-         Database.Name   := To_Unbounded_String (Config.Get_Database);
-         Result := Ref.Create (Database.all'Access);
-
-         --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
-         --  Typical configuration includes:
-         --    synchronous=OFF
-         --    temp_store=MEMORY
-         --    encoding='UTF-8'
-         Config.Iterate (Process => Configure'Access);
-      end;
+      D.Map.Open (Config, Result);
    end Create_Connection;
 
    --  ------------------------------
@@ -300,5 +324,15 @@ package body ADO.Drivers.Connections.Sqlite is
          Register (Driver'Access);
       end if;
    end Initialize;
+
+   --  ------------------------------
+   --  Deletes the SQLite driver.
+   --  ------------------------------
+   overriding
+   procedure Finalize (D : in out Sqlite_Driver) is
+      pragma Unreferenced (D);
+   begin
+      Log.Debug ("Deleting the sqlite driver");
+   end Finalize;
 
 end ADO.Drivers.Connections.Sqlite;
