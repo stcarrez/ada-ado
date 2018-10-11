@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,7 +125,7 @@ package body ADO.Drivers.Connections is
       Addr   : System.Address;
 
    begin
-      Log.Info ("Loading driver {0}", Lib);
+      Log.Debug ("Loading driver {0}", Lib);
       Handle := Util.Systems.DLLs.Load (Lib);
       Addr := Util.Systems.DLLs.Get_Symbol (Handle, Symbol);
 
@@ -134,6 +134,7 @@ package body ADO.Drivers.Connections is
          pragma Import (C, Init);
          for Init'Address use Addr;
       begin
+         Log.Info ("Initialising driver {0}", Lib);
          Init;
       end;
    exception
@@ -152,7 +153,11 @@ package body ADO.Drivers.Connections is
    --  ------------------------------
    function Get_Driver (Name : in String) return Driver_Access is
    begin
-      Log.Info ("Get driver {0}", Name);
+      Log.Debug ("Get driver {0}", Name);
+
+      if Name'Length = 0 then
+         return null;
+      end if;
 
       for Retry in 0 .. 2 loop
          if Retry = 1 then
