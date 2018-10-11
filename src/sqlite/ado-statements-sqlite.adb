@@ -115,6 +115,7 @@ package body ADO.Statements.Sqlite is
    --  Check for an error after executing a sqlite statement.
    --  ------------------------------
    procedure Check_Error (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                          SQL        : in String;
                           Result     : in int) is
    begin
       if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
@@ -122,6 +123,9 @@ package body ADO.Statements.Sqlite is
             Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
             Msg   : constant String := Strings.Value (Error);
          begin
+            if SQL'Length > 0 then
+               Log.Error ("Query failed: '{0}'", SQL);
+            end if;
             Log.Error ("Error {0}: {1}", int'Image (Result), Msg);
             raise ADO.Statements.SQL_Error with "SQL error: " & Msg;
          end;
@@ -143,7 +147,7 @@ package body ADO.Statements.Sqlite is
                                               pzTail => System.Null_Address);
       Strings.Free (ZSql);
       if Result /= Sqlite3_H.SQLITE_OK then
-         Check_Error (Connection, Result);
+         Check_Error (Connection, SQL, Result);
       end if;
 
       return Handle;
@@ -162,7 +166,7 @@ package body ADO.Statements.Sqlite is
 
       Res := Sqlite3_H.sqlite3_step (Handle);
       Release_Stmt (Connection, Handle);
-      Check_Error (Connection, Res);
+      Check_Error (Connection, SQL, Res);
    end Execute;
 
    --  ------------------------------
@@ -173,7 +177,7 @@ package body ADO.Statements.Sqlite is
       Result : int;
    begin
       Result := Sqlite3_H.sqlite3_finalize (Stmt);
-      Check_Error (Connection, Result);
+      Check_Error (Connection, "", Result);
    end Release_Stmt;
 
    --  ------------------------------
@@ -210,11 +214,11 @@ package body ADO.Statements.Sqlite is
 
          Res := Sqlite3_H.sqlite3_step (Handle);
          Release_Stmt (Stmt.Connection, Handle);
-         Check_Error (Stmt.Connection, Res);
+         Check_Error (Stmt.Connection, Sql_Query, Res);
 
          Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
          if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
-            Log.Debug ("Deleted {0} rows", Natural'Image (Result));
+            Log.Debug ("Deleted{0} rows", Natural'Image (Result));
          end if;
       end;
    end Execute;
@@ -280,11 +284,11 @@ package body ADO.Statements.Sqlite is
 
          Res := Sqlite3_H.sqlite3_step (Handle);
          Release_Stmt (Stmt.Connection, Handle);
-         Check_Error (Stmt.Connection, Res);
+         Check_Error (Stmt.Connection, Sql_Query, Res);
 
          Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
          if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
-            Log.Debug ("Updated {0} rows", Integer'Image (Result));
+            Log.Debug ("Updated{0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
@@ -338,11 +342,11 @@ package body ADO.Statements.Sqlite is
 
          Res := Sqlite3_H.sqlite3_step (Handle);
          Release_Stmt (Stmt.Connection, Handle);
-         Check_Error (Stmt.Connection, Res);
+         Check_Error (Stmt.Connection, Sql_Query, Res);
 
          Result := Natural (Sqlite3_H.sqlite3_changes (Stmt.Connection));
          if Log.Get_Level >= Util.Log.DEBUG_LEVEL then
-            Log.Debug ("Inserted {0} rows", Integer'Image (Result));
+            Log.Debug ("Inserted{0} rows", Integer'Image (Result));
          end if;
       end;
    end Execute;
@@ -370,13 +374,15 @@ package body ADO.Statements.Sqlite is
       Result : int;
       Handle : aliased access Sqlite3_H.sqlite3_stmt;
    begin
+      Log.Debug ("Execute: {0}", Query);
+
       Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Stmt.Connection,
                                               zSql   => Sql,
                                               nByte  => int (Query'Length + 1),
                                               ppStmt => Handle'Address,
                                               pzTail => System.Null_Address);
       Strings.Free (Sql);
-      Check_Error (Stmt.Connection, Result);
+      Check_Error (Stmt.Connection, Query, Result);
       Stmt.Stmt := Handle;
    end Prepare;
 
@@ -403,8 +409,6 @@ package body ADO.Statements.Sqlite is
       begin
          --  Execute the query
          Prepare (Query, Expanded_Query);
-
-         Log.Debug ("Execute: {0}", Expanded_Query);
 
          Result := Sqlite3_H.sqlite3_step (Query.Stmt);
          if Result = Sqlite3_H.SQLITE_ROW then
@@ -456,7 +460,7 @@ package body ADO.Statements.Sqlite is
             Query.Status := DONE;
 
          else
-            Check_Error (Query.Connection, Result);
+            Check_Error (Query.Connection, "", Result);
             Query.Status := ERROR;
          end if;
       end if;
