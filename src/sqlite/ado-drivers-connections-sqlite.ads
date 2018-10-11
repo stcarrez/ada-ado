@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Sqlite3_H;
+private with Ada.Containers.Doubly_Linked_Lists;
 package ADO.Drivers.Connections.Sqlite is
 
    subtype Sqlite3 is Sqlite3_H.sqlite3;
@@ -33,6 +34,7 @@ private
    type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
       Server : aliased access Sqlite3_H.sqlite3;
       Name   : Unbounded_String;
+      URI    : Unbounded_String;
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 
@@ -94,7 +96,22 @@ private
    overriding
    procedure Finalize (Database : in out Database_Connection);
 
-   type Sqlite_Driver is new ADO.Drivers.Connections.Driver with null record;
+   package Database_List is
+     new Ada.Containers.Doubly_Linked_Lists (Element_Type => Ref.Ref,
+                                             "=" => ADO.Drivers.Connections.Ref."=");
+
+   protected type Sqlite_Connections is
+
+      procedure Open (Config : in Configuration'Class;
+                      Result : in out Ref.Ref'Class);
+
+   private
+      List : Database_List.List;
+   end Sqlite_Connections;
+
+   type Sqlite_Driver is new ADO.Drivers.Connections.Driver with record
+      Map : Sqlite_Connections;
+   end record;
 
    --  Create a new SQLite connection using the configuration parameters.
    overriding
@@ -111,5 +128,9 @@ private
                               Config      : in Configs.Configuration'Class;
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector);
+
+   --  Deletes the SQLite driver.
+   overriding
+   procedure Finalize (D : in out Sqlite_Driver);
 
 end ADO.Drivers.Connections.Sqlite;
