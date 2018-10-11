@@ -207,6 +207,7 @@ private
 
    --  Check for an error after executing a sqlite statement.
    procedure Check_Error (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
+                          SQL        : in String;
                           Result     : in Interfaces.C.int);
 
 end ADO.Statements.Sqlite;
