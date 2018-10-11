@@ -18,6 +18,7 @@
 with ADO;
 with ADO.Drivers;
 with ADO.Sessions;
+with ADO.Objects;
 with ADO.SQL;
 with ADO.Sessions.Factory;
 with Samples.User.Model;
@@ -163,7 +164,7 @@ begin
       DB.Rollback;
 
    exception
-      when ADO.Sessions.NOT_FOUND =>
+      when ADO.Objects.NOT_FOUND =>
          Text_IO.Put_Line ("User 23 does not exist");
    end;
    Text_IO.Put_Line ("Exiting");
