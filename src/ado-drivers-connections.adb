@@ -58,12 +58,6 @@ package body ADO.Drivers.Connections is
            "Data source is not initialized: driver '" & Config.Get_Driver & "' not found";
       end if;
       Driver.Create_Connection (Config, Result);
-      if Result.Is_Null then
-         Log.Error ("Driver {0} failed to create connection {0}",
-                    Driver.Name.all, Log_URI);
-         raise ADO.Configs.Connection_Error with
-           "Data source is not initialized: driver error";
-      end if;
       Log.Info ("Created connection to '{0}' -> {1}", Log_URI, Result.Value.Ident);
 
    exception
