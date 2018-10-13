@@ -18,7 +18,6 @@
 
 package body ADO.C is
 
-   use Ada.Strings.Unbounded;
    use type Interfaces.C.Strings.chars_ptr;
 
    --  ------------------------------
