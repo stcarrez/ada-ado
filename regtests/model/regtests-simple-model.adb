@@ -25,7 +25,6 @@ package body Regtests.Simple.Model is
 
    use type ADO.Objects.Object_Record_Access;
    use type ADO.Objects.Object_Ref;
---   use type ADO.Objects.Object_Record;
 
    pragma Warnings (Off, "formal parameter * is not referenced");
 
