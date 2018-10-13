@@ -37,6 +37,12 @@ package body ADO.Parameters.Tests is
    overriding
    function Get_Identifier_Quote (D : in Dialect) return Character;
 
+   --  Append the item in the buffer escaping some characters if necessary
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in ADO.Blob_Ref);
+
    --  Test the Add_Param operation for various types.
    generic
       type T (<>) is private;
@@ -183,6 +189,45 @@ package body ADO.Parameters.Tests is
    begin
       return '`';
    end Get_Identifier_Quote;
+
+   --  ------------------------------
+   --  Append the item in the buffer escaping some characters if necessary
+   --  ------------------------------
+   overriding
+   procedure Escape_Sql (D      : in Dialect;
+                         Buffer : in out Unbounded_String;
+                         Item   : in ADO.Blob_Ref) is
+      pragma Unreferenced (D);
+
+      C    : Ada.Streams.Stream_Element;
+      Blob : constant ADO.Blob_Access := Item.Value;
+   begin
+      Append (Buffer, ''');
+      for I in Blob.Data'Range loop
+         C := Blob.Data (I);
+         case C is
+            when Character'Pos (ASCII.NUL) =>
+               Append (Buffer, '\');
+               Append (Buffer, '0');
+
+            when Character'Pos (ASCII.CR) =>
+               Append (Buffer, '\');
+               Append (Buffer, 'r');
+
+            when Character'Pos (ASCII.LF) =>
+               Append (Buffer, '\');
+               Append (Buffer, 'n');
+
+            when Character'Pos ('\') | Character'Pos (''') | Character'Pos ('"') =>
+               Append (Buffer, '\');
+               Append (Buffer, Character'Val (C));
+
+            when others =>
+               Append (Buffer, Character'Val (C));
+         end case;
+      end loop;
+      Append (Buffer, ''');
+   end Escape_Sql;
 
    --  ------------------------------
    --  Test expand SQL with parameters.
