@@ -410,6 +410,27 @@ package body ADO.Parameters.Tests is
              "SELECT * FROM user WHERE id = 1+123");
       Check ("SELECT * FROM user WHERE id = 2$G2[titi]+$test[value-1]1",
              "SELECT * FROM user WHERE id = 2+1");
+      P.Delete ("a");
+      Check ("SELECT * FROM user WHERE id = $G2[a]+$test-group[value-1]",
+             "SELECT * FROM user WHERE id = +123");
+      P.Delete ("a", Ignore => True);
+      begin
+         P.Delete ("a");
+         T.Fail ("No ADO.Caches.No_Value exception was raised by Delete");
+
+      exception
+         when ADO.Caches.No_Value =>
+            null;
+      end;
+      P.Insert ("a", 1);
+      P.Insert ("a", 3, Override => True);
+      begin
+         P.Insert ("a", 2);
+
+      exception
+         when ADO.Caches.No_Value =>
+            null;
+      end;
    end Test_Expand_With_Expander;
 
 end ADO.Parameters.Tests;
