@@ -109,7 +109,7 @@ package body ADO.Sequences.Tests is
 
       --  Erase the sequence entry used for the allocate entity table.
       declare
-         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         S : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
          D : ADO.Statements.Delete_Statement := S.Create_Statement (Sequence_Table'Access);
       begin
          D.Set_Filter ("name = :name");
