@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-c -- Support for driver implementation
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,16 +28,6 @@ package body ADO.C is
    begin
       return Result : String_Ptr do
          Result.Ptr := Strings.New_String (S);
-      end return;
-   end To_String_Ptr;
-
-   --  ------------------------------
-   --  Convert an unbounded string to a C string.
-   --  ------------------------------
-   function To_String_Ptr (S : Ada.Strings.Unbounded.Unbounded_String) return String_Ptr is
-   begin
-      return Result : String_Ptr do
-         Result.Ptr := Strings.New_String (To_String (S));
       end return;
    end To_String_Ptr;
 
