@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-c -- Support for driver implementation
---  Copyright (C) 2009, 2010, 2011, 2012 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +28,6 @@ package ADO.C is
 
    --  Convert a string to a C string.
    function To_String_Ptr (S : String) return String_Ptr;
-
-   --  Convert an unbounded string to a C string.
-   function To_String_Ptr (S : Ada.Strings.Unbounded.Unbounded_String) return String_Ptr;
 
    --  Get the C string pointer.
    function To_C (S : String_Ptr) return Interfaces.C.Strings.chars_ptr;
