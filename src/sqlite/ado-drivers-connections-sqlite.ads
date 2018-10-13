@@ -92,18 +92,21 @@ private
    overriding
    procedure Close (Database : in out Database_Connection);
 
-   --  Releases the sqlite connection if it is open
-   overriding
-   procedure Finalize (Database : in out Database_Connection);
+   type SQLite_Database is record
+      Server : aliased access Sqlite3_H.sqlite3;
+      Name   : Unbounded_String;
+      URI    : Unbounded_String;
+   end record;
 
    package Database_List is
-     new Ada.Containers.Doubly_Linked_Lists (Element_Type => Ref.Ref,
-                                             "=" => ADO.Drivers.Connections.Ref."=");
+     new Ada.Containers.Doubly_Linked_Lists (Element_Type => SQLite_Database);
 
    protected type Sqlite_Connections is
 
       procedure Open (Config : in Configuration'Class;
                       Result : in out Ref.Ref'Class);
+
+      procedure Clear;
 
    private
       List : Database_List.List;
