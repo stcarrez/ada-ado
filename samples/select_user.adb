@@ -15,9 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ADO;
 with ADO.Drivers;
-with ADO.Configs;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Statements;
@@ -69,7 +67,7 @@ begin
    end;
 
 exception
-   when E : ADO.Drivers.Database_Error | ADO.Configs.Connection_Error =>
+   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
 end Select_User;
