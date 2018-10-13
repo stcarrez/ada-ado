@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Directories;
 
 with Util.Test_Caller;
 with Util.Strings.Vectors;
@@ -232,18 +233,32 @@ package body ADO.Schemas.Tests is
    procedure Test_Create_Schema (T : in out Test) is
       use ADO.Sessions.Sources;
 
-      Msg    : Util.Strings.Vectors.Vector;
-      Cfg    : Data_Source := Data_Source (Regtests.Get_Controller);
-      Path   : constant String :=
-        "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Cfg.Get_Driver & ".sql";
+      Msg      : Util.Strings.Vectors.Vector;
+      Cfg      : Data_Source := Data_Source (Regtests.Get_Controller);
+      Driver   : constant String := Cfg.Get_Driver;
+      Database : constant String := Cfg.Get_Database;
+      Path     : constant String :=
+        "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Driver & ".sql";
 
-      pragma Unreferenced (T, Msg);
+      pragma Unreferenced (Msg);
    begin
-      Cfg.Set_Database (Cfg.Get_Database & ".test");
-      ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
-                                             Config      => Cfg,
-                                             Schema_Path => Path,
-                                             Messages    => Msg);
+      if Driver = "sqlite" then
+         if Ada.Directories.Exists (Database & ".test") then
+            Ada.Directories.Delete_File (Database & ".test");
+         end if;
+         Cfg.Set_Database (Database & ".test");
+         ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
+                                                Config      => Cfg,
+                                                Schema_Path => Path,
+                                                Messages    => Msg);
+         T.Assert (Ada.Directories.Exists (Database & ".test"),
+                   "The sqlite database was not created");
+      else
+         ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
+                                                Config      => Cfg,
+                                                Schema_Path => Path,
+                                                Messages    => Msg);
+      end if;
    end Test_Create_Schema;
 
 end ADO.Schemas.Tests;
