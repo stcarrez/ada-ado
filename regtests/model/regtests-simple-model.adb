@@ -25,7 +25,7 @@ package body Regtests.Simple.Model is
 
    use type ADO.Objects.Object_Record_Access;
    use type ADO.Objects.Object_Ref;
-   use type ADO.Objects.Object_Record;
+--   use type ADO.Objects.Object_Record;
 
    pragma Warnings (Off, "formal parameter * is not referenced");
 
@@ -119,9 +119,9 @@ package body Regtests.Simple.Model is
       Value : constant ADO.Nullable_String := Object.Get_Name;
    begin
       if Value.Is_Null then
-          return "";
+         return "";
       else
-          return Ada.Strings.Unbounded.To_String (Value.Value);
+         return Ada.Strings.Unbounded.To_String (Value.Value);
       end if;
    end Get_Name;
    function Get_Name (Object : in Allocate_Ref)
@@ -510,9 +510,9 @@ package body Regtests.Simple.Model is
       Value : constant ADO.Nullable_String := Object.Get_Name;
    begin
       if Value.Is_Null then
-          return "";
+         return "";
       else
-          return Ada.Strings.Unbounded.To_String (Value.Value);
+         return Ada.Strings.Unbounded.To_String (Value.Value);
       end if;
    end Get_Name;
    function Get_Name (Object : in User_Ref)
@@ -545,9 +545,9 @@ package body Regtests.Simple.Model is
       Value : constant ADO.Nullable_String := Object.Get_Select_Name;
    begin
       if Value.Is_Null then
-          return "";
+         return "";
       else
-          return Ada.Strings.Unbounded.To_String (Value.Value);
+         return Ada.Strings.Unbounded.To_String (Value.Value);
       end if;
    end Get_Select_Name;
    function Get_Select_Name (Object : in User_Ref)

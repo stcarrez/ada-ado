@@ -26,7 +26,7 @@ package body Regtests.Statements.Model is
 
    use type ADO.Objects.Object_Record_Access;
    use type ADO.Objects.Object_Ref;
-   use type ADO.Objects.Object_Record;
+--   use type ADO.Objects.Object_Record;
 
    pragma Warnings (Off, "formal parameter * is not referenced");
 
@@ -177,9 +177,9 @@ package body Regtests.Statements.Model is
       Value : constant ADO.Nullable_String := Object.Get_String_Value;
    begin
       if Value.Is_Null then
-          return "";
+         return "";
       else
-          return Ada.Strings.Unbounded.To_String (Value.Value);
+         return Ada.Strings.Unbounded.To_String (Value.Value);
       end if;
    end Get_String_Value;
    function Get_String_Value (Object : in Nullable_Table_Ref)
