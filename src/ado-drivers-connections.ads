@@ -103,7 +103,8 @@ package ADO.Drivers.Connections is
 
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (Config : in Configuration'Class;
-                                Result : in out Ref.Ref'Class);
+                                Result : in out Ref.Ref'Class)
+     with Post => not Result.Is_Null;
 
    --  ------------------------------
    --  Database Driver
@@ -112,7 +113,8 @@ package ADO.Drivers.Connections is
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (D      : in out Driver;
                                 Config : in Configuration'Class;
-                                Result : in out Ref.Ref'Class) is abstract;
+                                Result : in out Ref.Ref'Class) is abstract
+     with Post'Class => not Result.Is_Null;
 
    --  Create the database and initialize it with the schema SQL file.
    --  The `Admin` parameter describes the database connection with administrator access.
