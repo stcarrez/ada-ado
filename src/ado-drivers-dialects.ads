@@ -48,7 +48,7 @@ package ADO.Drivers.Dialects is
    --  Append the item in the buffer escaping some characters if necessary
    procedure Escape_Sql (D      : in Dialect;
                          Buffer : in out Unbounded_String;
-                         Item   : in ADO.Blob_Ref);
+                         Item   : in ADO.Blob_Ref) is abstract;
 
    --  Append the boolean item in the buffer.
    procedure Escape_Sql (D      : in Dialect;
