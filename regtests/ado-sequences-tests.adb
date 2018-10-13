@@ -21,11 +21,13 @@ with Util.Test_Caller;
 with ADO.Drivers;
 with ADO.Sessions;
 with ADO.SQL;
+with ADO.Statements;
 with Regtests.Simple.Model;
 
 with ADO.Sequences.Hilo;
 with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
+with ADO.Schemas;
 package body ADO.Sequences.Tests is
 
    type Test_Impl is
@@ -71,6 +73,11 @@ package body ADO.Sequences.Tests is
                        Test_Create_Factory'Access);
    end Add_Tests;
 
+   SEQUENCE_NAME : aliased constant String := "sequence";
+
+   Sequence_Table : aliased ADO.Schemas.Class_Mapping
+     := ADO.Schemas.Class_Mapping '(Count => 0, Table => SEQUENCE_NAME'Access, Members => <>);
+
    --  Test creation of the sequence factory.
    --  This test revealed a memory leak if we failed to create a database connection.
    procedure Test_Create_Factory (T : in out Test) is
@@ -95,6 +102,27 @@ package body ADO.Sequences.Tests is
       Controller.Set_Connection (ADO.Drivers.Get_Config ("test.database"));
       Factory.Create (Controller);
       for I in 1 .. 1_000 loop
+         Seq_Factory.Allocate (Obj);
+         T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
+         Prev_Id := Obj.Get_Key_Value;
+      end loop;
+
+      --  Erase the sequence entry used for the allocate entity table.
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         D : ADO.Statements.Delete_Statement := S.Create_Statement (Sequence_Table'Access);
+      begin
+         D.Set_Filter ("name = :name");
+         D.Bind_Param ("name", String '("allocate"));
+         D.Execute;
+
+         --  Also delete all allocate items.
+         D := S.Create_Statement (Regtests.Simple.Model.ALLOCATE_TABLE);
+         D.Execute;
+      end;
+
+      --  Create new objects.  This forces the creation of a new entry in the sequence table.
+      for I in 1 .. 1_00 loop
          Seq_Factory.Allocate (Obj);
          T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
          Prev_Id := Obj.Get_Key_Value;
