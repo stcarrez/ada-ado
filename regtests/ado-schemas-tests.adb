@@ -21,6 +21,7 @@ with Util.Test_Caller;
 with Util.Strings.Vectors;
 with Util.Strings.Transforms;
 
+with ADO.Parameters;
 with ADO.Schemas.Databases;
 with ADO.Sessions.Sources;
 with ADO.Schemas.Entities;
@@ -90,6 +91,7 @@ package body ADO.Schemas.Tests is
 --           Assert_Equals (T, Integer (T1.Get_Id), Integer (T5),
 --                          "Invalid entity type for user_table");
       end;
+
    end Test_Find_Entity_Type;
 
    --  ------------------------------
@@ -105,6 +107,19 @@ package body ADO.Schemas.Tests is
          R := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.USER_TABLE);
          T.Assert (False, "Find_Entity_Type did not raise the No_Entity_Type exception");
+
+      exception
+         when ADO.Schemas.Entities.No_Entity_Type =>
+            null;
+      end;
+
+      declare
+         P : ADO.Parameters.Parameter
+           := ADO.Parameters.Parameter'(T => ADO.Parameters.T_INTEGER, Num => 0,
+                                        Len => 0, Value_Len => 0, Position => 0, Name => "");
+      begin
+         P := C.Expand ("something");
+         T.Assert (False, "Expand did not raise the No_Entity_Type exception");
 
       exception
          when ADO.Schemas.Entities.No_Entity_Type =>
