@@ -19,7 +19,6 @@
 with Interfaces.C;
 with Interfaces.C.Strings;
 with Ada.Finalization;
-with Ada.Strings.Unbounded;
 with Ada.Unchecked_Conversion;
 with System;
 package ADO.C is
