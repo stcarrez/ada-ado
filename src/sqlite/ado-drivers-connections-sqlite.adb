@@ -134,30 +134,8 @@ package body ADO.Drivers.Connections.Sqlite is
    procedure Close (Database : in out Database_Connection) is
    begin
       Log.Info ("Close connection {0}", Database.Name);
+      Database.Server := null;
    end Close;
-
-   --  ------------------------------
-   --  Releases the sqlite connection if it is open
-   --  ------------------------------
-   overriding
-   procedure Finalize (Database : in out Database_Connection) is
-      Result : int;
-   begin
-      Log.Debug ("Release database connection");
-
-      if Database.Server /= null then
-         Result := Sqlite3_H.sqlite3_close_v2 (Database.Server);
-         if Result /= Sqlite3_H.SQLITE_OK then
-            declare
-               Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Result);
-               Msg   : constant String := Strings.Value (Error);
-            begin
-               Log.Error ("Cannot close database {0}: {1}", To_String (Database.Name), Msg);
-            end;
-         end if;
-         Database.Server := null;
-      end if;
-   end Finalize;
 
    --  ------------------------------
    --  Load the database schema definition for the current database.
@@ -175,15 +153,20 @@ package body ADO.Drivers.Connections.Sqlite is
                       Result : in out Ref.Ref'Class) is
          use Strings;
 
-         URI : constant String := Config.Get_URI;
-         Pos : Database_List.Cursor := Database_List.First (List);
-         C   : Database_Connection_Access;
+         URI      : constant String := Config.Get_URI;
+         Database : Database_Connection_Access;
+         Pos      : Database_List.Cursor := Database_List.First (List);
+         DB       : SQLite_Database;
       begin
          --  Look first in the database list.
          while Database_List.Has_Element (Pos) loop
-            C := Database_Connection'Class (Database_List.Element (Pos).Value.all)'Access;
-            if C.URI = URI then
-               Result := Ref.Ref'Class (Database_List.Element (Pos));
+            DB := Database_List.Element (Pos);
+            if DB.URI = URI then
+               Database := new Database_Connection;
+               Database.URI := DB.URI;
+               Database.Name := DB.Name;
+               Database.Server := DB.Server;
+               Result := Ref.Create (Database.all'Access);
                return;
             end if;
             Database_List.Next (Pos);
@@ -214,8 +197,8 @@ package body ADO.Drivers.Connections.Sqlite is
                end;
             end if;
 
+            Database := new Database_Connection;
             declare
-               Database : constant Database_Connection_Access := new Database_Connection;
 
                procedure Configure (Name : in String;
                                     Item : in Util.Properties.Value);
@@ -253,7 +236,10 @@ package body ADO.Drivers.Connections.Sqlite is
                Database.URI    := To_Unbounded_String (URI);
                Result := Ref.Create (Database.all'Access);
 
-               Database_List.Prepend (Container => List, New_Item => Ref.Ref (Result));
+               DB.Server := Handle;
+               DB.Name := Database.Name;
+               DB.URI := Database.URI;
+               Database_List.Prepend (Container => List, New_Item => DB);
 
                --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
                --  Typical configuration includes:
@@ -264,6 +250,27 @@ package body ADO.Drivers.Connections.Sqlite is
             end;
          end;
       end Open;
+
+      procedure Clear is
+         DB     : SQLite_Database;
+         Result : int;
+      begin
+         while not Database_List.Is_Empty (List) loop
+            DB := Database_List.First_Element (List);
+            Database_List.Delete_First (List);
+            if DB.Server /= null then
+               Result := Sqlite3_H.sqlite3_close_v2 (DB.Server);
+               if Result /= Sqlite3_H.SQLITE_OK then
+                  declare
+                     Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Result);
+                     Msg   : constant String := Strings.Value (Error);
+                  begin
+                     Log.Error ("Cannot close database {0}: {1}", To_String (DB.Name), Msg);
+                  end;
+               end if;
+            end if;
+         end loop;
+      end Clear;
 
    end Sqlite_Connections;
 
@@ -330,9 +337,9 @@ package body ADO.Drivers.Connections.Sqlite is
    --  ------------------------------
    overriding
    procedure Finalize (D : in out Sqlite_Driver) is
-      pragma Unreferenced (D);
    begin
       Log.Debug ("Deleting the sqlite driver");
+      D.Map.Clear;
    end Finalize;
 
 end ADO.Drivers.Connections.Sqlite;
