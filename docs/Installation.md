@@ -8,14 +8,14 @@ Before building ADO, you will need:
 
 * [Ada Utility Library](https://github.com/stcarrez/ada-util)
 * [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
-* Either the MySQL or SQLite development headers installed.
+* Either the PostgreSQL, MySQL or SQLite development headers installed.
 
 First get, build and install the [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
 and then get, build and install the [Ada Utility Library](https://github.com/stcarrez/ada-util).
 
 ## Database Driver Installation
 
-The MySQL and SQLite development headers and runtime are necessary for building
+The PostgreSQL, MySQL and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 
 ### Ubuntu
@@ -30,7 +30,7 @@ SQLite Development installation
 sudo apt-get install libsqlite3-dev
 ```
 
-Postgresql Development installation
+PostgreSQL Development installation
 ```
 sudo apt-get install postgresql-client libpq-dev
 ```
@@ -102,4 +102,13 @@ direction as follows:
 
 ```
 make install prefix=/opt
+```
+
+## Using
+
+To use the library in an Ada project, add the following line at the beginning of your
+GNAT project file:
+
+```
+with "ado";
 ```

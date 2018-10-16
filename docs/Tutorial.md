@@ -9,7 +9,7 @@ The ADO framework is composed of:
 
    * A code generator provided by [Dynamo](https://github.com/stcarrez/dynamo),
    * A core runtime,
-   * A set of database drivers (MySQL, SQLite).
+   * A set of database drivers (PostgreSQL, MySQL, SQLite).
 
 The application is a simple user management database which has only one table.
 

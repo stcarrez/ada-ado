@@ -2,11 +2,14 @@
 
 The Ada Database Objects is an Object Relational Mapping for the Ada05 programming language.
 It allows to map database objects into Ada records and access database content easily.
-The library supports MySQL, SQLite as databases.
+The library supports PostgreSQL, MySQL, SQLite as databases.
 Most of the concepts developed for ADO come from the Java Hibernate ORM.
 
-The ORM uses an XML mapping file or an UML model, a code generator and a runtime library for the implementation.  It provides a database driver for [MySQL](http://www.mysql.com/)
-and [SQLite](http://www.sqlite.org/).  The ORM helps your application by providing a mapping of your database
+The ORM uses an XML mapping file or an UML model, a code generator and a runtime library for
+the implementation.  It provides a database driver for [PostgreSQL](https://www.postgresql.org/),
+[MySQL](http://www.mysql.com/)
+and [SQLite](http://www.sqlite.org/).  The ORM helps your application by providing a mapping
+of your database
 tables directly in the target programming language: Ada05 in our case.  The development process is the following:
 
   * You design your database model either using a UML tool or by writing an XML description,
