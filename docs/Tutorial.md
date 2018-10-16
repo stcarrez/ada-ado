@@ -1,7 +1,7 @@
 # Tutorial
 
 This small tutorial explains how an application can access
-a database (MySQL or SQLite) to store its data by using the
+a database (PostgreSQL, MySQL or SQLite) to store its data by using the
 Ada Database Objects framework.  The framework has several similarities
 with the excellent [Hibernate](http://www.hibernate.org/) Java framework.
 
@@ -11,42 +11,123 @@ The ADO framework is composed of:
    * A core runtime,
    * A set of database drivers (PostgreSQL, MySQL, SQLite).
 
-The application is a simple user management database which has only one table.
+The tutorial application is a simple user management database which has only one table.
 
 ## Defining the data model
 
-The first step is to design the data model.  For this we will write
-a XML mapping file that describes the data table as well as how the different
-columns are mapped to an Ada type.  ADO uses (almost) the same mapping
-definition as [Hibernate](http://www.hibernate.org/).  Modeling tools such as
-[AndroMDA](http://www.andromda.org) are able to generate these XML mapping files from UML models.
+The first step is to design the data model.  You have the choice with:
+
+   * Using an UML modeling tool,
+   * Writing an XML file following the [Hibernate](http://www.hibernate.org/) description,
+   * Writing a YAML description according to the [Doctrine](https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html) mapping.
+
+In all cases, the model describes the data table as well as how the different
+columns are mapped to an Ada type.  The model can also describe the relations between
+tables.
 
 Let's define a mapping for a simple `user` table and save it in `db/user.hbm.xml`:
 ```
-<hibernate-mapping>
-  <class name="Samples.User.Model.User" table="user">
-    <comment>Record representing a user</comment>
-    <id name="id" type="ADO.Identifier">
-       <comment>the user identifier</comment>
-       <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
-       <generator class="sequence"/>
-    </id>
-    <version name="version" type="int" column="object_version"/>
-    <property name="name" type="String">
-        <comment>the user name</comment>
-        <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-    </property>
-    <property name="date" type="String">
-        <comment>the user registration date</comment>
-        <column name="DATE" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
-    </property>
-  </class>
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping default-cascade="none">
+    <class name="Samples.User.Model.User"
+           table="user" dynamic-insert="true" dynamic-update="true">
+        <comment>Record representing a user</comment>
+        <id name="id" type="ADO.Identifier" unsaved-value="0">
+            <comment>the user identifier</comment>
+            <column name="id" not-null="true" unique="true" sql-type="BIGINT"/>
+            <generator class="sequence"/>
+        </id>
+        <version name="version" type="int" column="object_version" not-null="true"/>
+        <property name="name" type="String">
+            <comment>the user name</comment>
+            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="email" type="String" unique='true'>
+            <comment>the user email</comment>
+            <column name="email" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="date" type="String">
+            <comment>the user registration date</comment>
+            <column name="date" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="description" type="String">
+            <comment>the user description</comment>
+            <column name="description" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+        </property>
+        <property name="status" type="Integer">
+            <comment>the user status</comment>
+            <column name="status" not-null="true" unique="false" sql-type="Integer"/>
+        </property>
+    </class>
 </hibernate-mapping>
 ```
 
-This mapping indicates that the database table `user` is represented by the `User` tagged record
-declared in the `Samples.User.Model` package.  The table contains a `name` and a `date` column members
-which are both a string.  The table primary key is represented by the `id` column.
+The YAML description is sometimes easier to understand and write
+and the content could be saved in the `db/users.yaml` file.
+```
+Samples.User.Model.User:
+  type: entity
+  table: user
+  description: Record representing a user
+  hasList: true
+  indexes: 
+  id: 
+    id:
+      type: identifier
+      column: id
+      not-null: true
+      unique: true
+      description: the user identifier
+  fields: 
+    version:
+      type: integer
+      column: object_version
+      not-null: true
+      version: true
+      unique: false
+      description: 
+    name:
+      type: string
+      length: 255
+      column: name
+      not-null: true
+      unique: false
+      description: the user name
+    email:
+      type: string
+      length: 255
+      column: email
+      not-null: true
+      unique: false
+      description: the user email
+    date:
+      type: string
+      length: 255
+      column: date
+      not-null: true
+      unique: false
+      description: the user registration date
+    description:
+      type: string
+      length: 255
+      column: description
+      not-null: true
+      unique: false
+      description: the user description
+    status:
+      type: integer
+      column: status
+      not-null: true
+      unique: false
+      description: the user status
+```
+
+These XML and YAML mapping indicate that the database table `user` is represented by the `User`
+tagged record declared in the `Samples.User.Model` package.  The table contains a `name`,
+`description`, `email` and a `date` column members
+which are a string.  It also has a `status` column which is an integer.
+The table primary key is represented by the `id` column.  The `version` column is
+a special column used by the optimistic locking.
 
 ## Generating the Ada model
 
@@ -93,6 +174,12 @@ And to use an SQLite database, you could use:
 
 ```
    ADO.Sessions.Factory.Create (Factory, "sqlite:///tests.db");
+```
+
+For a PostgreSQL database, the factory would look like:
+
+```
+   ADO.Sessions.Factory.Create (Factory, "postgresql:///localhost:5432/ado_test?user=test");
 ```
 
 Factory initialization is done once when an application starts.  The same
