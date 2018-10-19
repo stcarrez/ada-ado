@@ -5,29 +5,29 @@
         <comment>Record representing a user</comment>
         <id name="id" type="ADO.Identifier" unsaved-value="0">
             <comment>the user identifier</comment>
-            <column name="ID" not-null="true" unique="true" sql-type="BIGINT"/>
+            <column name="id" not-null="true" unique="true" sql-type="BIGINT"/>
             <generator class="sequence"/>
         </id>
         <version name="version" type="int" column="object_version" not-null="true"/>
         <property name="name" type="String">
             <comment>the user name</comment>
-            <column name="NAME" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
         </property>
         <property name="email" type="String" unique='true'>
             <comment>the user email</comment>
-            <column name="EMAIL" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="email" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
         </property>
         <property name="date" type="String">
             <comment>the user registration date</comment>
-            <column name="DATE" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="date" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
         </property>
         <property name="description" type="String">
             <comment>the user description</comment>
-            <column name="DESCRIPTION" not-null="false" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="description" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
         </property>
         <property name="status" type="Integer">
             <comment>the user status</comment>
-            <column name="STATUS" not-null="true" unique="false" sql-type="Integer"/>
+            <column name="status" not-null="true" unique="false" sql-type="Integer"/>
         </property>
     </class>
 
