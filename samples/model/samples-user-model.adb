@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,8 @@ package body Samples.User.Model is
 
    use type ADO.Objects.Object_Record_Access;
    use type ADO.Objects.Object_Ref;
-   use type ADO.Objects.Object_Record;
+
+   pragma Warnings (Off, "formal parameter * is not referenced");
 
    function User_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key is
       Result : ADO.Objects.Object_Key (Of_Type  => ADO.Objects.KEY_INTEGER,
@@ -382,32 +383,32 @@ package body Samples.User.Model is
          := Session.Create_Statement (USER_DEF'Access);
    begin
       if Object.Is_Modified (1) then
-         Stmt.Save_Field (Name  => COL_0_1_NAME, --  ID
+         Stmt.Save_Field (Name  => COL_0_1_NAME, --  id
                           Value => Object.Get_Key);
          Object.Clear_Modified (1);
       end if;
       if Object.Is_Modified (3) then
-         Stmt.Save_Field (Name  => COL_2_1_NAME, --  NAME
+         Stmt.Save_Field (Name  => COL_2_1_NAME, --  name
                           Value => Object.Name);
          Object.Clear_Modified (3);
       end if;
       if Object.Is_Modified (4) then
-         Stmt.Save_Field (Name  => COL_3_1_NAME, --  EMAIL
+         Stmt.Save_Field (Name  => COL_3_1_NAME, --  email
                           Value => Object.Email);
          Object.Clear_Modified (4);
       end if;
       if Object.Is_Modified (5) then
-         Stmt.Save_Field (Name  => COL_4_1_NAME, --  DATE
+         Stmt.Save_Field (Name  => COL_4_1_NAME, --  date
                           Value => Object.Date);
          Object.Clear_Modified (5);
       end if;
       if Object.Is_Modified (6) then
-         Stmt.Save_Field (Name  => COL_5_1_NAME, --  DESCRIPTION
+         Stmt.Save_Field (Name  => COL_5_1_NAME, --  description
                           Value => Object.Description);
          Object.Clear_Modified (6);
       end if;
       if Object.Is_Modified (7) then
-         Stmt.Save_Field (Name  => COL_6_1_NAME, --  STATUS
+         Stmt.Save_Field (Name  => COL_6_1_NAME, --  status
                           Value => Object.Status);
          Object.Clear_Modified (7);
       end if;
@@ -441,19 +442,19 @@ package body Samples.User.Model is
    begin
       Object.Version := 1;
       Session.Allocate (Id => Object);
-      Query.Save_Field (Name  => COL_0_1_NAME, --  ID
+      Query.Save_Field (Name  => COL_0_1_NAME, --  id
                         Value => Object.Get_Key);
       Query.Save_Field (Name  => COL_1_1_NAME, --  object_version
                         Value => Object.Version);
-      Query.Save_Field (Name  => COL_2_1_NAME, --  NAME
+      Query.Save_Field (Name  => COL_2_1_NAME, --  name
                         Value => Object.Name);
-      Query.Save_Field (Name  => COL_3_1_NAME, --  EMAIL
+      Query.Save_Field (Name  => COL_3_1_NAME, --  email
                         Value => Object.Email);
-      Query.Save_Field (Name  => COL_4_1_NAME, --  DATE
+      Query.Save_Field (Name  => COL_4_1_NAME, --  date
                         Value => Object.Date);
-      Query.Save_Field (Name  => COL_5_1_NAME, --  DESCRIPTION
+      Query.Save_Field (Name  => COL_5_1_NAME, --  description
                         Value => Object.Description);
-      Query.Save_Field (Name  => COL_6_1_NAME, --  STATUS
+      Query.Save_Field (Name  => COL_6_1_NAME, --  status
                         Value => Object.Status);
       Query.Execute (Result);
       if Result /= 1 then
@@ -478,12 +479,13 @@ package body Samples.User.Model is
    overriding
    function Get_Value (From : in User_Ref;
                        Name : in String) return Util.Beans.Objects.Object is
-      Obj  : constant ADO.Objects.Object_Record_Access := From.Get_Load_Object;
+      Obj  : ADO.Objects.Object_Record_Access;
       Impl : access User_Impl;
    begin
-      if Obj = null then
+      if From.Is_Null then
          return Util.Beans.Objects.Null_Object;
       end if;
+      Obj := From.Get_Load_Object;
       Impl := User_Impl (Obj.all)'Access;
       if Name = "id" then
          return ADO.Objects.To_Object (Impl.Get_Key);
@@ -598,7 +600,7 @@ package body Samples.User.Model is
 
       Stmt : ADO.Statements.Query_Statement
           := Session.Create_Statement (Context);
-      Pos  : Natural := 0;
+      Pos  : Positive := 1;
       procedure Read (Into : in out User_Info) is
       begin
          Into.Id := Stmt.Get_Identifier (0);

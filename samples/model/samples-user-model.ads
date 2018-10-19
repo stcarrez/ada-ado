@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-pragma Warnings (Off, "unit * is not referenced");
+pragma Warnings (Off);
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.Statements;
@@ -32,8 +32,11 @@ with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded;
 with Util.Beans.Objects;
 with Util.Beans.Basic.Lists;
-pragma Warnings (On, "unit * is not referenced");
+pragma Warnings (On);
 package Samples.User.Model is
+
+   pragma Style_Checks ("-mr");
+
    type User_Ref is new ADO.Objects.Object_Ref with null record;
 
    --  --------------------
@@ -224,13 +227,13 @@ package Samples.User.Model is
 
 private
    USER_NAME : aliased constant String := "user";
-   COL_0_1_NAME : aliased constant String := "ID";
+   COL_0_1_NAME : aliased constant String := "id";
    COL_1_1_NAME : aliased constant String := "object_version";
-   COL_2_1_NAME : aliased constant String := "NAME";
-   COL_3_1_NAME : aliased constant String := "EMAIL";
-   COL_4_1_NAME : aliased constant String := "DATE";
-   COL_5_1_NAME : aliased constant String := "DESCRIPTION";
-   COL_6_1_NAME : aliased constant String := "STATUS";
+   COL_2_1_NAME : aliased constant String := "name";
+   COL_3_1_NAME : aliased constant String := "email";
+   COL_4_1_NAME : aliased constant String := "date";
+   COL_5_1_NAME : aliased constant String := "description";
+   COL_6_1_NAME : aliased constant String := "status";
 
    USER_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 7,
@@ -249,7 +252,7 @@ private
       := USER_DEF'Access;
 
    Null_User : constant User_Ref
-      := User_Ref'(ADO.Objects.Object_Ref with others => <>);
+      := User_Ref'(ADO.Objects.Object_Ref with null record);
 
    type User_Impl is
       new ADO.Objects.Object_Record (Key_Type => ADO.Objects.KEY_INTEGER,
