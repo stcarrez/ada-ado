@@ -43,6 +43,7 @@ limited with ADO.Schemas.Entities;
 --  between the two sessions is provided for the support of database replications with
 --  databases such as MySQL.
 --
+--  @include ado-drivers.ads
 --  @include ado-sessions-sources.ads
 --  @include ado-sessions-factory.ads
 --  @include ado-caches.ads
