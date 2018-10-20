@@ -29,6 +29,9 @@ package ADO.Configs is
    --  loaded when the database configuration is setup.
    QUERY_LOAD_CONFIG  : constant String := "ado.queries.load";
 
+   --  Configuration property to enable or disable the dynamic load of database driver.
+   DYNAMIC_DRIVER_LOAD : constant String := "ado.drivers.load";
+
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
 
