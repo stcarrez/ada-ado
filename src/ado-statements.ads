@@ -49,13 +49,13 @@ private with Interfaces.C.Strings;
 --
 --  @include ado-parameters.ads
 --
---  == Query Statement ==
+--  == Query Statements ==
 --  The database query statement is represented by the `Query_Statement` type.
 --  The `Create_Statement` operation is provided on the `Session` type
 --  and it gets the SQL to execute as parameter.  For example:
 --
 --    Stmt : ADO.Statements.Query_Statement := Session.Create_Statement
---              ("select * from user where name = :name");
+--              ("SELECT * FROM user WHERE name = :name");
 --
 --  After the creation of the query statement, the parameters for the SQL query are provided
 --  by using either the `Bind_Param` or `Add_Param` procedures as follows:
