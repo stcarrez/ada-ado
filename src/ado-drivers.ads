@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +18,55 @@
 
 with Util.Properties;
 
---  = Database Drivers ==
---  The <b>ADO.Drivers</b> package represents the database driver that will create
---  database connections and provide the database specific implementation.  The driver
---  is either statically linked to the application and can be loaded dynamically if it was
---  built as a shared library.  For a dynamic load, the driver shared library name must be
---  prefixed by <b>libada_ado_</b>.  For example, for a <tt>mysql</tt> driver, the shared
---  library name is <tt>libada_ado_mysql.so</tt>.
+--  == Database Drivers ==
+--  Database drivers provide operations to access the database.  These operations are
+--  specific to the database type and the `ADO.Drivers` package among others provide
+--  an abstraction that allows to make the different databases look like they have almost
+--  the same interface.
 --
---  == Initialization ==
---  The <b>ADO</b> runtime must be initialized by calling one of the <b>Initialize</b> operation.
---  A property file contains the configuration for the database drivers and the database
---  connection properties.
+--  A database driver exists for SQLite, MySQL and PostgreSQL. The driver
+--  is either statically linked to the application or it can be loaded dynamically if it was
+--  built as a shared library.  For a dynamic load, the driver shared library name must be
+--  prefixed by `libada_ado_`.  For example, for a `mysql` driver, the shared
+--  library name is `libada_ado_mysql.so`.
+--
+--  | Driver name | Database       |
+--  | ----------- | ---------      |
+--  | mysql       | MySQL, MariaDB |
+--  | sqlite      | SQLite         |
+--  | postgresql  | PostgreSQL     |
+--
+--  The database drivers are initialized automatically but in some cases, you may want
+--  to control some database driver configuration parameter.  In that case,
+--  the initialization must be done only once before creating a session
+--  factory and getting a database connection.  The initialization can be made using
+--  a property file which contains the configuration for the database drivers and
+--  the database connection properties.  For such initialization, you will have to
+--  call one of the `Initialize` operation from the `ADO.Drivers` package.
 --
 --    ADO.Drivers.Initialize ("db.properties");
 --
---  Once initialized, a configuration property can be retrieved by using the <tt>Get_Config</tt>
+--  The set of configuration properties can be set programatically and passed to the
+--  `Initialize` operation.
+--
+--    Config : Util.Properties.Manager;
+--    ...
+--      Config.Set ("ado.database", "sqlite:///mydatabase.db");
+--      Config.Set ("ado.queries.path", ".;db");
+--      ADO.Drivers.Initialize (Config);
+--
+--  Once initialized, a configuration property can be retrieved by using the `Get_Config`
 --  operation.
 --
 --    URI : constant String := ADO.Drivers.Get_Config ("ado.database");
 --
+--  Dynamic loading of database drivers is disabled by default for security reasons and
+--  it can be enabled by setting the following property in the configuration file:
+--
+--    ado.drivers.load=true
+--
+--  Dynamic loading is triggered when a database connection string refers to a database
+--  driver which is not known.
 package ADO.Drivers is
 
    use Ada.Strings.Unbounded;
