@@ -2,7 +2,7 @@
     <description>
       Get the list of users (compact form).
     </description>
-    <class name="Samples.User.Model.User_Info" bean="yes">
+    <class name="Samples.User.Model.User_Info" bean="no">
         <property type='Identifier' name="id">
             <comment>the user identifier.</comment>
         </property>
