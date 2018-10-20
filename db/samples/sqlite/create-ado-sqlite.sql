@@ -1,3 +1,4 @@
+pragma synchronous=OFF;
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
 /* Entity types */
@@ -25,19 +26,19 @@ INSERT INTO entity_type (name) VALUES ("sequence");
 /* Record representing a user */
 CREATE TABLE user (
   /* the user identifier */
-  `ID` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL,
   /*  */
-  `object_version` int NOT NULL,
+  `object_version` INTEGER NOT NULL,
   /* the user name */
-  `NAME` VARCHAR(256) ,
+  `name` VARCHAR(256) NOT NULL,
   /* the user email */
-  `EMAIL` VARCHAR(256) UNIQUE ,
+  `email` VARCHAR(256) UNIQUE NOT NULL,
   /* the user registration date */
-  `DATE` VARCHAR(256) ,
+  `date` VARCHAR(256) NOT NULL,
   /* the user description */
-  `DESCRIPTION` VARCHAR(256) ,
+  `description` VARCHAR(256) NOT NULL,
   /* the user status */
-  `STATUS` Integer NOT NULL,
-  PRIMARY KEY (`ID`)
+  `status` INTEGER NOT NULL,
+  PRIMARY KEY (`id`)
 );
 INSERT INTO entity_type (name) VALUES ("user");
