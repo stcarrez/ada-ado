@@ -129,10 +129,12 @@ which are a string.  It also has a `status` column which is an integer.
 The table primary key is represented by the `id` column.  The `version` column is
 a special column used by the optimistic locking.
 
-## Generating the Ada model
+## Generating the Ada model and SQL schema
 
 The [Dynamo](https://github.com/stcarrez/dynamo) code generator is then used
 to generate the package and Ada records that represent our data model.
+The generator also generates the database SQL schema so that tables can be
+created easily in the database.
 
 ```
 dynamo generate db
@@ -143,6 +145,15 @@ The generator will build the package specification and body for
 clear that these files are model files that are generated.  The database table `user` is represented
 by the Ada tagged record `User_Ref`.  The record members are not visible and to access the attributes
 it is necessary to use getter or setter operations.
+
+The SQL files are generated for every supported database in the `db/mysql`,
+`db/sqlite` and `db/postgresql` directories.  The generator generates two SQL files
+in each directory:
+
+* A first SQL file that allows to create the tables in the database.
+  The file name uses the pattern `create-`*name*-*driver*.
+* A second SQL file that contains `DROP` statements to erase the database tables.
+  The file name uses the pattern `drop-`*name*-*driver*.
 
 ## Getting a Database Connection
 
@@ -185,7 +196,7 @@ For a PostgreSQL database, the factory would look like:
 Factory initialization is done once when an application starts.  The same
 factory object can be used by multiple tasks.
 
-### Opening a Session
+## Opening a Session
 
 The session is created by using the `Get_Session` or the `Get_Master_Session`
 function of the factory.  Both function return a session object
@@ -312,7 +323,7 @@ to be mapped to an Ada record.  For this, we are going to use the `ADO.Statement
 ```
 with ADO.Statements;
    ...
-   Statement : ADO.Statements.Query_Statement := Session.Create_Statement ("select count(*) from user");
+   Statement : ADO.Statements.Query_Statement := Session.Create_Statement ("SELECT COUNT(*) FROM user");
 ```
 
 and then execute it and retrieve the result.
