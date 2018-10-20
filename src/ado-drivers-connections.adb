@@ -67,7 +67,9 @@ package body ADO.Drivers.Connections is
 
    end Create_Connection;
 
+   --  ------------------------------
    --  Get the database driver index.
+   --  ------------------------------
    function Get_Driver_Index (Database : in Database_Connection) return Driver_Index is
       Driver : constant ADO.Drivers.Connections.Driver_Access
          := Database_Connection'Class (Database).Get_Driver;
@@ -117,9 +119,13 @@ package body ADO.Drivers.Connections is
       Symbol : constant String := "ado__drivers__connections__" & Name & "__initialize";
       Handle : Util.Systems.DLLs.Handle;
       Addr   : System.Address;
-
+      Dynamic_Load : constant String := Get_Config (ADO.Configs.DYNAMIC_DRIVER_LOAD);
    begin
-      Log.Debug ("Loading driver {0}", Lib);
+      if Dynamic_Load /= "1" and Dynamic_Load /= "true" then
+         Log.Warn ("Dynamic loading of driver '{0}' is disabled", Name);
+         return;
+      end if;
+      Log.Debug ("Loading driver '{0}' from {1}", Name, Lib);
       Handle := Util.Systems.DLLs.Load (Lib);
       Addr := Util.Systems.DLLs.Get_Symbol (Handle, Symbol);
 
