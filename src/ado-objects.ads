@@ -51,14 +51,8 @@ package ADO.Objects is
 
    UPDATE_ERROR : exception;
 
-   --  The session associated with the object is missing or has expired.
-   SESSION_EXPIRED : exception;
-
    --  The object record was not found in the database.
    NOT_FOUND       : exception;
-
-   --  The object identifier could not be allocated.
-   ALLOCATE_ID_ERROR : exception;
 
    --  The object is NULL.
    NULL_ERROR : exception;
@@ -237,7 +231,7 @@ package ADO.Objects is
 
    --  Internal method to get the object record instance and make sure it is fully loaded.
    --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
-   --  database.  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  database.  Raises Session_Error if the session associated with the object is closed.
    function Get_Load_Object (Ref : in Object_Ref'Class) return Object_Record_Access;
    pragma Inline (Get_Load_Object);
 
@@ -297,7 +291,7 @@ package ADO.Objects is
    --  Release the session proxy, deleting the instance if it is no longer used.
    --  The <tt>Detach</tt> parameter controls whether the session proxy must be detached
    --  from the database session.  When set, the session proxy is no longer linked to the
-   --  database session and trying to load the lazy object will raise the SESSION_EXPIRED
+   --  database session and trying to load the lazy object will raise the Session_Error
    --  exception.
    procedure Release_Proxy (Proxy  : in out Session_Proxy_Access;
                             Detach : in Boolean := False);
@@ -418,7 +412,7 @@ private
    --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
    --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
    --  This procedure makes sure these values are loaded by invoking <b>Load</b> if necessary.
-   --  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  Raises Session_Error if the session associated with the object is closed.
    procedure Lazy_Load (Ref : in Object_Ref'Class);
 
    type Object_Key (Of_Type  : Object_Key_Type;
