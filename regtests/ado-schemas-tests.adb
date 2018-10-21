@@ -171,6 +171,7 @@ package body ADO.Schemas.Tests is
          T.Assert (Get_Type (C) = T_VARCHAR, "Invalid column type");
          T.Assert (Is_Null (C), "Column is null");
          T.Assert (not Is_Primary (C), "Column must not be a primary key");
+         Assert_Equals (T, 255, Get_Size (C), "Column has invalid size");
       end;
 
       declare
