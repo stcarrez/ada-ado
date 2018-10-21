@@ -206,9 +206,12 @@ ADO_DOC= \
   pagebreak.tex \
   ADO_Sessions.md \
   pagebreak.tex \
+  ADO_Statements.md \
+  pagebreak.tex \
+  Model.md \
   ADO_Objects.md \
   pagebreak.tex \
-  ADO_Statements.md
+  Debugging.md
 
 DOC_OPTIONS=-f markdown -o ado-book.pdf --listings --number-sections --toc
 HTML_OPTIONS=-f markdown -o ado-book.html --listings --number-sections --toc --css pandoc.css
