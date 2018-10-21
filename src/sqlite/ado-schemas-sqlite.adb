@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -97,6 +97,9 @@ package body ADO.Schemas.Sqlite is
 
          Value := Stmt.Get_Unbounded_String (3);
          Col.Is_Null := Value = "0";
+
+         Value := Stmt.Get_Unbounded_String (5);
+         Col.Is_Primary := Value = "1";
 
          Last := Col;
          Stmt.Next;
