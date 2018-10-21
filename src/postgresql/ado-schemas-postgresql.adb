@@ -86,6 +86,10 @@ package body ADO.Schemas.Postgresql is
             Table.First_Column := Col;
          end if;
 
+         if not Stmt.Is_Null (4) then
+            Col.Size := Stmt.Get_Integer (4);
+         end if;
+
          Value := Stmt.Get_Unbounded_String (2);
          Col.Col_Type := String_To_Type (To_String (Value));
 
