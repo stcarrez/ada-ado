@@ -160,6 +160,7 @@ package body ADO.Schemas.Tests is
          Assert_Equals (T, "id", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_LONG_INTEGER, "Invalid column type");
          T.Assert (not Is_Null (C), "Column is null");
+         T.Assert (Is_Primary (C), "Column must be a primary key");
       end;
 
       declare
@@ -169,6 +170,7 @@ package body ADO.Schemas.Tests is
          Assert_Equals (T, "name", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_VARCHAR, "Invalid column type");
          T.Assert (Is_Null (C), "Column is null");
+         T.Assert (not Is_Primary (C), "Column must not be a primary key");
       end;
 
       declare
