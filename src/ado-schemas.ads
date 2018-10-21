@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ package ADO.Schemas is
 
    type Class_Mapping (Count : Natural) is tagged record
       Table   : Util.Strings.Name_Access;
---        Name : Natural := 0;
       Members : Member_Names (1 .. Count);
    end record;
 
@@ -94,6 +93,9 @@ package ADO.Schemas is
 
    --  Returns true if the column can hold a binary string
    function Is_Binary (Column : Column_Definition) return Boolean;
+
+   --  Returns true if the column is a primary key.
+   function Is_Primary (Column : Column_Definition) return Boolean;
 
    --  Get the column length
    function Get_Size (Column : Column_Definition) return Natural;
@@ -192,6 +194,7 @@ private
       Is_Null     : Boolean       := False;
       Is_Binary   : Boolean       := False;
       Is_Unsigned : Boolean       := False;
+      Is_Primary  : Boolean       := False;
    end record;
 
    type Table is record
