@@ -39,13 +39,13 @@ package body ADO.Sessions.Factory is
 
    --  ------------------------------
    --  Get a read-only session from the session proxy.
-   --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
+   --  If the session has been invalidated, raise the Session_Error exception.
    --  ------------------------------
    function Get_Session (Proxy : in Session_Record_Access) return Session is
       R : Session;
    begin
       if Proxy = null then
-         raise ADO.Objects.SESSION_EXPIRED;
+         raise Session_Error;
       end if;
       R.Impl := Proxy;
       Util.Concurrent.Counters.Increment (R.Impl.Counter);
