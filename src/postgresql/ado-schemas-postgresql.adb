@@ -25,6 +25,10 @@ package body ADO.Schemas.Postgresql is
                                 Database : in String;
                                 Table    : in Table_Definition);
 
+   procedure Load_Table_Keys (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+                              Database : in String;
+                              Table    : in Table_Definition);
+
    function String_To_Type (Value : in String) return Column_Type;
 
    function String_To_Type (Value : in String) return Column_Type is
@@ -94,6 +98,43 @@ package body ADO.Schemas.Postgresql is
    end Load_Table_Schema;
 
    --  ------------------------------
+   --  Load the table definition
+   --  ------------------------------
+   procedure Load_Table_Keys (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+                              Database : in String;
+                              Table    : in Table_Definition) is
+      Name  : constant String := Get_Name (Table);
+      SQL   : constant String
+        := "SELECT column_name FROM"
+        & " information_schema.table_constraints tc, "
+        & " information_schema.key_column_usage kc "
+        & "WHERE tc.constraint_type = 'PRIMARY KEY' "
+        & " AND kc.table_name = tc.table_name "
+        & " AND kc.table_schema = tc.table_schema "
+        & " AND kc.constraint_name = tc.constraint_name "
+        & " AND tc.table_catalog = ? and tc.table_name = ?";
+      Stmt  : Query_Statement
+        := Create.Create_Statement (C.Create_Statement (SQL));
+      Col   : Column_Definition;
+   begin
+      Stmt.Add_Param (Database);
+      Stmt.Add_Param (Name);
+      Stmt.Execute;
+      while Stmt.Has_Elements loop
+         declare
+            Col_Name : constant String := Stmt.Get_String (0);
+         begin
+            Col := Find_Column (Table, Col_Name);
+            if Col /= null then
+               Col.Is_Primary := True;
+            end if;
+         end;
+
+         Stmt.Next;
+      end loop;
+   end Load_Table_Keys;
+
+   --  ------------------------------
    --  Load the database schema
    --  ------------------------------
    procedure Load_Schema (C        : in ADO.Drivers.Connections.Database_Connection'Class;
@@ -119,6 +160,7 @@ package body ADO.Schemas.Postgresql is
             Schema.Schema.First_Table := Table;
          end if;
          Load_Table_Schema (C, Database, Table);
+         Load_Table_Keys (C, Database, Table);
          Last := Table;
          Stmt.Next;
       end loop;
