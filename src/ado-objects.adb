@@ -252,7 +252,7 @@ package body ADO.Objects is
    --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
    --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
    --  This procedure makes sure these values are loaded by invoking <b>Load</b> if necessary.
-   --  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  Raises Session_Error if the session associated with the object is closed.
    --  ------------------------------
    procedure Lazy_Load (Ref : in Object_Ref'Class) is
    begin
@@ -261,10 +261,10 @@ package body ADO.Objects is
 
       elsif not Ref.Object.Is_Loaded then
          if Ref.Object.Session = null then
-            raise SESSION_EXPIRED;
+            raise ADO.Sessions.Session_Error;
          end if;
          if Ref.Object.Session.Session = null then
-            raise SESSION_EXPIRED;
+            raise ADO.Sessions.Session_Error;
          end if;
          declare
             S : ADO.Sessions.Session
@@ -278,7 +278,7 @@ package body ADO.Objects is
    --  ------------------------------
    --  Internal method to get the object record instance and make sure it is fully loaded.
    --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
-   --  database.  Raises SESSION_EXPIRED if the session associated with the object is closed.
+   --  database.  Raises Session_Error if the session associated with the object is closed.
    --  ------------------------------
    function Get_Load_Object (Ref : in Object_Ref'Class) return Object_Record_Access is
    begin
@@ -481,7 +481,7 @@ package body ADO.Objects is
    --  Release the session proxy, deleting the instance if it is no longer used.
    --  The <tt>Detach</tt> parameter controls whether the session proxy must be detached
    --  from the database session.  When set, the session proxy is no longer linked to the
-   --  database session and trying to load the lazy object will raise the SESSION_EXPIRED
+   --  database session and trying to load the lazy object will raise the Session_Error
    --  exception.
    --  ------------------------------
    procedure Release_Proxy (Proxy  : in out Session_Proxy_Access;
