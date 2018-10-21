@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,7 +77,7 @@ package ADO.Sessions.Factory is
                      URI     : in String);
 
    --  Get a read-only session from the session proxy.
-   --  If the session has been invalidated, raise the SESSION_EXPIRED exception.
+   --  If the session has been invalidated, raise the Session_Error exception.
    function Get_Session (Proxy : in Session_Record_Access) return Session;
 private
 
