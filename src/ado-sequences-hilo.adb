@@ -119,7 +119,7 @@ package body ADO.Sequences.Hilo is
          end;
       end loop;
       Log.Error ("Cannot allocate sequence range");
-      raise ADO.Objects.ALLOCATE_ID_ERROR with "Cannot allocate unique identifier";
+      raise Allocate_Error with "Cannot allocate unique identifier";
    end Allocate_Sequence;
 
 end ADO.Sequences.Hilo;
