@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,6 +43,9 @@ limited with ADO.Sessions.Factory;
 --
 --  @include ado-sequences-hilo.ads
 package ADO.Sequences is
+
+   --  Exception raised when the sequence generator fails to allocate an id.
+   Allocate_Error : exception;
 
    type Session_Factory_Access is access all ADO.Sessions.Factory.Session_Factory'Class;
 
