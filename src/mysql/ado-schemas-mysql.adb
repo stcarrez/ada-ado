@@ -103,6 +103,9 @@ package body ADO.Schemas.Mysql is
          Value := Stmt.Get_Unbounded_String (3);
          Col.Is_Null := Value = "YES";
 
+         Value := Stmt.Get_Unbounded_String (4);
+         Col.Is_Primary := Value = "PRI";
+
          Last := Col;
          Stmt.Next;
       end loop;
