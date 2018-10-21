@@ -27,6 +27,7 @@ package body ADO.Schemas.Sqlite is
                                 Table : in Table_Definition);
 
    function String_To_Type (Value : in String) return Column_Type;
+   function String_To_Length (Value : in String) return Natural;
 
    function String_To_Type (Value : in String) return Column_Type is
       Pos : Natural;
@@ -67,6 +68,25 @@ package body ADO.Schemas.Sqlite is
       return T_UNKNOWN;
    end String_To_Type;
 
+   function String_To_Length (Value : in String) return Natural is
+      First : Natural;
+      Last  : Natural;
+   begin
+      First := Ada.Strings.Fixed.Index (Value, "(");
+      if First < 0 then
+         return 0;
+      end if;
+      Last := Ada.Strings.Fixed.Index (Value , ")");
+      if Last < First then
+         return 0;
+      end if;
+      return Natural'Value (Value (First + 1 .. Last - 1));
+
+   exception
+      when Constraint_Error =>
+         return 0;
+   end String_To_Length;
+
    --  ------------------------------
    --  Load the table definition
    --  ------------------------------
@@ -92,8 +112,13 @@ package body ADO.Schemas.Sqlite is
          end if;
 
          Value := Stmt.Get_Unbounded_String (2);
-         Col.Col_Type
-           := String_To_Type (Util.Strings.Transforms.To_Lower_Case (To_String (Value)));
+         declare
+            Type_Name : constant String
+              := Util.Strings.Transforms.To_Lower_Case (To_String (Value));
+         begin
+            Col.Col_Type := String_To_Type (Type_Name);
+            Col.Size := String_To_Length (Type_Name);
+         end;
 
          Value := Stmt.Get_Unbounded_String (3);
          Col.Is_Null := Value = "0";
