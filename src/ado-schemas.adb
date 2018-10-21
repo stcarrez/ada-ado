@@ -103,6 +103,14 @@ package body ADO.Schemas is
    end Is_Binary;
 
    --  ------------------------------
+   --  Returns true if the column is a primary key.
+   --  ------------------------------
+   function Is_Primary (Column : Column_Definition) return Boolean is
+   begin
+      return Column.Is_Primary;
+   end Is_Primary;
+
+   --  ------------------------------
    --  Get the column length
    --  ------------------------------
    function Get_Size (Column : Column_Definition) return Natural is
