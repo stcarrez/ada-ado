@@ -178,9 +178,12 @@ package body ADO.Drivers.Connections.Sqlite is
             Filename : Strings.chars_ptr;
             Status   : int;
             Handle   : aliased access Sqlite3;
-            Flags    : constant int
+            Flags    : int
               := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
          begin
+            if Config.Get_Property ("create") = "1" then
+               Flags := Flags + Sqlite3_H.SQLITE_OPEN_CREATE;
+            end if;
             Filename := Strings.New_String (Name);
             Status := Sqlite3_H.sqlite3_open_v2 (Filename, Handle'Address,
                                                  Flags,
