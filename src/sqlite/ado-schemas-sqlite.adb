@@ -73,10 +73,10 @@ package body ADO.Schemas.Sqlite is
       Last  : Natural;
    begin
       First := Ada.Strings.Fixed.Index (Value, "(");
-      if First < 0 then
+      if First = 0 then
          return 0;
       end if;
-      Last := Ada.Strings.Fixed.Index (Value , ")");
+      Last := Ada.Strings.Fixed.Index (Value, ")");
       if Last < First then
          return 0;
       end if;
