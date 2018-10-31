@@ -66,6 +66,16 @@ package body ADO.Drivers is
       return Global_Config.Get (Name, Default);
    end Get_Config;
 
+   --  ------------------------------
+   --  Returns true if the global configuration property is set to true/on.
+   --  ------------------------------
+   function Is_On (Name   : in String) return Boolean is
+      Value : constant String := Global_Config.Get (Name, "");
+   begin
+      return Value = "on" or Value = "true" or Value = "1";
+   end Is_On;
+
+
    --  Initialize the drivers which are available.
    procedure Initialize is separate;
 
