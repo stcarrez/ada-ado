@@ -88,6 +88,9 @@ package ADO.Drivers is
    function Get_Config (Name    : in String;
                         Default : in String := "") return String;
 
+   --  Returns true if the global configuration property is set to true/on.
+   function Is_On (Name   : in String) return Boolean;
+
 private
 
    --  Initialize the drivers which are available.
