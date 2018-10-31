@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Strings;
 
 with ADO.SQL;
 with ADO.Statements;
@@ -78,6 +79,7 @@ package body ADO.Schemas.Entities is
       Query : ADO.SQL.Query;
       Stmt  : ADO.Statements.Query_Statement
         := Session.Create_Statement (ADO.Model.ENTITY_TYPE_TABLE'Access);
+      Count : Natural := 0;
    begin
       Stmt.Set_Parameters (Query);
       Stmt.Execute;
@@ -88,8 +90,10 @@ package body ADO.Schemas.Entities is
          begin
             Cache.Entities.Insert (Key => Name, New_Item => Id);
          end;
+         Count := Count + 1;
          Stmt.Next;
       end loop;
+      Log.Info ("Loaded {0} table entities", Util.Strings.Image (Count));
 
    exception
       when others =>
