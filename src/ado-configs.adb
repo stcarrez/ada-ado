@@ -167,6 +167,16 @@ package body ADO.Configs is
    end Get_Property;
 
    --  ------------------------------
+   --  Returns true if the configuration property is set to true/on.
+   --  ------------------------------
+   function Is_On (Config : in Configuration;
+                   Name   : in String) return Boolean is
+      Value : constant String := Config.Get_Property (Name);
+   begin
+      return Value = "on" or Value = "true" or Value = "1";
+   end Is_On;
+
+   --  ------------------------------
    --  Get the server hostname.
    --  ------------------------------
    function Get_Server (Config : in Configuration) return String is
