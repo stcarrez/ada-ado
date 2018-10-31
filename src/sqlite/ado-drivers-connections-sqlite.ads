@@ -20,6 +20,9 @@ with Sqlite3_H;
 private with Ada.Containers.Doubly_Linked_Lists;
 package ADO.Drivers.Connections.Sqlite is
 
+   --  Create database option.
+   CREATE_NAME : constant String := "create";
+
    subtype Sqlite3 is Sqlite3_H.sqlite3;
 
    --  The database connection manager
