@@ -32,6 +32,9 @@ package ADO.Configs is
    --  Configuration property to enable or disable the dynamic load of database driver.
    DYNAMIC_DRIVER_LOAD : constant String := "ado.drivers.load";
 
+   --  Configuration property to skip reading the database table entities.
+   NO_ENTITY_LOAD : constant String := "ado.entities.ignore";
+
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
 
@@ -70,6 +73,10 @@ package ADO.Configs is
    --  If the property does not exist, an empty string is returned.
    function Get_Property (Config : in Configuration;
                           Name   : in String) return String;
+
+   --  Returns true if the configuration property is set to true/on.
+   function Is_On (Config : in Configuration;
+                   Name   : in String) return Boolean;
 
    --  Set the server hostname.
    procedure Set_Server (Config : in out Configuration;
