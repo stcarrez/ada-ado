@@ -119,9 +119,8 @@ package body ADO.Drivers.Connections is
       Symbol : constant String := "ado__drivers__connections__" & Name & "__initialize";
       Handle : Util.Systems.DLLs.Handle;
       Addr   : System.Address;
-      Dynamic_Load : constant String := Get_Config (ADO.Configs.DYNAMIC_DRIVER_LOAD);
    begin
-      if Dynamic_Load /= "1" and Dynamic_Load /= "true" then
+      if Is_On (ADO.Configs.DYNAMIC_DRIVER_LOAD) then
          Log.Warn ("Dynamic loading of driver '{0}' is disabled", Name);
          return;
       end if;
