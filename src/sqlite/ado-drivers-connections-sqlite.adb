@@ -181,7 +181,7 @@ package body ADO.Drivers.Connections.Sqlite is
             Flags    : int
               := Sqlite3_H.SQLITE_OPEN_FULLMUTEX + Sqlite3_H.SQLITE_OPEN_READWRITE;
          begin
-            if Config.Get_Property ("create") = "1" then
+            if Config.Is_On (CREATE_NAME) then
                Flags := Flags + Sqlite3_H.SQLITE_OPEN_CREATE;
             end if;
             Filename := Strings.New_String (Name);
@@ -223,9 +223,11 @@ package body ADO.Drivers.Connections.Sqlite is
                                     Item : in Util.Properties.Value) is
                   SQL : constant String := "PRAGMA " & Name & "=" & Escape (Item);
                begin
-                  if Util.Strings.Index (Name, '.') = 0 then
-                     Log.Info ("Configure database with {0}", SQL);
-                     ADO.Statements.Sqlite.Execute (Database.Server, SQL);
+                  if Name /= CREATE_NAME then
+                     if Util.Strings.Index (Name, '.') = 0 then
+                        Log.Info ("Configure database with {0}", SQL);
+                        ADO.Statements.Sqlite.Execute (Database.Server, SQL);
+                     end if;
                   end if;
 
                exception
