@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Print_User -- Example to find an object from the database
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,13 @@ with ADO.SQL;
 with ADO.Sessions.Factory;
 with Samples.User.Model;
 with Util.Log.Loggers;
-with Ada.Text_IO;
 
+with Ada.Text_IO;
+with Ada.Exceptions;
 with Ada.Command_Line;
 procedure Print_User is
 
    use ADO;
-   use Ada;
    use Samples.User.Model;
 
    Factory : ADO.Sessions.Factory.Session_Factory;
@@ -72,4 +72,9 @@ begin
          end;
       end loop;
    end;
+
+exception
+   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+      Ada.Text_IO.Put_Line ("Cannot connect to database: "
+                              & Ada.Exceptions.Exception_Message (E));
 end Print_User;

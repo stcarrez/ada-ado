@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  userdb -- Example to find/create an object from the database
---  Copyright (C) 2010, 2011, 2012, 2013 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ with ADO.Sessions.Factory;
 with Samples.User.Model;
 with Ada.Text_IO;
 with Ada.Strings.Unbounded;
+with Ada.Exceptions;
 
 with ADO.Statements;
 with ADO.Queries;
@@ -162,10 +163,11 @@ begin
          end;
       end loop;
       DB.Rollback;
-
-   exception
-      when ADO.Objects.NOT_FOUND =>
-         Text_IO.Put_Line ("User 23 does not exist");
    end;
    Text_IO.Put_Line ("Exiting");
+
+exception
+   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+      Ada.Text_IO.Put_Line ("Cannot connect to database: "
+                              & Ada.Exceptions.Exception_Message (E));
 end Userdb;

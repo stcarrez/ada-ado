@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Add_User -- Example to add an object in the database
---  Copyright (C) 2010, 2011 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ with Util.Strings;
 with Util.Log.Loggers;
 
 with Ada.Text_IO;
+with Ada.Exceptions;
 with Ada.Command_Line;
 procedure Add_User is
 
@@ -84,4 +85,9 @@ begin
       end loop;
       DB.Commit;
    end;
+
+exception
+   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+      Ada.Text_IO.Put_Line ("Cannot connect to database: "
+                              & Ada.Exceptions.Exception_Message (E));
 end Add_User;
