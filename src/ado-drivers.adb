@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
