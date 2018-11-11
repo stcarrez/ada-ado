@@ -458,6 +458,10 @@ package body ADO.Statements.Mysql is
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Filter);
       end if;
 
+      if Stmt.Result /= null then
+         Mysql_Free_Result (Stmt.Result);
+         Stmt.Result := null;
+      end if;
       declare
          Expanded_Query : constant String := Stmt.Query.Expand;
       begin
