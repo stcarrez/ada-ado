@@ -457,6 +457,10 @@ package body ADO.Statements.Postgresql is
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Filter);
       end if;
 
+      if Stmt.Result /= PQ.Null_PGresult then
+         PQ.PQclear (Stmt.Result);
+         Stmt.Result := PQ.Null_PGresult;
+      end if;
       declare
          Expanded_Query : constant String := Stmt.Query.Expand;
          Status         : PQ.ExecStatusType;
