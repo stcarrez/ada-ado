@@ -176,7 +176,15 @@ package body ADO.Drivers.Connections.Mysql is
       end if;
 
       Result := Mysql_Query (Database.Server, ADO.C.To_C (SQL_Stat));
-      Log.Debug ("Query result: {0}", int'Image (Result));
+      if Result /= 0 then
+         declare
+            Error : constant Strings.chars_ptr := Mysql_Error (Database.Server);
+            Msg   : constant String := Strings.Value (Error);
+         begin
+            Log.Error ("Error: {0}", Msg);
+            raise ADO.Statements.SQL_Error with "SQL error: " & Msg;
+         end;
+      end if;
    end Execute;
 
    --  ------------------------------
@@ -264,6 +272,8 @@ package body ADO.Drivers.Connections.Mysql is
 
          procedure Configure (Name : in String;
                               Item : in Util.Properties.Value);
+         function Is_Number (Value : in String) return Boolean is
+            (for all C of Value => C >= '0' and C <= '9');
 
          procedure Configure (Name : in String;
                               Item : in Util.Properties.Value) is
@@ -278,7 +288,11 @@ package body ADO.Drivers.Connections.Mysql is
             elsif Util.Strings.Index (Name, '.') = 0
               and Name /= "user" and Name /= "password"
             then
-               Database.Execute ("SET " & Name & "='" & Value & "'");
+               if Is_Number (Value) then
+                  Database.Execute ("SET " & Name & "=" & Value);
+               else
+                  Database.Execute ("SET " & Name & "='" & Value & "'");
+               end if;
             end if;
          end Configure;
 
