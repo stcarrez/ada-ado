@@ -376,6 +376,10 @@ package body ADO.Statements.Sqlite is
    begin
       Log.Debug ("Execute: {0}", Query);
 
+      if Stmt.Stmt /= null then
+         Release_Stmt (Stmt.Connection, Stmt.Stmt);
+         Stmt.Stmt := null;
+      end if;
       Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Stmt.Connection,
                                               zSql   => Sql,
                                               nByte  => int (Query'Length + 1),
