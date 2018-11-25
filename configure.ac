@@ -105,26 +105,16 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
   *)
     MYSQL_LIB=mysqlclient
     LDFLAGS="$LDFLAGS $ac_mysql_libs"
-    AC_CHECK_LIB($MYSQL_LIB,mysql_init,[
+    AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
-	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="-l$MYSQL_LIB"
-	   MYSQL_LIBS="$ac_mysql_libs"
        ])
-    if test "${ADO_HAVE_MYSQL}" = "no"; then
-       MYSQL_LIB=mariadbclient
-       LDFLAGS="$LDFLAGS $ac_mysql_libs"
-       AC_CHECK_LIB($MYSQL_LIB,mysql_init,[
-         DB="$DB mysql"
-         ADO_HAVE_MYSQL=yes
-         WITH_ADO_MYSQL="with \"ado_mysql\";";
-         MYSQL_LIBNAME="-l$MYSQL_LIB"
-         MYSQL_LIBS="$ac_mysql_libs"
-         ])
+    if test x"$ac_cv_search_mysql_init" != ""; then
+	WITH_ADO_MYSQL="with \"ado_mysql\";";
+        MYSQL_LIBNAME="$ac_cv_search_mysql_init"
+	MYSQL_LIBS="$ac_cv_search_mysql_init"
     fi
     ;;
-
   esac
 fi
 
