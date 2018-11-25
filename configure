@@ -3020,14 +3020,12 @@ done
     MYSQL_LIB=mysqlclient
     LDFLAGS="$LDFLAGS $ac_mysql_libs"
 
-as_ac_Lib=`$as_echo "ac_cv_lib_$MYSQL_LIB''_mysql_init" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -l$MYSQL_LIB" >&5
-$as_echo_n "checking for mysql_init in -l$MYSQL_LIB... " >&6; }
-if eval \${$as_ac_Lib+:} false; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing mysql_init" >&5
+$as_echo_n "checking for library containing mysql_init... " >&6; }
+if ${ac_cv_search_mysql_init+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-l$MYSQL_LIB  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3046,82 +3044,47 @@ return mysql_init ();
   return 0;
 }
 _ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  eval "$as_ac_Lib=yes"
-else
-  eval "$as_ac_Lib=no"
+for ac_lib in '' $MYSQL_LIB mariadb mariadbclient; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_mysql_init=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+    conftest$ac_exeext
+  if ${ac_cv_search_mysql_init+:} false; then :
+  break
 fi
-eval ac_res=\$$as_ac_Lib
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+done
+if ${ac_cv_search_mysql_init+:} false; then :
+
+else
+  ac_cv_search_mysql_init=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_mysql_init" >&5
+$as_echo "$ac_cv_search_mysql_init" >&6; }
+ac_res=$ac_cv_search_mysql_init
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
 
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
-	   WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="-l$MYSQL_LIB"
-	   MYSQL_LIBS="$ac_mysql_libs"
 
 fi
 
-    if test "${ADO_HAVE_MYSQL}" = "no"; then
-       MYSQL_LIB=mariadbclient
-       LDFLAGS="$LDFLAGS $ac_mysql_libs"
-       as_ac_Lib=`$as_echo "ac_cv_lib_$MYSQL_LIB''_mysql_init" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for mysql_init in -l$MYSQL_LIB" >&5
-$as_echo_n "checking for mysql_init in -l$MYSQL_LIB... " >&6; }
-if eval \${$as_ac_Lib+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-l$MYSQL_LIB  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char mysql_init ();
-int
-main ()
-{
-return mysql_init ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  eval "$as_ac_Lib=yes"
-else
-  eval "$as_ac_Lib=no"
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-eval ac_res=\$$as_ac_Lib
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-
-         DB="$DB mysql"
-         ADO_HAVE_MYSQL=yes
-         WITH_ADO_MYSQL="with \"ado_mysql\";";
-         MYSQL_LIBNAME="-l$MYSQL_LIB"
-         MYSQL_LIBS="$ac_mysql_libs"
-
-fi
-
+    if test x"$ac_cv_search_mysql_init" != ""; then
+	WITH_ADO_MYSQL="with \"ado_mysql\";";
+        MYSQL_LIBNAME="$ac_cv_search_mysql_init"
+	MYSQL_LIBS="$ac_cv_search_mysql_init"
     fi
     ;;
-
   esac
 fi
 
