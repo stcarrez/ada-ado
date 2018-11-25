@@ -286,7 +286,7 @@ package body ADO.Drivers.Connections.Mysql is
                Database.Execute ("SET CHARACTER_SET_DATABASE = '" & Value & "'");
 
             elsif Util.Strings.Index (Name, '.') = 0
-              and Name /= "user" and Name /= "password"
+              and Name /= "user" and Name /= "password" and Name /= "socket"
             then
                if Is_Number (Value) then
                   Database.Execute ("SET " & Name & "=" & Value);
