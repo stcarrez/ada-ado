@@ -516,8 +516,8 @@ package Sqlite3_H is
   --** See also: [sqlite_version()] and [sqlite_source_id()].
   -- 
 
-   sqlite3_version : aliased Interfaces.C.char_array (size_t);  -- /usr/include/sqlite3.h:148
-   pragma Import (C, sqlite3_version, "sqlite3_version");
+   --  sqlite3_version : aliased Interfaces.C.char_array (size_t);  -- /usr/include/sqlite3.h:148
+   --  pragma Import (C, sqlite3_version, "sqlite3_version");
 
    function sqlite3_libversion return Interfaces.C.Strings.chars_ptr;  -- /usr/include/sqlite3.h:149
    pragma Import (C, sqlite3_libversion, "sqlite3_libversion");
