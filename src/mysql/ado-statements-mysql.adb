@@ -203,7 +203,7 @@ package body ADO.Statements.Mysql is
       Log.Debug ("Execute {0}", Query);
 
       --  Execute the query
-      return Mysql_Query (Connection, ADO.C.To_C (Sql));
+      return Mysql_Real_Query (Connection, ADO.C.To_C (Sql), Query'Length);
    end Execute;
 
    --  ------------------------------
