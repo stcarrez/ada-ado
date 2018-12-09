@@ -443,7 +443,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    function Has_Elements (Query : in Sqlite_Query_Statement) return Boolean is
    begin
-      return Query.Stmt /= null and then Query.Status = HAS_ROW;
+      return Query.Status = HAS_ROW;
    end Has_Elements;
 
    --  ------------------------------
