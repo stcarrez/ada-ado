@@ -4212,8 +4212,8 @@ $as_echo "no" >&6; }
   else
     gnat_project_dir_util=
     gnat_project_name_util=
-    if test x"Building Ada ADO requires the Ada Utility Library." != x; then
-      as_fn_error $? "Building Ada ADO requires the Ada Utility Library.
+    if test x"Building Ada ADO requires the Ada Utility Library with XML/Ada support." != x; then
+      as_fn_error $? "Building Ada ADO requires the Ada Utility Library with XML/Ada support.
   You should build and install the Ada Utility Library component.
   It must be available and found by ${GNATMAKE}.
   This project was not found in the ADA_PROJECT_PATH environment variable.
@@ -4228,6 +4228,93 @@ $as_echo "no" >&6; }
   fi
 
 
+
+##########################################
+# XMLAda library
+##########################################
+
+gnat_xml_ada=xmlada-config
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking xmlada library" >&5
+$as_echo_n "checking xmlada library... " >&6; }
+
+if test T$UTIL_HAVE_XML = Tyes ; then
+  ac_xml_version=`$gnat_xml_ada --version 2>/dev/null | sed -e 's, ,-,g'`
+else
+  ac_xml_version=none
+fi
+case $ac_xml_version in
+  XmlAda-3.2*)
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_xml_version" >&5
+$as_echo "$ac_xml_version" >&6; }
+      HAVE_XML_ADA=yes
+      ;;
+
+  XmlAda-4.*|XmlAda-2013|XmlAda-2014)
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_xml_version" >&5
+$as_echo "$ac_xml_version" >&6; }
+      HAVE_XML_ADA=yes
+      ;;
+
+  *)
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      HAVE_XML_ADA=maybe
+      ;;
+
+esac
+if test T$HAVE_XML_ADA = Tmaybe ; then
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether xmlada_sax project exists" >&5
+$as_echo_n "checking whether xmlada_sax project exists... " >&6; }
+  echo "with \"xmlada_sax\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
+  if { ac_try='gnat ls -Pconftest.gpr system.ads > /dev/null 2>conftest.out'
+  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }
+  then
+    gnat_project_xmlada_sax=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, using xmlada_sax" >&5
+$as_echo "yes, using xmlada_sax" >&6; }
+    gnat_project_with_xmlada_sax="with \"xmlada_sax\";";
+  else
+    gnat_project_xmlada_sax=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  fi
+  rm -f conftest.gpr
+
+  if test T$gnat_project_xmlada_sax = Tno; then
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether xmlada project exists" >&5
+$as_echo_n "checking whether xmlada project exists... " >&6; }
+  echo "with \"xmlada\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
+  if { ac_try='gnat ls -Pconftest.gpr system.ads > /dev/null 2>conftest.out'
+  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }
+  then
+    gnat_project_xmlada=yes
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes, using xmlada" >&5
+$as_echo "yes, using xmlada" >&6; }
+    gnat_project_with_xmlada="with \"xmlada\";";
+  else
+    gnat_project_xmlada=no
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  fi
+  rm -f conftest.gpr
+
+    if test T$gnat_project_xmlada = Tno; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: XML/Ada was not found." >&5
+$as_echo "$as_me: WARNING: XML/Ada was not found." >&2;}
+      as_fn_error $? "Please install XML/Ada, re-configure and re-build Ada Utility Library." "$LINENO" 5
+    fi
+  fi
+fi
 
 # Check whether --enable-link-options-mysql was given.
 if test "${enable_link_options_mysql+set}" = set; then :

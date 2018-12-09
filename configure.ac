@@ -191,11 +191,51 @@ AM_GNAT_LIBRARY_PROJECT(ado)
 ##########################################
 AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[util],
   [git@github.com:stcarrez/ada-util.git],
-  [Building Ada ADO requires the Ada Utility Library.],
+  [Building Ada ADO requires the Ada Utility Library with XML/Ada support.],
   [
     UTIL_DIR=${gnat_project_dir_util}
   ])
 AC_SUBST(UTIL_DIR)
+
+##########################################
+# XMLAda library
+##########################################
+
+gnat_xml_ada=xmlada-config
+AC_MSG_CHECKING([xmlada library])
+
+if test T$UTIL_HAVE_XML = Tyes ; then
+  ac_xml_version=`$gnat_xml_ada --version 2>/dev/null | sed -e 's, ,-,g'`
+else
+  ac_xml_version=none
+fi
+case $ac_xml_version in
+  XmlAda-3.2*)
+      AC_MSG_RESULT($ac_xml_version)
+      HAVE_XML_ADA=yes
+      ;;
+
+  XmlAda-4.*|XmlAda-2013|XmlAda-2014)
+      AC_MSG_RESULT($ac_xml_version)
+      HAVE_XML_ADA=yes
+      ;;
+
+  *)
+      AC_MSG_RESULT(no)
+      HAVE_XML_ADA=maybe
+      ;;
+
+esac
+if test T$HAVE_XML_ADA = Tmaybe ; then
+  AM_GNAT_CHECK_PROJECT([xmlada_sax],[xmlada_sax])
+  if test T$gnat_project_xmlada_sax = Tno; then
+    AM_GNAT_CHECK_PROJECT([xmlada],[xmlada])
+    if test T$gnat_project_xmlada = Tno; then
+      AC_MSG_WARN(XML/Ada was not found.)
+      AC_MSG_ERROR([Please install XML/Ada, re-configure and re-build Ada Utility Library.])
+    fi
+  fi
+fi
 
 AC_ARG_ENABLE(link-options-mysql,
 [  --enable-link-options-mysql=opts
