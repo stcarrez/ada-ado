@@ -376,7 +376,14 @@ package body ADO.Statements.Sqlite is
 
    procedure Prepare (Stmt  : in out Sqlite_Query_Statement;
                       Query : in String) is
-      Sql    : Strings.chars_ptr := Strings.New_String (Query);
+
+      function sqlite3_prepare_v2 (db : access Sqlite3_H.sqlite3;
+                                   zSql : String;
+                                   nByte : int;
+                                   ppStmt : System.Address;
+                                   pzTail : System.Address) return int;
+      pragma Import (C, sqlite3_prepare_v2, "sqlite3_prepare_v2");
+
       Result : int;
       Handle : aliased access Sqlite3_H.sqlite3_stmt;
    begin
@@ -386,12 +393,11 @@ package body ADO.Statements.Sqlite is
          Release_Stmt (Stmt.Connection, Stmt.Stmt);
          Stmt.Stmt := null;
       end if;
-      Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Stmt.Connection,
-                                              zSql   => Sql,
-                                              nByte  => int (Query'Length + 1),
-                                              ppStmt => Handle'Address,
-                                              pzTail => System.Null_Address);
-      Strings.Free (Sql);
+      Result := sqlite3_prepare_v2 (db     => Stmt.Connection,
+                                    zSql   => Query,
+                                    nByte  => Query'Length,
+                                    ppStmt => Handle'Address,
+                                    pzTail => System.Null_Address);
       Check_Error (Stmt.Connection, Query, Result);
       Stmt.Stmt := Handle;
    end Prepare;
