@@ -134,18 +134,24 @@ package body ADO.Statements.Sqlite is
 
    function Execute (Connection : access ADO.Drivers.Connections.Sqlite.Sqlite3;
                      SQL        : in String) return access Sqlite3_H.sqlite3_stmt is
-      ZSql   : Strings.chars_ptr := Strings.New_String (SQL);
+
+      function sqlite3_prepare_v2 (db : access Sqlite3_H.sqlite3;
+                                   zSql : String;
+                                   nByte : int;
+                                   ppStmt : System.Address;
+                                   pzTail : System.Address) return int;
+      pragma Import (C, sqlite3_prepare_v2, "sqlite3_prepare_v2");
+
       Handle : aliased access Sqlite3_H.sqlite3_stmt;
       Result : int;
    begin
       Log.Debug ("Execute: {0}", SQL);
 
-      Result := Sqlite3_H.sqlite3_prepare_v2 (db     => Connection,
-                                              zSql   => ZSql,
-                                              nByte  => int (SQL'Length + 1),
-                                              ppStmt => Handle'Address,
-                                              pzTail => System.Null_Address);
-      Strings.Free (ZSql);
+      Result := sqlite3_prepare_v2 (db     => Connection,
+                                    zSql   => SQL,
+                                    nByte  => int (SQL'Length),
+                                    ppStmt => Handle'Address,
+                                    pzTail => System.Null_Address);
       if Result /= Sqlite3_H.SQLITE_OK then
          Check_Error (Connection, SQL, Result);
       end if;
@@ -499,19 +505,20 @@ package body ADO.Statements.Sqlite is
    overriding
    function Get_Int64 (Query  : in Sqlite_Query_Statement;
                        Column : in Natural) return Int64 is
-      Result : constant Sqlite3_H.sqlite_int64
-        := Sqlite3_H.sqlite3_column_int64 (Query.Stmt, int (Column));
-      Res    : constant int := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
+      Result : Sqlite3_H.sqlite_int64;
+      Res    : int;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Res := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
       if Res = Sqlite3_H.SQLITE_NULL then
          raise Invalid_Type with "NULL cannot be converted to Integer";
       end if;
       if Res /= Sqlite3_H.SQLITE_INTEGER then
          raise Invalid_Type with "Invalid integer value";
       end if;
+      Result := Sqlite3_H.sqlite3_column_int64 (Query.Stmt, int (Column));
       return Int64 (Result);
    end Get_Int64;
 
@@ -526,12 +533,12 @@ package body ADO.Statements.Sqlite is
                                   Column : in Natural) return Unbounded_String is
       use type Strings.chars_ptr;
 
-      Text : constant Strings.chars_ptr
-        := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
+      Text : Strings.chars_ptr;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Text := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
       if Text = Strings.Null_Ptr then
          raise Invalid_Type with "NULL cannot be converted to String";
       else
@@ -550,12 +557,12 @@ package body ADO.Statements.Sqlite is
                         Column : Natural) return String is
       use type Strings.chars_ptr;
 
-      Text : constant Strings.chars_ptr
-        := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
+      Text : Strings.chars_ptr;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Text := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
       if Text = Strings.Null_Ptr then
          raise Invalid_Type with "NULL cannot be converted to String";
       else
@@ -572,13 +579,14 @@ package body ADO.Statements.Sqlite is
                       Column : in Natural) return ADO.Blob_Ref is
       use type System.Address;
 
-      Text : constant System.Address
-        := Sqlite3_H.sqlite3_column_blob (Query.Stmt, int (Column));
-      Len  : constant int := Sqlite3_H.sqlite3_column_bytes (Query.Stmt, int (Column));
+      Text : System.Address;
+      Len  : int;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Text := Sqlite3_H.sqlite3_column_blob (Query.Stmt, int (Column));
+      Len  := Sqlite3_H.sqlite3_column_bytes (Query.Stmt, int (Column));
       if Text = System.Null_Address or Len <= 0 then
          return Null_Blob;
       else
@@ -597,12 +605,12 @@ package body ADO.Statements.Sqlite is
                       Column : in Natural) return Ada.Calendar.Time is
       use type Interfaces.C.Strings.chars_ptr;
 
-      Text : constant Strings.chars_ptr
-        := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
+      Text : Strings.chars_ptr;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Text := Sqlite3_H.sqlite3_column_text (Query.Stmt, int (Column));
       if Text = Strings.Null_Ptr then
          raise Invalid_Type with "NULL cannot be converted to Date";
       end if;
@@ -616,11 +624,12 @@ package body ADO.Statements.Sqlite is
    function Get_Column_Type (Query  : in Sqlite_Query_Statement;
                              Column : in Natural)
                              return ADO.Schemas.Column_Type is
-      Res : constant int := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
+      Res : int;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Res := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
       case Res is
          when Sqlite3_H.SQLITE_NULL =>
             return ADO.Schemas.T_NULL;
@@ -653,12 +662,12 @@ package body ADO.Statements.Sqlite is
                              return String is
       use type Interfaces.C.Strings.chars_ptr;
 
-      Name : constant Interfaces.C.Strings.chars_ptr
-        := Sqlite3_H.sqlite3_column_name (Query.Stmt, int (Column));
+      Name : Interfaces.C.Strings.chars_ptr;
    begin
       if Column >= Query.Max_Column then
          raise Invalid_Column with "Invalid column" & Natural'Image (Column);
       end if;
+      Name := Sqlite3_H.sqlite3_column_name (Query.Stmt, int (Column));
       if Name = Interfaces.C.Strings.Null_Ptr then
          return "";
       else
