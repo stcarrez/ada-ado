@@ -187,7 +187,7 @@ package body ADO.Objects is
    --  Mark the field identified by <b>Field</b> as modified.
    --  ------------------------------
    procedure Set_Field (Object : in out Object_Ref'Class;
-                        Field  : in Positive) is
+                        Field  : in Column_Index) is
    begin
       if Object.Object = null then
          Object.Allocate;
@@ -462,7 +462,7 @@ package body ADO.Objects is
    --  Check if the field at position <b>Field</b> was modified.
    --  ------------------------------
    function Is_Modified (Ref   : in Object_Record'Class;
-                         Field : in Positive) return Boolean is
+                         Field : in Column_Index) return Boolean is
    begin
       return Ref.Modified (Field);
    end Is_Modified;
@@ -472,7 +472,7 @@ package body ADO.Objects is
    --  position <b>Field</b>.
    --  ------------------------------
    procedure Clear_Modified (Ref   : in out Object_Record'Class;
-                             Field : in Positive) is
+                             Field : in Column_Index) is
    begin
       Ref.Modified (Field) := False;
    end Clear_Modified;
@@ -540,7 +540,7 @@ package body ADO.Objects is
    --  the object.
    --  ------------------------------
    procedure Set_Field_Unbounded_String (Object : in out Object_Record'Class;
-                                         Field  : in Positive;
+                                         Field  : in Column_Index;
                                          Into   : in out Ada.Strings.Unbounded.Unbounded_String;
                                          Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       use Ada.Strings.Unbounded;
@@ -552,7 +552,7 @@ package body ADO.Objects is
    end Set_Field_Unbounded_String;
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out Ada.Strings.Unbounded.Unbounded_String;
                                Value  : in String) is
       use Ada.Strings.Unbounded;
@@ -564,7 +564,7 @@ package body ADO.Objects is
    end Set_Field_String;
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out ADO.Nullable_String;
                                Value  : in String) is
       use Ada.Strings.Unbounded;
@@ -577,7 +577,7 @@ package body ADO.Objects is
    end Set_Field_String;
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out ADO.Nullable_String;
                                Value  : in ADO.Nullable_String) is
       use Ada.Strings.Unbounded;
@@ -597,7 +597,7 @@ package body ADO.Objects is
    end Set_Field_String;
 
    procedure Set_Field_Time (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out Ada.Calendar.Time;
                              Value  : in Ada.Calendar.Time) is
       use Ada.Calendar;
@@ -609,7 +609,7 @@ package body ADO.Objects is
    end Set_Field_Time;
 
    procedure Set_Field_Time (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out ADO.Nullable_Time;
                              Value  : in ADO.Nullable_Time) is
       use Ada.Calendar;
@@ -629,7 +629,7 @@ package body ADO.Objects is
    end Set_Field_Time;
 
    procedure Set_Field_Integer (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Integer;
                                 Value  : in Integer) is
    begin
@@ -640,7 +640,7 @@ package body ADO.Objects is
    end Set_Field_Integer;
 
    procedure Set_Field_Integer (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out ADO.Nullable_Integer;
                                 Value  : in ADO.Nullable_Integer) is
    begin
@@ -651,7 +651,7 @@ package body ADO.Objects is
    end Set_Field_Integer;
 
    procedure Set_Field_Natural (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Natural;
                                 Value  : in Natural) is
    begin
@@ -662,7 +662,7 @@ package body ADO.Objects is
    end Set_Field_Natural;
 
    procedure Set_Field_Positive (Object : in out Object_Record'Class;
-                                 Field  : in Positive;
+                                 Field  : in Column_Index;
                                  Into   : in out Positive;
                                  Value  : in Positive) is
    begin
@@ -673,7 +673,7 @@ package body ADO.Objects is
    end Set_Field_Positive;
 
    procedure Set_Field_Boolean (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Boolean;
                                 Value  : in Boolean) is
    begin
@@ -684,7 +684,7 @@ package body ADO.Objects is
    end Set_Field_Boolean;
 
    procedure Set_Field_Object (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out Object_Ref'Class;
                                Value  : in Object_Ref'Class) is
    begin
@@ -698,7 +698,7 @@ package body ADO.Objects is
    end Set_Field_Object;
 
    procedure Set_Field_Identifier (Object : in out Object_Record'Class;
-                                   Field  : in Positive;
+                                   Field  : in Column_Index;
                                    Into   : in out ADO.Identifier;
                                    Value  : in ADO.Identifier) is
    begin
@@ -709,7 +709,7 @@ package body ADO.Objects is
    end Set_Field_Identifier;
 
    procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
-                                    Field  : in Positive;
+                                    Field  : in Column_Index;
                                     Into   : in out ADO.Entity_Type;
                                     Value  : in ADO.Entity_Type) is
    begin
@@ -720,7 +720,7 @@ package body ADO.Objects is
    end Set_Field_Entity_Type;
 
    procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
-                                    Field  : in Positive;
+                                    Field  : in Column_Index;
                                     Into   : in out ADO.Nullable_Entity_Type;
                                     Value  : in ADO.Nullable_Entity_Type) is
    begin
@@ -731,7 +731,7 @@ package body ADO.Objects is
    end Set_Field_Entity_Type;
 
    procedure Set_Field_Blob (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out ADO.Blob_Ref;
                              Value  : in ADO.Blob_Ref) is
    begin
@@ -742,7 +742,7 @@ package body ADO.Objects is
    end Set_Field_Blob;
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in ADO.Identifier) is
    begin
       if Object.Get_Key_Value /= Value then
@@ -752,7 +752,7 @@ package body ADO.Objects is
    end Set_Field_Key_Value;
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in String) is
       use Ada.Strings.Unbounded;
    begin
@@ -763,7 +763,7 @@ package body ADO.Objects is
    end Set_Field_Key_Value;
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in Ada.Strings.Unbounded.Unbounded_String) is
       use Ada.Strings.Unbounded;
    begin
@@ -774,7 +774,7 @@ package body ADO.Objects is
    end Set_Field_Key_Value;
 
    procedure Set_Field_Operation (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Into   : in out T;
                                   Value  : in T) is
    begin
@@ -783,5 +783,14 @@ package body ADO.Objects is
          Object.Modified (Field) := True;
       end if;
    end Set_Field_Operation;
+
+   --  ------------------------------
+   --  Mark the field identified by <b>Field</b> as modified.
+   --  ------------------------------
+   procedure Set_Field (Object : in out Object_Record'Class;
+                        Field  : in Column_Index) is
+   begin
+      Object.Modified (Field) := True;
+   end Set_Field;
 
 end ADO.Objects;
