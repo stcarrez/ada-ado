@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Objects -- Database objects
+--  ado-objects -- Database objects
 --  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -232,6 +232,8 @@ package ADO.Objects is
 
    type Object_Record_Access is access all Object_Record'Class;
 
+   subtype Column_Index is ADO.Schemas.Column_Index;
+
    --  Get the object key
    function Get_Key (Ref : in Object_Record'Class) return Object_Key;
 
@@ -268,14 +270,12 @@ package ADO.Objects is
 
    --  Check if the field at position <b>Field</b> was modified.
    function Is_Modified (Ref   : in Object_Record'Class;
-                         Field : in Positive) return Boolean;
-   pragma Inline (Is_Modified);
+                         Field : in Column_Index) return Boolean with Inline;
 
    --  Clear the modification flag associated with the field at
    --  position <b>Field</b>.
    procedure Clear_Modified (Ref   : in out Object_Record'Class;
-                             Field : in Positive);
-   pragma Inline (Clear_Modified);
+                             Field : in Column_Index) with Inline;
 
    --  Frees the storage held by the object.  The database record is not deleted.
    procedure Destroy (Object : access Object_Record) is abstract;
@@ -321,7 +321,7 @@ package ADO.Objects is
 
    --  Mark the field identified by <b>Field</b> as modified.
    procedure Set_Field (Object : in out Object_Ref'Class;
-                        Field  : in Positive);
+                        Field  : in Column_Index);
 
    --  Prepare the object to be modified.  If the reference is empty, an object record
    --  instance is allocated by calling <b>Allocate</b>.
@@ -392,7 +392,7 @@ package ADO.Objects is
    procedure Delete (Object  : in out Object_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is abstract;
 
-   type Modified_Map is array (1 .. 64) of Boolean;
+   type Modified_Map is array (Column_Index range 1 .. 64) of Boolean;
    pragma Pack (Modified_Map);
 
    type Session_Proxy is limited private;
@@ -416,105 +416,109 @@ package ADO.Objects is
    --  the object.  The <b>Set_Field_XXX</b> procedures are used by the Dynamo generated
    --  code for the implementation of Set procedures.
    procedure Set_Field_Unbounded_String (Object : in out Object_Record'Class;
-                                         Field  : in Positive;
+                                         Field  : in Column_Index;
                                          Into   : in out Ada.Strings.Unbounded.Unbounded_String;
                                          Value  : in Ada.Strings.Unbounded.Unbounded_String);
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out Ada.Strings.Unbounded.Unbounded_String;
                                Value  : in String);
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out ADO.Nullable_String;
                                Value  : in String);
 
    procedure Set_Field_String (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out ADO.Nullable_String;
                                Value  : in ADO.Nullable_String);
 
    procedure Set_Field_Time (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out Ada.Calendar.Time;
                              Value  : in Ada.Calendar.Time);
 
    procedure Set_Field_Time (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out ADO.Nullable_Time;
                              Value  : in ADO.Nullable_Time);
 
    procedure Set_Field_Integer (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Integer;
                                 Value  : in Integer);
 
    procedure Set_Field_Integer (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out ADO.Nullable_Integer;
                                 Value  : in ADO.Nullable_Integer);
 
    procedure Set_Field_Natural (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Natural;
                                 Value  : in Natural);
 
    procedure Set_Field_Positive (Object : in out Object_Record'Class;
-                                 Field  : in Positive;
+                                 Field  : in Column_Index;
                                  Into   : in out Positive;
                                  Value  : in Positive);
 
    procedure Set_Field_Boolean (Object : in out Object_Record'Class;
-                                Field  : in Positive;
+                                Field  : in Column_Index;
                                 Into   : in out Boolean;
                                 Value  : in Boolean);
 
    procedure Set_Field_Object (Object : in out Object_Record'Class;
-                               Field  : in Positive;
+                               Field  : in Column_Index;
                                Into   : in out Object_Ref'Class;
                                Value  : in Object_Ref'Class);
 
    procedure Set_Field_Identifier (Object : in out Object_Record'Class;
-                                   Field  : in Positive;
+                                   Field  : in Column_Index;
                                    Into   : in out ADO.Identifier;
                                    Value  : in ADO.Identifier);
 
    procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
-                                    Field  : in Positive;
+                                    Field  : in Column_Index;
                                     Into   : in out ADO.Entity_Type;
                                     Value  : in ADO.Entity_Type);
 
    procedure Set_Field_Entity_Type (Object : in out Object_Record'Class;
-                                    Field  : in Positive;
+                                    Field  : in Column_Index;
                                     Into   : in out ADO.Nullable_Entity_Type;
                                     Value  : in ADO.Nullable_Entity_Type);
 
    procedure Set_Field_Blob (Object : in out Object_Record'Class;
-                             Field  : in Positive;
+                             Field  : in Column_Index;
                              Into   : in out ADO.Blob_Ref;
                              Value  : in ADO.Blob_Ref);
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in ADO.Identifier);
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in String);
 
    procedure Set_Field_Key_Value (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Value  : in Ada.Strings.Unbounded.Unbounded_String);
 
    generic
       type T is private;
    procedure Set_Field_Operation (Object : in out Object_Record'Class;
-                                  Field  : in Positive;
+                                  Field  : in Column_Index;
                                   Into   : in out T;
                                   Value  : in T);
    --  SCz 2011-11-15: ??? setting the Inline_Always pragma crashes gcc 4.4;
    --     pragma Inline_Always (Set_Field_Operation);
+
+   --  Mark the field identified by <b>Field</b> as modified.
+   procedure Set_Field (Object : in out Object_Record'Class;
+                        Field  : in Column_Index);
 
 private
 
