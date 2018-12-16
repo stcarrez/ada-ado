@@ -392,6 +392,9 @@ package ADO.Objects is
    procedure Delete (Object  : in out Object_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is abstract;
 
+   --  Get the object primary key in a bean object.
+   function To_Object (Object : in Object_Ref'Class) return Util.Beans.Objects.Object;
+
    type Modified_Map is array (Column_Index range 1 .. 64) of Boolean;
    pragma Pack (Modified_Map);
 
