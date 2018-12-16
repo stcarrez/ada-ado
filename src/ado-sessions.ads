@@ -31,6 +31,7 @@ with ADO.Caches;
 with Util.Concurrent.Counters;
 limited with ADO.Sequences;
 limited with ADO.Schemas.Entities;
+limited with ADO.Audits;
 
 --  = Session =
 --  The `ADO.Sessions` package defines the control and management of database sessions.
@@ -169,6 +170,10 @@ package ADO.Sessions is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Insert_Statement;
 
+   --  Get the audit manager.
+   function Get_Audit_Manager (Database : in Master_Session)
+                               return access Audits.Audit_Manager'Class;
+
    subtype Database_Connection is Drivers.Connections.Database_Connection;
 
    --  Internal operation to get access to the database connection.
@@ -222,6 +227,7 @@ private
 
    type Master_Session is new Session with record
       Sequences : Factory_Access;
+      Audit     : access ADO.Audits.Audit_Manager'Class;
    end record;
 
    procedure Check_Session (Database : in Session'Class;
