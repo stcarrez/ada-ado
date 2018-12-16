@@ -1,0 +1,80 @@
+Regtests.Audits.Model.Email:
+  type: entity
+  table: audit_email
+  schema: schema_name
+  readOnly: true
+  hasList: false
+  description: This is the User email table
+  indexes:
+    name_index:
+      columns: [ email ]
+  id:
+    id:
+      type: identifier
+      nullable: false
+      unique: true
+  fields:
+    email:
+      type: string
+      length: 32
+      column: user_email
+      unique: true
+      auditable: true
+      description: the user email address
+    status:
+      type: integer
+      length: 32
+      column: email_status
+      unique: false
+      auditable: true
+      description: the user email status
+
+Regtests.Audits.Model.Audit:
+  type: entity
+  table: audit_info
+  schema: schema_name
+  readOnly: true
+  hasList: true
+  description: This is the Audit_Info table
+  indexes:
+    name_index:
+      columns: [ email ]
+  id:
+    id:
+      type: identifier
+      column: id
+      generator:
+        strategy: AUTO
+  fields:
+    entity_id:
+      type: identifier
+      unique: false
+      column: entity_id
+      auditable: false
+      description: the entity id
+    entity_type:
+      type: entity_type
+      unique: false
+      auditable: false
+      nullable: false
+      description: the entity type
+    old_value:
+      type: string
+      length: 255
+      column: old_value
+      unique: false
+      nullable: true
+      description: the old value
+    new_value:
+      type: string
+      length: 255
+      column: new_value
+      unique: false
+      nullable: true
+      description: the new value
+    date:
+      type: date
+      column: date
+      unique: false
+      nullable: false
+      description: the audit date
