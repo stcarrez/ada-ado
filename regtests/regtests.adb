@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Tests -- Database sequence generator
---  Copyright (C) 2009, 2010, 2017 Stephane Carrez
+--  regtests -- Support for unit tests
+--  Copyright (C) 2009, 2010, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,14 @@ package body Regtests is
    begin
       return Factory.Get_Master_Session;
    end Get_Master_Database;
+
+   --  ------------------------------
+   --  Set the audit manager on the factory.
+   --  ------------------------------
+   procedure Set_Audit_Manager (Manager : in ADO.Audits.Audit_Manager_Access) is
+   begin
+      Factory.Set_Audit_Manager (Manager);
+   end Set_Audit_Manager;
 
    --  ------------------------------
    --  Initialize the test database
