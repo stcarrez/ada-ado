@@ -222,13 +222,13 @@ package body ADO.Schemas.Tests is
             Next (Iter);
          end loop;
          if Driver = "sqlite" then
-            Util.Tests.Assert_Equals (T, 15, Count,
+            Util.Tests.Assert_Equals (T, 19, Count,
                                       "Invalid number of tables found in the schema");
          elsif Driver = "mysql" then
-            Util.Tests.Assert_Equals (T, 8, Count,
+            Util.Tests.Assert_Equals (T, 10, Count,
                                       "Invalid number of tables found in the schema");
          elsif Driver = "postgresql" then
-            Util.Tests.Assert_Equals (T, 8, Count,
+            Util.Tests.Assert_Equals (T, 10, Count,
                                       "Invalid number of tables found in the schema");
          end if;
       end;
