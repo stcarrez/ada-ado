@@ -378,6 +378,18 @@ package body ADO.Objects is
    end Set_Object;
 
    --  ------------------------------
+   --  Get the object primary key in a bean object.
+   --  ------------------------------
+   function To_Object (Object : in Object_Ref'Class) return Util.Beans.Objects.Object is
+   begin
+      if Object.Object = null then
+         return Util.Beans.Objects.Null_Object;
+      else
+         return To_Object (Object.Object.Get_Key);
+      end if;
+   end To_Object;
+
+   --  ------------------------------
    --  Get the object key
    --  ------------------------------
    function Get_Key (Ref : in Object_Record'Class) return Object_Key is
