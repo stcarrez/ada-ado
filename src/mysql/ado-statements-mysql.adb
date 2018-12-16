@@ -34,6 +34,7 @@ package body ADO.Statements.Mysql is
    use Util.Log;
    use System.Storage_Elements;
    use type ADO.Schemas.Class_Mapping_Access;
+   use type ADO.Schemas.Column_Index;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
    type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
