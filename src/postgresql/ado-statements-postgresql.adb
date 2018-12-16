@@ -33,6 +33,7 @@ package body ADO.Statements.Postgresql is
    use type PQ.PGresult_Access;
    use type PQ.ExecStatusType;
    use type ADO.Schemas.Class_Mapping_Access;
+   use type ADO.Schemas.Column_Index;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements.Postgresql");
 
