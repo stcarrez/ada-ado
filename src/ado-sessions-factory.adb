@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  factory -- Session Factory
+--  ado-sessions-factory -- Session Factory
 --  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -61,6 +61,7 @@ package body ADO.Sessions.Factory is
    begin
       R.Impl := S;
       R.Sequences := Factory.Sequences;
+      R.Audit := Factory.Audit;
       S.Entities := Factory.Entities;
       S.Values   := Factory.Cache_Values;
       S.Queries  := Factory.Queries'Unrestricted_Access;
@@ -125,5 +126,14 @@ package body ADO.Sessions.Factory is
          end;
       end if;
    end Create;
+
+   --  ------------------------------
+   --  Set the audit manager to be used for the object auditing support.
+   --  ------------------------------
+   procedure Set_Audit_Manager (Factory : in out Session_Factory;
+                                Manager : in ADO.Audits.Audit_Manager_Access) is
+   begin
+      Factory.Audit := Manager;
+   end Set_Audit_Manager;
 
 end ADO.Sessions.Factory;
