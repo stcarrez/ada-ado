@@ -27,6 +27,7 @@ with ADO.Drivers.Dialects;
 package body ADO.Statements.Sqlite is
 
    use type ADO.Schemas.Class_Mapping_Access;
+   use type ADO.Schemas.Column_Index;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements.Sqlite");
 
