@@ -35,6 +35,9 @@ package ADO.Configs is
    --  Configuration property to skip reading the database table entities.
    NO_ENTITY_LOAD : constant String := "ado.entities.ignore";
 
+   --  Maximum number of columns allowed for a table (SQLite limit is 2000).
+   MAX_COLUMNS : constant := 2000;
+
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
 
