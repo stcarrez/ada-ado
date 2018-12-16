@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  factory -- Session Factory
+--  ado-sessions-factory -- Session Factory
 --  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -18,6 +18,7 @@
 
 with ADO.Sequences;
 with ADO.Caches;
+with ADO.Audits;
 with ADO.Sessions.Sources;
 
 --  == Session Factory ==
@@ -79,6 +80,11 @@ package ADO.Sessions.Factory is
    --  Get a read-only session from the session proxy.
    --  If the session has been invalidated, raise the Session_Error exception.
    function Get_Session (Proxy : in Session_Record_Access) return Session;
+
+   --  Set the audit manager to be used for the object auditing support.
+   procedure Set_Audit_Manager (Factory : in out Session_Factory;
+                                Manager : in ADO.Audits.Audit_Manager_Access);
+
 private
 
    --  The session factory holds the necessary information to obtain a master or slave
@@ -94,6 +100,7 @@ private
       Cache        : aliased ADO.Caches.Cache_Manager;
       Cache_Values : ADO.Caches.Cache_Manager_Access;
       Queries      : aliased ADO.Queries.Query_Manager;
+      Audit        : ADO.Audits.Audit_Manager_Access;
    end record;
 
    --  Initialize the sequence factory associated with the session factory.
