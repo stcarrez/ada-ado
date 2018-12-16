@@ -4,7 +4,8 @@ pages:
   - Introduction: index.md
   - Installation: Installation.md
   - Tutorial: Tutorial.md
-  - Objects: ADO_Objects.md
   - Session: ADO_Sessions.md
-  - Statements: ADO_Statements.md
+  - Database Statement: ADO_Statements.md
+  - Model Mapping: Model.md
+  - Trouble shotting: Debugging.md
 theme: readthedocs
