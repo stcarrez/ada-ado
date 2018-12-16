@@ -64,6 +64,7 @@ package ADO.Audits is
    --  The `Audit_Manager` is the interface of the audit manager component that is responsible
    --  for saving the audit information in the database.
    type Audit_Manager is limited interface;
+   type Audit_Manager_Access is access all Audit_Manager'Class;
 
    --  Save the audit changes in the database.
    procedure Save (Manager : in out Audit_Manager;
