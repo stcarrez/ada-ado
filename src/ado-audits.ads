@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Strings.Unbounded;
 
 with Util.Beans.Objects;
 
@@ -83,8 +84,108 @@ package ADO.Audits is
                    Object  : in Auditable_Object_Record'Class;
                    Changes : in Audit_Array) is abstract;
 
-   procedure Save (Session : in out ADO.Sessions.Master_Session'Class;
-                   Object  : in out Auditable_Object_Record'Class);
+   procedure Save (Object  : in out Auditable_Object_Record'Class;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+
+   --  Set the object field to the new value in `Into`.  If the new value is identical,
+   --  the operation does nothing.  Otherwise, the new value `Value` is copied
+   --  to `Into` and the field identified by `Field` is marked as modified on
+   --  the object.  The `Set_Field_XXX` procedures are used by the Dynamo generated
+   --  code for the implementation of Set procedures.
+   procedure Set_Field_Unbounded_String (Object : in out Auditable_Object_Record'Class;
+                                         Field  : in Column_Index;
+                                         Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                                         Value  : in Ada.Strings.Unbounded.Unbounded_String);
+
+   procedure Set_Field_String (Object : in out Auditable_Object_Record'Class;
+                               Field  : in Column_Index;
+                               Into   : in out Ada.Strings.Unbounded.Unbounded_String;
+                               Value  : in String);
+
+   procedure Set_Field_String (Object : in out Auditable_Object_Record'Class;
+                               Field  : in Column_Index;
+                               Into   : in out ADO.Nullable_String;
+                               Value  : in String);
+
+   procedure Set_Field_String (Object : in out Auditable_Object_Record'Class;
+                               Field  : in Column_Index;
+                               Into   : in out ADO.Nullable_String;
+                               Value  : in ADO.Nullable_String);
+
+   procedure Set_Field_Time (Object : in out Auditable_Object_Record'Class;
+                             Field  : in Column_Index;
+                             Into   : in out Ada.Calendar.Time;
+                             Value  : in Ada.Calendar.Time);
+
+   procedure Set_Field_Time (Object : in out Auditable_Object_Record'Class;
+                             Field  : in Column_Index;
+                             Into   : in out ADO.Nullable_Time;
+                             Value  : in ADO.Nullable_Time);
+
+   procedure Set_Field_Integer (Object : in out Auditable_Object_Record'Class;
+                                Field  : in Column_Index;
+                                Into   : in out Integer;
+                                Value  : in Integer);
+
+   procedure Set_Field_Integer (Object : in out Auditable_Object_Record'Class;
+                                Field  : in Column_Index;
+                                Into   : in out ADO.Nullable_Integer;
+                                Value  : in ADO.Nullable_Integer);
+
+   procedure Set_Field_Natural (Object : in out Auditable_Object_Record'Class;
+                                Field  : in Column_Index;
+                                Into   : in out Natural;
+                                Value  : in Natural);
+
+   procedure Set_Field_Positive (Object : in out Auditable_Object_Record'Class;
+                                 Field  : in Column_Index;
+                                 Into   : in out Positive;
+                                 Value  : in Positive);
+
+   procedure Set_Field_Boolean (Object : in out Auditable_Object_Record'Class;
+                                Field  : in Column_Index;
+                                Into   : in out Boolean;
+                                Value  : in Boolean);
+
+   procedure Set_Field_Object (Object : in out Auditable_Object_Record'Class;
+                               Field  : in Column_Index;
+                               Into   : in out ADO.Objects.Object_Ref'Class;
+                               Value  : in ADO.Objects.Object_Ref'Class);
+
+   procedure Set_Field_Identifier (Object : in out Auditable_Object_Record'Class;
+                                   Field  : in Column_Index;
+                                   Into   : in out ADO.Identifier;
+                                   Value  : in ADO.Identifier);
+
+   procedure Set_Field_Entity_Type (Object : in out Auditable_Object_Record'Class;
+                                    Field  : in Column_Index;
+                                    Into   : in out ADO.Entity_Type;
+                                    Value  : in ADO.Entity_Type);
+
+   procedure Set_Field_Entity_Type (Object : in out Auditable_Object_Record'Class;
+                                    Field  : in Column_Index;
+                                    Into   : in out ADO.Nullable_Entity_Type;
+                                    Value  : in ADO.Nullable_Entity_Type);
+
+   procedure Set_Field_Key_Value (Object : in out Auditable_Object_Record'Class;
+                                  Field  : in Column_Index;
+                                  Value  : in ADO.Identifier);
+
+   procedure Set_Field_Key_Value (Object : in out Auditable_Object_Record'Class;
+                                  Field  : in Column_Index;
+                                  Value  : in String);
+
+   procedure Set_Field_Key_Value (Object : in out Auditable_Object_Record'Class;
+                                  Field  : in Column_Index;
+                                  Value  : in Ada.Strings.Unbounded.Unbounded_String);
+
+   generic
+      type T is private;
+      with function To_Object (Value : in T) return UBO.Object;
+   procedure Set_Field_Operation (Object : in out Auditable_Object_Record'Class;
+                                  Field  : in Column_Index;
+                                  Into   : in out T;
+                                  Value  : in T);
 
 private
 
