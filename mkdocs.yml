@@ -6,6 +6,6 @@ pages:
   - Tutorial: Tutorial.md
   - Session: ADO_Sessions.md
   - Database Statement: ADO_Statements.md
-  - Model Mapping: Model.md
+  - Model Mapping: ADO_Model.md
   - Trouble shotting: Debugging.md
 theme: readthedocs
