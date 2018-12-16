@@ -25,22 +25,33 @@ with ADO.Sessions;
 package ADO.Audits is
 
    subtype Object_Key_Type is ADO.Objects.Object_Key_Type;
-   subtype Auditable_Class_Mapping is ADO.Schemas.Auditable_Class_Mapping;
-   subtype Auditable_Class_Mapping_Access is ADO.Schemas.Auditable_Class_Mapping_Access;
    subtype Class_Mapping_Access is ADO.Schemas.Class_Mapping_Access;
+   subtype Column_Index is ADO.Schemas.Column_Index;
 
    package UBO renames Util.Beans.Objects;
 
+   type Audit_Index is new Positive range 1 .. ADO.Configs.MAX_COLUMNS;
+
+   type Column_Index_Array is array (Audit_Index range <>) of Column_Index;
+
+   type Auditable_Mapping (Of_Class : ADO.Schemas.Class_Mapping_Access;
+                           Count    : Audit_Index)
+   is tagged limited record
+      Members : Column_Index_Array (1 .. Count);
+   end record;
+
+   type Auditable_Mapping_Access is access constant Auditable_Mapping'Class;
+
    --  The `Audit_Info` describes a column field that is modified.
    type Audit_Info is limited record
-      Field     : ADO.Schemas.Column_Index := 0;
+      Field     : Column_Index := 0;
       Old_Value : UBO.Object;
       New_Value : UBO.Object;
    end record;
 
-   type Audit_Index is new Positive range 1 .. ADO.Configs.MAX_COLUMNS;
+   type Audit_Info_Index is new Positive range 1 .. ADO.Configs.MAX_COLUMNS;
 
-   type Audit_Array is array (Audit_Index range <>) of Audit_Info;
+   type Audit_Array is array (Audit_Info_Index range <>) of Audit_Info;
 
    --  The `Auditable_Object_Record` is the root type of any auditable database record.
    --  It inherit from the `Object_Record` and adds auditing support by defining the
@@ -48,7 +59,7 @@ package ADO.Audits is
    --  the audit information that tracks the old and new values.
    type Auditable_Object_Record (Key_Type   : Object_Key_Type;
                                  Of_Class   : Class_Mapping_Access;
-                                 With_Audit : Auditable_Class_Mapping_Access) is abstract
+                                 With_Audit : Auditable_Mapping_Access) is abstract
        new ADO.Objects.Object_Record with private;
 
    --  Release the object.
@@ -81,7 +92,7 @@ private
 
    type Auditable_Object_Record (Key_Type   : Object_Key_Type;
                                  Of_Class   : Class_Mapping_Access;
-                                 With_Audit : Auditable_Class_Mapping_Access) is abstract
+                                 With_Audit : Auditable_Mapping_Access) is abstract
    new ADO.Objects.Object_Record (Key_Type => Key_Type, Of_Class => Of_Class) with record
       Audits : Audit_Array_Access;
    end record;

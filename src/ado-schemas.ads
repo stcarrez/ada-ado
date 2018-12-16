@@ -34,14 +34,6 @@ package ADO.Schemas is
 
    type Class_Mapping_Access is access constant Class_Mapping'Class;
 
-   type Auditable_Class_Mapping (Of_Class        : Class_Mapping_Access;
-                                 Auditable_Count : Column_Index)
-   is tagged record
-      Auditable : Member_Names (1 .. Auditable_Count);
-   end record;
-
-   type Auditable_Class_Mapping_Access is access constant Auditable_Class_Mapping'Class;
-
    --  Get the hash value associated with the class mapping.
    function Hash (Mapping : Class_Mapping_Access) return Ada.Containers.Hash_Type;
 
