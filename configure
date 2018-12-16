@@ -3018,7 +3018,7 @@ done
 
   *)
     MYSQL_LIB=mysqlclient
-    LDFLAGS="$LDFLAGS $ac_mysql_libs"
+    # LDFLAGS="$LDFLAGS $ac_mysql_libs"
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing mysql_init" >&5
 $as_echo_n "checking for library containing mysql_init... " >&6; }
