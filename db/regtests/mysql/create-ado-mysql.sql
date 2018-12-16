@@ -26,6 +26,32 @@ INSERT INTO entity_type (name) VALUES
 ;
 /* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
+/* This is the Audit_Info table */
+CREATE TABLE audit_info (
+  /*  */
+  `id` BIGINT ,
+  /* the entity id */
+  `entity_id` BIGINT ,
+  /* the entity type */
+  `entity_type` INTEGER NOT NULL,
+  /* the old value */
+  `old_value` VARCHAR(255) BINARY ,
+  /* the new value */
+  `new_value` VARCHAR(255) BINARY ,
+  /* the audit date */
+  `date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/* This is the User email table */
+CREATE TABLE audit_email (
+  /*  */
+  `id` BIGINT NOT NULL,
+  /* the user email address */
+  `user_email` VARCHAR(32) BINARY ,
+  /* the user email status */
+  `email_status` INTEGER ,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* The Comment table records a user comment associated with a database entity.
                  The comment can be associated with any other database record. */
 CREATE TABLE TEST_COMMENTS (
@@ -122,7 +148,9 @@ CREATE TABLE test_table (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT INTO entity_type (name) VALUES
-("TEST_COMMENTS")
+("audit_info")
+,("audit_email")
+,("TEST_COMMENTS")
 ,("test_image")
 ,("allocate")
 ,("test_user")

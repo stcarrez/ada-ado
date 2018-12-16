@@ -23,6 +23,32 @@ INSERT INTO entity_type (name) VALUES ("entity_type");
 INSERT INTO entity_type (name) VALUES ("sequence");
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
+/* This is the Audit_Info table */
+CREATE TABLE audit_info (
+  /*  */
+  `id` BIGINT ,
+  /* the entity id */
+  `entity_id` BIGINT ,
+  /* the entity type */
+  `entity_type` INTEGER NOT NULL,
+  /* the old value */
+  `old_value` VARCHAR(255) ,
+  /* the new value */
+  `new_value` VARCHAR(255) ,
+  /* the audit date */
+  `date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+);
+/* This is the User email table */
+CREATE TABLE audit_email (
+  /*  */
+  `id` BIGINT NOT NULL,
+  /* the user email address */
+  `user_email` VARCHAR(32) ,
+  /* the user email status */
+  `email_status` INTEGER ,
+  PRIMARY KEY (`id`)
+);
 /* The Comment table records a user comment associated with a database entity.
                  The comment can be associated with any other database record. */
 CREATE TABLE TEST_COMMENTS (
@@ -118,6 +144,8 @@ CREATE TABLE test_table (
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
 );
+INSERT INTO entity_type (name) VALUES ("audit_info");
+INSERT INTO entity_type (name) VALUES ("audit_email");
 INSERT INTO entity_type (name) VALUES ("TEST_COMMENTS");
 INSERT INTO entity_type (name) VALUES ("test_image");
 INSERT INTO entity_type (name) VALUES ("allocate");
