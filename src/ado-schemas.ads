@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ado.schemas -- Database Schemas
+--  ado-schemas -- Database Schemas
 --  Copyright (C) 2009, 2010, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -19,16 +19,28 @@ with Ada.Strings.Unbounded;
 with Ada.Finalization;
 with Ada.Containers;
 with Util.Strings;
+with ADO.Configs;
 package ADO.Schemas is
 
-   type Member_Names is array (Natural range <>) of Util.Strings.Name_Access;
+   type Column_Index is new Natural range 0 .. ADO.Configs.MAX_COLUMNS;
 
-   type Class_Mapping (Count : Natural) is tagged record
-      Table   : Util.Strings.Name_Access;
-      Members : Member_Names (1 .. Count);
+   type Member_Names is array (Column_Index range <>) of Util.Strings.Name_Access;
+
+   type Class_Mapping (Count : Column_Index)
+   is tagged limited record
+      Table     : Util.Strings.Name_Access;
+      Members   : Member_Names (1 .. Count);
    end record;
 
    type Class_Mapping_Access is access constant Class_Mapping'Class;
+
+   type Auditable_Class_Mapping (Of_Class        : Class_Mapping_Access;
+                                 Auditable_Count : Column_Index)
+   is tagged record
+      Auditable : Member_Names (1 .. Auditable_Count);
+   end record;
+
+   type Auditable_Class_Mapping_Access is access constant Auditable_Class_Mapping'Class;
 
    --  Get the hash value associated with the class mapping.
    function Hash (Mapping : Class_Mapping_Access) return Ada.Containers.Hash_Type;
