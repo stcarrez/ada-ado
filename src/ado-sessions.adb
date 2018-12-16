@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017 Stephane Carrez
+--  ado-sessions -- Sessions Management
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -357,6 +357,15 @@ package body ADO.Sessions is
                                                         Database.Impl.Values.all'Access);
       end;
    end Create_Statement;
+
+   --  ------------------------------
+   --  Get the audit manager.
+   --  ------------------------------
+   function Get_Audit_Manager (Database : in Master_Session)
+                               return access Audits.Audit_Manager'Class is
+   begin
+      return Database.Audit;
+   end Get_Audit_Manager;
 
    --  ------------------------------
    --  Internal operation to get access to the database connection.
