@@ -317,8 +317,8 @@ private
    COL_7_1_NAME : aliased constant String := "entity_value";
 
    NULLABLE_TABLE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 8,
-      Table => NULLABLE_TABLE_NAME'Access,
+     (Count   => 8,
+      Table   => NULLABLE_TABLE_NAME'Access,
       Members => (
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
@@ -327,11 +327,11 @@ private
          5 => COL_4_1_NAME'Access,
          6 => COL_5_1_NAME'Access,
          7 => COL_6_1_NAME'Access,
-         8 => COL_7_1_NAME'Access
-)
+         8 => COL_7_1_NAME'Access)
      );
    NULLABLE_TABLE_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := NULLABLE_TABLE_DEF'Access;
+
 
    Null_Nullable_Table : constant Nullable_Table_Ref
       := Nullable_Table_Ref'(ADO.Objects.Object_Ref with null record);
@@ -391,8 +391,8 @@ private
    COL_7_2_NAME : aliased constant String := "entity_value";
 
    TABLE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 8,
-      Table => TABLE_NAME'Access,
+     (Count   => 8,
+      Table   => TABLE_NAME'Access,
       Members => (
          1 => COL_0_2_NAME'Access,
          2 => COL_1_2_NAME'Access,
@@ -401,11 +401,11 @@ private
          5 => COL_4_2_NAME'Access,
          6 => COL_5_2_NAME'Access,
          7 => COL_6_2_NAME'Access,
-         8 => COL_7_2_NAME'Access
-)
+         8 => COL_7_2_NAME'Access)
      );
    TABLE_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := TABLE_DEF'Access;
+
 
    Null_Table : constant Table_Ref
       := Table_Ref'(ADO.Objects.Object_Ref with null record);

@@ -177,8 +177,8 @@ private
    COL_6_1_NAME : aliased constant String := "entity__type_fk";
 
    COMMENT_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 7,
-      Table => COMMENT_NAME'Access,
+     (Count   => 7,
+      Table   => COMMENT_NAME'Access,
       Members => (
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
@@ -186,11 +186,11 @@ private
          4 => COL_3_1_NAME'Access,
          5 => COL_4_1_NAME'Access,
          6 => COL_5_1_NAME'Access,
-         7 => COL_6_1_NAME'Access
-)
+         7 => COL_6_1_NAME'Access)
      );
    COMMENT_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := COMMENT_DEF'Access;
+
 
    Null_Comment : constant Comment_Ref
       := Comment_Ref'(ADO.Objects.Object_Ref with null record);

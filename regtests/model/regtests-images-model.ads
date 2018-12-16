@@ -141,17 +141,17 @@ private
    COL_3_1_NAME : aliased constant String := "image";
 
    IMAGE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 4,
-      Table => IMAGE_NAME'Access,
+     (Count   => 4,
+      Table   => IMAGE_NAME'Access,
       Members => (
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
          3 => COL_2_1_NAME'Access,
-         4 => COL_3_1_NAME'Access
-)
+         4 => COL_3_1_NAME'Access)
      );
    IMAGE_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := IMAGE_DEF'Access;
+
 
    Null_Image : constant Image_Ref
       := Image_Ref'(ADO.Objects.Object_Ref with null record);

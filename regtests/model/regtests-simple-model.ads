@@ -251,16 +251,16 @@ private
    COL_2_1_NAME : aliased constant String := "name";
 
    ALLOCATE_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 3,
-      Table => ALLOCATE_NAME'Access,
+     (Count   => 3,
+      Table   => ALLOCATE_NAME'Access,
       Members => (
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
-         3 => COL_2_1_NAME'Access
-)
+         3 => COL_2_1_NAME'Access)
      );
    ALLOCATE_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := ALLOCATE_DEF'Access;
+
 
    Null_Allocate : constant Allocate_Ref
       := Allocate_Ref'(ADO.Objects.Object_Ref with null record);
@@ -312,18 +312,18 @@ private
    COL_4_2_NAME : aliased constant String := "select";
 
    USER_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 5,
-      Table => USER_NAME'Access,
+     (Count   => 5,
+      Table   => USER_NAME'Access,
       Members => (
          1 => COL_0_2_NAME'Access,
          2 => COL_1_2_NAME'Access,
          3 => COL_2_2_NAME'Access,
          4 => COL_3_2_NAME'Access,
-         5 => COL_4_2_NAME'Access
-)
+         5 => COL_4_2_NAME'Access)
      );
    USER_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := USER_DEF'Access;
+
 
    Null_User : constant User_Ref
       := User_Ref'(ADO.Objects.Object_Ref with null record);
