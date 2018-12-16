@@ -104,7 +104,7 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
 
   *)
     MYSQL_LIB=mysqlclient
-    LDFLAGS="$LDFLAGS $ac_mysql_libs"
+    # LDFLAGS="$LDFLAGS $ac_mysql_libs"
     AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
