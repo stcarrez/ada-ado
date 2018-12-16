@@ -25,6 +25,7 @@ with ADO.Queries.Tests;
 with ADO.Parameters.Tests;
 with ADO.Datasets.Tests;
 with ADO.Statements.Tests;
+with ADO.Audits.Tests;
 package body ADO.Testsuite is
 
    procedure Drivers (Suite : in Util.Tests.Access_Test_Suite);
@@ -46,6 +47,7 @@ package body ADO.Testsuite is
       Drivers (Ret);
       ADO.Queries.Tests.Add_Tests (Ret);
       ADO.Datasets.Tests.Add_Tests (Ret);
+      ADO.Audits.Tests.Add_Tests (Ret);
       return Ret;
    end Suite;
 
