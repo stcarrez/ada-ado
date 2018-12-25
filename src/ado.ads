@@ -58,6 +58,12 @@ package ADO is
    --  The <b>Nullable_T</b> types provide a way to specify and check whether a value is null
    --  or not.
 
+   subtype Nullable_Boolean is Util.Nullables.Nullable_Boolean;
+   function "=" (Left, Right : in Nullable_Boolean) return Boolean
+     renames Util.Nullables."=";
+
+   Null_Boolean : constant Nullable_Boolean;
+
    --  An integer which can be null.
    subtype Nullable_Integer is Util.Nullables.Nullable_Integer;
    function "=" (Left, Right : in Nullable_Integer) return Boolean
@@ -119,6 +125,10 @@ private
                                                                       Month   => 1,
                                                                       Day     => 2,
                                                                       Seconds => 0.0);
+
+   Null_Boolean : constant Nullable_Boolean
+     := Nullable_Boolean '(Is_Null => True,
+                           Value   => False);
 
    Null_Integer : constant Nullable_Integer
      := Nullable_Integer '(Is_Null => True,
