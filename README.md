@@ -115,21 +115,25 @@ To create manually the database, you can proceed to the following steps:
 1. Create the 'ado_test' database in MySQL
 ```
 mysql -u root
-mysql> create database ado_test;
+mysql> CREATE DATABASE ado_test;
 ```
 
 2. Create the 'ado' user and give the access rights:
 ```
-mysql> grant select, insert, update, delete,
-       create, drop, create temporary tables, execute,
-       show view on `ado_test`.* to ado@'localhost';
-mysql> flush privileges;
+mysql> CREATE USER 'ado_test' IDENTIFIED BY '';
+```
+
+```
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE,
+       CREATE, DROP, CREATE TEMPORARY TABLES, EXECUTE,
+       SHOW VIEW ON `ado_test`.* TO ado@'%';
+mysql> FLUSH PRIVILEGES;
 ```
 
 3. Create the tables
 ```
-mysql> use ado_test
-mysql> source db/regtests/mysql/create-ado-mysql.sql
+mysql> USE ado_test
+mysql> SOURCE db/regtests/mysql/create-ado-mysql.sql
 ```
 
 ### Postgresql setup
