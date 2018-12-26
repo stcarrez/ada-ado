@@ -225,6 +225,13 @@ package ADO.Statements is
                          Column : Natural) return Boolean;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Nullable_Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Nullable_Boolean (Query  : Query_Statement;
+                                  Column : Natural) return Nullable_Boolean;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
