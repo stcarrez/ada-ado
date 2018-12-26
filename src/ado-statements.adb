@@ -531,6 +531,31 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as a <b>Nullable_Boolean</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Nullable_Boolean (Query  : Query_Statement;
+                                  Column : Natural) return Nullable_Boolean is
+   begin
+      if Query.Proxy = null then
+         if Query_Statement'Class (Query).Is_Null (Column) then
+            return ADO.Null_Boolean;
+         else
+            return (Is_Null => False,
+                    Value   => Query_Statement'Class (Query).Get_Boolean (Column));
+         end if;
+      else
+         if Query.Is_Null (Column) then
+            return ADO.Null_Boolean;
+         end if;
+         return (Is_Null => False,
+                 Value   => Query.Proxy.Get_Boolean (Column));
+      end if;
+   end Get_Nullable_Boolean;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Identifier</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
