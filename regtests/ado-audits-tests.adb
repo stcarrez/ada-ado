@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,8 @@ package body ADO.Audits.Tests is
                    Session : in out ADO.Sessions.Master_Session'Class;
                    Object  : in Auditable_Object_Record'Class;
                    Changes : in Audit_Array) is
+      pragma Unreferenced (Manager);
+
       Now  : constant Ada.Calendar.Time := Ada.Calendar.Clock;
       Kind : constant ADO.Entity_Type
         := ADO.Sessions.Entities.Find_Entity_Type (Session, Object.Get_Key);
@@ -69,6 +71,7 @@ package body ADO.Audits.Tests is
    end Add_Tests;
 
    procedure Set_Up (T : in out Test) is
+      pragma Unreferenced (T);
    begin
       Regtests.Set_Audit_Manager (Audit_Instance'Access);
    end Set_Up;
