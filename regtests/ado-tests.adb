@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -254,6 +254,12 @@ package body ADO.Tests is
       Usr2.Load (DB, User.Get_Id);
       Util.Tests.Assert_Equals (T, To_String (Name.Value), String '(Usr2.Get_Name),
                                 "Invalid name inserted for user");
+
+      Usr2.Set_Name (ADO.Null_String);
+      Usr2.Save (DB);
+
+      User.Load (DB, Usr2.Get_Id);
+      T.Assert (User.Get_Name.Is_Null, "Name must be null after save");
    end Test_String;
 
    --  ------------------------------
