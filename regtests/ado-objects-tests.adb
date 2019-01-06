@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,7 @@ package body ADO.Objects.Tests is
                                return Element_Type;
       Val1 : Element_Type;
       Val2 : Element_Type;
+      Val3 : Element_Type;
    procedure Test_Op (T : in out Test);
 
    procedure Test_Op (T : in out Test) is
@@ -63,6 +64,23 @@ package body ADO.Objects.Tests is
       --  Load again and compare to check the update.
       Item3.Load (DB, Item2.Get_Id);
       T.Assert (Get_Value (Item3) = Val2, Name & " invalid value loaded in item3");
+
+      begin
+         Set_Value (Item1, Val3);
+         Item1.Save (DB);
+         T.Fail ("No LAZY_LOCK exception was raised.");
+
+      exception
+         when ADO.Objects.LAZY_LOCK =>
+            null;
+      end;
+
+      Set_Value (Item3, Val3);
+      Item3.Save (DB);
+      T.Assert (Get_Value (Item3) = Val3, Name & " invalid value loaded in item3");
+
+      Item1.Load (DB, Item1.Get_Id);
+      T.Assert (Get_Value (Item1) = Val3, Name & " invalid value loaded in item3");
    end Test_Op;
 
    procedure Test_Object_Nullable_Integer is
@@ -71,7 +89,8 @@ package body ADO.Objects.Tests is
                   Regtests.Statements.Model.Set_Int_Value,
                   Regtests.Statements.Model.Get_Int_Value,
                   Nullable_Integer '(Value => 123, Is_Null => False),
-                  Nullable_Integer '(Value => 0, Is_Null => True));
+                  Nullable_Integer '(Value => 0, Is_Null => True),
+                  Nullable_Integer '(Value => 231, Is_Null => False));
 
    procedure Test_Object_Nullable_Entity_Type is
      new Test_Op ("Nullable_Entity_Type",
@@ -79,15 +98,17 @@ package body ADO.Objects.Tests is
                   Regtests.Statements.Model.Set_Entity_Value,
                   Regtests.Statements.Model.Get_Entity_Value,
                   Nullable_Entity_Type '(Value => 456, Is_Null => False),
-                  Nullable_Entity_Type '(Value => 0, Is_Null => True));
+                  Nullable_Entity_Type '(Value => 0, Is_Null => True),
+                  Nullable_Entity_Type '(Value => 564, Is_Null => False));
 
    procedure Test_Object_Nullable_Time is
      new Test_Op ("Nullable_Time",
                   Nullable_Time, "=",
                   Regtests.Statements.Model.Set_Time_Value,
                   Regtests.Statements.Model.Get_Time_Value,
-                  Nullable_Time '(Value => 456, Is_Null => False),
-                  Nullable_Time '(Value => <>, Is_Null => True));
+                  Nullable_Time '(Value => 45621, Is_Null => False),
+                  Nullable_Time '(Value => <>, Is_Null => True),
+                  Nullable_Time '(Value => 56412, Is_Null => False));
 
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
