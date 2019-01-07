@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-tests -- Test statements package
---  Copyright (C) 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,7 +72,7 @@ package body ADO.Statements.Tests is
          begin
             Item.Set_Id_Value (ADO.Identifier (I * I));
             Item.Set_Int_Value (ADO.Null_Integer);
-            Item.Set_Bool_Value ((I mod 2) = 0);
+            Item.Set_Bool_Value (ADO.Null_Boolean);
             Item.Set_String_Value (ADO.Null_String);
             Item.Set_Time_Value (ADO.Null_Time);
             Item.Set_Entity_Value (ADO.Null_Entity_Type);
