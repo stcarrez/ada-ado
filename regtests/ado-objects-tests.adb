@@ -16,15 +16,27 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+with Ada.Calendar;
 with Util.Test_Caller;
 with ADO.Sessions;
 with Regtests.Simple.Model;
 with Regtests.Comments;
 with Regtests.Statements.Model;
+with Regtests.Audits.Model;
 package body ADO.Objects.Tests is
 
    use Util.Tests;
    use type Ada.Containers.Hash_Type;
+
+   TIME_VALUE1 : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year    => 1901,
+                                                                     Month   => 1,
+                                                                     Day     => 2,
+                                                                     Seconds => 0.0);
+
+   TIME_VALUE2 : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year    => 1981,
+                                                                     Month   => 3,
+                                                                     Day     => 22,
+                                                                     Seconds => 40.0);
 
    --  Test the Set_xxx and Get_xxx operation on various simple times.
    generic
@@ -80,7 +92,7 @@ package body ADO.Objects.Tests is
       T.Assert (Get_Value (Item3) = Val3, Name & " invalid value loaded in item3");
 
       Item1.Load (DB, Item1.Get_Id);
-      T.Assert (Get_Value (Item1) = Val3, Name & " invalid value loaded in item3");
+      T.Assert (Get_Value (Item1) = Val3, Name & " invalid value loaded in item1");
    end Test_Op;
 
    procedure Test_Object_Nullable_Integer is
@@ -106,9 +118,9 @@ package body ADO.Objects.Tests is
                   Nullable_Time, "=",
                   Regtests.Statements.Model.Set_Time_Value,
                   Regtests.Statements.Model.Get_Time_Value,
-                  Nullable_Time '(Value => 45621, Is_Null => False),
+                  Nullable_Time '(Value => TIME_VALUE1, Is_Null => False),
                   Nullable_Time '(Value => <>, Is_Null => True),
-                  Nullable_Time '(Value => 56412, Is_Null => False));
+                  Nullable_Time '(Value => TIME_VALUE2, Is_Null => False));
 
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
@@ -343,6 +355,33 @@ package body ADO.Objects.Tests is
       end;
    end Test_Is_Inserted;
 
+   --  ------------------------------
+   --  Test object creation/update/load with string as key.
+   --  ------------------------------
+   procedure Test_String_Key (T : in out Test) is
+      Item1 : Regtests.Audits.Model.Property_Ref;
+      Item2 : Regtests.Audits.Model.Property_Ref;
+      Item3 : Regtests.Audits.Model.Property_Ref;
+      S     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Uuid  : constant String := Util.Tests.Get_Uuid;
+   begin
+      Item1.Set_Id ("name " & Uuid);
+      Item1.Set_Value ((Is_Null => False, Value => 123));
+      Item1.Save (S);
+
+      T.Assert (Item1.Is_Inserted, "Object with string key is not inserted");
+      Util.Tests.Assert_Equals (T, "name " & Uuid, String '(Item1.Get_Id), "Object key is invalid");
+
+      Item2.Set_Id ("name2 " & Uuid);
+      Item2.Set_Value ((Is_Null => True, Value => 0));
+      Item2.Save (S);
+
+      Item3.Load (S, Ada.Strings.Unbounded.To_Unbounded_String ("name " & Uuid));
+      T.Assert (Item3.Is_Loaded, "Item3 must be loaded");
+      T.Assert (not Item3.Get_Value.Is_Null, "Item3 value must not be null");
+      Util.Tests.Assert_Equals (T, 123, Item3.Get_Value.Value, "Item3 value is invalid");
+   end Test_String_Key;
+
    package Caller is new Util.Test_Caller (Test, "ADO.Objects");
 
    --  ------------------------------
@@ -361,6 +400,8 @@ package body ADO.Objects.Tests is
                        Test_Object_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Time)",
                        Test_Object_Nullable_Time'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects.Create (String key)",
+                       Test_String_Key'Access);
    end Add_Tests;
 
 end ADO.Objects.Tests;
