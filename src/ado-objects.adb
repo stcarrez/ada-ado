@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -691,6 +691,25 @@ package body ADO.Objects is
    begin
       if Into /= Value then
          Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Boolean;
+
+   procedure Set_Field_Boolean (Object : in out Object_Record'Class;
+                                Field  : in Column_Index;
+                                Into   : in out Nullable_Boolean;
+                                Value  : in Nullable_Boolean) is
+   begin
+      if Into.Is_Null then
+         if not Value.Is_Null then
+            Into := Value;
+            Object.Modified (Field) := True;
+         end if;
+      elsif Value.Is_Null then
+         Into.Is_Null := True;
+         Object.Modified (Field) := True;
+      elsif Into.Value /= Value.Value then
+         Into.Value := Value.Value;
          Object.Modified (Field) := True;
       end if;
    end Set_Field_Boolean;
