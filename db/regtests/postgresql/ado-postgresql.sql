@@ -25,6 +25,14 @@ CREATE TABLE audit_email (
   "email_status" INTEGER ,
   PRIMARY KEY ("id")
 );
+/* This is a generic property */
+CREATE TABLE audit_property (
+  /*  */
+  "id" VARCHAR(255) NOT NULL,
+  /* the property value */
+  "user_email" INTEGER ,
+  PRIMARY KEY ("id")
+);
 /* The Comment table records a user comment associated with a database entity.
                  The comment can be associated with any other database record. */
 CREATE TABLE TEST_COMMENTS (
@@ -123,6 +131,7 @@ CREATE TABLE test_table (
 INSERT INTO entity_type (name) VALUES
 ('audit_info')
 ,('audit_email')
+,('audit_property')
 ,('TEST_COMMENTS')
 ,('test_image')
 ,('allocate')
