@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -809,6 +809,21 @@ package body ADO.Statements is
                          Value  : in Boolean) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Nullable_Boolean) is
+   begin
+      if Value.Is_Null then
+         Update.Save_Null_Field (Name);
+      else
+         Update.Update.Save_Field (Name => Name, Value => Value.Value);
+      end if;
    end Save_Field;
 
    --  ------------------------------
