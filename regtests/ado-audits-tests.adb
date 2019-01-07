@@ -25,6 +25,8 @@ with ADO.SQL;
 with ADO.Sessions.Entities;
 package body ADO.Audits.Tests is
 
+   use type ADO.Objects.Object_Key_Type;
+
    package Caller is new Util.Test_Caller (Test, "ADO.Audits");
 
    type Test_Audit_Manager is new Audit_Manager with null record;
@@ -54,7 +56,9 @@ package body ADO.Audits.Tests is
          declare
             Audit : Regtests.Audits.Model.Audit_Ref;
          begin
-            Audit.Set_Entity_Id (ADO.Objects.Get_Value (Object.Get_Key));
+            if Object.Key_Type = ADO.Objects.KEY_INTEGER then
+              Audit.Set_Entity_Id (ADO.Objects.Get_Value (Object.Get_Key));
+            end if;
             Audit.Set_Entity_Type (Kind);
             Audit.Set_Old_Value (UBO.To_String (C.Old_Value));
             Audit.Set_New_Value (UBO.To_String (C.New_Value));
