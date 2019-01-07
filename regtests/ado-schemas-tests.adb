@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,7 +222,7 @@ package body ADO.Schemas.Tests is
             Next (Iter);
          end loop;
          if Driver = "sqlite" then
-            Util.Tests.Assert_Equals (T, 19, Count,
+            Util.Tests.Assert_Equals (T, 21, Count,
                                       "Invalid number of tables found in the schema");
          elsif Driver = "mysql" then
             Util.Tests.Assert_Equals (T, 10, Count,
