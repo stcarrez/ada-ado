@@ -13,6 +13,8 @@ Regtests.Audits.Model.Email:
       type: identifier
       nullable: false
       unique: true
+      generator:
+        strategy: sequence
   fields:
     email:
       type: string
@@ -29,6 +31,32 @@ Regtests.Audits.Model.Email:
       auditable: true
       description: the user email status
 
+Regtests.Audits.Model.Property:
+  type: entity
+  table: audit_property
+  schema: schema_name
+  readOnly: true
+  hasList: false
+  description: This is a generic property
+  indexes:
+    name_index:
+      columns: [ email ]
+  id:
+    id:
+      type: string
+      nullable: false
+      unique: true
+      generator:
+        strategy: none
+  fields:
+    value:
+      type: integer
+      column: user_email
+      unique: false
+      auditable: true
+      nullable: true
+      description: the property value
+
 Regtests.Audits.Model.Audit:
   type: entity
   table: audit_info
@@ -44,7 +72,7 @@ Regtests.Audits.Model.Audit:
       type: identifier
       column: id
       generator:
-        strategy: AUTO
+        strategy: sequence
   fields:
     entity_id:
       type: identifier
