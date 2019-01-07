@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,6 +40,8 @@ package Regtests.Audits.Model is
    type Audit_Ref is new ADO.Objects.Object_Ref with null record;
 
    type Email_Ref is new ADO.Objects.Object_Ref with null record;
+
+   type Property_Ref is new ADO.Objects.Object_Ref with null record;
 
    --  --------------------
    --  This is the Audit_Info table
@@ -252,6 +254,85 @@ package Regtests.Audits.Model is
    procedure Copy (Object : in Email_Ref;
                    Into   : in out Email_Ref);
 
+   --  --------------------
+   --  This is a generic property
+   --  --------------------
+   --  Create an object key for Property.
+   function Property_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key;
+   --  Create an object key for Property from a string.
+   --  Raises Constraint_Error if the string cannot be converted into the object key.
+   function Property_Key (Id : in String) return ADO.Objects.Object_Key;
+
+   Null_Property : constant Property_Ref;
+   function "=" (Left, Right : Property_Ref'Class) return Boolean;
+
+   --  Set null
+   procedure Set_Id (Object : in out Property_Ref;
+                     Value  : in Ada.Strings.Unbounded.Unbounded_String);
+   procedure Set_Id (Object : in out Property_Ref;
+                     Value : in String);
+
+   --  Get null
+   function Get_Id (Object : in Property_Ref)
+                 return Ada.Strings.Unbounded.Unbounded_String;
+   function Get_Id (Object : in Property_Ref)
+                 return String;
+
+   --  Set the property value
+   procedure Set_Value (Object : in out Property_Ref;
+                        Value  : in ADO.Nullable_Integer);
+
+   --  Get the property value
+   function Get_Value (Object : in Property_Ref)
+                 return ADO.Nullable_Integer;
+
+   --  Load the entity identified by 'Id'.
+   --  Raises the NOT_FOUND exception if it does not exist.
+   procedure Load (Object  : in out Property_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Id      : in Ada.Strings.Unbounded.Unbounded_String);
+
+   --  Load the entity identified by 'Id'.
+   --  Returns True in <b>Found</b> if the object was found and False if it does not exist.
+   procedure Load (Object  : in out Property_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Id      : in Ada.Strings.Unbounded.Unbounded_String;
+                   Found   : out Boolean);
+
+   --  Find and load the entity.
+   overriding
+   procedure Find (Object  : in out Property_Ref;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
+
+   --  Save the entity.  If the entity does not have an identifier, an identifier is allocated
+   --  and it is inserted in the table.  Otherwise, only data fields which have been changed
+   --  are updated.
+   overriding
+   procedure Save (Object  : in out Property_Ref;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+
+   --  Delete the entity.
+   overriding
+   procedure Delete (Object  : in out Property_Ref;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+
+   overriding
+   function Get_Value (From : in Property_Ref;
+                       Name : in String) return Util.Beans.Objects.Object;
+
+   --  Table definition
+   PROPERTY_TABLE : constant ADO.Schemas.Class_Mapping_Access;
+
+   --  Internal method to allocate the Object_Record instance
+   overriding
+   procedure Allocate (Object : in out Property_Ref);
+
+   --  Copy of the object.
+   procedure Copy (Object : in Property_Ref;
+                   Into   : in out Property_Ref);
+
 
 
 
@@ -393,4 +474,69 @@ private
 
    procedure Set_Field (Object : in out Email_Ref'Class;
                         Impl   : out Email_Access);
+   PROPERTY_NAME : aliased constant String := "audit_property";
+   COL_0_3_NAME : aliased constant String := "id";
+   COL_1_3_NAME : aliased constant String := "user_email";
+
+   PROPERTY_DEF : aliased constant ADO.Schemas.Class_Mapping :=
+     (Count   => 2,
+      Table   => PROPERTY_NAME'Access,
+      Members => (
+         1 => COL_0_3_NAME'Access,
+         2 => COL_1_3_NAME'Access)
+     );
+   PROPERTY_TABLE : constant ADO.Schemas.Class_Mapping_Access
+      := PROPERTY_DEF'Access;
+
+   PROPERTY_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
+     (Count    => 1,
+      Of_Class => PROPERTY_DEF'Access,
+      Members  => (
+         1 => 1)
+     );
+   PROPERTY_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
+      := PROPERTY_AUDIT_DEF'Access;
+
+   Null_Property : constant Property_Ref
+      := Property_Ref'(ADO.Objects.Object_Ref with null record);
+
+   type Property_Impl is
+      new ADO.Audits.Auditable_Object_Record (Key_Type => ADO.Objects.KEY_STRING,
+                                     Of_Class => PROPERTY_DEF'Access,
+                                     With_Audit => PROPERTY_AUDIT_DEF'Access)
+   with record
+       Value : ADO.Nullable_Integer;
+   end record;
+
+   type Property_Access is access all Property_Impl;
+
+   overriding
+   procedure Destroy (Object : access Property_Impl);
+
+   overriding
+   procedure Find (Object  : in out Property_Impl;
+                   Session : in out ADO.Sessions.Session'Class;
+                   Query   : in ADO.SQL.Query'Class;
+                   Found   : out Boolean);
+
+   overriding
+   procedure Load (Object  : in out Property_Impl;
+                   Session : in out ADO.Sessions.Session'Class);
+   procedure Load (Object  : in out Property_Impl;
+                   Stmt    : in out ADO.Statements.Query_Statement'Class;
+                   Session : in out ADO.Sessions.Session'Class);
+
+   overriding
+   procedure Save (Object  : in out Property_Impl;
+                   Session : in out ADO.Sessions.Master_Session'Class);
+
+   procedure Create (Object  : in out Property_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+
+   overriding
+   procedure Delete (Object  : in out Property_Impl;
+                     Session : in out ADO.Sessions.Master_Session'Class);
+
+   procedure Set_Field (Object : in out Property_Ref'Class;
+                        Impl   : out Property_Access);
 end Regtests.Audits.Model;

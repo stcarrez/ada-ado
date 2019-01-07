@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,11 +81,11 @@ package Regtests.Statements.Model is
 
    --  Set a boolean value
    procedure Set_Bool_Value (Object : in out Nullable_Table_Ref;
-                             Value  : in Boolean);
+                             Value  : in ADO.Nullable_Boolean);
 
    --  Get a boolean value
    function Get_Bool_Value (Object : in Nullable_Table_Ref)
-                 return Boolean;
+                 return ADO.Nullable_Boolean;
 
    --  Set a string value
    procedure Set_String_Value (Object : in out Nullable_Table_Ref;
@@ -343,7 +343,7 @@ private
        Version : Integer;
        Id_Value : ADO.Identifier;
        Int_Value : ADO.Nullable_Integer;
-       Bool_Value : Boolean;
+       Bool_Value : ADO.Nullable_Boolean;
        String_Value : ADO.Nullable_String;
        Time_Value : ADO.Nullable_Time;
        Entity_Value : ADO.Nullable_Entity_Type;

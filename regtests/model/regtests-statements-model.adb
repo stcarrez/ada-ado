@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,7 +66,7 @@ package body Regtests.Statements.Model is
       Impl.Version := 0;
       Impl.Id_Value := ADO.NO_IDENTIFIER;
       Impl.Int_Value.Is_Null := True;
-      Impl.Bool_Value := False;
+      Impl.Bool_Value.Is_Null := True;
       Impl.String_Value.Is_Null := True;
       Impl.Time_Value.Is_Null := True;
       Impl.Entity_Value.Is_Null := True;
@@ -138,16 +138,15 @@ package body Regtests.Statements.Model is
 
 
    procedure Set_Bool_Value (Object : in out Nullable_Table_Ref;
-                             Value  : in Boolean) is
+                             Value  : in ADO.Nullable_Boolean) is
       Impl : Nullable_Table_Access;
    begin
       Set_Field (Object, Impl);
       ADO.Objects.Set_Field_Boolean (Impl.all, 5, Impl.Bool_Value, Value);
-      ADO.Objects.Set_Field_Boolean (Impl.all, 5, Impl.Bool_Value, Value);
    end Set_Bool_Value;
 
    function Get_Bool_Value (Object : in Nullable_Table_Ref)
-                  return Boolean is
+                  return ADO.Nullable_Boolean is
       Impl : constant Nullable_Table_Access
          := Nullable_Table_Impl (Object.Get_Load_Object.all)'Access;
    begin
@@ -496,7 +495,11 @@ package body Regtests.Statements.Model is
             return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Int_Value.Value));
          end if;
       elsif Name = "bool_value" then
-         return Util.Beans.Objects.To_Object (Impl.Bool_Value);
+         if Impl.Bool_Value.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Impl.Bool_Value.Value);
+         end if;
       elsif Name = "string_value" then
          if Impl.String_Value.Is_Null then
             return Util.Beans.Objects.Null_Object;
@@ -552,8 +555,7 @@ package body Regtests.Statements.Model is
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Id_Value := Stmt.Get_Identifier (2);
       Object.Int_Value := Stmt.Get_Nullable_Integer (3);
-      Object.Bool_Value := Stmt.Get_Boolean (4);
-      Object.Bool_Value := Stmt.Get_Boolean (4);
+      Object.Bool_Value := Stmt.Get_Nullable_Boolean (4);
       Object.String_Value := Stmt.Get_Nullable_String (5);
       Object.Time_Value := Stmt.Get_Time (6);
       Object.Entity_Value := Stmt.Get_Nullable_Entity_Type (7);
@@ -672,7 +674,6 @@ package body Regtests.Statements.Model is
       Impl : Table_Access;
    begin
       Set_Field (Object, Impl);
-      ADO.Objects.Set_Field_Boolean (Impl.all, 5, Impl.Bool_Value, Value);
       ADO.Objects.Set_Field_Boolean (Impl.all, 5, Impl.Bool_Value, Value);
    end Set_Bool_Value;
 
@@ -1061,7 +1062,6 @@ package body Regtests.Statements.Model is
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Id_Value := Stmt.Get_Identifier (2);
       Object.Int_Value := Stmt.Get_Integer (3);
-      Object.Bool_Value := Stmt.Get_Boolean (4);
       Object.Bool_Value := Stmt.Get_Boolean (4);
       Object.String_Value := Stmt.Get_Unbounded_String (5);
       Object.Time_Value := Stmt.Get_Time (6);
