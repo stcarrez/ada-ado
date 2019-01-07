@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013, 2014, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,7 +91,7 @@ package body ADO.Datasets.Tests is
          declare
             Item : Regtests.Statements.Model.Nullable_Table_Ref;
          begin
-            Item.Set_Bool_Value (False);
+            Item.Set_Bool_Value ((Value => False, Is_Null => False));
             if (I mod 2) = 0 then
                Item.Set_Int_Value (ADO.Nullable_Integer '(123, False));
             end if;
