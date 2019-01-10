@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  schemas Tests -- Test loading of database schema
+--  ado-schemas-tests -- Test loading of database schema
 --  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -24,9 +24,11 @@ with Util.Strings.Transforms;
 with ADO.Parameters;
 with ADO.Schemas.Databases;
 with ADO.Sessions.Sources;
+with ADO.Sessions.Entities;
 with ADO.Schemas.Entities;
 
 with Regtests;
+with Regtests.Audits.Model;
 with Regtests.Simple.Model;
 package body ADO.Schemas.Tests is
 
@@ -64,34 +66,34 @@ package body ADO.Schemas.Tests is
                                        Session => S);
 
       declare
---           T1 : constant ADO.Model.Entity_Type_Ref
---             := Entities.Find_Entity_Type (Cache => C,
---                                           Table => Regtests.Simple.Model.USER_TABLE'Access);
---           T2 : constant ADO.Model.Entity_Type_Ref
---             := Entities.Find_Entity_Type (Cache => C,
---                                           Table => Regtests.Simple.Model.ALLOCATE_TABLE'Access);
-
          T4 : constant ADO.Entity_Type
            := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.ALLOCATE_TABLE);
          T5 : constant ADO.Entity_Type
            := Entities.Find_Entity_Type (Cache => C,
                                          Table => Regtests.Simple.Model.USER_TABLE);
+         T1 : constant ADO.Entity_Type
+           := Sessions.Entities.Find_Entity_Type (Session => S,
+                                                  Table   => Regtests.Audits.Model.AUDIT_TABLE);
+         T2 : constant ADO.Entity_Type
+           := Sessions.Entities.Find_Entity_Type (Session => S,
+                                                  Table   => Regtests.Audits.Model.EMAIL_TABLE);
+         T3 : constant ADO.Entity_Type
+           := Sessions.Entities.Find_Entity_Type (Session => S,
+                                                  Name    => "audit_property");
       begin
---           T.Assert (not ADO.Objects.Is_Null (T1), "Find_Entity_Type returned a null value");
---           T.Assert (not ADO.Objects.Is_Null (T2), "Find_Entity_Type returned a null value");
+         T.Assert (T1 > 0, "T1 must be positive");
+         T.Assert (T2 > 0, "T2 must be positive");
+         T.Assert (T3 > 0, "T3 must be positive");
+         T.Assert (T4 > 0, "T4 must be positive");
+         T.Assert (T5 > 0, "T5 must be positive");
 
-         T.Assert (T4 /= T5, "Two distinct tables have different entity types");
-         T.Assert (T4 > 0, "T1.Id must be positive");
-         T.Assert (T5 > 0, "T2.Id must be positive");
---           T.Assert (T1.Get_Id /= T2.Get_Id, "Two distinct tables have different ids");
---
---           Assert_Equals (T, Integer (T2.Get_Id), Integer (T4),
---                          "Invalid entity type for allocate_table");
---           Assert_Equals (T, Integer (T1.Get_Id), Integer (T5),
---                          "Invalid entity type for user_table");
+         T.Assert (T1 /= T2, "Two distinct tables have different entity types (T1, T2)");
+         T.Assert (T2 /= T3, "Two distinct tables have different entity types (T2, T3)");
+         T.Assert (T3 /= T4, "Two distinct tables have different entity types (T3, T4)");
+         T.Assert (T4 /= T5, "Two distinct tables have different entity types (T4, T5)");
+         T.Assert (T5 /= T1, "Two distinct tables have different entity types (T5, T1)");
       end;
-
    end Test_Find_Entity_Type;
 
    --  ------------------------------
