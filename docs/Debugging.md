@@ -1,4 +1,4 @@
-# Trouble shotting
+# Troubleshooting
 
 ## Change the log configuration
 

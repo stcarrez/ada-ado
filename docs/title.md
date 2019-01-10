@@ -1,9 +1,9 @@
 ---
 title: "Ada Database Objects Programmer's Guide"
 author: [Stephane Carrez]
-date: 2018-10-16
+date: 2019-01-10
 subject: "Ada Database Objects"
-tags: [Ada, ORM, Database, MySQL, SQLite]
+tags: [Ada, ORM, Database, MySQL, PostgreSQL, SQLite]
 titlepage: true
 titlepage-color: 06386e
 titlepage-text-color: FFFFFF

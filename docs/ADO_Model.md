@@ -143,14 +143,24 @@ For the ADO framework, only the identifier and string primary types are supporte
 <table-type-name>:
   id:
     <member-name>:
-      type: identifier|string
+      type: {identifier|string}
       length: <length>
       description: <description>
       column: <column-name>
       not-null: true
       unique: true
       version: false
+      generator:
+        strategy: {none|auto|sequence}
 ```
+
+The `generator` section describes how the primary key is generated.
+
+|Strategy  | description                                     |
+|--------- | ----------------------------------------------- |
+|none      | the primary key is managed by the application   |
+|auto      | use the database auto increment support         |
+|sequence  | use the ADO sequence generator                  |
 
 ## Relations
 

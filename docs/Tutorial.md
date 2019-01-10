@@ -190,7 +190,7 @@ And to use an SQLite database, you could use:
 For a PostgreSQL database, the factory would look like:
 
 ```
-   ADO.Sessions.Factory.Create (Factory, "postgresql:///localhost:5432/ado_test?user=test");
+   ADO.Sessions.Factory.Create (Factory, "postgresql://localhost:5432/ado_test?user=test");
 ```
 
 Factory initialization is done once when an application starts.  The same

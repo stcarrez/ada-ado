@@ -17,12 +17,18 @@ and then get, build and install the [Ada Utility Library](https://github.com/stc
 
 The PostgreSQL, MySQL and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
+The configure script will fail if it does not find any database driver.
 
 ### Ubuntu
 
 MySQL Development installation
 ```
 sudo apt-get install libmysqlclient-dev
+```
+
+MariaDB Development installation
+```
+sudo apt-get install mariadb-client libmariadb-client-lgpl-dev
 ```
 
 SQLite Development installation
@@ -60,6 +66,14 @@ and you may use:
   * `--prefix=DIR` to control the installation directory,
   * `--with-mysql=PATH` to control the path where `mysql_config` is installed,
   * `--with-ada-util=PATH` to control the installation path of [Ada Utility Library](https://github.com/stcarrez/ada-util),
+  * `--enable-mysql` to enable the support for MySQL,
+  * `--enable-postgresql` to enable the support for PostgreSQL,
+  * `--enable-sqlite` to enable the support for SQLite,
+  * `--enable-shared` to enable the build of shared libraries,
+  * `--disable-static` to disable the build of static libraries,
+  * `--enable-distrib` to build for a distribution and strip symbols,
+  * `--disable-distrib` to build with debugging support,
+  * `--enable-coverage` to build with code coverage support (`-fprofile-arcs -ftest-coverage`),
   * `--help` to get a detailed list of supported options.
 
 In most cases you will configure with the following command:
