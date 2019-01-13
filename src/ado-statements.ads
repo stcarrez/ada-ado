@@ -218,6 +218,20 @@ package ADO.Statements is
                                   Column : Natural) return Nullable_Integer;
 
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Float</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Float (Query  : Query_Statement;
+                       Column : Natural) return Float;
+
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Long_Float</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   function Get_Double (Query  : Query_Statement;
+                        Column : Natural) return Long_Float;
+
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Boolean</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
