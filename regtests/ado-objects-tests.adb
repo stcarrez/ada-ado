@@ -367,6 +367,7 @@ package body ADO.Objects.Tests is
    begin
       Item1.Set_Id ("name " & Uuid);
       Item1.Set_Value ((Is_Null => False, Value => 123));
+      Item1.Set_Float_Value (23.44);
       Item1.Save (S);
 
       T.Assert (Item1.Is_Inserted, "Object with string key is not inserted");
@@ -374,6 +375,7 @@ package body ADO.Objects.Tests is
 
       Item2.Set_Id ("name2 " & Uuid);
       Item2.Set_Value ((Is_Null => True, Value => 0));
+      Item2.Set_Float_Value (34.23);
       Item2.Save (S);
 
       Item3.Load (S, Ada.Strings.Unbounded.To_Unbounded_String ("name " & Uuid));
