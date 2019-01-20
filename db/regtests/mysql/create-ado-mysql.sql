@@ -58,6 +58,8 @@ CREATE TABLE audit_property (
   `id` VARCHAR(255) BINARY NOT NULL,
   /* the property value */
   `user_email` INTEGER ,
+  /* a float property value */
+  `float_value` FLOAT NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* The Comment table records a user comment associated with a database entity.
