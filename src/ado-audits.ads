@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits -- Auditing support
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -146,6 +146,16 @@ package ADO.Audits is
                                 Field  : in Column_Index;
                                 Into   : in out Boolean;
                                 Value  : in Boolean);
+
+   procedure Set_Field_Float (Object : in out Auditable_Object_Record'Class;
+                              Field  : in Column_Index;
+                              Into   : in out Float;
+                              Value  : in Float);
+
+   procedure Set_Field_Long_Float (Object : in out Auditable_Object_Record'Class;
+                                   Field  : in Column_Index;
+                                   Into   : in out Long_Float;
+                                   Value  : in Long_Float);
 
    procedure Set_Field_Object (Object : in out Auditable_Object_Record'Class;
                                Field  : in Column_Index;
