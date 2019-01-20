@@ -260,6 +260,38 @@ package body ADO.Statements is
    end Get_Int64;
 
    --  ------------------------------
+   --  Get a double number from a C string terminated by \0
+   --  ------------------------------
+   function Get_Double (Str : chars_ptr) return Long_Float is
+      C : Character;
+      P : chars_ptr := Str;
+   begin
+      if P = null then
+         return 0.0;
+      end if;
+      loop
+         C := P.all;
+         if C /= ' ' then
+            exit;
+         end if;
+         P := P + 1;
+      end loop;
+      declare
+         S : String (1 .. 100);
+      begin
+         for I in S'Range loop
+            C := P.all;
+            if C = ASCII.NUL then
+               return Long_Float'Value (S (S'First .. I - 1));
+            end if;
+            S (I) := C;
+            P := P + 1;
+         end loop;
+         raise Invalid_Type with "Invalid floating point value";
+      end;
+   end Get_Double;
+
+   --  ------------------------------
    --  Get a time from the C string passed in <b>Value</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
