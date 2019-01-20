@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,6 +222,22 @@ package body ADO.Parameters is
                                    Name      => "",
                                    Position  => Position,
                                    Long_Num  => Value);
+   begin
+      if Position = 0 then
+         P.Position := Abstract_List'Class (Params).Length + 1;
+      end if;
+      Abstract_List'Class (Params).Add_Parameter (P);
+   end Bind_Param;
+
+   procedure Bind_Param (Params   : in out Abstract_List;
+                         Position : in Natural;
+                         Value    : in Long_Float) is
+      P : Parameter := Parameter '(T         => T_LONG_FLOAT,
+                                   Len       => 0,
+                                   Value_Len => 0,
+                                   Name      => "",
+                                   Position  => Position,
+                                   Float     => Value);
    begin
       if Position = 0 then
          P.Position := Abstract_List'Class (Params).Length + 1;
@@ -476,6 +492,9 @@ package body ADO.Parameters is
 
             when T_INTEGER =>
                Append (Buffer, Util.Strings.Image (Param.Num));
+
+            when T_LONG_FLOAT =>
+               Append (Buffer, Long_Float'Image (Param.Float));
 
             when T_BOOLEAN =>
                Params.Dialect.Escape_Sql (Buffer, Param.Bool);
