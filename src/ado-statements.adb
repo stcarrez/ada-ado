@@ -281,10 +281,10 @@ package body ADO.Statements is
       begin
          for I in S'Range loop
             C := P.all;
+            S (I) := C;
             if C = ASCII.NUL then
                return Long_Float'Value (S (S'First .. I - 1));
             end if;
-            S (I) := C;
             P := P + 1;
          end loop;
          raise Invalid_Type with "Invalid floating point value";
@@ -491,7 +491,7 @@ package body ADO.Statements is
                        Column : Natural) return Int64 is
    begin
       if Query.Proxy = null then
-         raise Invalid_Statement with "Query statement is not initialized";
+         raise Invalid_Statement with "Int64 is not supported by database driver";
       end if;
       return Query.Proxy.Get_Int64 (Column);
    end Get_Int64;
@@ -571,7 +571,7 @@ package body ADO.Statements is
                         Column : Natural) return Long_Float is
    begin
       if Query.Proxy = null then
-         raise Invalid_Statement with "Query statement is not initialized";
+         raise Invalid_Statement with "Double is not supported by database driver";
       else
          return Query.Proxy.Get_Double (Column);
       end if;
@@ -923,6 +923,28 @@ package body ADO.Statements is
    procedure Save_Field (Update : in out Update_Statement;
                          Name   : in String;
                          Value  : in Long_Long_Integer) is
+   begin
+      Update.Update.Save_Field (Name => Name, Value => Value);
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Float) is
+   begin
+      Update.Update.Save_Field (Name => Name, Value => Long_Float (Value));
+   end Save_Field;
+
+   --  ------------------------------
+   --  Prepare the update/insert query to save the table field
+   --  identified by <b>Name</b> and set it to the <b>Value</b>.
+   --  ------------------------------
+   procedure Save_Field (Update : in out Update_Statement;
+                         Name   : in String;
+                         Value  : in Long_Float) is
    begin
       Update.Update.Save_Field (Name => Name, Value => Value);
    end Save_Field;
