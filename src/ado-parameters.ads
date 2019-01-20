@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,7 +62,7 @@ package ADO.Parameters is
    type Token is new String;
 
    type Parameter_Type is (T_NULL, T_STRING, T_TOKEN, T_LIST, T_DATE, T_LONG_INTEGER,
-                           T_INTEGER, T_BOOLEAN, T_BLOB);
+                           T_INTEGER, T_BOOLEAN, T_LONG_FLOAT, T_BLOB);
 
    type Parameter (T   : Parameter_Type;
                    Len : Natural;
@@ -82,6 +82,9 @@ package ADO.Parameters is
 
          when T_BOOLEAN =>
             Bool : Boolean;
+
+         when T_LONG_FLOAT =>
+            Float : Long_Float;
 
          when T_DATE =>
             Time : Ada.Calendar.Time;
@@ -184,6 +187,9 @@ package ADO.Parameters is
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
                          Value    : in Long_Long_Integer);
+   procedure Bind_Param (Params   : in out Abstract_List;
+                         Position : in Natural;
+                         Value    : in Long_Float);
    procedure Bind_Param (Params   : in out Abstract_List;
                          Position : in Natural;
                          Value    : in Identifier);
