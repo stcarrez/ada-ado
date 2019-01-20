@@ -565,6 +565,24 @@ package body ADO.Statements.Mysql is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Long_Float</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   overriding
+   function Get_Double (Query  : Mysql_Query_Statement;
+                        Column : Natural) return Long_Float is
+      Field  : constant chars_ptr := Query.Get_Field (Column);
+   begin
+      if Field = null then
+         raise Invalid_Type with "NULL cannot be converted to Long_Float";
+      else
+         return Get_Double (Field);
+      end if;
+   end Get_Double;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Unbounded_String</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
