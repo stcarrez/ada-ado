@@ -714,6 +714,28 @@ package body ADO.Objects is
       end if;
    end Set_Field_Boolean;
 
+   procedure Set_Field_Float (Object : in out Object_Record'Class;
+                              Field  : in Column_Index;
+                              Into   : in out Float;
+                              Value  : in Float) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Float;
+
+   procedure Set_Field_Long_Float (Object : in out Object_Record'Class;
+                                   Field  : in Column_Index;
+                                   Into   : in out Long_Float;
+                                   Value  : in Long_Float) is
+   begin
+      if Into /= Value then
+         Into := Value;
+         Object.Modified (Field) := True;
+      end if;
+   end Set_Field_Long_Float;
+
    procedure Set_Field_Object (Object : in out Object_Record'Class;
                                Field  : in Column_Index;
                                Into   : in out Object_Ref'Class;
