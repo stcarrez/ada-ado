@@ -251,6 +251,30 @@ package body ADO.Audits is
       end if;
    end Set_Field_Boolean;
 
+   procedure Set_Field_Float (Object : in out Auditable_Object_Record'Class;
+                              Field  : in Column_Index;
+                              Into   : in out Float;
+                              Value  : in Float) is
+   begin
+      if Into /= Value then
+         Object.Audit_Field (Field, UBO.To_Object (Into), UBO.To_Object (Value));
+         Into := Value;
+         Object.Set_Field (Field);
+      end if;
+   end Set_Field_Float;
+
+   procedure Set_Field_Long_Float (Object : in out Auditable_Object_Record'Class;
+                                   Field  : in Column_Index;
+                                   Into   : in out Long_Float;
+                                   Value  : in Long_Float) is
+   begin
+      if Into /= Value then
+         Object.Audit_Field (Field, UBO.To_Object (Into), UBO.To_Object (Value));
+         Into := Value;
+         Object.Set_Field (Field);
+      end if;
+   end Set_Field_Long_Float;
+
    procedure Set_Field_Object (Object : in out Auditable_Object_Record'Class;
                                Field  : in Column_Index;
                                Into   : in out ADO.Objects.Object_Ref'Class;
