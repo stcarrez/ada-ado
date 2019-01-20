@@ -478,6 +478,16 @@ package ADO.Objects is
                                 Into   : in out Nullable_Boolean;
                                 Value  : in Nullable_Boolean);
 
+   procedure Set_Field_Float (Object : in out Object_Record'Class;
+                              Field  : in Column_Index;
+                              Into   : in out Float;
+                              Value  : in Float);
+
+   procedure Set_Field_Long_Float (Object : in out Object_Record'Class;
+                                   Field  : in Column_Index;
+                                   Into   : in out Long_Float;
+                                   Value  : in Long_Float);
+
    procedure Set_Field_Object (Object : in out Object_Record'Class;
                                Field  : in Column_Index;
                                Into   : in out Object_Ref'Class;
