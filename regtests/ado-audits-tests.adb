@@ -88,6 +88,7 @@ package body ADO.Audits.Tests is
 
       DB     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       Email  : Regtests.Audits.Model.Email_Ref;
+      Prop   : Regtests.Audits.Model.Property_Ref;
       List   : Identifier_Array;
    begin
       for I in List'Range loop
@@ -119,6 +120,12 @@ package body ADO.Audits.Tests is
          Email.Save (DB);
       end loop;
       DB.Commit;
+
+      for I in 1 .. 10 loop
+         Prop.Set_Value ((Value => I, Is_Null => False));
+         Prop.Set_Float_Value (3.0 * Float (I));
+         Prop.Save (DB);
+      end loop;
 
       declare
          Query : ADO.SQL.Query;
