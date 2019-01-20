@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Postgresql statements -- Postgresql query statements
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,6 +108,14 @@ package ADO.Statements.Postgresql is
    overriding
    function Get_Int64 (Query  : Postgresql_Query_Statement;
                        Column : Natural) return Int64;
+
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Long_Float</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   overriding
+   function Get_Double (Query  : Postgresql_Query_Statement;
+                        Column : Natural) return Long_Float;
 
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Boolean</b>.
