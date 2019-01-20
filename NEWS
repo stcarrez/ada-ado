@@ -2,6 +2,7 @@ Version 1.3.0   -
   - Support for Postgresql database
   - Improvement for errors reported by database drivers
   - New audit framework to track database record changes
+  - Added support for floating point numbers
 
 Version 1.2.0   - Jul 2018
   - Improvement of SQLite connection management
