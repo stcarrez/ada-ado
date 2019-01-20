@@ -286,6 +286,14 @@ package Regtests.Audits.Model is
    function Get_Value (Object : in Property_Ref)
                  return ADO.Nullable_Integer;
 
+   --  Set a float property value
+   procedure Set_Float_Value (Object : in out Property_Ref;
+                              Value  : in Float);
+
+   --  Get a float property value
+   function Get_Float_Value (Object : in Property_Ref)
+                 return Float;
+
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
    procedure Load (Object  : in out Property_Ref;
@@ -477,22 +485,25 @@ private
    PROPERTY_NAME : aliased constant String := "audit_property";
    COL_0_3_NAME : aliased constant String := "id";
    COL_1_3_NAME : aliased constant String := "user_email";
+   COL_2_3_NAME : aliased constant String := "float_value";
 
    PROPERTY_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count   => 2,
+     (Count   => 3,
       Table   => PROPERTY_NAME'Access,
       Members => (
          1 => COL_0_3_NAME'Access,
-         2 => COL_1_3_NAME'Access)
+         2 => COL_1_3_NAME'Access,
+         3 => COL_2_3_NAME'Access)
      );
    PROPERTY_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := PROPERTY_DEF'Access;
 
    PROPERTY_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
-     (Count    => 1,
+     (Count    => 2,
       Of_Class => PROPERTY_DEF'Access,
       Members  => (
-         1 => 1)
+         1 => 1,
+         2 => 2)
      );
    PROPERTY_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
       := PROPERTY_AUDIT_DEF'Access;
@@ -506,6 +517,7 @@ private
                                      With_Audit => PROPERTY_AUDIT_DEF'Access)
    with record
        Value : ADO.Nullable_Integer;
+       Float_Value : Float;
    end record;
 
    type Property_Access is access all Property_Impl;

@@ -972,6 +972,23 @@ package body Regtests.Audits.Model is
       return Impl.Value;
    end Get_Value;
 
+
+   procedure Set_Float_Value (Object : in out Property_Ref;
+                              Value  : in Float) is
+      Impl : Property_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Float (Impl.all, 3, Impl.Float_Value, Value);
+   end Set_Float_Value;
+
+   function Get_Float_Value (Object : in Property_Ref)
+                  return Float is
+      Impl : constant Property_Access
+         := Property_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Float_Value;
+   end Get_Float_Value;
+
    --  Copy of the object.
    procedure Copy (Object : in Property_Ref;
                    Into   : in out Property_Ref) is
@@ -988,6 +1005,7 @@ package body Regtests.Audits.Model is
             Copy.Copy (Impl.all);
             Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Value := Impl.Value;
+            Copy.Float_Value := Impl.Float_Value;
          end;
       end if;
       Into := Result;
@@ -1127,6 +1145,11 @@ package body Regtests.Audits.Model is
                           Value => Object.Value);
          Object.Clear_Modified (2);
       end if;
+      if Object.Is_Modified (3) then
+         Stmt.Save_Field (Name  => COL_2_3_NAME, --  float_value
+                          Value => Object.Float_Value);
+         Object.Clear_Modified (3);
+      end if;
       if Stmt.Has_Save_Fields then
          Stmt.Set_Filter (Filter => "id = ?");
          Stmt.Add_Param (Value => Object.Get_Key);
@@ -1154,6 +1177,8 @@ package body Regtests.Audits.Model is
                         Value => Object.Get_Key);
       Query.Save_Field (Name  => COL_1_3_NAME, --  user_email
                         Value => Object.Value);
+      Query.Save_Field (Name  => COL_2_3_NAME, --  float_value
+                        Value => Object.Float_Value);
       Query.Execute (Result);
       if Result /= 1 then
          raise ADO.Objects.INSERT_ERROR;
@@ -1194,6 +1219,8 @@ package body Regtests.Audits.Model is
          else
             return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Value.Value));
          end if;
+      elsif Name = "float_value" then
+         return Util.Beans.Objects.To_Object (Impl.Float_Value);
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -1210,6 +1237,7 @@ package body Regtests.Audits.Model is
    begin
       Object.Set_Key_Value (Stmt.Get_Unbounded_String (0));
       Object.Value := Stmt.Get_Nullable_Integer (1);
+      Object.Float_Value := Stmt.Get_Float (2);
       ADO.Objects.Set_Created (Object);
    end Load;
 
