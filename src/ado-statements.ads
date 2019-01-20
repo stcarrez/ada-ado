@@ -510,6 +510,9 @@ private
    --  Get a signed 64-bit number from a C string terminated by \0
    function Get_Int64 (Str : chars_ptr) return Int64;
 
+   --  Get a double number from a C string terminated by \0
+   function Get_Double (Str : chars_ptr) return Long_Float;
+
    --  Get a time from the C string passed in <b>Value</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
