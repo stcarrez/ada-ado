@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -528,6 +528,31 @@ package body ADO.Statements.Sqlite is
       Result := Sqlite3_H.sqlite3_column_int64 (Query.Stmt, int (Column));
       return Int64 (Result);
    end Get_Int64;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Long_Float</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   overriding
+   function Get_Double (Query  : Sqlite_Query_Statement;
+                        Column : Natural) return Long_Float is
+      Result : Interfaces.C.double;
+      Res    : int;
+   begin
+      if Column >= Query.Max_Column then
+         raise Invalid_Column with "Invalid column" & Natural'Image (Column);
+      end if;
+      Res := Sqlite3_H.sqlite3_column_type (Query.Stmt, int (Column));
+      if Res = Sqlite3_H.SQLITE_NULL then
+         raise Invalid_Type with "NULL cannot be converted to Long_Float";
+      end if;
+      if Res /= Sqlite3_H.SQLITE_FLOAT then
+         raise Invalid_Type with "Invalid float value";
+      end if;
+      Result := Sqlite3_H.sqlite3_column_double (Query.Stmt, int (Column));
+      return Long_Float (Result);
+   end Get_Double;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
