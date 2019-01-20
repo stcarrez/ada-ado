@@ -56,6 +56,13 @@ Regtests.Audits.Model.Property:
       auditable: true
       nullable: true
       description: the property value
+    float_value:
+      type: float
+      column: float_value
+      unique: false
+      auditable: true
+      nullable: false
+      description: a float property value
 
 Regtests.Audits.Model.Audit:
   type: entity
