@@ -70,6 +70,9 @@ The Ada Database Objects sources as well as a wiki documentation is provided on:
   * [ADO Queries](https://github.com/stcarrez/ada-ado/wiki/ADO_Queries)
   * [ADO Drivers](https://github.com/stcarrez/ada-ado/wiki/ADO_Drivers)
 
+# Presentations
+
+  * [Persistence with Ada Database Objects](https://fr.slideshare.net/StephaneCarrez1/persistence-with-ada-database-objects-ado) FOSDEM 2019
 
 # Database Drivers
 
