@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2017 Stephane Carrez
+--  ado-connections-mysql -- MySQL Database connections
+--  Copyright (C) 2009, 2010, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,8 @@
 
 with Mysql.Mysql; use Mysql.Mysql;
 
-package ADO.Drivers.Connections.Mysql is
+private with Ada.Strings.Unbounded;
+package ADO.Connections.Mysql is
 
    type Mysql_Driver is limited private;
 
@@ -27,12 +28,14 @@ package ADO.Drivers.Connections.Mysql is
 
 private
 
+   use Ada.Strings.Unbounded;
+
    --  Create a new MySQL connection using the configuration parameters.
    procedure Create_Connection (D      : in out Mysql_Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class);
 
-   type Mysql_Driver is new ADO.Drivers.Connections.Driver with record
+   type Mysql_Driver is new ADO.Connections.Driver with record
       Id : Natural := 0;
    end record;
 
@@ -51,7 +54,7 @@ private
    procedure Finalize (D : in out Mysql_Driver);
 
    --  Database connection implementation
-   type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
+   type Database_Connection is new ADO.Connections.Database_Connection with record
       Name        : Unbounded_String := Null_Unbounded_String;
       Server_Name : Unbounded_String := Null_Unbounded_String;
       Login_Name  : Unbounded_String := Null_Unbounded_String;
@@ -127,4 +130,4 @@ private
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
-end ADO.Drivers.Connections.Mysql;
+end ADO.Connections.Mysql;

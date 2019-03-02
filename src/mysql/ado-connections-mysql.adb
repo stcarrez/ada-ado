@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Mysql Database -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  ado-connections-mysql -- MySQL Database connections
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ with Ada.Directories;
 with Interfaces.C.Strings;
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Properties;
 with Util.Processes.Tools;
 with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
@@ -31,7 +32,7 @@ with ADO.Parameters;
 with ADO.Queries;
 with ADO.C;
 with Mysql.Lib; use Mysql.Lib;
-package body ADO.Drivers.Connections.Mysql is
+package body ADO.Connections.Mysql is
 
    use ADO.Statements.Mysql;
    use Util.Log;
@@ -49,7 +50,7 @@ package body ADO.Drivers.Connections.Mysql is
    --  ------------------------------
    overriding
    function Get_Driver (Database : in Database_Connection)
-                        return ADO.Drivers.Connections.Driver_Access is
+                        return ADO.Connections.Driver_Access is
       pragma Unreferenced (Database);
    begin
       return Driver'Access;
@@ -512,4 +513,4 @@ package body ADO.Drivers.Connections.Mysql is
       mysql_server_end;
    end Finalize;
 
-end ADO.Drivers.Connections.Mysql;
+end ADO.Connections.Mysql;
