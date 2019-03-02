@@ -136,15 +136,15 @@ package body ADO.Queries is
       if Use_Count then
          if Length (Query.Value.Count_Query (Manager.Driver).SQL) > 0 then
             return To_String (Query.Value.Count_Query (Manager.Driver).SQL);
-         elsif Length (Query.Value.Count_Query (ADO.Drivers.Driver_Index'First).SQL) > 0 then
-            return To_String (Query.Value.Count_Query (ADO.Drivers.Driver_Index'First).SQL);
+         elsif Length (Query.Value.Count_Query (Driver_Index'First).SQL) > 0 then
+            return To_String (Query.Value.Count_Query (Driver_Index'First).SQL);
          else
             raise Query_Error with "Default count-query '" & From.Name.all & "'is empty";
          end if;
       elsif Length (Query.Value.Main_Query (Manager.Driver).SQL) > 0 then
          return To_String (Query.Value.Main_Query (Manager.Driver).SQL);
-      elsif Length (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL) > 0 then
-         return To_String (Query.Value.Main_Query (ADO.Drivers.Driver_Index'First).SQL);
+      elsif Length (Query.Value.Main_Query (Driver_Index'First).SQL) > 0 then
+         return To_String (Query.Value.Main_Query (Driver_Index'First).SQL);
       else
          raise Query_Error with "Default query '" & From.Name.all & "' is empty";
       end if;

@@ -95,7 +95,7 @@ package body ADO.Sessions.Factory is
       ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
-      if Factory.Source.Get_Database /= "" and not Drivers.Is_On (Configs.NO_ENTITY_LOAD) then
+      if Factory.Source.Get_Database /= "" and not Configs.Is_On (Configs.NO_ENTITY_LOAD) then
          declare
             S : Session := Factory.Get_Session;
          begin
@@ -118,7 +118,7 @@ package body ADO.Sessions.Factory is
       ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
-      if Factory.Source.Get_Database /= "" and not Drivers.Is_On (Configs.NO_ENTITY_LOAD) then
+      if Factory.Source.Get_Database /= "" and not Configs.Is_On (Configs.NO_ENTITY_LOAD) then
          declare
             S : Session := Factory.Get_Session;
          begin

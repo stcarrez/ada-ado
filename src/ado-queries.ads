@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 with Util.Strings;
 with Util.Refs;
 with ADO.SQL;
-with ADO.Drivers;
 
 private with Interfaces;
+private with ADO.Configs;
 with Ada.Strings.Unbounded;
 with Ada.Finalization;
 
@@ -252,6 +252,8 @@ package ADO.Queries is
 
 private
 
+   subtype Driver_Index is ADO.Configs.Driver_Index;
+
    --  ------------------------------
    --  Query Definition
    --  ------------------------------
@@ -318,7 +320,7 @@ private
       SQL : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
-   type Query_Pattern_Array is array (ADO.Drivers.Driver_Index) of Query_Pattern;
+   type Query_Pattern_Array is array (Driver_Index) of Query_Pattern;
 
    type Query_Info is new Util.Refs.Ref_Entity with record
       Main_Query  : Query_Pattern_Array;
@@ -360,7 +362,7 @@ private
    type File_Table_Access is access all File_Table;
 
    type Query_Manager is limited new Ada.Finalization.Limited_Controlled with record
-      Driver  : ADO.Drivers.Driver_Index;
+      Driver  : Driver_Index;
       Queries : Query_Table_Access;
       Files   : File_Table_Access;
    end record;

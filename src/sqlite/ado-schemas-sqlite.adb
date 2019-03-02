@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ado.schemas -- Database Schemas
---  Copyright (C) 2015, 2018 Stephane Carrez
+--  ado-schemas -- Database Schemas
+--  Copyright (C) 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ package body ADO.Schemas.Sqlite is
 
    use ADO.Statements;
 
-   procedure Load_Table_Schema (C : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Schema (C : in ADO.Connections.Database_Connection'Class;
                                 Table : in Table_Definition);
 
    function String_To_Type (Value : in String) return Column_Type;
@@ -90,7 +90,7 @@ package body ADO.Schemas.Sqlite is
    --  ------------------------------
    --  Load the table definition
    --  ------------------------------
-   procedure Load_Table_Schema (C : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Schema (C : in ADO.Connections.Database_Connection'Class;
                                 Table : in Table_Definition) is
       Name : constant String := Get_Name (Table);
       Stmt : Query_Statement
@@ -134,7 +134,7 @@ package body ADO.Schemas.Sqlite is
    --  ------------------------------
    --  Load the database schema
    --  ------------------------------
-   procedure Load_Schema (C      : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Schema (C      : in ADO.Connections.Database_Connection'Class;
                           Schema : out Schema_Definition) is
       Stmt  : Query_Statement
         := Create.Create_Statement (C.Create_Statement ("SELECT NAME FROM sqlite_master"));

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-databases -- Database creation
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with ADO.Drivers.Connections;
+with ADO.Connections;
 package body ADO.Schemas.Databases is
 
    --  ------------------------------
@@ -27,7 +27,7 @@ package body ADO.Schemas.Databases is
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector) is
       Name   : constant String := Config.Get_Driver;
-      Driver : constant Drivers.Connections.Driver_Access := Drivers.Connections.Get_Driver (Name);
+      Driver : constant Connections.Driver_Access := Connections.Get_Driver (Name);
    begin
       Messages.Clear;
       Driver.Create_Database (Admin       => Admin,

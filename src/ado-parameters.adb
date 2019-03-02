@@ -30,7 +30,7 @@ package body ADO.Parameters is
    --  Set the SQL dialect description object.
    --  --------------------
    procedure Set_Dialect (Params : in out Abstract_List;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access) is
+                          D      : in ADO.Dialects.Dialect_Access) is
    begin
       Params.Dialect := D;
    end Set_Dialect;
@@ -47,7 +47,7 @@ package body ADO.Parameters is
    --  --------------------
    --  Get the SQL dialect description object.
    --  --------------------
-   function Get_Dialect (From : in Abstract_List) return ADO.Drivers.Dialects.Dialect_Access is
+   function Get_Dialect (From : in Abstract_List) return ADO.Dialects.Dialect_Access is
    begin
       return From.Dialect;
    end Get_Dialect;

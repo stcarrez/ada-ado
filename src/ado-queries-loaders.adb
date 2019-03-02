@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ with ADO.Configs;
 package body ADO.Queries.Loaders is
 
    use Util.Log;
-   use ADO.Drivers.Connections;
+   use ADO.Connections;
    use Interfaces;
    use Ada.Calendar;
 
@@ -88,8 +88,8 @@ package body ADO.Queries.Loaders is
          return 0;
       end if;
       declare
-         Driver : constant Drivers.Connections.Driver_Access
-           := Drivers.Connections.Get_Driver (Name);
+         Driver : constant Connections.Driver_Access
+           := Connections.Get_Driver (Name);
       begin
          if Driver = null then
             --  There is no problem to have an SQL query for unsupported drivers, but still
@@ -188,7 +188,6 @@ package body ADO.Queries.Loaders is
       procedure Set_Member (Into  : in out Query_Loader;
                             Field : in Query_Info_Fields;
                             Value : in Util.Beans.Objects.Object) is
-         use ADO.Drivers;
       begin
          case Field is
          when FIELD_CLASS_NAME =>
@@ -299,7 +298,7 @@ package body ADO.Queries.Loaders is
    --  definitions from that file.
    --  ------------------------------
    procedure Initialize (Manager : in out Query_Manager;
-                         Config  : in ADO.Drivers.Connections.Configuration'Class) is
+                         Config  : in ADO.Connections.Configuration'Class) is
       Paths : constant String := Config.Get_Property (Configs.QUERY_PATHS_CONFIG);
       Load  : constant Boolean := Config.Get_Property (Configs.QUERY_LOAD_CONFIG) = "true";
       File  : Query_File_Access := Query_Files;

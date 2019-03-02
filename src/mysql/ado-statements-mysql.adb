@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO.Statements.Mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018 Stephane Carrez
+--  ado-statements-mysql -- MySQL Statements
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ with Mysql.Com;  use Mysql.Com;
 with Mysql.Perfect_Hash; use Mysql;
 with ADO.C;
 with ADO.Sessions;
-with ADO.Drivers.Dialects;
+with ADO.Dialects;
 package body ADO.Statements.Mysql is
 
    use Util.Log;
@@ -37,7 +37,7 @@ package body ADO.Statements.Mysql is
    use type ADO.Schemas.Column_Index;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Statements.Mysql");
-   type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
+   type Dialect is new ADO.Dialects.Dialect with null record;
 
    --  Check if the string is a reserved keyword.
    overriding

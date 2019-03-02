@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-postgresql -- Postgresql Database Schemas
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,11 @@ package body ADO.Schemas.Postgresql is
 
    use ADO.Statements;
 
-   procedure Load_Table_Schema (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Schema (C        : in ADO.Connections.Database_Connection'Class;
                                 Database : in String;
                                 Table    : in Table_Definition);
 
-   procedure Load_Table_Keys (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Keys (C        : in ADO.Connections.Database_Connection'Class;
                               Database : in String;
                               Table    : in Table_Definition);
 
@@ -54,7 +54,7 @@ package body ADO.Schemas.Postgresql is
    --  ------------------------------
    --  Load the table definition
    --  ------------------------------
-   procedure Load_Table_Schema (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Schema (C        : in ADO.Connections.Database_Connection'Class;
                                 Database : in String;
                                 Table    : in Table_Definition) is
       Name  : constant String := Get_Name (Table);
@@ -104,7 +104,7 @@ package body ADO.Schemas.Postgresql is
    --  ------------------------------
    --  Load the table definition
    --  ------------------------------
-   procedure Load_Table_Keys (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Table_Keys (C        : in ADO.Connections.Database_Connection'Class;
                               Database : in String;
                               Table    : in Table_Definition) is
       Name  : constant String := Get_Name (Table);
@@ -141,7 +141,7 @@ package body ADO.Schemas.Postgresql is
    --  ------------------------------
    --  Load the database schema
    --  ------------------------------
-   procedure Load_Schema (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Schema (C        : in ADO.Connections.Database_Connection'Class;
                           Schema   : out Schema_Definition;
                           Database : in String) is
       SQL   : constant String

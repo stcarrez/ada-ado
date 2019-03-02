@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions-sources -- Database Sources
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ package ADO.Sessions.Sources is
    --  It contains the configuration properties to define which database driver must
    --  be used and which connection parameters the driver has to use to establish
    --  the connection.
-   type Data_Source is new ADO.Drivers.Connections.Configuration with private;
+   type Data_Source is new ADO.Connections.Configuration with private;
    type Data_Source_Access is access all Data_Source'Class;
 
    --  ------------------------------
@@ -73,7 +73,7 @@ package ADO.Sessions.Sources is
 
 private
 
-   type Data_Source is new ADO.Drivers.Connections.Configuration with null record;
+   type Data_Source is new ADO.Connections.Configuration with null record;
 
    type Replicated_DataSource is new Data_Source with record
       Master : Data_Source_Access := null;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ with ADO.Schemas;
 with ADO.Statements;
 with ADO.Objects;
 with ADO.Objects.Cache;
-with ADO.Drivers.Connections;
+with ADO.Connections;
 with ADO.Queries;
 with ADO.SQL;
 with ADO.Caches;
@@ -74,7 +74,7 @@ package ADO.Sessions is
    function Get_Status (Database : in Session) return Connection_Status;
 
    --  Get the database driver which manages this connection.
-   function Get_Driver (Database : in Session) return ADO.Drivers.Connections.Driver_Access;
+   function Get_Driver (Database : in Session) return ADO.Connections.Driver_Access;
 
    --  Close the session.
    procedure Close (Database : in out Session);
@@ -174,7 +174,7 @@ package ADO.Sessions is
    function Get_Audit_Manager (Database : in Master_Session)
                                return access Audits.Audit_Manager'Class;
 
-   subtype Database_Connection is Drivers.Connections.Database_Connection;
+   subtype Database_Connection is Connections.Database_Connection;
 
    --  Internal operation to get access to the database connection.
    procedure Access_Connection (Database : in out Master_Session;
@@ -205,7 +205,7 @@ private
    --  unlinked from the session record.
    type Session_Record is limited record
       Counter  : Util.Concurrent.Counters.Counter := Util.Concurrent.Counters.ONE;
-      Database : ADO.Drivers.Connections.Ref.Ref;
+      Database : ADO.Connections.Ref.Ref;
       Proxy    : ADO.Objects.Session_Proxy_Access;
       Cache    : ADO.Objects.Cache.Object_Cache;
       Entities : Entity_Cache_Access;

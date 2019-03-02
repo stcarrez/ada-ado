@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Log;
 with Util.Log.Loggers;
 with Ada.Unchecked_Deallocation;
 
-with ADO.Drivers;
 with ADO.Sequences;
 with ADO.Statements.Create;
 package body ADO.Sessions is
@@ -58,7 +57,7 @@ package body ADO.Sessions is
    --  ------------------------------
    --  Get the database driver which manages this connection.
    --  ------------------------------
-   function Get_Driver (Database : in Session) return ADO.Drivers.Connections.Driver_Access is
+   function Get_Driver (Database : in Session) return ADO.Connections.Driver_Access is
    begin
       if Database.Impl = null or else Database.Impl.Database.Is_Null then
          return null;

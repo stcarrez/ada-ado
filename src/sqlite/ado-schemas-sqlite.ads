@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-sqlite -- SQLite Database Schemas
---  Copyright (C) 2015 Stephane Carrez
+--  Copyright (C) 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ADO.Drivers.Connections;
+with ADO.Connections;
 package ADO.Schemas.Sqlite is
 
    --  Load the database schema
-   procedure Load_Schema (C      : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Schema (C      : in ADO.Connections.Database_Connection'Class;
                           Schema : out Schema_Definition);
 
 end ADO.Schemas.Sqlite;

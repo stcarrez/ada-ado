@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-configs -- Database connection configuration
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with Util.Log.Loggers;
 
+with Ada.IO_Exceptions;
 with Ada.Strings.Fixed;
 
 package body ADO.Configs is
@@ -25,6 +26,54 @@ package body ADO.Configs is
    use Ada.Strings.Fixed;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Configs");
+
+   --  Global configuration properties (loaded by Initialize).
+   Global_Config : Util.Properties.Manager;
+
+   --  ------------------------------
+   --  Initialize the drivers and the library by reading the property file
+   --  and configure the runtime with it.
+   --  ------------------------------
+   procedure Initialize (Config : in String) is
+   begin
+      Log.Info ("Initialize using property file {0}", Config);
+
+      begin
+         Util.Properties.Load_Properties (Global_Config, Config);
+      exception
+         when Ada.IO_Exceptions.Name_Error =>
+            Log.Error ("Configuration file '{0}' does not exist", Config);
+      end;
+
+      Initialize (Global_Config);
+   end Initialize;
+
+   --  ------------------------------
+   --  Initialize the drivers and the library and configure the runtime with the given properties.
+   --  ------------------------------
+   procedure Initialize (Config : in Util.Properties.Manager'Class) is
+   begin
+      Global_Config := Util.Properties.Manager (Config);
+   end Initialize;
+
+   --  ------------------------------
+   --  Get the global configuration property identified by the name.
+   --  If the configuration property does not exist, returns the default value.
+   --  ------------------------------
+   function Get_Config (Name    : in String;
+                        Default : in String := "") return String is
+   begin
+      return Global_Config.Get (Name, Default);
+   end Get_Config;
+
+   --  ------------------------------
+   --  Returns true if the global configuration property is set to true/on.
+   --  ------------------------------
+   function Is_On (Name   : in String) return Boolean is
+      Value : constant String := Global_Config.Get (Name, "");
+   begin
+      return Value = "on" or Value = "true" or Value = "1";
+   end Is_On;
 
    --  ------------------------------
    --  Set the connection URL to connect to the database.
@@ -37,7 +86,6 @@ package body ADO.Configs is
    --  ------------------------------
    procedure Set_Connection (Config : in out Configuration;
                              URI    : in String) is
-
       Pos, Pos2, Slash_Pos, Next : Natural;
       Is_Hidden : Boolean;
    begin
@@ -235,8 +283,10 @@ package body ADO.Configs is
       return To_String (Config.Driver);
    end Get_Driver;
 
+   --  ------------------------------
    --  Iterate over the configuration properties and execute the given procedure passing the
    --  property name and its value.
+   --  ------------------------------
    procedure Iterate (Config  : in Configuration;
                       Process : access procedure (Name : in String;
                                                   Item : in Util.Properties.Value)) is

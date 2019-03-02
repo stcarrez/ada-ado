@@ -15,11 +15,11 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ADO.Drivers.Connections;
+with ADO.Connections;
 package ADO.Schemas.Postgresql is
 
    --  Load the database schema
-   procedure Load_Schema (C        : in ADO.Drivers.Connections.Database_Connection'Class;
+   procedure Load_Schema (C        : in ADO.Connections.Database_Connection'Class;
                           Schema   : out Schema_Definition;
                           Database : in String);
 

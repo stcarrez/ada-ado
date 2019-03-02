@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-configs -- Database connection configuration
---  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,8 +38,26 @@ package ADO.Configs is
    --  Maximum number of columns allowed for a table (SQLite limit is 2000).
    MAX_COLUMNS : constant := 2000;
 
+   --  Maximum number of database drivers (MySQL, PostgreSQL, SQLite, X).
+   MAX_DRIVERS : constant := 4;
+
    --  Raised when the connection URI is invalid.
    Connection_Error : exception;
+
+   --  Initialize the drivers and the library by reading the property file
+   --  and configure the runtime with it.
+   procedure Initialize (Config : in String);
+
+   --  Initialize the drivers and the library and configure the runtime with the given properties.
+   procedure Initialize (Config : in Util.Properties.Manager'Class);
+
+   --  Get the global configuration property identified by the name.
+   --  If the configuration property does not exist, returns the default value.
+   function Get_Config (Name    : in String;
+                        Default : in String := "") return String;
+
+   --  Returns true if the global configuration property is set to true/on.
+   function Is_On (Name   : in String) return Boolean;
 
    --  ------------------------------
    --  The database configuration properties
@@ -110,6 +128,8 @@ package ADO.Configs is
    procedure Iterate (Config  : in Configuration;
                       Process : access procedure (Name : in String;
                                                   Item : in Util.Properties.Value));
+
+   type Driver_Index is new Natural range 0 .. 4;
 
 private
 

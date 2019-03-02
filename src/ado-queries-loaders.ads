@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012, 2017 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2017, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with ADO.Drivers.Connections;
+with ADO.Connections;
 package ADO.Queries.Loaders is
 
    generic
@@ -49,7 +49,7 @@ package ADO.Queries.Loaders is
    --  When <b>Load</b> is true, read the XML query file and initialize the query
    --  definitions from that file.
    procedure Initialize (Manager : in out Query_Manager;
-                         Config  : in ADO.Drivers.Connections.Configuration'Class);
+                         Config  : in ADO.Connections.Configuration'Class);
 
    --  Find the query identified by the given name.
    function Find_Query (Name : in String) return Query_Definition_Access;

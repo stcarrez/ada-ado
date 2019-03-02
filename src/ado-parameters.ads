@@ -22,7 +22,7 @@ with Ada.Calendar;
 with Ada.Containers.Indefinite_Vectors;
 
 with ADO.Utils;
-with ADO.Drivers.Dialects;
+with ADO.Dialects;
 
 --  == Query Parameters ==
 --  Query parameters are represented by the <tt>Parameter</tt> type which can represent almost
@@ -113,14 +113,14 @@ package ADO.Parameters is
 
    --  Set the SQL dialect description object.
    procedure Set_Dialect (Params : in out Abstract_List;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access);
+                          D      : in ADO.Dialects.Dialect_Access);
 
    --  Set the cache expander to be used when expanding the SQL.
    procedure Set_Expander (Params   : in out Abstract_List;
                            Expander : in ADO.Parameters.Expander_Access);
 
    --  Get the SQL dialect description object.
-   function Get_Dialect (From : in Abstract_List) return ADO.Drivers.Dialects.Dialect_Access;
+   function Get_Dialect (From : in Abstract_List) return ADO.Dialects.Dialect_Access;
 
    --  Add the parameter in the list.
    procedure Add_Parameter (Params : in out Abstract_List;
@@ -285,7 +285,7 @@ private
                                             "="          => Compare_On_Name);
 
    type Abstract_List is abstract new Ada.Finalization.Controlled with record
-      Dialect  : ADO.Drivers.Dialects.Dialect_Access := null;
+      Dialect  : ADO.Dialects.Dialect_Access := null;
       Expander : Expander_Access;
    end record;
 

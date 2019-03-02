@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO SQL -- Basic SQL Generation
+--  ado-sql -- Basic SQL Generation
 --  Copyright (C) 2010, 2011, 2012, 2015, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -46,8 +46,8 @@ package body ADO.SQL is
    --  --------------------
    procedure Append_Name (Target : in out Buffer;
                           Name   : in String) is
-      use type ADO.Drivers.Dialects.Dialect_Access;
-      Dialect : constant ADO.Drivers.Dialects.Dialect_Access := Target.Get_Dialect;
+      use type ADO.Dialects.Dialect_Access;
+      Dialect : constant ADO.Dialects.Dialect_Access := Target.Get_Dialect;
    begin
       if Dialect /= null and then Dialect.Is_Reserved (Name) then
          declare
@@ -136,7 +136,7 @@ package body ADO.SQL is
    --  Set the SQL dialect description object.
    --  --------------------
    procedure Set_Dialect (Target : in out Query;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access) is
+                          D      : in ADO.Dialects.Dialect_Access) is
    begin
       ADO.Parameters.Abstract_List (Target).Set_Dialect (D);
       Set_Dialect (Target.SQL, D);
@@ -240,7 +240,7 @@ package body ADO.SQL is
    --  Set the SQL dialect description object.
    --  ------------------------------
    procedure Set_Dialect (Target : in out Update_Query;
-                          D      : in ADO.Drivers.Dialects.Dialect_Access) is
+                          D      : in ADO.Dialects.Dialect_Access) is
    begin
       Target.Set_Fields.Set_Dialect (D);
       Target.Fields.Set_Dialect (D);

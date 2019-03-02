@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Postgresql statements -- Postgresql query statements
---  Copyright (C) 2018 Stephane Carrez
+--  ado-statements-postgresql -- Postgresql query statements
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ with Util.Log.Loggers;
 
 with ADO.C;
 with ADO.Sessions;
-with ADO.Drivers.Dialects;
+with ADO.Dialects;
 with PQ.Perfect_Hash;
 package body ADO.Statements.Postgresql is
 
@@ -37,7 +37,7 @@ package body ADO.Statements.Postgresql is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements.Postgresql");
 
-   type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
+   type Dialect is new ADO.Dialects.Dialect with null record;
 
    --  Check if the string is a reserved keyword.
    overriding
