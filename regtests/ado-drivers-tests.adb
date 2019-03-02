@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015, 2016, 2018 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,11 @@ with Regtests;
 with ADO.Configs;
 with ADO.Statements;
 with ADO.Sessions;
-with ADO.Drivers.Connections;
+with ADO.Connections;
 package body ADO.Drivers.Tests is
 
    use ADO.Configs;
-   use ADO.Drivers.Connections;
+   use ADO.Connections;
 
    package Caller is new Util.Test_Caller (Test, "ADO.Drivers");
 
@@ -82,9 +82,9 @@ package body ADO.Drivers.Tests is
    --  Test the Get_Driver operation.
    --  ------------------------------
    procedure Test_Get_Driver (T : in out Test) is
-      Mysql_Driver  : constant Driver_Access := Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("sqlite");
-      Postgres_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("postgresql");
+      Mysql_Driver  : constant Driver_Access := Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := Connections.Get_Driver ("sqlite");
+      Postgres_Driver : constant Driver_Access := Connections.Get_Driver ("postgresql");
    begin
       T.Assert (Mysql_Driver /= null or Sqlite_Driver /= null or Postgres_Driver /= null,
                 "No database driver was found!");
@@ -94,7 +94,7 @@ package body ADO.Drivers.Tests is
    --  Test loading some invalid database driver.
    --  ------------------------------
    procedure Test_Load_Invalid_Driver (T : in out Test) is
-      Invalid_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("invalid");
+      Invalid_Driver  : constant Driver_Access := ADO.Connections.Get_Driver ("invalid");
    begin
       T.Assert (Invalid_Driver = null,
                 "The Get_Driver operation must return null for invalid drivers");
@@ -104,9 +104,9 @@ package body ADO.Drivers.Tests is
    --  Test the Get_Driver_Index operation.
    --  ------------------------------
    procedure Test_Get_Driver_Index (T : in out Test) is
-      Mysql_Driver  : constant Driver_Access := Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("sqlite");
-      Postgres_Driver : constant Driver_Access := Drivers.Connections.Get_Driver ("postgresql");
+      Mysql_Driver  : constant Driver_Access := Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := Connections.Get_Driver ("sqlite");
+      Postgres_Driver : constant Driver_Access := Connections.Get_Driver ("postgresql");
    begin
       if Mysql_Driver /= null then
          T.Assert (Mysql_Driver.Get_Driver_Index > 0, "The driver index must be positive");
@@ -145,7 +145,7 @@ package body ADO.Drivers.Tests is
                        Server   : in String;
                        Port     : in Integer;
                        Database : in String) is
-         Controller : ADO.Drivers.Connections.Configuration;
+         Controller : ADO.Connections.Configuration;
       begin
          Controller.Set_Connection (URI);
          Util.Tests.Assert_Equals (T, Server, Controller.Get_Server, "Invalid server for " & URI);
@@ -177,7 +177,7 @@ package body ADO.Drivers.Tests is
 
       procedure Check_Invalid_Connection (URI : in String);
 
-      Controller : ADO.Drivers.Connections.Configuration;
+      Controller : ADO.Connections.Configuration;
 
       procedure Check_Invalid_Connection (URI : in String) is
       begin
@@ -203,7 +203,7 @@ package body ADO.Drivers.Tests is
    --  Test the Set_Server operation.
    --  ------------------------------
    procedure Test_Set_Connection_Server (T : in out Test) is
-      Controller : ADO.Drivers.Connections.Configuration;
+      Controller : ADO.Connections.Configuration;
    begin
       Controller.Set_Connection ("mysql://localhost:3306/db");
       Controller.Set_Server ("server-name");
@@ -221,7 +221,7 @@ package body ADO.Drivers.Tests is
    --  Test the Set_Port operation.
    --  ------------------------------
    procedure Test_Set_Connection_Port (T : in out Test) is
-      Controller : ADO.Drivers.Connections.Configuration;
+      Controller : ADO.Connections.Configuration;
    begin
       Controller.Set_Connection ("mysql://localhost:3306/db");
       Controller.Set_Port (1234);
@@ -239,7 +239,7 @@ package body ADO.Drivers.Tests is
    --  Test the Set_Database operation.
    --  ------------------------------
    procedure Test_Set_Connection_Database (T : in out Test) is
-      Controller : ADO.Drivers.Connections.Configuration;
+      Controller : ADO.Connections.Configuration;
    begin
       Controller.Set_Connection ("mysql://localhost:3306/db");
       Controller.Set_Database ("test-database");

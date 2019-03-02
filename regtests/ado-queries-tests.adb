@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 
 with Util.Test_Caller;
 
-with ADO.Drivers.Connections;
+with ADO.Connections;
 with ADO.Queries.Loaders;
 package body ADO.Queries.Tests is
 
@@ -96,12 +96,12 @@ package body ADO.Queries.Tests is
    pragma Warnings (Off, Missing_Query_Postgresql);
 
    procedure Test_Load_Queries (T : in out Test) is
-      use ADO.Drivers.Connections;
-      use type ADO.Drivers.Driver_Index;
+      use ADO.Connections;
+      use type ADO.Configs.Driver_Index;
 
-      Mysql_Driver  : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := ADO.Drivers.Connections.Get_Driver ("sqlite");
-      Config        : ADO.Drivers.Connections.Configuration;
+      Mysql_Driver  : constant Driver_Access := ADO.Connections.Get_Driver ("mysql");
+      Sqlite_Driver : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
+      Config        : ADO.Connections.Configuration;
       Manager       : Query_Manager;
    begin
       --  Configure the XML query loader.
@@ -142,7 +142,7 @@ package body ADO.Queries.Tests is
    --  Test re-loading queries.
    --  ------------------------------
    procedure Test_Reload_Queries (T : in out Test) is
-      Config  : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Connections.Configuration;
       Manager : Query_Manager;
       Query   : ADO.Queries.Context;
    begin
@@ -167,7 +167,7 @@ package body ADO.Queries.Tests is
    --  Test the Initialize operation called several times
    --  ------------------------------
    procedure Test_Initialize (T : in out Test) is
-      Config  : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Connections.Configuration;
       Manager : Query_Manager;
       Pos     : Query_Index;
    begin
@@ -198,7 +198,7 @@ package body ADO.Queries.Tests is
    procedure Test_Set_Query (T : in out Test) is
       Query   : ADO.Queries.Context;
       Manager : Query_Manager;
-      Config  : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Connections.Configuration;
    begin
       ADO.Queries.Loaders.Initialize (Manager, Config);
       Query.Set_Query ("simple-query");
@@ -238,7 +238,7 @@ package body ADO.Queries.Tests is
    procedure Test_Missing_Query (T : in out Test) is
       Query   : ADO.Queries.Context;
       Manager : Query_Manager;
-      Config  : ADO.Drivers.Connections.Configuration;
+      Config  : ADO.Connections.Configuration;
       Count   : Natural := 0;
    begin
       ADO.Queries.Loaders.Initialize (Manager, Config);

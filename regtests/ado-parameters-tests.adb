@@ -26,7 +26,7 @@ package body ADO.Parameters.Tests is
 
    package Int_Cache is new ADO.Caches.Discrete (Element_Type => Integer);
 
-   type Dialect is new ADO.Drivers.Dialects.Dialect with null record;
+   type Dialect is new ADO.Dialects.Dialect with null record;
 
    --  Check if the string is a reserved keyword.
    overriding
