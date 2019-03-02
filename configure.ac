@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Database Objects
-dnl Copyright (C) 2010 - 2018 Stephane Carrez
+dnl Copyright (C) 2010 - 2019 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,6 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(src/ado.ads)
 
-AC_CANONICAL_SYSTEM
-dnl AM_MAINTAINER_MODE
-
 # Current release settings
 ADO_MAJOR_VERSION=1
 ADO_MINOR_VERSION=3
@@ -33,11 +30,10 @@ AC_SUBST(ADO_MAJOR_VERSION)
 AC_SUBST(ADO_MINOR_VERSION)
 AC_SUBST(ADO_MICRO_VERSION)
 
+AM_GNAT_LIBRARY_PROJECT(ado)
+
 EXEC_PREFIX="$prefix"
 AC_SUBST(EXEC_PREFIX)
-
-ADO_LIBDIR="lib"
-AC_SUBST(ADO_LIBDIR)
 
 AC_CHECK_PROG(HAVE_PANDOC,pandoc,yes)
 AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
@@ -182,18 +178,13 @@ AC_SUBST(WITH_ADO_SQLITE)
 AC_SUBST(WITH_ADO_POSTGRESQL)
 
 ##########################################
-# Check to enable/disable shared library
-##########################################
-AM_GNAT_LIBRARY_PROJECT(ado)
-
-##########################################
 # Ada Util library
 ##########################################
-AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[util],
+AM_GNAT_FIND_PROJECT([ada-util],[Ada Utility Library],[utilada_sys],
   [git@github.com:stcarrez/ada-util.git],
   [Building Ada ADO requires the Ada Utility Library with XML/Ada support.],
   [
-    UTIL_DIR=${gnat_project_dir_util}
+    UTIL_DIR=${gnat_project_dir_utilada_sys}
   ])
 AC_SUBST(UTIL_DIR)
 
@@ -286,7 +277,13 @@ AC_MSG_RESULT($opts)
 AC_SUBST(ADO_POSTGRESQL_LIBRARY_OPTIONS)
 
 AC_OUTPUT(
-Makefile ado.gpr ado_tests.gpr samples.gpr distrib/ado.gpr distrib/ado_mysql.gpr ado_mysql.gpr ado_sqlite.gpr
+Makefile.conf
+ado.gpr
+ado_tests.gpr
+samples.gpr
+ado_mysql.gpr
+ado_sqlite.gpr
 ado_postgresql.gpr
+ado_all.gpr
 )
 AC_MSG_NOTICE([supported databases: $DB])
