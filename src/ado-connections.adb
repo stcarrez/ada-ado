@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ with System;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
 
-package body ADO.Drivers.Connections is
+package body ADO.Connections is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Drivers.Connections");
 
@@ -71,7 +71,7 @@ package body ADO.Drivers.Connections is
    --  Get the database driver index.
    --  ------------------------------
    function Get_Driver_Index (Database : in Database_Connection) return Driver_Index is
-      Driver : constant ADO.Drivers.Connections.Driver_Access
+      Driver : constant Driver_Access
          := Database_Connection'Class (Database).Get_Driver;
    begin
       return Driver.Get_Driver_Index;
@@ -103,6 +103,7 @@ package body ADO.Drivers.Connections is
    --  Register a database driver.
    --  ------------------------------
    procedure Register (Driver : in Driver_Access) is
+      use type ADO.Configs.Driver_Index;
    begin
       Log.Info ("Register driver {0}", Driver.Name.all);
 
@@ -120,7 +121,7 @@ package body ADO.Drivers.Connections is
       Handle : Util.Systems.DLLs.Handle;
       Addr   : System.Address;
    begin
-      if Is_On (ADO.Configs.DYNAMIC_DRIVER_LOAD) then
+      if ADO.Configs.Is_On (ADO.Configs.DYNAMIC_DRIVER_LOAD) then
          Log.Warn ("Dynamic loading of driver '{0}' is disabled", Name);
          return;
       end if;
@@ -160,7 +161,8 @@ package body ADO.Drivers.Connections is
 
       for Retry in 0 .. 2 loop
          if Retry = 1 then
-            ADO.Drivers.Initialize;
+            null;
+            --  ADO.Drivers.Initialize;
          elsif Retry = 2 then
             Load_Driver (Name);
          end if;
@@ -182,4 +184,4 @@ package body ADO.Drivers.Connections is
       return null;
    end Get_Driver;
 
-end ADO.Drivers.Connections;
+end ADO.Connections;

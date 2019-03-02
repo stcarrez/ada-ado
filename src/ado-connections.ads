@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018 Stephane Carrez
+--  ado-connections -- Database connections
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,14 +25,18 @@ with Util.Strings;
 with Util.Strings.Vectors;
 with Util.Refs;
 
---  The <b>ADO.Drivers</b> package represents the database driver that will create
+--  The `ADO.Connections` package represents the database driver that will create
 --  database connections and provide the database specific implementation.
-package ADO.Drivers.Connections is
+package ADO.Connections is
 
    use ADO.Statements;
 
+   --  Raised for all errors reported by the database.
+   Database_Error   : exception;
+
    type Driver is abstract tagged limited private;
    type Driver_Access is access all Driver'Class;
+   subtype Driver_Index is ADO.Configs.Driver_Index;
 
    --  ------------------------------
    --  Database connection implementation
@@ -144,4 +148,4 @@ private
       Index : Driver_Index;
    end record;
 
-end ADO.Drivers.Connections;
+end ADO.Connections;
