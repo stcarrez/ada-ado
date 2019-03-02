@@ -1,14 +1,14 @@
 with "@UTIL_DIR@config";
-with "@UTIL_DIR@util";
+with "@UTIL_DIR@utilada_sys";
 
 library project Ado is
    Version := "@ADO_VERSION@";
-   Library_Dir := "@ADO_LIBDIR@";
+   Library_Dir := "lib";
 
    Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("src", "src/model");
-   for Library_Name use "ada_ado";
+   for Library_Name use "ado";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
    for Library_Dir use "lib/ado/" & Project'Library_Kind;
@@ -18,7 +18,8 @@ library project Ado is
       when "relocatable" =>
          for Source_Dirs use Project'Source_Dirs & ("src/dynamic");
          for Library_Interface use ("ADO", "ADO.C", "ADO.Configs",
-                              "ADO.Drivers", "ADO.Drivers.Connections", "ADO.Drivers.Dialects",
+                              "ADO.Drivers", "ADO.Drivers.Connections",
+                              "ADO.Drivers.Dialects",
                               "ADO.Schemas", "ADO.Schemas.Databases",
                               "ADO.Schemas.Entities", "ADO.Sql",
                               "ADO.Objects", "ADO.Objects.Cache",
@@ -33,13 +34,14 @@ library project Ado is
                               "ADO.Sessions.Factory", "ADO.Sessions.Entities");
 
       when others =>
-         for Source_Dirs use Project'Source_Dirs & ("src/static"@ADO_DATABASES_SRC_DIR@);
+         null;
 
    end case;
 
-   --  For a shared library, we want the library to be initialized automatically (Library_Auto_Init = true).
-   --  The 'gnatmake' tool invokes 'gnatbind' correctly and the pragma Linker_Constructor (ada_adoinit) is
-   --  generated.  However, when using 'gprbuild', this is not the case and we have to force that with the
+   --  For a shared library, we want the library to be initialized automatically
+   --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
+   --  and the pragma Linker_Constructor (ada_adoinit) is generated.  However, when using
+   --  'gprbuild', this is not the case and we have to force that with the
    --  'gnatbind' option "-a".  For a static link library, the following is not used.
    package Binder is
        for Default_Switches ("Ada") use Config.Binder'Default_Switches ("Ada") & ("-a");

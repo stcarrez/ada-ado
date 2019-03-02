@@ -7,27 +7,30 @@ project Ado_Mysql is
 
    Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
+   for Library_Name use "ado_mysql";
+   for Library_Kind use Library_Type;
+   for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
+   for Library_Options use (@ADO_MYSQL_LIBRARY_OPTIONS@);
+   for Source_Dirs use ("src/mysql");
+
    case Library_Type is
       when "relocatable" =>
-          for Library_Name use "ada_ado_mysql";
-          for Library_Kind use Library_Type;
-          for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-          for Library_Options use (@ADO_MYSQL_LIBRARY_OPTIONS@);
-          for Source_Dirs use ("src/mysql");
-          for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
-                                     "ADO.Statements.Mysql", "Mysql", "Mysql.mysql", "Mysql.com", "Mysql.my_list");
+         for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
+                              "ADO.Statements.Mysql", "Mysql", "Mysql.mysql",
+                              "Mysql.com", "Mysql.my_list");
 
       when others =>
-          for Source_Dirs use ();
+          null;
 
    end case;
 
    for Library_Dir use "lib/ado_mysql/" & Project'Library_Kind;
    for Object_Dir use "obj/ado_mysql/" & Project'Library_Kind;
 
-   --  For a shared library, we want the library to be initialized automatically (Library_Auto_Init = true).
-   --  The 'gnatmake' tool invokes 'gnatbind' correctly and the pragma Linker_Constructor (ada_adoinit) is
-   --  generated.  However, when using 'gprbuild', this is not the case and we have to force that with the
+   --  For a shared library, we want the library to be initialized automatically
+   --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
+   --  and the pragma Linker_Constructor (ada_adoinit) is generated.  However, when using
+   --  'gprbuild', this is not the case and we have to force that with the
    --  'gnatbind' option "-a".  For a static link library, the following is not used.
    package Binder is
        for Default_Switches ("Ada") use Config.Binder'Default_Switches ("Ada") & ("-a");

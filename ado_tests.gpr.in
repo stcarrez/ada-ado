@@ -1,10 +1,7 @@
 with "@UTIL_DIR@config";
-with "@UTIL_DIR@util";
-with "@UTIL_DIR@util_unit";
-with "ado";
-@WITH_ADO_SQLITE@
-@WITH_ADO_MYSQL@
-@WITH_ADO_POSTGRESQL@
+with "@UTIL_DIR@utilada_sys";
+with "@UTIL_DIR@utilada_unit";
+with "ado_all";
 
 project Ado_Tests is
 

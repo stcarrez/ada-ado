@@ -1,6 +1,6 @@
 with "@UTIL_DIR@config";
-with "@UTIL_DIR@util";
-with "ado";
+with "@UTIL_DIR@utilada";
+with "ado_all";
 
 project Samples is
 
