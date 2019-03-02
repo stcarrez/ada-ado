@@ -75,7 +75,6 @@ package body ADO.Drivers is
       return Value = "on" or Value = "true" or Value = "1";
    end Is_On;
 
-
    --  Initialize the drivers which are available.
    procedure Initialize is separate;
 
