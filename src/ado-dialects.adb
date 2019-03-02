@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Dialects -- Driver support for basic SQL Generation
---  Copyright (C) 2010, 2011, 2012, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-package body ADO.Drivers.Dialects is
+package body ADO.Dialects is
 
    --  ------------------------------
    --  Append the item in the buffer escaping some characters if necessary.
@@ -51,4 +51,4 @@ package body ADO.Drivers.Dialects is
       Append (Buffer, (if Item then '1' else '0'));
    end Escape_Sql;
 
-end ADO.Drivers.Dialects;
+end ADO.Dialects;
