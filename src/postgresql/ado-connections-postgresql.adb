@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Postgresql Database -- Postgresql Database connections
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ with ADO.Statements.Postgresql;
 with ADO.Schemas.Postgresql;
 with ADO.Sessions;
 with ADO.C;
-package body ADO.Drivers.Connections.Postgresql is
+package body ADO.Connections.Postgresql is
 
    use ADO.Statements.Postgresql;
    use Interfaces.C;
@@ -42,7 +42,7 @@ package body ADO.Drivers.Connections.Postgresql is
    --  ------------------------------
    overriding
    function Get_Driver (Database : in Database_Connection)
-                        return ADO.Drivers.Connections.Driver_Access is
+                        return ADO.Connections.Driver_Access is
       pragma Unreferenced (Database);
    begin
       return Driver'Access;
@@ -286,4 +286,4 @@ package body ADO.Drivers.Connections.Postgresql is
       Log.Debug ("Deleting the Postgresql driver");
    end Finalize;
 
-end ADO.Drivers.Connections.Postgresql;
+end ADO.Connections.Postgresql;

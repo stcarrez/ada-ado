@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Postgresql Database -- Postgresql Database connections
---  Copyright (C) 2018 Stephane Carrez
+--  ado-connections-postgresql -- Postgresql Database connections
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,8 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 private with PQ;
-package ADO.Drivers.Connections.Postgresql is
+private with Ada.Strings.Unbounded;
+package ADO.Connections.Postgresql is
 
    type Postgresql_Driver is limited private;
 
@@ -25,12 +26,14 @@ package ADO.Drivers.Connections.Postgresql is
 
 private
 
+   use Ada.Strings.Unbounded;
+
    --  Create a new Postgresql connection using the configuration parameters.
    procedure Create_Connection (D      : in out Postgresql_Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class);
 
-   type Postgresql_Driver is new ADO.Drivers.Connections.Driver with record
+   type Postgresql_Driver is new ADO.Connections.Driver with record
       Id : Natural := 0;
    end record;
 
@@ -49,7 +52,7 @@ private
    procedure Finalize (D : in out Postgresql_Driver);
 
    --  Database connection implementation
-   type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
+   type Database_Connection is new ADO.Connections.Database_Connection with record
       Name        : Unbounded_String;
       Server_Name : Unbounded_String;
       Login_Name  : Unbounded_String;
@@ -120,4 +123,4 @@ private
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
-end ADO.Drivers.Connections.Postgresql;
+end ADO.Connections.Postgresql;
