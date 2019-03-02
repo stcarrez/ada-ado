@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,20 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Strings.Unbounded;
 with Interfaces.C.Strings;
 
 with Util.Log;
 with Util.Log.Loggers;
 with Util.Processes.Tools;
+with Util.Properties;
 with ADO.Sessions;
 with ADO.Statements.Sqlite;
 with ADO.Schemas.Sqlite;
 
-package body ADO.Drivers.Connections.Sqlite is
+package body ADO.Connections.Sqlite is
 
+   use Ada.Strings.Unbounded;
    use ADO.Statements.Sqlite;
    use Interfaces.C;
 
@@ -347,4 +349,4 @@ package body ADO.Drivers.Connections.Sqlite is
       D.Map.Clear;
    end Finalize;
 
-end ADO.Drivers.Connections.Sqlite;
+end ADO.Connections.Sqlite;

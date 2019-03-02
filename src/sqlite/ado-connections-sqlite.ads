@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
+--  ado-connections-sqlite -- SQLite Database connections
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,9 @@
 -----------------------------------------------------------------------
 
 with Sqlite3_H;
+private with Ada.Strings.Unbounded;
 private with Ada.Containers.Doubly_Linked_Lists;
-package ADO.Drivers.Connections.Sqlite is
+package ADO.Connections.Sqlite is
 
    --  Create database option.
    CREATE_NAME : constant String := "create";
@@ -33,8 +34,10 @@ package ADO.Drivers.Connections.Sqlite is
 
 private
 
+   use Ada.Strings.Unbounded;
+
    --  Database connection implementation
-   type Database_Connection is new ADO.Drivers.Connections.Database_Connection with record
+   type Database_Connection is new ADO.Connections.Database_Connection with record
       Server : aliased access Sqlite3_H.sqlite3;
       Name   : Unbounded_String;
       URI    : Unbounded_String;
@@ -115,7 +118,7 @@ private
       List : Database_List.List;
    end Sqlite_Connections;
 
-   type Sqlite_Driver is new ADO.Drivers.Connections.Driver with record
+   type Sqlite_Driver is new ADO.Connections.Driver with record
       Map : Sqlite_Connections;
    end record;
 
@@ -139,4 +142,4 @@ private
    overriding
    procedure Finalize (D : in out Sqlite_Driver);
 
-end ADO.Drivers.Connections.Sqlite;
+end ADO.Connections.Sqlite;
