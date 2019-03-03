@@ -15,7 +15,7 @@ project Ado_Postgresql is
 
    case Library_Type is
       when "relocatable" =>
-          for Library_Interface use ("ADO.Drivers.Connections.Postgresql",
+          for Library_Interface use ("ADO.Connections.Postgresql",
                                      "ADO.Schemas.Postgresql",
                                      "ADO.Statements.Postgresql");
 

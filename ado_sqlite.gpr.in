@@ -15,7 +15,7 @@ project Ado_Sqlite is
 
    case Library_Type is
       when "relocatable" =>
-         for Library_Interface use ("ADO.Drivers.Connections.Sqlite",
+         for Library_Interface use ("ADO.Connections.Sqlite",
                                     "ADO.Schemas.Sqlite", "ADO.Statements.Sqlite",
                                     "Sqlite3_h",
                                     "Sqlite3_h.Perfect_hash");

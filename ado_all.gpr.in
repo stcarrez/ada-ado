@@ -17,7 +17,7 @@ project Ado_All is
 
    case Library_Type is
       when "relocatable" =>
-          for Library_Interface use ("ADO.Drivers.Initialize");
+          for Library_Interface use ("ADO.Drivers", "ADO.Drivers.Initialize");
 
       when others =>
           null;

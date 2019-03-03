@@ -15,7 +15,7 @@ project Ado_Mysql is
 
    case Library_Type is
       when "relocatable" =>
-         for Library_Interface use ("ADO.Drivers.Connections.Mysql", "ADO.Schemas.Mysql",
+         for Library_Interface use ("ADO.Connections.Mysql", "ADO.Schemas.Mysql",
                               "ADO.Statements.Mysql", "Mysql", "Mysql.mysql",
                               "Mysql.com", "Mysql.my_list");
 
