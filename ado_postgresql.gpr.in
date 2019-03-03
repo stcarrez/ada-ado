@@ -17,7 +17,8 @@ project Ado_Postgresql is
       when "relocatable" =>
           for Library_Interface use ("ADO.Connections.Postgresql",
                                      "ADO.Schemas.Postgresql",
-                                     "ADO.Statements.Postgresql");
+                                     "ADO.Statements.Postgresql",
+                                     "PQ");
 
       when others =>
           null;

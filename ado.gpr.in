@@ -16,8 +16,10 @@ library project Ado is
 
    case Library_Type is
       when "relocatable" =>
-         for Source_Dirs use Project'Source_Dirs & ("src/dynamic");
-         for Library_Interface use ("ADO", "ADO.C", "ADO.Configs",
+         --  for Source_Dirs use Project'Source_Dirs & ("src/dynamic");
+         for Library_Interface use ("ADO",
+                              "ADO.Audits",
+                              "ADO.C", "ADO.Configs",
                               "ADO.Connections",
                               "ADO.Dialects",
                               "ADO.Schemas", "ADO.Schemas.Databases",
