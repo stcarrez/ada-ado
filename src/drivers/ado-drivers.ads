@@ -67,6 +67,8 @@ with Util.Properties;
 --
 --  Dynamic loading is triggered when a database connection string refers to a database
 --  driver which is not known.
+--
+--  @include ado-mysql.ads
 package ADO.Drivers is
 
    use Ada.Strings.Unbounded;
