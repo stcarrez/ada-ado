@@ -29,7 +29,7 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 include Makefile.defaults
 
 # Build executables for all mains defined by the project.
-build-test:  setup
+build-test::  setup
 	$(GNATMAKE) $(GPRFLAGS) -p -P$(NAME)_tests $(MAKE_ARGS) -largs -Llib/$(NAME)/static
 
 setup:: src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ado-drivers-initialize.adb
@@ -55,26 +55,22 @@ regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile.
 # Build and run the unit tests
 test:	test-sqlite test-mysql test-postgresql
 
-test-sqlite:		build-test regtests.db
+test-sqlite:		build regtests.db
 ifeq ($(HAVE_SQLITE),yes)
 	bin/ado_harness -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
 endif
 
-test-mysql:		build-test create-mysql-tests
+test-mysql:		build create-mysql-tests
 ifeq ($(HAVE_MYSQL),yes)
 	bin/ado_harness -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
 endif
 
-test-postgresql:	build-test create-postgresql-tests
+test-postgresql:	build create-postgresql-tests
 ifeq ($(HAVE_POSTGRESQL),yes)
 	bin/ado_harness -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
 CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
-
-# Clean the root project of all build products.
-clean::
-	-rm -f $(CLEAN_FILES)
 
 ifeq ($(HAVE_PANDOC),yes)
 ifeq ($(HAVE_DYNAMO),yes)
@@ -112,11 +108,9 @@ docs/ado-book.html: docs/ado-book.pdf force
 endif
 endif
 
-GENERATOR=dynamo
-
 generate:
-	$(GENERATOR) generate db/regtests
-	$(GENERATOR) generate db/samples
+	$(DYNAMO) generate db/regtests
+	$(DYNAMO) generate db/samples
 
 # Create the test sqlite database
 regtests.db:
