@@ -32,14 +32,14 @@ include Makefile.defaults
 build-test::  setup
 	$(GNATMAKE) $(GPRFLAGS) -p -P$(NAME)_tests $(MAKE_ARGS) -largs -Llib/$(NAME)/static
 
-setup:: src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/static/ado-drivers-initialize.adb
+setup:: src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/drivers/ado-drivers-initialize.adb
 
 # Configure the driver file
-src/static/ado-drivers-initialize.adb: src/static/ado-drivers-initialize.gpb Makefile.conf
+src/drivers/ado-drivers-initialize.adb: src/drivers/ado-drivers-initialize.gpb Makefile.conf
 	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
 	          -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
 	          -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
-		  src/static/ado-drivers-initialize.gpb $@
+		  src/drivers/ado-drivers-initialize.gpb $@
 
 src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile.conf
 	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's,^ *,,' -e 's,  , ,g' -e 's, $$,,g' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
@@ -70,7 +70,7 @@ ifeq ($(HAVE_POSTGRESQL),yes)
 	bin/ado_harness -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
-CLEAN_FILES=src/static/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
+CLEAN_FILES=src/drivers/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
 
 ifeq ($(HAVE_PANDOC),yes)
 ifeq ($(HAVE_DYNAMO),yes)
@@ -175,3 +175,5 @@ endif
 ifeq ($(HAVE_POSTGRESQL),yes)
 $(eval $(call ada_library,ado_postgresql))
 endif
+
+$(eval $(call ada_library,ado_all))
