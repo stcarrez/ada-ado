@@ -67,6 +67,86 @@ ado.drivers.load=true
 Dynamic loading is triggered when a database connection string refers to a database
 driver which is not known.
 
+### MySQL Database Driver
+The MySQL database driver can be initialize explicitly by using the `ado_mysql`
+GNAT project and calling the initialization procedure.
+
+```Ada
+ADO.Mysql.Initialize ("db.properties");
+```
+
+The set of configuration properties can be set programatically and passed to the
+`Initialize` operation.
+
+```Ada
+Config : Util.Properties.Manager;
+...
+  Config.Set ("ado.database", "mysql://localhost:3306/ado_test");
+  Config.Set ("ado.queries.path", ".;db");
+  ADO.Mysql.Initialize (Config);
+```
+
+The MySQL database driver supports the following properties:
+
+| Name        | Description       |
+| ----------- | ---------      |
+| user        | The user name to connect to the server |
+| password    | The user password to connect to the server |
+| socket      | The optional Unix socket path for a Unix socket base connection |
+| encoding    | The encoding to be used for the connection (ex: UTF-8) |
+
+
+### SQLite Database Driver
+The SQLite database driver can be initialize explicitly by using the `ado_mysql`
+GNAT project and calling the initialization procedure.
+
+```Ada
+ADO.Sqlite.Initialize ("db.properties");
+```
+
+The set of configuration properties can be set programatically and passed to the
+`Initialize` operation.
+
+```Ada
+Config : Util.Properties.Manager;
+...
+  Config.Set ("ado.database", "sqlite:///regtests.db?synchronous=OFF&encoding=UTF-8");
+  Config.Set ("ado.queries.path", ".;db");
+  ADO.Sqlite.Initialize (Config);
+```
+
+The SQLite database driver will pass all the properties as SQLite `pragma` allowing
+the configuration of the SQLite database.
+
+
+### PostgreSQL Database Driver
+The PostgreSQL database driver can be initialize explicitly by using the `ado_mysql`
+GNAT project and calling the initialization procedure.
+
+```Ada
+ADO.Postgresql.Initialize ("db.properties");
+```
+
+The set of configuration properties can be set programatically and passed to the
+`Initialize` operation.
+
+```Ada
+Config : Util.Properties.Manager;
+...
+  Config.Set ("ado.database", "postgresql://localhost:5432/ado_test?user=ado&password=ado");
+  Config.Set ("ado.queries.path", ".;db");
+  ADO.Postgresql.Initialize (Config);
+```
+
+The PostgreSQL database driver supports the following properties:
+
+| Name        | Description       |
+| ----------- | ---------      |
+| user        | The user name to connect to the server |
+| password    | The user password to connect to the server |
+
+
+
 ## Connection string
 The database connection string is an URI that specifies the database driver to use as well
 as the information for the database driver to connect to the database.
