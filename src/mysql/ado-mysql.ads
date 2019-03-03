@@ -29,9 +29,18 @@ with Util.Properties;
 --
 --    Config : Util.Properties.Manager;
 --    ...
---      Config.Set ("ado.database", "mysql:///mydatabase.db");
+--      Config.Set ("ado.database", "mysql://localhost:3306/ado_test");
 --      Config.Set ("ado.queries.path", ".;db");
 --      ADO.Mysql.Initialize (Config);
+--
+--  The MySQL database driver supports the following properties:
+--
+--  | Name        | Description       |
+--  | ----------- | ---------      |
+--  | user        | The user name to connect to the server |
+--  | password    | The user password to connect to the server |
+--  | socket      | The optional Unix socket path for a Unix socket base connection |
+--  | encoding    | The encoding to be used for the connection (ex: UTF-8) |
 --
 package ADO.Mysql is
 
