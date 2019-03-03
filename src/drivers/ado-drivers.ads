@@ -69,6 +69,7 @@ with Util.Properties;
 --  driver which is not known.
 --
 --  @include ado-mysql.ads
+--  @include ado-sqlite.ads
 package ADO.Drivers is
 
    use Ada.Strings.Unbounded;
