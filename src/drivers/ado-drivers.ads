@@ -70,6 +70,7 @@ with Util.Properties;
 --
 --  @include ado-mysql.ads
 --  @include ado-sqlite.ads
+--  @include ado-postgresql.ads
 package ADO.Drivers is
 
    use Ada.Strings.Unbounded;
