@@ -27,7 +27,7 @@ distrib/ado.gpr
 regtests/result/
 regtests/ado-testsuite.adb
 regtests/ado-testsuite-drivers.adb
-src/static/ado-drivers-initialize.adb
+src/drivers/ado-drivers-initialize.adb
 ado_mysql.gpr
 ado_sqlite.gpr
 regtests.db
