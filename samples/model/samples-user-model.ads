@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -216,8 +216,8 @@ private
    COL_6_1_NAME : aliased constant String := "status";
 
    USER_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count => 7,
-      Table => USER_NAME'Access,
+     (Count   => 7,
+      Table   => USER_NAME'Access,
       Members => (
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
@@ -225,11 +225,11 @@ private
          4 => COL_3_1_NAME'Access,
          5 => COL_4_1_NAME'Access,
          6 => COL_5_1_NAME'Access,
-         7 => COL_6_1_NAME'Access
-)
+         7 => COL_6_1_NAME'Access)
      );
    USER_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := USER_DEF'Access;
+
 
    Null_User : constant User_Ref
       := User_Ref'(ADO.Objects.Object_Ref with null record);
