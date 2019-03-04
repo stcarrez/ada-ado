@@ -44,6 +44,9 @@ with Util.Properties;
 --
 package ADO.Mysql is
 
+   --  Initialize the Mysql driver.
+   procedure Initialize;
+
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    procedure Initialize (Config : in String);
