@@ -57,7 +57,7 @@ package body ADO.Audits.Tests is
             Audit : Regtests.Audits.Model.Audit_Ref;
          begin
             if Object.Key_Type = ADO.Objects.KEY_INTEGER then
-              Audit.Set_Entity_Id (ADO.Objects.Get_Value (Object.Get_Key));
+               Audit.Set_Entity_Id (ADO.Objects.Get_Value (Object.Get_Key));
             end if;
             Audit.Set_Entity_Type (Kind);
             Audit.Set_Old_Value (UBO.To_String (C.Old_Value));

@@ -371,7 +371,8 @@ package body ADO.Objects.Tests is
       Item1.Save (S);
 
       T.Assert (Item1.Is_Inserted, "Object with string key is not inserted");
-      Util.Tests.Assert_Equals (T, "name " & Uuid, String '(Item1.Get_Id), "Object key is invalid");
+      Util.Tests.Assert_Equals (T, "name " & Uuid, String '(Item1.Get_Id),
+                                "Object key is invalid");
 
       Item2.Set_Id ("name2 " & Uuid);
       Item2.Set_Value ((Is_Null => True, Value => 0));
