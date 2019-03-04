@@ -22,13 +22,21 @@ with ADO.Connections.Mysql;
 package body ADO.Mysql is
 
    --  ------------------------------
+   --  Initialize the Mysql driver.
+   --  ------------------------------
+   procedure Initialize is
+   begin
+      ADO.Connections.Mysql.Initialize;
+   end Initialize;
+
+   --  ------------------------------
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    --  ------------------------------
    procedure Initialize (Config : in String) is
    begin
       ADO.Configs.Initialize (Config);
-      ADO.Connections.Mysql.Initialize;
+      Initialize;
    end Initialize;
 
    --  ------------------------------
@@ -37,7 +45,7 @@ package body ADO.Mysql is
    procedure Initialize (Config : in Util.Properties.Manager'Class) is
    begin
       ADO.Configs.Initialize (Config);
-      ADO.Connections.Mysql.Initialize;
+      Initialize;
    end Initialize;
 
 end ADO.Mysql;
