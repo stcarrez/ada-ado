@@ -20,6 +20,13 @@ with ADO.Configs;
 with ADO.Connections.Postgresql;
 
 package body ADO.Postgresql is
+   --  ------------------------------
+   --  Initialize the Postgresql driver.
+   --  ------------------------------
+   procedure Initialize is
+   begin
+      ADO.Connections.Postgresql.Initialize;
+   end Initialize;
 
    --  ------------------------------
    --  Initialize the drivers and the library by reading the property file
