@@ -38,6 +38,9 @@ with Util.Properties;
 --
 package ADO.Sqlite is
 
+   --  Initialize the SQLite driver.
+   procedure Initialize;
+
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    procedure Initialize (Config : in String);
