@@ -22,13 +22,21 @@ with ADO.Connections.Sqlite;
 package body ADO.Sqlite is
 
    --  ------------------------------
+   --  Initialize the SQLite driver.
+   --  ------------------------------
+   procedure Initialize is
+   begin
+      ADO.Connections.Sqlite.Initialize;
+   end Initialize;
+
+   --  ------------------------------
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    --  ------------------------------
    procedure Initialize (Config : in String) is
    begin
       ADO.Configs.Initialize (Config);
-      ADO.Connections.Sqlite.Initialize;
+      Initialize;
    end Initialize;
 
    --  ------------------------------
@@ -37,7 +45,7 @@ package body ADO.Sqlite is
    procedure Initialize (Config : in Util.Properties.Manager'Class) is
    begin
       ADO.Configs.Initialize (Config);
-      ADO.Connections.Sqlite.Initialize;
+      Initialize;
    end Initialize;
 
 end ADO.Sqlite;
