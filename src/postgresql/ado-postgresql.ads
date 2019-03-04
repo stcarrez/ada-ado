@@ -42,6 +42,9 @@ with Util.Properties;
 --
 package ADO.Postgresql is
 
+   --  Initialize the Postgresql driver.
+   procedure Initialize;
+
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    procedure Initialize (Config : in String);
