@@ -73,8 +73,6 @@ with Util.Properties;
 --  @include ado-postgresql.ads
 package ADO.Drivers is
 
-   use Ada.Strings.Unbounded;
-
    --  Raised for all errors reported by the database.
    Database_Error   : exception;
 
