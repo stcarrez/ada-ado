@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Drivers -- Database Drivers
+--  ado-connections -- Database connections
 --  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -20,12 +20,15 @@ with Util.Log.Loggers;
 with Util.Systems.DLLs;
 
 with System;
-with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
 
 package body ADO.Connections is
 
-   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Drivers.Connections");
+   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Connections");
+
+   type Driver_Array_Access is array (Driver_Index) of Driver_Access;
+
+   Driver_List : Driver_Array_Access;
 
    --  Load the database driver.
    procedure Load_Driver (Name : in String);
@@ -34,10 +37,11 @@ package body ADO.Connections is
    --  Get the driver index that corresponds to the driver for this database connection string.
    --  ------------------------------
    function Get_Driver (Config : in Configuration) return Driver_Index is
-      Driver  : constant Driver_Access := Get_Driver (Config.Get_Driver);
+      Name    : constant String := Config.Get_Driver;
+      Driver  : constant Driver_Access := Get_Driver (Name);
    begin
       if Driver = null then
-         return Driver_Index'First;
+         raise ADO.Configs.Connection_Error with "Database driver '" & Name & "' not found";
       else
          return Driver.Get_Driver_Index;
       end if;
@@ -77,12 +81,6 @@ package body ADO.Connections is
       return Driver.Get_Driver_Index;
    end Get_Driver_Index;
 
-   package Driver_List is
-     new Ada.Containers.Doubly_Linked_Lists (Element_Type => Driver_Access);
-
-   Next_Index : Driver_Index := 1;
-   Drivers    : Driver_List.List;
-
    --  ------------------------------
    --  Get the driver unique index.
    --  ------------------------------
@@ -103,21 +101,29 @@ package body ADO.Connections is
    --  Register a database driver.
    --  ------------------------------
    procedure Register (Driver : in Driver_Access) is
-      use type ADO.Configs.Driver_Index;
    begin
       Log.Info ("Register driver {0}", Driver.Name.all);
 
-      Driver_List.Prepend (Container => Drivers, New_Item => Driver);
-      Driver.Index := Next_Index;
-      Next_Index := Next_Index + 1;
+      for I in Driver_List'Range loop
+         if Driver_List (I) = Driver then
+            return;
+         end if;
+         if Driver_List (I) = null then
+            Driver_List (I) := Driver;
+            Driver.Index := I;
+            return;
+         end if;
+      end loop;
+
+      Log.Error ("The ADO driver table is full: increase ADO.Configs.MAX_DRIVER");
    end Register;
 
    --  ------------------------------
    --  Load the database driver.
    --  ------------------------------
    procedure Load_Driver (Name : in String) is
-      Lib    : constant String := "libada_ado_" & Name & Util.Systems.DLLs.Extension;
-      Symbol : constant String := "ado__drivers__connections__" & Name & "__initialize";
+      Lib    : constant String := "libado_" & Name & Util.Systems.DLLs.Extension;
+      Symbol : constant String := "ado__connections__" & Name & "__initialize";
       Handle : Util.Systems.DLLs.Handle;
       Addr   : System.Address;
    begin
@@ -159,27 +165,18 @@ package body ADO.Connections is
          return null;
       end if;
 
-      for Retry in 0 .. 2 loop
+      for Retry in 0 .. 1 loop
          if Retry = 1 then
-            null;
-            --  ADO.Drivers.Initialize;
-         elsif Retry = 2 then
             Load_Driver (Name);
          end if;
-         declare
-            Iter : Driver_List.Cursor := Driver_List.First (Drivers);
-         begin
-            while Driver_List.Has_Element (Iter) loop
-               declare
-                  D : constant Driver_Access := Driver_List.Element (Iter);
-               begin
-                  if Name = D.Name.all then
-                     return D;
-                  end if;
-               end;
-               Driver_List.Next (Iter);
-            end loop;
-         end;
+         for D of Driver_List loop
+            exit when D = null;
+
+            if Name = D.Name.all then
+               return D;
+            end if;
+
+         end loop;
       end loop;
       return null;
    end Get_Driver;
