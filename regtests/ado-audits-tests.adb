@@ -121,6 +121,7 @@ package body ADO.Audits.Tests is
       end loop;
       DB.Commit;
 
+      Prop.set_Id (Util.Tests.Get_Uuid);
       for I in 1 .. 10 loop
          Prop.Set_Value ((Value => I, Is_Null => False));
          Prop.Set_Float_Value (3.0 * Float (I));
