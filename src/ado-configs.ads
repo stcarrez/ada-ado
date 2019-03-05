@@ -129,7 +129,7 @@ package ADO.Configs is
                       Process : access procedure (Name : in String;
                                                   Item : in Util.Properties.Value));
 
-   type Driver_Index is new Natural range 0 .. 4;
+   type Driver_Index is new Natural range 0 .. MAX_DRIVERS;
 
 private
 
