@@ -362,7 +362,7 @@ private
    type File_Table_Access is access all File_Table;
 
    type Query_Manager is limited new Ada.Finalization.Limited_Controlled with record
-      Driver  : Driver_Index;
+      Driver  : Driver_Index := Driver_Index'First;
       Queries : Query_Table_Access;
       Files   : File_Table_Access;
    end record;
