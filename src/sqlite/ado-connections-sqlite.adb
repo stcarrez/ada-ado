@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Strings.Unbounded;
 with Interfaces.C.Strings;
 
 with Util.Log;
@@ -28,7 +27,6 @@ with ADO.Schemas.Sqlite;
 
 package body ADO.Connections.Sqlite is
 
-   use Ada.Strings.Unbounded;
    use ADO.Statements.Sqlite;
    use Interfaces.C;
 
