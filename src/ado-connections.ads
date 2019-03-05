@@ -36,7 +36,7 @@ package ADO.Connections is
 
    type Driver is abstract tagged limited private;
    type Driver_Access is access all Driver'Class;
-   subtype Driver_Index is ADO.Configs.Driver_Index;
+   subtype Driver_Index is ADO.Configs.Driver_Index range 1 .. ADO.Configs.Driver_Index'Last;
 
    --  ------------------------------
    --  Database connection implementation
