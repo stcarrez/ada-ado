@@ -93,8 +93,6 @@ package ADO.Drivers is
    --  Returns true if the global configuration property is set to true/on.
    function Is_On (Name   : in String) return Boolean;
 
-private
-
    --  Initialize the drivers which are available.
    procedure Initialize;
 
