@@ -99,12 +99,16 @@ package body ADO.Queries.Tests is
       use ADO.Connections;
       use type ADO.Configs.Driver_Index;
 
-      Mysql_Driver  : constant Driver_Access := ADO.Connections.Get_Driver ("mysql");
-      Sqlite_Driver : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
-      Config        : ADO.Connections.Configuration;
-      Manager       : Query_Manager;
+      Mysql_Driver      : constant Driver_Access := ADO.Connections.Get_Driver ("mysql");
+      Sqlite_Driver     : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
+      Postgresql_Driver : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
+      Config            : ADO.Connections.Configuration;
+      Manager           : Query_Manager;
+      Config_URL        : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                       "sqlite:///regtests.db");
    begin
       --  Configure the XML query loader.
+      Config.Set_Connection (Config_URL);
       ADO.Queries.Loaders.Initialize (Manager, Config);
 
       declare
@@ -116,7 +120,11 @@ package body ADO.Queries.Tests is
       declare
          SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access, Manager, False);
       begin
-         Assert_Equals (T, "select 0", SQL, "Invalid query for 'index'");
+         if Mysql_Driver /= null and then Manager.Driver = Mysql_Driver.Get_Driver_Index then
+            Assert_Equals (T, "select 1", SQL, "Invalid query for 'index'");
+         else
+            Assert_Equals (T, "select 0", SQL, "Invalid query for 'index'");
+         end if;
       end;
 
       if Mysql_Driver /= null and then Manager.Driver = Mysql_Driver.Get_Driver_Index then
@@ -128,7 +136,7 @@ package body ADO.Queries.Tests is
             Assert_Equals (T, "select 1", SQL, "Invalid query for 'index' (MySQL driver)");
          end;
       end if;
-      if Sqlite_Driver /= null then
+      if Sqlite_Driver /= null and then Manager.Driver = Sqlite_Driver.Get_Driver_Index then
          declare
             SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
                                                           Manager, False);
@@ -145,8 +153,11 @@ package body ADO.Queries.Tests is
       Config  : ADO.Connections.Configuration;
       Manager : Query_Manager;
       Query   : ADO.Queries.Context;
+      Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                "sqlite:///regtests.db");
    begin
       --  Configure the XML query loader.
+      Config.Set_Connection (Config_URL);
       ADO.Queries.Loaders.Initialize (Manager, Config);
       for I in 1 .. 10 loop
          Query.Set_Query ("simple-query");
@@ -170,7 +181,11 @@ package body ADO.Queries.Tests is
       Config  : ADO.Connections.Configuration;
       Manager : Query_Manager;
       Pos     : Query_Index;
+      Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                "sqlite:///regtests.db");
    begin
+      Config.Set_Connection (Config_URL);
+
       --  Configure and load the XML queries.
       for Pass in 1 .. 10 loop
          Config.Set_Property ("ado.queries.load", (if Pass = 1 then "false" else "true"));
@@ -199,7 +214,10 @@ package body ADO.Queries.Tests is
       Query   : ADO.Queries.Context;
       Manager : Query_Manager;
       Config  : ADO.Connections.Configuration;
+      Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                "sqlite:///regtests.db");
    begin
+      Config.Set_Connection (Config_URL);
       ADO.Queries.Loaders.Initialize (Manager, Config);
       Query.Set_Query ("simple-query");
 
@@ -240,7 +258,10 @@ package body ADO.Queries.Tests is
       Manager : Query_Manager;
       Config  : ADO.Connections.Configuration;
       Count   : Natural := 0;
+      Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                "sqlite:///regtests.db");
    begin
+      Config.Set_Connection (Config_URL);
       ADO.Queries.Loaders.Initialize (Manager, Config);
       Query.Set_Query ("missing-query");
 
