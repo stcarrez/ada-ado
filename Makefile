@@ -138,27 +138,27 @@ ifeq ($(HAVE_POSTGRESQL),yes)
 	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
-install_dynamo:
-	${MKDIR} -p ${dynamodir}/ado/db
-	${CP} db/*.xml ${dynamodir}/ado/db/
+install::
+	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db
+	${CP} db/*.xml $(DESTDIR)${dynamodir}/ado/db/
 ifeq ($(HAVE_MYSQL),yes)
-	${MKDIR} -p ${dynamodir}/ado/db/mysql
-	${CP} db/mysql/ado-*.sql ${dynamodir}/ado/db/mysql
+	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/mysql
+	${CP} db/mysql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/mysql
 endif
 ifeq ($(HAVE_POSTGRESQL),yes)
-	${MKDIR} -p ${dynamodir}/ado/db/postgresql
-	${CP} db/postgresql/ado-*.sql ${dynamodir}/ado/db/postgresql
+	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/postgresql
+	${CP} db/postgresql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/postgresql
 endif
 ifeq ($(HAVE_SQLITE),yes)
-	${MKDIR} -p ${dynamodir}/ado/db/sqlite
-	${CP} db/sqlite/ado-*.sql ${dynamodir}/ado/db/sqlite
+	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/sqlite
+	${CP} db/sqlite/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/sqlite
 endif
-	${CP} dynamo.xml ${dynamodir}/ado/
-	${CP} NOTICE.txt ${dynamodir}/ado/
-	${CP} LICENSE.txt ${dynamodir}/ado/
+	${CP} dynamo.xml $(DESTDIR)${dynamodir}/ado/
+	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/ado/
+	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/ado/
 
 uninstall::
-	rm -rf ${dynamodir}/ado
+	rm -rf $(DESTDIR)${dynamodir}/ado
 
 .PHONY: doc
 
