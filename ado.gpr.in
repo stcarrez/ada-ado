@@ -14,32 +14,6 @@ library project Ado is
    for Library_Dir use "lib/ado/" & Project'Library_Kind;
    for Object_Dir use "obj/ado/" & Project'Library_Kind;
 
-   case Library_Type is
-      when "relocatable" =>
-         --  for Source_Dirs use Project'Source_Dirs & ("src/dynamic");
-         for Library_Interface use ("ADO",
-                              "ADO.Audits",
-                              "ADO.C", "ADO.Configs",
-                              "ADO.Connections",
-                              "ADO.Dialects",
-                              "ADO.Schemas", "ADO.Schemas.Databases",
-                              "ADO.Schemas.Entities", "ADO.Sql",
-                              "ADO.Objects", "ADO.Objects.Cache",
-                              "ADO.Caches", "ADO.Caches.Discrete",
-                              "ADO.Sequences", "ADO.Sequences.Hilo",
-                              "ADO.Datasets",
-                              "ADO.Utils",
-                              "ADO.Statements", "ADO.Statements.Create",
-                              "ADO.Parameters",
-                              "ADO.Queries", "ADO.Queries.Loaders",
-                              "ADO.Sessions", "ADO.Sessions.Sources",
-                              "ADO.Sessions.Factory", "ADO.Sessions.Entities");
-
-      when others =>
-         null;
-
-   end case;
-
    --  For a shared library, we want the library to be initialized automatically
    --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
    --  and the pragma Linker_Constructor (ada_adoinit) is generated.  However, when using
