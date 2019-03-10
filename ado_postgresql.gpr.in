@@ -13,18 +13,6 @@ project Ado_Postgresql is
    for Library_Options use (@ADO_MYSQL_LIBRARY_OPTIONS@);
    for Source_Dirs use ("src/postgresql");
 
-   case Library_Type is
-      when "relocatable" =>
-          for Library_Interface use ("ADO.Connections.Postgresql",
-                                     "ADO.Schemas.Postgresql",
-                                     "ADO.Statements.Postgresql",
-                                     "PQ");
-
-      when others =>
-          null;
-
-   end case;
-
    for Library_Dir use "lib/ado_postgresql/" & Project'Library_Kind;
    for Object_Dir use "obj/ado_postgresqll/" & Project'Library_Kind;
 
