@@ -11,8 +11,10 @@ ChangeLog
 .settings
 configure.lineno
 ado.gpr
+ado_all.gpr
 ado_postgresql.gpr
 ado_tests.gpr
+t.gpr
 samples.gpr
 tests.xml
 ado-tests.xml
