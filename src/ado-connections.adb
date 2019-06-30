@@ -127,7 +127,7 @@ package body ADO.Connections is
       Handle : Util.Systems.DLLs.Handle;
       Addr   : System.Address;
    begin
-      if ADO.Configs.Is_On (ADO.Configs.DYNAMIC_DRIVER_LOAD) then
+      if not ADO.Configs.Is_On (ADO.Configs.DYNAMIC_DRIVER_LOAD) then
          Log.Warn ("Dynamic loading of driver '{0}' is disabled", Name);
          return;
       end if;
