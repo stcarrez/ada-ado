@@ -3906,7 +3906,7 @@ if test "$ac_res" != no; then :
 
 fi
 
-    if test x"$ac_cv_search_mysql_init" != ""; then
+    if test x"$ac_cv_search_mysql_init" != "" && test x"$ac_cv_search_mysql_init" != "no"; then
 	WITH_ADO_MYSQL="with \"ado_mysql\";";
         MYSQL_LIBNAME="$ac_cv_search_mysql_init"
 	MYSQL_LIBS="$ac_cv_search_mysql_init"
