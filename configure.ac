@@ -105,7 +105,7 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
        ])
-    if test x"$ac_cv_search_mysql_init" != ""; then
+    if test x"$ac_cv_search_mysql_init" != "" && test x"$ac_cv_search_mysql_init" != "no"; then
 	WITH_ADO_MYSQL="with \"ado_mysql\";";
         MYSQL_LIBNAME="$ac_cv_search_mysql_init"
 	MYSQL_LIBS="$ac_cv_search_mysql_init"
