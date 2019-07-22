@@ -104,12 +104,10 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
     AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
        DB="$DB mysql"
        ADO_HAVE_MYSQL=yes
+       WITH_ADO_MYSQL="with \"ado_mysql\";";
+       MYSQL_LIBNAME="$ac_cv_search_mysql_init"
+       MYSQL_LIBS="$ac_cv_search_mysql_init"
        ])
-    if test x"$ac_cv_search_mysql_init" != "" && test x"$ac_cv_search_mysql_init" != "no"; then
-	WITH_ADO_MYSQL="with \"ado_mysql\";";
-        MYSQL_LIBNAME="$ac_cv_search_mysql_init"
-	MYSQL_LIBS="$ac_cv_search_mysql_init"
-    fi
     ;;
   esac
 fi
