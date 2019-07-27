@@ -557,7 +557,7 @@ package body Regtests.Statements.Model is
       Object.Int_Value := Stmt.Get_Nullable_Integer (3);
       Object.Bool_Value := Stmt.Get_Nullable_Boolean (4);
       Object.String_Value := Stmt.Get_Nullable_String (5);
-      Object.Time_Value := Stmt.Get_Time (6);
+      Object.Time_Value := Stmt.Get_Nullable_Time (6);
       Object.Entity_Value := Stmt.Get_Nullable_Entity_Type (7);
       Object.Version := Stmt.Get_Integer (1);
       ADO.Objects.Set_Created (Object);
