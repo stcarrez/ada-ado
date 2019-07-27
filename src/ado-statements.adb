@@ -729,8 +729,8 @@ package body ADO.Statements is
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    --  ------------------------------
-   function Get_Time (Query  : in Query_Statement;
-                      Column : in Natural) return Nullable_Time is
+   function Get_Nullable_Time (Query  : in Query_Statement;
+                               Column : in Natural) return Nullable_Time is
    begin
       if Query.Proxy = null then
          return Result : Nullable_Time do
@@ -740,8 +740,8 @@ package body ADO.Statements is
             end if;
          end return;
       end if;
-      return Query.Proxy.all.Get_Time (Column);
-   end Get_Time;
+      return Query.Proxy.all.Get_Nullable_Time (Column);
+   end Get_Nullable_Time;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
