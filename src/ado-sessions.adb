@@ -140,7 +140,7 @@ package body ADO.Sessions is
       Check_Session (Database);
       declare
          Query : constant Query_Statement_Access
-           := Database.Impl.Database.Value.all.Create_Statement (Table);
+           := Database.Impl.Database.Value.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Query, Database.Impl.Values.all'Access);
       end;
@@ -156,7 +156,7 @@ package body ADO.Sessions is
       Check_Session (Database);
       declare
          Stmt : constant Query_Statement_Access
-           := Database.Impl.Database.Value.all.Create_Statement (Query);
+           := Database.Impl.Database.Value.Create_Statement (Query);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt, Database.Impl.Values.all'Access);
       end;
@@ -316,7 +316,7 @@ package body ADO.Sessions is
       Check_Session (Database);
       declare
          Stmt : constant Delete_Statement_Access
-           := Database.Impl.Database.Value.all.Create_Statement (Table);
+           := Database.Impl.Database.Value.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
                                                         Database.Impl.Values.all'Access);
@@ -333,7 +333,7 @@ package body ADO.Sessions is
       Check_Session (Database);
       declare
          Stmt : constant Update_Statement_Access
-           := Database.Impl.Database.Value.all.Create_Statement (Table);
+           := Database.Impl.Database.Value.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
                                                         Database.Impl.Values.all'Access);
@@ -350,7 +350,7 @@ package body ADO.Sessions is
       Check_Session (Database);
       declare
          Stmt : constant Insert_Statement_Access
-           := Database.Impl.Database.Value.all.Create_Statement (Table);
+           := Database.Impl.Database.Value.Create_Statement (Table);
       begin
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
                                                         Database.Impl.Values.all'Access);
@@ -374,7 +374,7 @@ package body ADO.Sessions is
                                   procedure (Connection : in out Database_Connection'Class)) is
    begin
       Check_Session (Database);
-      Process (Database.Impl.Database.Value.all);
+      Process (Database.Impl.Database.Value);
    end Access_Connection;
 
    --  ------------------------------
