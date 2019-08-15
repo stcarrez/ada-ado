@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-parameters-tests -- Test query parameters and SQL expansion
---  Copyright (C) 2011, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2015, 2017, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -200,7 +200,7 @@ package body ADO.Parameters.Tests is
       pragma Unreferenced (D);
 
       C    : Ada.Streams.Stream_Element;
-      Blob : constant ADO.Blob_Access := Item.Value;
+      Blob : constant ADO.Blob_Accessor := Item.Value;
    begin
       Append (Buffer, ''');
       for I in Blob.Data'Range loop
