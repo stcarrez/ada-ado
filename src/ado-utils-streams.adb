@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-utils-streams -- IO stream utilities
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,21 +39,23 @@ package body ADO.Utils.Streams is
    procedure Read (Stream : in out Blob_Input_Stream;
                    Into   : out Ada.Streams.Stream_Element_Array;
                    Last   : out Ada.Streams.Stream_Element_Offset) is
-      Blob  : constant Blob_Access := Stream.Data.Value;
-      Avail : Offset;
    begin
-      if Blob = null then
+      if Stream.Data.Is_Null then
          Last := Into'First - 1;
       else
-         Avail := Blob.Data'Last - Stream.Pos + 1;
-         if Avail > Into'Length then
-            Avail := Into'Length;
-         end if;
-         Last := Into'First + Avail - 1;
-         if Avail > 0 then
-            Into (Into'First .. Last) := Blob.Data (Stream.Pos .. Stream.Pos + Avail - 1);
-            Stream.Pos := Stream.Pos + Avail;
-         end if;
+         declare
+            Blob  : constant Blob_Accessor := Stream.Data.Value;
+            Avail : Offset := Blob.Data'Last - Stream.Pos + 1;
+         begin
+            if Avail > Into'Length then
+               Avail := Into'Length;
+            end if;
+            Last := Into'First + Avail - 1;
+            if Avail > 0 then
+               Into (Into'First .. Last) := Blob.Data (Stream.Pos .. Stream.Pos + Avail - 1);
+               Stream.Pos := Stream.Pos + Avail;
+            end if;
+         end;
       end if;
    end Read;
 
