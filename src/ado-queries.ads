@@ -328,10 +328,10 @@ private
    end record;
    type Query_Info_Access is access all Query_Info;
 
-   package Query_Info_Ref is
-      new Util.Refs.References (Query_Info, Query_Info_Access);
+   package Query_Info_Ref is new Util.Refs.References (Query_Info, Query_Info_Access);
+   package Atomic_Query_Info_Ref is new Query_Info_Ref.IR.Atomic;
 
-   type Query_Info_Ref_Access is access all Query_Info_Ref.Atomic_Ref;
+   type Query_Info_Ref_Access is access all Atomic_Query_Info_Ref.Atomic_Ref;
 
    subtype Query_Index_Table is Query_Index range 1 .. Query_Index'Last;
    subtype File_Index_Table is File_Index range 1 .. File_Index'Last;
