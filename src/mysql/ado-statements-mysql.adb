@@ -144,7 +144,7 @@ package body ADO.Statements.Mysql is
       pragma Unreferenced (D);
 
       C    : Ada.Streams.Stream_Element;
-      Blob : constant ADO.Blob_Access := Item.Value;
+      Blob : constant ADO.Blob_Accessor := Item.Value;
    begin
       Append (Buffer, ''');
       for I in Blob.Data'Range loop
