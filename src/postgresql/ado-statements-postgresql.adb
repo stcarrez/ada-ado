@@ -151,7 +151,7 @@ package body ADO.Statements.Postgresql is
 
       Hex  : constant String := "0123456789ABCDEF";
       C    : Ada.Streams.Stream_Element;
-      Blob : constant ADO.Blob_Access := Item.Value;
+      Blob : constant ADO.Blob_Accessor := Item.Value;
    begin
       Append (Buffer, "BYTEA(E'\\x");
       for I in Blob.Data'Range loop
