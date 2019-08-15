@@ -787,8 +787,9 @@ package body ADO.Objects is
                              Field  : in Column_Index;
                              Into   : in out ADO.Blob_Ref;
                              Value  : in ADO.Blob_Ref) is
+                             use type ADO.Blob_Ref;
    begin
-      if Value.Value /= Into.Value then
+      if Value /= Into then
          Into := Value;
          Object.Modified (Field) := True;
       end if;
