@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Databases -- Database Objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,6 +105,7 @@ package ADO is
 
    package Blob_References is new Util.Refs.Indefinite_References (Blob, Blob_Access);
    subtype Blob_Ref is Blob_References.Ref;
+   subtype Blob_Accessor is Blob_References.Element_Accessor;
 
    --  Create a blob with an allocated buffer of <b>Size</b> bytes.
    function Create_Blob (Size : in Natural) return Blob_Ref;
