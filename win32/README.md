@@ -17,23 +17,30 @@ The libmysql.dll should be copied in a bin directory (in the PATH).
 The libmysql.a and libmysql.lib should be copied in the GNAT lib directory.
 
 The MySQL dll files come from MySQL Connector 6.0.2.
-Download them at: http://dev.mysql.com/downloads/
+Download them at: https://dev.mysql.com/downloads/
 
 # SQLite Notes
 
-The SQLite DLLs are provided for convenience (win32 version 3.21.0).
+The SQLite DLLs are provided for convenience (win32 and win64 version 3.29.0).
+For Windows 32-bit, extract the files:
+
+     cd win32 && unzip sqlite-dll-win32-x86-3290000.zip
+
+For Windows 64-bit, extract the files:
+
+     cd win32 && unzip sqlite-dll-win64-x64-3290000.zip
 
 The files should be copied in a directory in the PATH.
 
-Download them at: http://www.sqlite.org/download.html
+You may download them at: https://www.sqlite.org/download.html
 
 
-#Installation for GNAT 2017
+#Installation for GNAT 2019
 
-If your GNAT 2017 compiler is installed in C:/GNAT/2017, you may
+If your GNAT 2019 compiler is installed in C:/GNAT/2019, you may
 install the MySQL and SQLite libraries by using msys cp with:
 
-     cp win32/*.dll C:/GNAT/2017/bin
-     cp win32/*.dll C:/GNAT/2017/lib
-     cp win32/*.lib C:/GNAT/2017/lib
-     cp win32/*.a C:/GNAT/2017/lib
+     cp win32/*.dll C:/GNAT/2019/bin
+     cp win32/*.dll C:/GNAT/2019/lib
+     cp win32/*.lib C:/GNAT/2019/lib
+     cp win32/*.a C:/GNAT/2019/lib
