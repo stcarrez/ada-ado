@@ -1,10 +1,10 @@
 # Ada Database Objects
 
-[![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
-[![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-ADO.svg)](http://jenkins.vacs.fr/job/Ada-ADO/)
-[![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](http://ada-ado.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://img.shields.io/jenkins/s/http/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
+[![Test Status](https://img.shields.io/jenkins/t/http/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
+[![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.2.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-1.2.0.tar.gz)
-[![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 ![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/1.2.0.svg)
 
 Ada Database Objects is an Ada05 library that provides
@@ -14,7 +14,7 @@ Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
 The ORM uses an YAML, XML mapping file or an UML model, a code generator and a runtime library
 for the implementation.  It provides a database driver for [Postgresql](https://www.postgresql.org/),
-[MySQL](http://www.mysql.com/) and [SQLite](http://www.sqlite.org/).  The ORM helps your
+[MySQL](https://www.mysql.com/) and [SQLite](https://www.sqlite.org/).  The ORM helps your
 application by providing a mapping of your database tables directly in the target programming
 language: Ada05 in our case.  The development process is the following:
 
@@ -34,7 +34,7 @@ section to install them and run the configure again after the installation.
 To build ADO, you will need:
 
 * [Ada Util](https://github.com/stcarrez/ada-util)
-* [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
+* [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
 
 You should have installed either Postgresql, MySQL or SQLite before
 running the configure script.  For Windows, please read
@@ -63,7 +63,7 @@ make samples.db
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
-  * [Ada Database Objects Programmer's Guide](http://ada-ado.readthedocs.io/en/latest/)
+  * [Ada Database Objects Programmer's Guide](https://ada-ado.readthedocs.io/en/latest/)
   * [ADO Documentation](https://github.com/stcarrez/ada-ado/wiki)
   * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
   * [ADO Statements](https://github.com/stcarrez/ada-ado/wiki/ADO_Statements)
