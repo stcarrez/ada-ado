@@ -166,7 +166,7 @@ the result mapped in the record.
 The same query mapping can be used by different queries.
 
 After writing or updating a query mapping, it is necessary to launch the
-[Dynamo](https://github.com/stcarrez/dynamo) code generator to generate the corresponding Ada model.
+Dynamo code generator to generate the corresponding Ada model.
 
 ### SQL Queries
 The XML query file defines a list of SQL queries that the application
@@ -203,10 +203,10 @@ The `sql` and `sql-count` XML element can have an optional `driver` attribute.
 When defined, the attribute indicates the database driver name that is specific
 to the query.  When empty or not defined, the SQL is not specific to a database driver.
 
-For each query, the [Dynamo](https://github.com/stcarrez/dynamo) code generator generates a query definition instance which
+For each query, the Dynamo code generator generates a query definition instance which
 can be used in the Ada code to be able to use the query.  Such instance is static and
 readonly and serves as a reference when using the query.  For the above query,
-the [Dynamo](https://github.com/stcarrez/dynamo) code generator generates:
+the Dynamo code generator generates:
 
 ```Ada
 package Samples.User.Model is
@@ -216,7 +216,7 @@ private
 end Samples.User.Model;
 ```
 
-When a new query is added, the [Dynamo](https://github.com/stcarrez/dynamo) code generator must be launched to update
+When a new query is added, the Dynamo code generator must be launched to update
 the generated Ada code.
 
 ### Using Named Queries

@@ -1,7 +1,7 @@
 ---
 title: "Ada Database Objects Programmer's Guide"
 author: [Stephane Carrez]
-date: 2019-01-10
+date: 2019-08-31
 subject: "Ada Database Objects"
 tags: [Ada, ORM, Database, MySQL, PostgreSQL, SQLite]
 titlepage: true

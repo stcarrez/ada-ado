@@ -7,10 +7,10 @@ This chapter explains how to build and install the library.
 Before building ADO, you will need:
 
 * [Ada Utility Library](https://github.com/stcarrez/ada-util)
-* [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
+* [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
 * Either the PostgreSQL, MySQL or SQLite development headers installed.
 
-First get, build and install the [XML/Ada](http://libre.adacore.com/libre/tools/xmlada/)
+First get, build and install the [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
 and then get, build and install the [Ada Utility Library](https://github.com/stcarrez/ada-util).
 
 ## Database Driver Installation
@@ -42,18 +42,43 @@ sudo apt-get install postgresql-client libpq-dev
 ```
 
 ### Windows
-For Windows, the installation is a little bit more complex and manual.
-You may either download the files from MySQL and SQLite download sites
-or you may use the files provided by ADO in the `win32` directory.
 
-If your GNAT 2018 compiler is installed in `C:/GNAT/2018`, you may
-install the MySQL and SQLite libraries by using msys cp with:
+It is recommended to use msys2 available at https://www.msys2.org/
+and use the `pacman` command to install the required packages.
 
 ```
-cp win32/*.dll C:/GNAT/2018/bin
-cp win32/*.dll C:/GNAT/2018/lib
-cp win32/*.lib C:/GNAT/2018/lib
-cp win32/*.a C:/GNAT/2018/lib
+pacman -S git
+pacman -S make
+pacman -S unzip
+pacman -S base-devel --needed
+pacman -S mingw-w64-x86_64-sqlite3
+```
+
+For Windows, the installation is a little bit more complex and manual.
+You may either download the files from MySQL and SQLite download sites
+or you may use the files provided by Ada Database Objects
+in the `win32` directory.
+
+For Windows 32-bit, extract the files:
+
+```
+cd win32 && unzip sqlite-dll-win32-x86-3290000.zip
+```
+
+For Windows 64-bit, extract the files:
+
+```
+cd win32 && unzip sqlite-dll-win64-x64-3290000.zip
+```
+
+If your GNAT 2019 compiler is installed in `C:/GNAT/2019`, you may
+install the liblzma, MySQL and SQLite libraries by using msys cp with:
+
+```
+cp win32/*.dll C:/GNAT/2019/bin
+cp win32/*.dll C:/GNAT/2019/lib
+cp win32/*.lib C:/GNAT/2019/lib
+cp win32/*.a C:/GNAT/2019/lib
 ```
 
 ## Configuration
@@ -125,4 +150,18 @@ GNAT project file:
 
 ```
 with "ado";
+with "ado_all";
 ```
+
+It is possible to use only a specific database driver, in that case your GNAT
+project file could be defined as follows:
+
+```
+with "ado";
+with "ado_mysql";
+with "ado_sqlite";
+with "ado_postgresql";
+```
+
+where the `ado_mysql`, `ado_sqlite` and `ado_postgresql` are optional and
+included according to your needs.

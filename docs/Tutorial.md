@@ -17,13 +17,13 @@ The tutorial application is a simple user management database which has only one
 
 The first step is to design the data model.  You have the choice with:
 
-   * Using an UML modeling tool,
-   * Writing an XML file following the [Hibernate](http://www.hibernate.org/) description,
+   * Using an UML modeling tool such as [ArgoUML](https://github.com/argouml-tigris-org/argouml),
+   * Writing an XML file following the [Hibernate](https://www.hibernate.org/) description,
    * Writing a YAML description according to the [Doctrine](https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html) mapping.
 
 In all cases, the model describes the data table as well as how the different
 columns are mapped to an Ada type.  The model can also describe the relations between
-tables.
+tables.  XML and YAML data model files should be stored in the `db` directory.
 
 Let's define a mapping for a simple `user` table and save it in `db/user.hbm.xml`:
 ```
@@ -155,6 +155,12 @@ in each directory:
 * A second SQL file that contains `DROP` statements to erase the database tables.
   The file name uses the pattern `drop-`*name*-*driver*.
 
+When you modify the UML, XML or YAML model files, you should generate again
+the Ada and SQL files.  Even though these files can be generated, it is
+recommended to store these generated files in a versioning systems such
+as `git` because this helps significantly in tracking changes in the data model.
+
+
 ## Getting a Database Connection
 
 To access the database, we will need a database connection.
@@ -172,7 +178,7 @@ with ADO.Sessions.Factory;
 
 The factory can be initialized by giving a URI string that identifies the
 driver and the information to connect to the database.  Once created,
-the factory return session objects to connect to that database.  To connect
+the factory returns a session object to connect to that database.  To connect
 to another database, another factory is necessary.
 
 To get access to a MySQL database, the factory could be initialized as follows:
