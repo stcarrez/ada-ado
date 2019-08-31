@@ -5,7 +5,7 @@ project Ado_Mysql is
    Version := Ado.Version;
    Library_Dir := Ado.Library_Dir;
 
-   Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
+   Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
 
    for Library_Name use "ado_mysql";
    for Library_Kind use Library_Type;
