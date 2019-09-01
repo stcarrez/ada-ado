@@ -25,9 +25,13 @@ project Ado_Mysql is
        for Default_Switches ("Ada") use Config.Binder'Default_Switches ("Ada") & ("-a");
    end Binder;
 
-   package Linker is
-      for Linker_Options use ("@MYSQL_LIBNAME@");
-   end Linker;
+   case Library_Type is
+      when "relocatable" =>
+        for Library_Options use ("@MYSQL_LIBNAME@");
+
+      when others =>
+        null;
+   end case;
 
    package Builder renames Config.Builder;
    package Compiler renames Config.Compiler;

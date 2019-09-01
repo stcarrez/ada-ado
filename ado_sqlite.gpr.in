@@ -16,9 +16,13 @@ project Ado_Sqlite is
    for Library_Dir use "lib/ado_sqlite/" & Project'Library_Kind;
    for Object_Dir use "obj/ado_sqlite/" & Project'Library_Kind;
 
-   package Linker is
-      for Linker_Options use ("-lsqlite3");
-   end Linker;
+   case Library_Type is
+      when "relocatable" =>
+        for Library_Options use ("-lsqlite3");
+
+      when others =>
+        null;
+   end case;
 
    --  For a shared library, we want the library to be initialized automatically
    --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
