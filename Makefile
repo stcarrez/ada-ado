@@ -138,7 +138,9 @@ ifeq ($(HAVE_POSTGRESQL),yes)
 	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
-install::
+install:: install-data
+
+install-data::
 	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db
 	${CP} db/*.xml $(DESTDIR)${dynamodir}/ado/db/
 ifeq ($(HAVE_MYSQL),yes)
