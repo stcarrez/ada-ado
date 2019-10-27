@@ -4063,6 +4063,7 @@ else
         fi
       else
         ac_cv_gnat_xmlada_version='4'
+        HAVE_XML_ADA='yes'
       fi
 
 
