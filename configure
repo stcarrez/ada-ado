@@ -615,9 +615,9 @@ CC
 HAVE_DYNAMO
 HAVE_PANDOC
 NR_CPUS
+BUILD
 BUILDS_COVERAGE
 BUILDS_QUIET
-MODE
 BUILDS_DISTRIB
 DEFAULT_LIBRARY_TYPE
 BUILDS_SHARED
@@ -2531,9 +2531,6 @@ $as_echo "${ac_enable_distrib}" >&6; }
   BUILDS_DISTRIB=$ac_enable_distrib
 
 
-  MODE=$ac_build_mode
-
-
   BUILDS_QUIET=$ac_quiet_mode
 
 
@@ -2553,6 +2550,12 @@ fi
 $as_echo "${ac_enable_coverage}" >&6; }
   BUILDS_COVERAGE=$ac_enable_coverage
 
+  if test T$ac_enable_coverage = Tyes; then
+     ac_build_mode='coverage'
+  fi
+
+
+  BUILD=$ac_build_mode
 
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking number of processors" >&5
@@ -4083,11 +4086,23 @@ $as_echo "$ac_cv_gnat_xmlada_version" >&6; }
 
   VERSION_XML_ADA=$ac_cv_gnat_xmlada_version
 
-  if test T$HAVE_XML_ADA = Tno; then
-    WITH_XML_ADA='';
-    VERSION_XML_ADA='none';
-    HAVE_XML_ADA='no';
-  fi
+  case T$HAVE_XML_ADA in
+    Tyes)
+
+      ;;
+
+    Tno)
+      WITH_XML_ADA='';
+      VERSION_XML_ADA='none';
+      HAVE_XML_ADA='no'
+
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: XML/Ada was not found." >&5
+$as_echo "$as_me: WARNING: XML/Ada was not found." >&2;}
+   as_fn_error $? "Please install XML/Ada, re-configure and re-build Ada Utility Library." "$LINENO" 5
+
+      ;;
+
+  esac
 
 
 
