@@ -178,8 +178,7 @@ AM_GNAT_FIND_ADA_UTIL([Ada ADO])
 # XMLAda library
 ##########################################
 
-AM_GNAT_FIND_XML_ADA([],
- [
+AM_GNAT_FIND_XML_ADA([], [
    AC_MSG_WARN(XML/Ada was not found.)
    AC_MSG_ERROR([Please install XML/Ada, re-configure and re-build Ada Utility Library.])
  ])
