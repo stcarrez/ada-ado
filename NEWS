@@ -1,4 +1,4 @@
-Version 2.0.0   -
+Version 2.0.0   - Dec 2019
   - Support for Postgresql database
   - Improvement for errors reported by database drivers
   - New audit framework to track database record changes
