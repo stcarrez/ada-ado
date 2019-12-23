@@ -3849,10 +3849,14 @@ fi
 # Check whether --with-ada-util was given.
 if test "${with_ada_util+set}" = set; then :
   withval=$with_ada_util;
-      ac_cv_gnat_project_name_utilada_base=${withval}/
-      if test -d "${withval}"; then
-	    ac_cv_gnat_project_name_utilada_base=${withval}/utilada_base
-	  fi
+      if test "${withval}/" = "yes/"; then
+        ac_cv_gnat_project_name_utilada_base=${awa_build_root}utilada_base
+      else
+        ac_cv_gnat_project_name_utilada_base=${withval}/
+        if test -d "${withval}"; then
+	      ac_cv_gnat_project_name_utilada_base=${withval}/utilada_base
+	    fi
+      fi
 
 else
 
