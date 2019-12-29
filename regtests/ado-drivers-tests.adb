@@ -74,7 +74,7 @@ package body ADO.Drivers.Tests is
    --  ------------------------------
    procedure Test_Get_Config (T : in out Test) is
    begin
-      T.Assert (ADO.Drivers.Get_Config ("test.database")'Length > 0,
+      T.Assert (ADO.Configs.Get_Config ("test.database")'Length > 0,
                 "The Get_Config operation returned no value for the test database");
    end Test_Get_Config;
 
