@@ -1888,7 +1888,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 # Current release settings
 ADO_MAJOR_VERSION=2
 ADO_MINOR_VERSION=0
-ADO_MICRO_VERSION=0
+ADO_MICRO_VERSION=1
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
 
@@ -2290,6 +2290,10 @@ done
 test -n "$GNATMAKE" || GNATMAKE=""""
 
   fi
+
+  if test -z "$GNATMAKE"; then
+    as_fn_error $? "gnatmake or gprbuild must be installed." "$LINENO" 5
+  fi;
 
   for ac_prog in gprclean
 do
@@ -3561,10 +3565,39 @@ done
     ;;
 
   *)
-    MYSQL_LIB=mysqlclient
-    # LDFLAGS="$LDFLAGS $ac_mysql_libs"
+    if test "T$ac_mysql_libs" != "T"; then
+      old_LDFLAGS=$LDFLAGS
+      LDFLAGS="$LDFLAGS $ac_mysql_libs"
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing mysql_init" >&5
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+extern int mysql_init(char*);
+int
+main ()
+{
+return mysql_init ("")
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+
+         DB="$DB mysql"
+         ADO_HAVE_MYSQL=yes
+         WITH_ADO_MYSQL="with \"ado_mysql\";";
+         MYSQL_LIBNAME="$ac_mysql_libs"
+         MYSQL_LIBS="$ac_mysql_libs"
+
+else
+  ADO_HAVE_MYSQL=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext]
+      LDFLAGS=$old_LDFLAGS
+      echo "ADO_HAVE_MYSQL=$ADO_HAVE_MYSQL"
+    else
+      MYSQL_LIB=mysqlclient
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing mysql_init" >&5
 $as_echo_n "checking for library containing mysql_init... " >&6; }
 if ${ac_cv_search_mysql_init+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -3618,14 +3651,15 @@ ac_res=$ac_cv_search_mysql_init
 if test "$ac_res" != no; then :
   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
 
-       DB="$DB mysql"
-       ADO_HAVE_MYSQL=yes
-       WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="$ac_cv_search_mysql_init"
-       MYSQL_LIBS="$ac_cv_search_mysql_init"
+        DB="$DB mysql"
+        ADO_HAVE_MYSQL=yes
+        WITH_ADO_MYSQL="with \"ado_mysql\";";
+        MYSQL_LIBNAME="$ac_cv_search_mysql_init"
+        MYSQL_LIBS="$ac_cv_search_mysql_init"
 
 fi
 
+    fi
     ;;
   esac
 fi
