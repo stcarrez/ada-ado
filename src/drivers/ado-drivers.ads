@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2019 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,25 +73,12 @@ with Util.Properties;
 --  @include ado-postgresql.ads
 package ADO.Drivers is
 
-   --  Raised for all errors reported by the database.
-   Database_Error   : exception;
-
-   type Driver_Index is new Natural range 0 .. 4;
-
    --  Initialize the drivers and the library by reading the property file
    --  and configure the runtime with it.
    procedure Initialize (Config : in String);
 
    --  Initialize the drivers and the library and configure the runtime with the given properties.
    procedure Initialize (Config : in Util.Properties.Manager'Class);
-
-   --  Get the global configuration property identified by the name.
-   --  If the configuration property does not exist, returns the default value.
-   function Get_Config (Name    : in String;
-                        Default : in String := "") return String;
-
-   --  Returns true if the global configuration property is set to true/on.
-   function Is_On (Name   : in String) return Boolean;
 
    --  Initialize the drivers which are available.
    procedure Initialize;
