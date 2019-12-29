@@ -18,7 +18,7 @@
 
 with Util.Test_Caller;
 
-with ADO.Drivers;
+with ADO.Configs;
 with ADO.Sessions;
 with ADO.SQL;
 with ADO.Statements;
@@ -99,7 +99,7 @@ package body ADO.Sequences.Tests is
       end;
 
       --  Make a real connection.
-      Controller.Set_Connection (ADO.Drivers.Get_Config ("test.database"));
+      Controller.Set_Connection (ADO.Configs.Get_Config ("test.database"));
       Factory.Create (Controller);
       for I in 1 .. 1_000 loop
          Seq_Factory.Allocate (Obj);
