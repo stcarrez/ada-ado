@@ -22,7 +22,7 @@ AC_INIT(src/ado.ads)
 # Current release settings
 ADO_MAJOR_VERSION=2
 ADO_MINOR_VERSION=0
-ADO_MICRO_VERSION=0
+ADO_MICRO_VERSION=1
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
 AC_SUBST(ADO_VERSION)
@@ -96,15 +96,28 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
     ;;
 
   *)
-    MYSQL_LIB=mysqlclient
-    # LDFLAGS="$LDFLAGS $ac_mysql_libs"
-    AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
-       DB="$DB mysql"
-       ADO_HAVE_MYSQL=yes
-       WITH_ADO_MYSQL="with \"ado_mysql\";";
-       MYSQL_LIBNAME="$ac_cv_search_mysql_init"
-       MYSQL_LIBS="$ac_cv_search_mysql_init"
-       ])
+    if test "T$ac_mysql_libs" != "T"; then
+      old_LDFLAGS=$LDFLAGS
+      LDFLAGS="$LDFLAGS $ac_mysql_libs"
+      AC_TRY_LINK([extern int mysql_init(char*);], [return mysql_init ("")], [
+         DB="$DB mysql"
+         ADO_HAVE_MYSQL=yes
+         WITH_ADO_MYSQL="with \"ado_mysql\";";
+         MYSQL_LIBNAME="$ac_mysql_libs"
+         MYSQL_LIBS="$ac_mysql_libs"
+      ], ADO_HAVE_MYSQL=no)]
+      LDFLAGS=$old_LDFLAGS
+      echo "ADO_HAVE_MYSQL=$ADO_HAVE_MYSQL"
+    else
+      MYSQL_LIB=mysqlclient
+      AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
+        DB="$DB mysql"
+        ADO_HAVE_MYSQL=yes
+        WITH_ADO_MYSQL="with \"ado_mysql\";";
+        MYSQL_LIBNAME="$ac_cv_search_mysql_init"
+        MYSQL_LIBS="$ac_cv_search_mysql_init"
+        ])
+    fi
     ;;
   esac
 fi
