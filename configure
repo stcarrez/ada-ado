@@ -3566,8 +3566,7 @@ done
 
   *)
     if test "T$ac_mysql_libs" != "T"; then
-      old_LDFLAGS=$LDFLAGS
-      LDFLAGS="$LDFLAGS $ac_mysql_libs"
+      LIBS="$ac_mysql_libs"
 
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -3581,20 +3580,16 @@ return mysql_init ("")
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-
-         DB="$DB mysql"
-         ADO_HAVE_MYSQL=yes
-         WITH_ADO_MYSQL="with \"ado_mysql\";";
-         MYSQL_LIBNAME="$ac_mysql_libs"
-         MYSQL_LIBS="$ac_mysql_libs"
-
+  DB="$DB mysql"
+          ADO_HAVE_MYSQL=yes
+          WITH_ADO_MYSQL="with \"ado_mysql\";";
+          MYSQL_LIBNAME="$ac_mysql_libs"
+          MYSQL_LIBS="$ac_mysql_libs"
 else
   ADO_HAVE_MYSQL=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext]
-      LDFLAGS=$old_LDFLAGS
-      echo "ADO_HAVE_MYSQL=$ADO_HAVE_MYSQL"
+    conftest$ac_exeext conftest.$ac_ext
     else
       MYSQL_LIB=mysqlclient
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing mysql_init" >&5
