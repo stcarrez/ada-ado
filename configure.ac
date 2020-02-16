@@ -97,17 +97,16 @@ if test "${ENABLE_MYSQL}" = "yes" ; then
 
   *)
     if test "T$ac_mysql_libs" != "T"; then
-      old_LDFLAGS=$LDFLAGS
-      LDFLAGS="$LDFLAGS $ac_mysql_libs"
-      AC_TRY_LINK([extern int mysql_init(char*);], [return mysql_init ("")], [
-         DB="$DB mysql"
-         ADO_HAVE_MYSQL=yes
-         WITH_ADO_MYSQL="with \"ado_mysql\";";
-         MYSQL_LIBNAME="$ac_mysql_libs"
-         MYSQL_LIBS="$ac_mysql_libs"
-      ], ADO_HAVE_MYSQL=no)]
-      LDFLAGS=$old_LDFLAGS
-      echo "ADO_HAVE_MYSQL=$ADO_HAVE_MYSQL"
+      LIBS="$ac_mysql_libs"
+      AC_LINK_IFELSE(
+         [AC_LANG_PROGRAM([extern int mysql_init(char*);],
+                          [return mysql_init ("")])],
+         [DB="$DB mysql"
+          ADO_HAVE_MYSQL=yes
+          WITH_ADO_MYSQL="with \"ado_mysql\";";
+          MYSQL_LIBNAME="$ac_mysql_libs"
+          MYSQL_LIBS="$ac_mysql_libs"],
+         [ADO_HAVE_MYSQL=no])
     else
       MYSQL_LIB=mysqlclient
       AC_SEARCH_LIBS([mysql_init],[$MYSQL_LIB mariadb mariadbclient],[
