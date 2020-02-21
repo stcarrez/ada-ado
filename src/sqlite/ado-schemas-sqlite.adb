@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas -- Database Schemas
---  Copyright (C) 2015, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2015, 2018, 2019, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -145,15 +145,21 @@ package body ADO.Schemas.Sqlite is
       Stmt.Execute;
 
       while Stmt.Has_Elements loop
-         Table      := new ADO.Schemas.Table;
-         Table.Name := Stmt.Get_Unbounded_String (0);
-         if Last /= null then
-            Last.Next_Table := Table;
-         else
-            Schema.Schema.First_Table := Table;
-         end if;
-         Load_Table_Schema (C, Table);
-         Last := Table;
+         declare
+            Name : constant String := Stmt.Get_String (0);
+         begin
+            if not Util.Strings.Starts_With (Name, "sqlite_") then
+               Table      := new ADO.Schemas.Table;
+               Table.Name := To_Unbounded_String (Name);
+               if Last /= null then
+                  Last.Next_Table := Table;
+               else
+                  Schema.Schema.First_Table := Table;
+               end if;
+               Load_Table_Schema (C, Table);
+               Last := Table;
+            end if;
+         end;
          Stmt.Next;
       end loop;
    end Load_Schema;
