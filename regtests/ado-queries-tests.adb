@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,7 +101,7 @@ package body ADO.Queries.Tests is
 
       Mysql_Driver      : constant Driver_Access := ADO.Connections.Get_Driver ("mysql");
       Sqlite_Driver     : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
-      Postgresql_Driver : constant Driver_Access := ADO.Connections.Get_Driver ("sqlite");
+      Psql_Driver       : constant Driver_Access := ADO.Connections.Get_Driver ("postgresql");
       Config            : ADO.Connections.Configuration;
       Manager           : Query_Manager;
       Config_URL        : constant String := Util.Tests.Get_Parameter ("test.database",
@@ -122,6 +122,8 @@ package body ADO.Queries.Tests is
       begin
          if Mysql_Driver /= null and then Manager.Driver = Mysql_Driver.Get_Driver_Index then
             Assert_Equals (T, "select 1", SQL, "Invalid query for 'index'");
+         elsif Psql_Driver /= null and then Manager.Driver = Psql_Driver.Get_Driver_Index then
+            Assert_Equals (T, "select 3", SQL, "Invalid query for 'index'");
          else
             Assert_Equals (T, "select 0", SQL, "Invalid query for 'index'");
          end if;
@@ -142,6 +144,16 @@ package body ADO.Queries.Tests is
                                                           Manager, False);
          begin
             Assert_Equals (T, "select 0", SQL, "Invalid query for 'index' (SQLite driver)");
+         end;
+      end if;
+      if Psql_Driver /= null and then Manager.Driver = Psql_Driver.Get_Driver_Index
+      then
+         declare
+            SQL : constant String := ADO.Queries.Get_SQL (Index_Query.Query'Access,
+                                                          Manager,
+                                                          False);
+         begin
+            Assert_Equals (T, "select 3", SQL, "Invalid query for 'index' (PostgreSQL driver)");
          end;
       end if;
    end Test_Load_Queries;
