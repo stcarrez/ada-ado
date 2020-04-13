@@ -26,6 +26,7 @@
        <sql>select 0</sql>
        <sql driver='mysql'>select 1</sql>
        <sql-count>select 2</sql-count>
+       <sql driver='postgresql'>select 3</sql>
     </query>
 
     <query name='value'>
