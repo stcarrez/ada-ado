@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -787,7 +787,7 @@ package body ADO.Objects is
                              Field  : in Column_Index;
                              Into   : in out ADO.Blob_Ref;
                              Value  : in ADO.Blob_Ref) is
-                             use type ADO.Blob_Ref;
+      use type ADO.Blob_Ref;
    begin
       if Value /= Into then
          Into := Value;
