@@ -248,6 +248,18 @@ package body ADO.Objects is
    end Is_Loaded;
 
    --  ------------------------------
+   --  Check if at least one field is modified and the object must be saved.
+   --  ------------------------------
+   function Is_Modified (Object : in Object_Ref'Class) return Boolean is
+   begin
+      if Object.Object = null then
+         return False;
+      else
+         return Object.Object.Is_Modified;
+      end if;
+   end Is_Modified;
+
+   --  ------------------------------
    --  Load the object from the database if it was not already loaded.
    --  For a lazy association, the <b>Object_Record</b> is allocated and holds the primary key.
    --  The <b>Is_Loaded</b> boolean is cleared thus indicating the other values are not loaded.
@@ -469,6 +481,14 @@ package body ADO.Objects is
       Ref.Is_Loaded  := True;
       Ref.Modified := (others => False);
    end Set_Created;
+
+   --  ------------------------------
+   --  Check if at least one field is modified and the object must be saved.
+   --  ------------------------------
+   function Is_Modified (Ref : in Object_Record'Class) return Boolean is
+   begin
+      return (for some Modified_Field of Ref.Modified => Modified_Field);
+   end Is_Modified;
 
    --  ------------------------------
    --  Check if the field at position <b>Field</b> was modified.
