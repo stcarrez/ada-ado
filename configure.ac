@@ -1,5 +1,5 @@
 dnl Autoconf configure script for Ada Database Objects
-dnl Copyright (C) 2010 - 2019 Stephane Carrez
+dnl Copyright (C) 2010 - 2020 Stephane Carrez
 dnl Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 dnl
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ AC_INIT(src/ado.ads)
 
 # Current release settings
 ADO_MAJOR_VERSION=2
-ADO_MINOR_VERSION=0
-ADO_MICRO_VERSION=1
+ADO_MINOR_VERSION=1
+ADO_MICRO_VERSION=0
 ADO_VERSION=$ADO_MAJOR_VERSION.$ADO_MINOR_VERSION.$ADO_MICRO_VERSION
 
 AC_SUBST(ADO_VERSION)
