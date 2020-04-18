@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-objects -- Database objects
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,6 +61,7 @@ limited with ADO.Sessions;
 --  | Is_Null     | When returning True, it indicates the reference is NULL. |
 --  | Is_Loaded   | When returning True, it indicates the object was loaded from the database. |
 --  | Is_Inserted | When returning True, it indicates the object was inserted in the database. |
+--  | Is_Modified | When returning True, it indicates the object was modified and must be saved. |
 --
 --  Let's assume we have a `User_Ref` mapped record, an instance of the reference would
 --  be declared as follows:
@@ -268,6 +269,9 @@ package ADO.Objects is
    --  Mark the object as created in the database.
    procedure Set_Created (Ref : in out Object_Record'Class);
 
+   --  Check if at least one field is modified and the object must be saved.
+   function Is_Modified (Ref : in Object_Record'Class) return Boolean;
+
    --  Check if the field at position <b>Field</b> was modified.
    function Is_Modified (Ref   : in Object_Record'Class;
                          Field : in Column_Index) return Boolean with Inline;
@@ -338,6 +342,9 @@ package ADO.Objects is
 
    --  Check whether this object is loaded from the database.
    function Is_Loaded (Object : in Object_Ref'Class) return Boolean;
+
+   --  Check if at least one field is modified and the object must be saved.
+   function Is_Modified (Object : in Object_Ref'Class) return Boolean;
 
    --  Internal method to get the object record instance and make sure it is fully loaded.
    --  If the object was not yet loaded, calls <b>Lazy_Load</b> to get the values from the
