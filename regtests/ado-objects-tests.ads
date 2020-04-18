@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2019 Stephane Carrez
+--  Copyright (C) 2011, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,9 @@ package ADO.Objects.Tests is
 
    --  Test Is_Inserted and Is_Null
    procedure Test_Is_Inserted (T : in out Test);
+
+   --  Test Is_Modified
+   procedure Test_Is_Modified (T : in out Test);
 
    --  Test object creation/update/load with string as key.
    procedure Test_String_Key (T : in out Test);
