@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2011 - 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -356,6 +356,43 @@ package body ADO.Objects.Tests is
    end Test_Is_Inserted;
 
    --  ------------------------------
+   --  Test Is_Modified
+   --  ------------------------------
+   procedure Test_Is_Modified (T : in out Test) is
+      User : Regtests.Simple.Model.User_Ref;
+   begin
+      T.Assert (not User.Is_Modified, "A null object should not be MODIFIED");
+
+      --  Create an object within a transaction.
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         S.Begin_Transaction;
+         User.Set_Name ("John");
+         T.Assert (User.Is_Modified, "User should be modified");
+
+         User.Set_Value (1);
+         User.Save (S);
+         T.Assert (not User.Is_Modified, "User should be not modified after save");
+
+         S.Commit;
+      end;
+
+      declare
+         S    : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         John : Regtests.Simple.Model.User_Ref;
+      begin
+         John.Load (S, User.Get_Id);
+         T.Assert (John.Is_Inserted, "After a load, the object should be marked INSERTED");
+         T.Assert (not John.Is_Null, "After a load, the object should not be NULL");
+         T.Assert (not John.Is_Modified, "After a load, the object should not be MODIFIED");
+
+         John.Set_Name ("John");
+         T.Assert (not User.Is_Modified, "User should be modified");
+      end;
+   end Test_Is_Modified;
+
+   --  ------------------------------
    --  Test object creation/update/load with string as key.
    --  ------------------------------
    procedure Test_String_Key (T : in out Test) is
@@ -397,6 +434,7 @@ package body ADO.Objects.Tests is
       Caller.Add_Test (Suite, "Test ADO.Objects.Create", Test_Create_Object'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Delete", Test_Delete_Object'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Is_Created", Test_Is_Inserted'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects.Is_Modified", Test_Is_Modified'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Integer)",
                        Test_Object_Nullable_Integer'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Entity_Type)",
