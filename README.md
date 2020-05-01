@@ -1,12 +1,15 @@
 # Ada Database Objects
 
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado.json)](https://alire.ada.dev/crates/ado)
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_sqlite.json)](https://alire.ada.dev/crates/ado_sqlite)
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_postgresql.json)](https://alire.ada.dev/crates/ado_postgresql)
 [![Build Status](https://img.shields.io/jenkins/s/https/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
 [![Test Status](https://img.shields.io/jenkins/t/https/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-ado/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-ado)
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
-[![Download](https://img.shields.io/badge/download-2.0.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.0.0.tar.gz)
+[![Download](https://img.shields.io/badge/download-2.1.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.1.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.0.0.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.1.0.svg)
 
 Ada Database Objects is an Ada05 library that provides
 object relational mapping to access a database in Ada05.
@@ -29,6 +32,14 @@ language: Ada05 in our case.  The development process is the following:
 You need at least one of these databases (or all of then).  The configure script will now
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
+
+## Version 2.1.0 - May 2020
+
+- Added Is_Modified predicate on database objects
+- Fix SQLite Load_Schema to avoid loading SQLite specific tables
+
+[List all versions](https://github.com/stcarrez/ada-ado/blob/master/NEWS.md)
+
 
 # Build
 
