@@ -1,5 +1,6 @@
-Version 2.1.0   - 
+Version 2.1.0   - May 2020
   - Added Is_Modified predicate on database objects
+  - Fix SQLite Load_Schema to avoid loading SQLite specific tables
 
 Version 2.0.0   - Dec 2019
   - Support for Postgresql database
