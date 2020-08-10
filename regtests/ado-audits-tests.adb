@@ -105,10 +105,12 @@ package body ADO.Audits.Tests is
          Email.Set_Status (ADO.Nullable_Integer '(Email.Get_Status.Value + 1, False));
          Email.Save (DB);
 
-         Email.Set_Email ("Email" & Util.Strings.Image (Email.Get_Status.Value) & "@here.com");
+         Email.Set_Email ("Email" & Util.Strings.Image (Natural (Id))
+                            & Util.Strings.Image (Email.Get_Status.Value) & "@here.com");
          Email.Save (DB);
 
-         Email.Set_Email ("Email" & Util.Strings.Image (Email.Get_Status.Value) & "@there.com");
+         Email.Set_Email ("Email" & Util.Strings.Image (Natural (Id))
+                            & Util.Strings.Image (Email.Get_Status.Value) & "@there.com");
          Email.Set_Status (ADO.Nullable_Integer '(Email.Get_Status.Value + 1, False));
          Email.Save (DB);
       end loop;
