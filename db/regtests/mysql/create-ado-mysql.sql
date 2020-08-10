@@ -1,33 +1,31 @@
 /* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
-/* Entity types */
-CREATE TABLE entity_type (
-  /* the entity type identifier */
+/* Entity table that enumerates all known database tables */
+CREATE TABLE IF NOT EXISTS entity_type (
+  /* the database table unique entity index */
   `id` INTEGER  AUTO_INCREMENT,
-  /* the entity type name (table name) */
-  `name` VARCHAR(127) UNIQUE NOT NULL,
+  /* the database entity name */
+  `name` VARCHAR(127) BINARY UNIQUE ,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Sequence generator */
-CREATE TABLE sequence (
+CREATE TABLE IF NOT EXISTS sequence (
   /* the sequence name */
-  `name` VARCHAR(127) NOT NULL,
+  `name` VARCHAR(127) UNIQUE NOT NULL,
   /* the sequence record version */
-  `version` int ,
+  `version` INTEGER NOT NULL,
   /* the sequence value */
-  `value` BIGINT ,
+  `value` BIGINT NOT NULL,
   /* the sequence block size */
-  `block_size` BIGINT ,
+  `block_size` BIGINT NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;;
-INSERT INTO entity_type (name) VALUES
-("entity_type")
-,("sequence")
-;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT IGNORE INTO entity_type (name) VALUES
+("entity_type"), ("sequence");
 /* Copied from ado-mysql.sql*/
 /* File generated automatically by dynamo */
 /* This is the Audit_Info table */
-CREATE TABLE audit_info (
+CREATE TABLE IF NOT EXISTS audit_info (
   /*  */
   `id` BIGINT ,
   /* the entity id */
@@ -43,19 +41,19 @@ CREATE TABLE audit_info (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* This is the User email table */
-CREATE TABLE audit_email (
+CREATE TABLE IF NOT EXISTS audit_email (
   /*  */
-  `id` BIGINT NOT NULL,
+  `id` BIGINT UNIQUE NOT NULL,
   /* the user email address */
-  `user_email` VARCHAR(32) BINARY ,
+  `user_email` VARCHAR(32) BINARY UNIQUE ,
   /* the user email status */
   `email_status` INTEGER ,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* This is a generic property */
-CREATE TABLE audit_property (
+CREATE TABLE IF NOT EXISTS audit_property (
   /*  */
-  `id` VARCHAR(255) BINARY NOT NULL,
+  `id` VARCHAR(255) BINARY UNIQUE NOT NULL,
   /* the property value */
   `user_email` INTEGER ,
   /* a float property value */
@@ -64,7 +62,7 @@ CREATE TABLE audit_property (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* The Comment table records a user comment associated with a database entity.
                  The comment can be associated with any other database record. */
-CREATE TABLE TEST_COMMENTS (
+CREATE TABLE IF NOT EXISTS TEST_COMMENTS (
   /* the comment identifier */
   `ID` INTEGER ,
   /* the comment version. */
@@ -82,7 +80,7 @@ CREATE TABLE TEST_COMMENTS (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*  */
-CREATE TABLE test_image (
+CREATE TABLE IF NOT EXISTS test_image (
   /* the image identifier */
   `id` INTEGER ,
   /* the image version. */
@@ -94,9 +92,9 @@ CREATE TABLE test_image (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
-CREATE TABLE allocate (
+CREATE TABLE IF NOT EXISTS allocate (
   /* the user id */
-  `ID` BIGINT NOT NULL,
+  `ID` BIGINT UNIQUE NOT NULL,
   /* the allocate version. */
   `version` INTEGER NOT NULL,
   /* the sequence value */
@@ -104,9 +102,9 @@ CREATE TABLE allocate (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
-CREATE TABLE test_user (
+CREATE TABLE IF NOT EXISTS test_user (
   /* the user id */
-  `ID` BIGINT NOT NULL,
+  `ID` BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   `version` INTEGER NOT NULL,
   /* the sequence value */
@@ -118,9 +116,9 @@ CREATE TABLE test_user (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
-CREATE TABLE test_nullable_table (
+CREATE TABLE IF NOT EXISTS test_nullable_table (
   /* the user id */
-  `ID` BIGINT NOT NULL,
+  `ID` BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   `version` INTEGER NOT NULL,
   /* an identifier value */
@@ -138,9 +136,9 @@ CREATE TABLE test_nullable_table (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
-CREATE TABLE test_table (
+CREATE TABLE IF NOT EXISTS test_table (
   /* the user id */
-  `ID` BIGINT NOT NULL,
+  `ID` BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   `version` INTEGER NOT NULL,
   /* an identifier value */
@@ -157,14 +155,5 @@ CREATE TABLE test_table (
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO entity_type (name) VALUES
-("audit_info")
-,("audit_email")
-,("audit_property")
-,("TEST_COMMENTS")
-,("test_image")
-,("allocate")
-,("test_user")
-,("test_nullable_table")
-,("test_table")
-;
+INSERT IGNORE INTO entity_type (name) VALUES
+("audit_info"), ("audit_email"), ("audit_property"), ("TEST_COMMENTS"), ("test_image"), ("allocate"), ("test_user"), ("test_nullable_table"), ("test_table");

@@ -1,6 +1,6 @@
 /* File generated automatically by dynamo */
 /* This is the Audit_Info table */
-CREATE TABLE audit_info (
+CREATE TABLE IF NOT EXISTS audit_info (
   /*  */
   "id" BIGINT ,
   /* the entity id */
@@ -16,19 +16,19 @@ CREATE TABLE audit_info (
   PRIMARY KEY ("id")
 );
 /* This is the User email table */
-CREATE TABLE audit_email (
+CREATE TABLE IF NOT EXISTS audit_email (
   /*  */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /* the user email address */
-  "user_email" VARCHAR(32) ,
+  "user_email" VARCHAR(32) UNIQUE ,
   /* the user email status */
   "email_status" INTEGER ,
   PRIMARY KEY ("id")
 );
 /* This is a generic property */
-CREATE TABLE audit_property (
+CREATE TABLE IF NOT EXISTS audit_property (
   /*  */
-  "id" VARCHAR(255) NOT NULL,
+  "id" VARCHAR(255) UNIQUE NOT NULL,
   /* the property value */
   "user_email" INTEGER ,
   /* a float property value */
@@ -37,7 +37,7 @@ CREATE TABLE audit_property (
 );
 /* The Comment table records a user comment associated with a database entity.
                  The comment can be associated with any other database record. */
-CREATE TABLE TEST_COMMENTS (
+CREATE TABLE IF NOT EXISTS TEST_COMMENTS (
   /* the comment identifier */
   "id" INTEGER ,
   /* the comment version. */
@@ -55,7 +55,7 @@ CREATE TABLE TEST_COMMENTS (
   PRIMARY KEY ("id")
 );
 /*  */
-CREATE TABLE test_image (
+CREATE TABLE IF NOT EXISTS test_image (
   /* the image identifier */
   "id" INTEGER ,
   /* the image version. */
@@ -67,9 +67,9 @@ CREATE TABLE test_image (
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
-CREATE TABLE allocate (
+CREATE TABLE IF NOT EXISTS allocate (
   /* the user id */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /* the allocate version. */
   "version" INTEGER NOT NULL,
   /* the sequence value */
@@ -77,9 +77,9 @@ CREATE TABLE allocate (
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
-CREATE TABLE test_user (
+CREATE TABLE IF NOT EXISTS test_user (
   /* the user id */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   "version" INTEGER NOT NULL,
   /* the sequence value */
@@ -91,9 +91,9 @@ CREATE TABLE test_user (
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
-CREATE TABLE test_nullable_table (
+CREATE TABLE IF NOT EXISTS test_nullable_table (
   /* the user id */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   "version" INTEGER NOT NULL,
   /* an identifier value */
@@ -111,9 +111,9 @@ CREATE TABLE test_nullable_table (
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
-CREATE TABLE test_table (
+CREATE TABLE IF NOT EXISTS test_table (
   /* the user id */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /* the comment version. */
   "version" INTEGER NOT NULL,
   /* an identifier value */
@@ -131,13 +131,5 @@ CREATE TABLE test_table (
   PRIMARY KEY ("id")
 );
 INSERT INTO entity_type (name) VALUES
-('audit_info')
-,('audit_email')
-,('audit_property')
-,('TEST_COMMENTS')
-,('test_image')
-,('allocate')
-,('test_user')
-,('test_nullable_table')
-,('test_table')
-;
+('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_user'), ('test_nullable_table'), ('test_table')
+  ON CONFLICT DO NOTHING;
