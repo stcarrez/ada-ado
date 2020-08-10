@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2019 Stephane Carrez
+--  Copyright (C) 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -122,7 +122,7 @@ package Regtests.Images.Model is
                    Into   : in out Image_Ref);
 
    package Image_Vectors is
-      new Ada.Containers.Vectors (Index_Type   => Natural,
+      new Ada.Containers.Vectors (Index_Type   => Positive,
                                   Element_Type => Image_Ref,
                                   "="          => "=");
    subtype Image_Vector is Image_Vectors.Vector;

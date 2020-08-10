@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-spec.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2019 Stephane Carrez
+--  Copyright (C) 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -163,7 +163,7 @@ package Regtests.Statements.Model is
                    Into   : in out Nullable_Table_Ref);
 
    package Nullable_Table_Vectors is
-      new Ada.Containers.Vectors (Index_Type   => Natural,
+      new Ada.Containers.Vectors (Index_Type   => Positive,
                                   Element_Type => Nullable_Table_Ref,
                                   "="          => "=");
    subtype Nullable_Table_Vector is Nullable_Table_Vectors.Vector;
@@ -294,7 +294,7 @@ package Regtests.Statements.Model is
                    Into   : in out Table_Ref);
 
    package Table_Vectors is
-      new Ada.Containers.Vectors (Index_Type   => Natural,
+      new Ada.Containers.Vectors (Index_Type   => Positive,
                                   Element_Type => Table_Ref,
                                   "="          => "=");
    subtype Table_Vector is Table_Vectors.Vector;
