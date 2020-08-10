@@ -1,8 +1,8 @@
 /* File generated automatically by dynamo */
 /* Record representing a user */
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
   /* the user identifier */
-  "id" BIGINT NOT NULL,
+  "id" BIGINT UNIQUE NOT NULL,
   /*  */
   "object_version" INTEGER NOT NULL,
   /* the user name */
@@ -19,4 +19,4 @@ CREATE TABLE user (
 );
 INSERT INTO entity_type (name) VALUES
 ('user')
-;
+  ON CONFLICT DO NOTHING;
