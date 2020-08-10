@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2017, 2018, 2019, 2020 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -299,8 +299,20 @@ package body ADO.Queries.Loaders is
    --  ------------------------------
    procedure Initialize (Manager : in out Query_Manager;
                          Config  : in ADO.Connections.Configuration'Class) is
-      Paths : constant String := Config.Get_Property (Configs.QUERY_PATHS_CONFIG);
-      Load  : constant Boolean := Config.Get_Property (Configs.QUERY_LOAD_CONFIG) = "true";
+      function Get_Config (Name : in String) return String;
+
+      function Get_Config (Name : in String) return String is
+         Value : constant String := Config.Get_Property (Name);
+      begin
+         if Value'Length > 0 then
+            return Value;
+         else
+            return Ado.Configs.Get_Config (Name);
+         end if;
+      end Get_Config;
+
+      Paths : constant String := Get_Config (Configs.QUERY_PATHS_CONFIG);
+      Load  : constant Boolean := Get_Config (Configs.QUERY_LOAD_CONFIG) = "true";
       File  : Query_File_Access := Query_Files;
    begin
       Log.Info ("Initializing query search paths to {0}", Paths);
