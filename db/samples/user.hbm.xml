@@ -15,7 +15,7 @@
         </property>
         <property name="email" type="String" unique='true'>
             <comment>the user email</comment>
-            <column name="email" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
+            <column name="email" not-null="true" unique="true" sql-type="VARCHAR(256)"/>
         </property>
         <property name="date" type="String">
             <comment>the user registration date</comment>
