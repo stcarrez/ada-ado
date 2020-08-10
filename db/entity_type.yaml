@@ -1,0 +1,21 @@
+ADO.Model.Entity_Type:
+  type: entity
+  table: entity_type
+  schema: schema_name
+  readOnly: true
+  description: Entity table that enumerates all known database tables
+  id:
+    id:
+      type: integer
+      description: the database table unique entity index
+      generator:
+        strategy: auto
+  fields:
+    name:
+      type: string
+      length: 127
+      column: name
+      unique: true
+      description: the database entity name
+      options:
+        comment: User's email address
