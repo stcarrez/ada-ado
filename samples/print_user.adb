@@ -17,7 +17,9 @@
 -----------------------------------------------------------------------
 with ADO;
 with ADO.Drivers;
+with ADO.Configs;
 with ADO.Sessions;
+with ADO.Connections;
 with ADO.SQL;
 with ADO.Sessions.Factory;
 with Samples.User.Model;
@@ -46,7 +48,7 @@ begin
    end if;
 
    --  Create and configure the connection pool
-   Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
+   Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
       Session : ADO.Sessions.Session := Factory.Get_Session;
@@ -74,7 +76,7 @@ begin
    end;
 
 exception
-   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+   when E : ADO.Connections.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
 end Print_User;

@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with ADO;
 with ADO.Drivers;
+with ADO.Configs;
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.SQL;
@@ -28,6 +29,7 @@ with Ada.Exceptions;
 
 with ADO.Statements;
 with ADO.Queries;
+with ADO.Connections;
 
 with Util.Log.Loggers;
 
@@ -127,7 +129,7 @@ procedure Userdb is
 
 begin
    Initialize ("samples.properties");
-   Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
+   Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
       DB    : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
@@ -167,7 +169,7 @@ begin
    Text_IO.Put_Line ("Exiting");
 
 exception
-   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+   when E : ADO.Connections.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
 end Userdb;

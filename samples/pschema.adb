@@ -18,6 +18,7 @@
 
 with ADO;
 with ADO.Drivers;
+with ADO.Configs;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Schemas;
@@ -42,7 +43,7 @@ begin
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.
-   Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
+   Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
       DB     : constant ADO.Sessions.Master_Session := Factory.Get_Master_Session;

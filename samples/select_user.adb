@@ -16,7 +16,9 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with ADO.Drivers;
+with ADO.Configs;
 with ADO.Sessions;
+with ADO.Connections;
 with ADO.Sessions.Factory;
 with ADO.Statements;
 
@@ -43,7 +45,7 @@ begin
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.
-   Factory.Create (ADO.Drivers.Get_Config ("ado.database"));
+   Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
       DB     : constant ADO.Sessions.Session := Factory.Get_Session;
@@ -67,7 +69,7 @@ begin
    end;
 
 exception
-   when E : ADO.Drivers.Database_Error | ADO.Sessions.Connection_Error =>
+   when E : ADO.Connections.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
 end Select_User;
