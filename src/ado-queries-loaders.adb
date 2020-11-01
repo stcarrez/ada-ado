@@ -307,7 +307,7 @@ package body ADO.Queries.Loaders is
          if Value'Length > 0 then
             return Value;
          else
-            return Ado.Configs.Get_Config (Name);
+            return ADO.Configs.Get_Config (Name);
          end if;
       end Get_Config;
 
