@@ -1,3 +1,6 @@
+Version 2.1.1   - Nov 2020
+  - Fix using the configuration with multiple config environments
+
 Version 2.1.0   - May 2020
   - Added Is_Modified predicate on database objects
   - Fix SQLite Load_Schema to avoid loading SQLite specific tables
