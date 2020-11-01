@@ -1,4 +1,4 @@
-with "config";
+with "ado_config";
 with "utilada_sys";
 with "utilada_xml";
 
@@ -6,14 +6,14 @@ library project Ado is
    Version := "2.1.0";
    Library_Dir := "lib";
 
-   Library_Type : Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
+   Library_Type : Ado_Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
    for Source_Dirs use ("../src", "../src/model");
    for Library_Name use "ado";
    for Library_Kind use Library_Type;
-   for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-   for Library_Dir use "lib/ado/" & Project'Library_Kind;
-   for Object_Dir use "obj/ado/" & Project'Library_Kind;
+   for Library_Version use "../lib" & Project'Library_Name & ".so." & Version;
+   for Library_Dir use "../lib/ado/" & Project'Library_Kind;
+   for Object_Dir use "../obj/ado/" & Project'Library_Kind;
 
    --  For a shared library, we want the library to be initialized automatically
    --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
@@ -21,10 +21,10 @@ library project Ado is
    --  'gprbuild', this is not the case and we have to force that with the
    --  'gnatbind' option "-a".  For a static link library, the following is not used.
    package Binder is
-       for Default_Switches ("Ada") use Config.Binder'Default_Switches ("Ada") & ("-a");
+       for Default_Switches ("Ada") use Ado_Config.Binder'Default_Switches ("Ada") & ("-a");
    end Binder;
 
-   package Builder renames Config.Builder;
-   package Compiler renames Config.Compiler;
+   package Builder renames Ado_Config.Builder;
+   package Compiler renames Ado_Config.Compiler;
 
 end Ado;
