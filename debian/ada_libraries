@@ -1,0 +1,11 @@
+MODE=distrib ADO_LIBRARY_TYPE=relocatable
+ado.gpr
+
+MODE=distrib ADO_LIBRARY_TYPE=relocatable
+ado_sqlite.gpr
+
+MODE=distrib ADO_LIBRARY_TYPE=relocatable
+ado_mysql.gpr
+
+MODE=distrib ADO_LIBRARY_TYPE=relocatable
+ado_postgresql.gpr

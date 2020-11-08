@@ -1,10 +1,22 @@
-libada-ado (1.0.1) testing; urgency=low
+libado (2.1.1) unstable; urgency=low
+
+  * Update for Ada Database Objects 2.1.1
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sun, 8 Nov 2020 18:18:46 +0100
+
+libado (1.2.0) unstable; urgency=low
+
+  * Update for Ada Database Objects 1.2.0
+
+ -- Stephane Carrez <Stephane.Carrez@gmail.com>  Sun, 24 Jun 2018 10:38:16 +0200
+
+libado (1.0.1) testing; urgency=low
 
   * Fix build for XmlAda 2014
 
  -- Stephane Carrez <Stephane.Carrez@gmail.com>  Fri, 18 Oct 2013 20:33:06 +0200
 
-libada-ado (1.0.0) unstable; urgency=low
+libado (1.0.0) unstable; urgency=low
 
   * Initial release to setup a debian library and development package
 
