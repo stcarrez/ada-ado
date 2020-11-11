@@ -9,3 +9,6 @@ ado_mysql.gpr
 
 MODE=distrib ADO_LIBRARY_TYPE=relocatable
 ado_postgresql.gpr
+
+MODE=distrib ADO_LIBRARY_TYPE=relocatable
+ado_all.gpr

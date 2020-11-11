@@ -36,6 +36,13 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.1 (= ${binary:Version})
 Description: Ada Database Objects for SQLite (runtime)
  This is the SQLite database driver for Ada Database Objects.
 
+Package: libado-all2.1.1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.1 (= ${binary:Version})
+Description: Ada Database Objects drivers (runtime)
+ This is the database driver loader for Ada Database Objects.
+
 Package: libado-postgresql2.1.1
 Section: libs
 Architecture: any
@@ -74,10 +81,20 @@ Description: Ada Database Objects for SQLite (Development files)
 Package: libado-postgresql1-dev
 Section: libdevel
 Architecture: any
-Depends: ${misc:Depends}, libada-ado1.2 (= ${binary:Version}), gnat
+Depends: ${misc:Depends}, ${ada:Depends}
 Description: Ada Database Objects for PostgreSQL (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
  .
  The package contains the Ada development files for the PostgreSQL driver.
+
+Package: libado-all1-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, ${ada:Depends}
+Description: Ada Database Objects drivers (Development files)
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.
+ .
+ The package contains the Ada development files for the driver loader.
 
