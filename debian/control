@@ -3,10 +3,17 @@ Priority: optional
 Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
+ dh-ada-library,
  gnat, gnat-7,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
- libsqlite3-dev
+ libxmlada-sax7-dev,
+ libutilada-xml1-dev,
+ libutilada-sys1-dev,
+ libsqlite3-dev,
+ libpq-dev,
+ libmariadb-dev,
+ postgresql-client-common
 # 2015-2 is compatible with gnat-6
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-ado/
