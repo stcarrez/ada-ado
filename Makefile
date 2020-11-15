@@ -73,9 +73,10 @@ endif
 CLEAN_FILES=src/drivers/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
 
 ifeq ($(HAVE_PANDOC),yes)
-ifeq ($(HAVE_DYNAMO),yes)
 doc::  docs/ado-book.pdf docs/ado-book.html
+ifeq ($(HAVE_DYNAMO),yes)
 	$(DYNAMO) build-doc -markdown wiki
+endif
 
 ADO_DOC= \
   title.md \
@@ -98,14 +99,15 @@ DOC_OPTIONS=-f markdown -o ado-book.pdf --listings --number-sections --toc
 HTML_OPTIONS=-f markdown -o ado-book.html --listings --number-sections --toc --css pandoc.css
 
 docs/ado-book.pdf: $(ADO_DOC_DEP) force
+ifeq ($(HAVE_DYNAMO),yes)
 	$(DYNAMO) build-doc -pandoc docs
+endif
 	cat docs/Model.md docs/ADO_Objects.md > docs/ADO_Model.md
 	cd docs && pandoc $(DOC_OPTIONS) --template=./eisvogel.tex $(ADO_DOC)
 
 docs/ado-book.html: docs/ado-book.pdf force
 	cd docs && pandoc $(HTML_OPTIONS) $(ADO_DOC)
 
-endif
 endif
 
 generate:
