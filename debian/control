@@ -13,8 +13,9 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  libsqlite3-dev,
  libpq-dev,
  libmariadb-dev,
- postgresql-client-common
-# 2015-2 is compatible with gnat-6
+ postgresql-client-common,
+# pandoc requires texlive-fonts-extra for PDF
+ pandoc, texlive-fonts-extra
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-ado/
 #Vcs-Git: git://git.debian.org/collab-maint/ada-util.git
@@ -61,6 +62,7 @@ Package: libado1-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
+Suggests: libado-doc (= ${source:Version})
 Description: Ada Database Objects (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
@@ -69,6 +71,7 @@ Package: libado-mysql1-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
+Suggests: libado-doc (= ${source:Version})
 Description: Ada Database Objects for MySQL (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
@@ -79,6 +82,7 @@ Package: libado-sqlite1-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
+Suggests: libado-doc (= ${source:Version})
 Description: Ada Database Objects for SQLite (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
@@ -89,6 +93,7 @@ Package: libado-postgresql1-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
+Suggests: libado-doc (= ${source:Version})
 Description: Ada Database Objects for PostgreSQL (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
@@ -99,9 +104,22 @@ Package: libado-all1-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
+Suggests: libado-doc (= ${source:Version})
 Description: Ada Database Objects drivers (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
  .
  The package contains the Ada development files for the driver loader.
 
+Package: libado-doc
+Section: libdevel
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Suggests: gnat
+Description: Ada Database Objects (documentation)
+ The Ada Database Objects provides a relational mapping to access
+ databases in Ada applications.
+ .
+ This package contains the documentation for Ada Database Objects
+ in HTML and PDF as well as several examples.

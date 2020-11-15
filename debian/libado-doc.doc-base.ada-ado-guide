@@ -1,0 +1,15 @@
+Document: ada-ado-guide
+Title: Ada Database Objects - Programmer's Guide
+Author: Stephane Carrez
+Section: Programming/Ada
+Abstract: This manual documents the Ada Database Objects.
+ Ada Database Objects is an Ada05 library that provides
+ object relational mapping to access a database in Ada05.
+ The library supports Postgresql, MySQL, SQLite as databases.
+ 
+ Format: HTML
+ Index: /usr/share/doc/libado-doc/ado-book.html
+ Files: /usr/share/doc/libado-doc/ado-book.html
+ 
+ Format: pdf
+ Files: /usr/share/doc/libado-doc/ado-book.pdf.gz
