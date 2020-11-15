@@ -1,0 +1,26 @@
+with "config";
+with "utilada_sys";
+with "ado_all";
+
+project Examples is
+
+   Mains := ("userdb.adb", "pschema.adb", "print_user.adb",
+             "add_user.adb", "list_user.adb", "select_user.adb");
+
+   for Main use Mains;
+
+   for Source_Dirs use (".", "./model");
+
+   for Object_Dir use "./" & Config'Object_Dir & "/obj";
+   for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
+
+   ------------
+   -- Binder --
+   ------------
+
+   package Binder renames Config.Binder;
+   package Builder renames Config.Builder;
+   package Compiler renames Config.Compiler;
+   package Linker renames Config.Linker;
+
+end Examples;
