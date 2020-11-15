@@ -51,6 +51,7 @@ override_dh_install::
 	for i in `cd $(CURDIR)/db && ls *.xml`; do \
 		dh_install -p$(ado_DEV_PKG) db/$$i usr/share/dynamo/ado/db ; \
 	done
+	dh_install -p$(ado_DEV_PKG) dynamo.xml usr/share/dynamo/ado
 	dh_installdirs --package=$(ado_mysql_LIB_PKG) \
 	   usr/share/dynamo/ado/db/mysql
 	for i in `ls $(CURDIR)/db/mysql`; do \
