@@ -191,7 +191,9 @@ The session factory is also responsible for maintaining some data that is shared
 all the database connections.  This includes:
 
   * the sequence generators used to allocate unique identifiers for database tables,
+
   * the entity cache,
+
   * some application specific global cache.
 
 

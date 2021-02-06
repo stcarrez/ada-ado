@@ -225,7 +225,9 @@ Reference counting is used so that the object can be stored, shared and the memo
 management is handled automatically.  It defines generic operations to be able to:
 
   * load the database record and map it to the Ada object,
+
   * save the Ada object into the database either by inserting or updating it,
+
   * delete the database record.
 
 The Dynamo code generator will generate a specific tagged type for each database table
@@ -249,6 +251,7 @@ of an object reference:
 | Is_Null     | When returning True, it indicates the reference is NULL. |
 | Is_Loaded   | When returning True, it indicates the object was loaded from the database. |
 | Is_Inserted | When returning True, it indicates the object was inserted in the database. |
+| Is_Modified | When returning True, it indicates the object was modified and must be saved. |
 
 Let's assume we have a `User_Ref` mapped record, an instance of the reference would
 be declared as follows:
