@@ -5,7 +5,7 @@
 --  Template used: templates/model/package-body.xhtml
 --  Ada Generator: https://ada-gen.googlecode.com/svn/trunk Revision 1095
 -----------------------------------------------------------------------
---  Copyright (C) 2020 Stephane Carrez
+--  Copyright (C) 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -919,6 +919,7 @@ package body Regtests.Audits.Model is
    begin
       Impl := new Property_Impl;
       Impl.Value.Is_Null := True;
+      Impl.Float_Value := 0.0;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
