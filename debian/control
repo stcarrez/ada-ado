@@ -4,12 +4,12 @@ Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
  dh-ada-library,
- gnat, gnat-7,
+ gnat, gnat-9,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
- libxmlada-sax7-dev,
- libutilada-xml1-dev,
- libutilada-sys1-dev,
+ libxmlada-sax9-dev,
+ libutilada-xml2-dev,
+ libutilada-sys2-dev,
  libsqlite3-dev,
  libpq-dev,
  libmariadb-dev,
@@ -18,8 +18,8 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  pandoc, texlive-fonts-extra
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-ado/
-#Vcs-Git: git://git.debian.org/collab-maint/ada-util.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/ada-util.git;a=summary
+Vcs-Git: https://github.com/stcarrez/ada-ado.git -b debian-gnat-9
+Vcs-Browser: https://github.com/stcarrez/ada-ado/tree/debian-gnat-9
 
 Package: libado2.1.1
 Section: libs
@@ -58,7 +58,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.1 (= ${binary:Version})
 Description: Ada Database Objects for PostgreSQL (runtime)
  This is the PostgreSQL database driver for Ada Database Objects.
 
-Package: libado1-dev
+Package: libado2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -67,7 +67,7 @@ Description: Ada Database Objects (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
 
-Package: libado-mysql1-dev
+Package: libado-mysql2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -78,7 +78,7 @@ Description: Ada Database Objects for MySQL (Development files)
  .
  The package contains the Ada development files for the MySQL driver.
 
-Package: libado-sqlite1-dev
+Package: libado-sqlite2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -89,7 +89,7 @@ Description: Ada Database Objects for SQLite (Development files)
  .
  The package contains the Ada development files for the SQLite driver.
 
-Package: libado-postgresql1-dev
+Package: libado-postgresql2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -100,7 +100,7 @@ Description: Ada Database Objects for PostgreSQL (Development files)
  .
  The package contains the Ada development files for the PostgreSQL driver.
 
-Package: libado-all1-dev
+Package: libado-all2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}

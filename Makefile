@@ -101,6 +101,7 @@ HTML_OPTIONS=-f markdown -o ado-book.html --listings --number-sections --toc --c
 docs/ado-book.pdf: $(ADO_DOC_DEP) force
 ifeq ($(HAVE_DYNAMO),yes)
 	$(DYNAMO) build-doc -pandoc docs
+	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md
 endif
 	cat docs/Model.md docs/ADO_Objects.md > docs/ADO_Model.md
 	cd docs && pandoc $(DOC_OPTIONS) --template=./eisvogel.tex $(ADO_DOC)

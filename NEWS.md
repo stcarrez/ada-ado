@@ -1,3 +1,6 @@
+Version 2.1.2   - Feb 2021
+  - Fix uninitialized float values in generated code used by unit tests
+
 Version 2.1.1   - Nov 2020
   - Fix using the configuration with multiple config environments
 
