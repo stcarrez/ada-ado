@@ -39,7 +39,7 @@ override_dh_auto_install::
 version=2.1.1
 
 ado_LIB_PKG = libado$(version)
-ado_DEV_PKG = libado2-dev
+ado_DEV_PKG = libado1-dev
 
 ado_mysql_LIB_PKG = libado-mysql$(version)
 ado_sqlite_LIB_PKG = libado-sqlite$(version)
