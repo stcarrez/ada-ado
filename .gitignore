@@ -36,3 +36,10 @@ regtests.db
 src/mysql/mysql-lib.ads
 docs/ado-book.pdf
 docs/ado-book.html
+*.substvars
+debian/lib*
+debian/.debhelper/
+debian/autoreconf.after
+debian/autoreconf.before
+debian/debhelper-build-stamp
+debian/files
