@@ -36,14 +36,18 @@ override_dh_auto_test::
 
 override_dh_auto_install::
 
-version=2.1.1
+version=2.1.2
+aliversion=2
 
 ado_LIB_PKG = libado$(version)
-ado_DEV_PKG = libado2-dev
+ado_DEV_PKG = libado$(aliversion)-dev
 
 ado_mysql_LIB_PKG = libado-mysql$(version)
+ado_mysql_DEV_PKG = libado-mysql$(aliversion)-dev
 ado_sqlite_LIB_PKG = libado-sqlite$(version)
+ado_sqlite_DEV_PKG = libado-sqlite$(aliversion)-dev
 ado_postgresql_LIB_PKG = libado-postgresql$(version)
+ado_postgresql_DEV_PKG = libado-postgresql$(aliversion)-dev
 
 override_dh_install::
 	dh_installdirs --package=$(ado_DEV_PKG) \
@@ -52,20 +56,20 @@ override_dh_install::
 		dh_install -p$(ado_DEV_PKG) db/$$i usr/share/dynamo/ado/db ; \
 	done
 	dh_install -p$(ado_DEV_PKG) dynamo.xml usr/share/dynamo/ado
-	dh_installdirs --package=$(ado_mysql_LIB_PKG) \
+	dh_installdirs --package=$(ado_mysql_DEV_PKG) \
 	   usr/share/dynamo/ado/db/mysql
 	for i in `ls $(CURDIR)/db/mysql`; do \
-		dh_install -p$(ado_mysql_LIB_PKG) db/mysql/$$i usr/share/dynamo/ado/db/mysql ; \
+		dh_install -p$(ado_mysql_DEV_PKG) db/mysql/$$i usr/share/dynamo/ado/db/mysql ; \
 	done
-	dh_installdirs --package=$(ado_sqlite_LIB_PKG) \
+	dh_installdirs --package=$(ado_sqlite_DEV_PKG) \
 	   usr/share/dynamo/ado/db/sqlite
 	for i in `ls $(CURDIR)/db/sqlite`; do \
-		dh_install -p$(ado_sqlite_LIB_PKG) db/sqlite/$$i usr/share/dynamo/ado/db/sqlite ; \
+		dh_install -p$(ado_sqlite_DEV_PKG) db/sqlite/$$i usr/share/dynamo/ado/db/sqlite ; \
 	done
-	dh_installdirs --package=$(ado_postgresql_LIB_PKG) \
+	dh_installdirs --package=$(ado_postgresql_DEV_PKG) \
 	   usr/share/dynamo/ado/db/postgresql
 	for i in `ls $(CURDIR)/db/postgresql`; do \
-		dh_install -p$(ado_postgresql_LIB_PKG) db/postgresql/$$i usr/share/dynamo/ado/db/postgresql ; \
+		dh_install -p$(ado_postgresql_DEV_PKG) db/postgresql/$$i usr/share/dynamo/ado/db/postgresql ; \
 	done
 
 .PHONY: override_dh_installexamples-indep
