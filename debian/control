@@ -58,7 +58,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
 Description: Ada Database Objects for PostgreSQL (runtime)
  This is the PostgreSQL database driver for Ada Database Objects.
 
-Package: libado1-dev
+Package: libado2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
