@@ -8,8 +8,8 @@ Build-Depends: debhelper (>= 10), autotools-dev,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
  libxmlada-sax9-dev,
- libutilada-xml2-dev,
- libutilada-sys2-dev,
+ libutilada-xml3-dev,
+ libutilada-sys3-dev,
  libsqlite3-dev,
  libpq-dev,
  libmariadb-dev,
@@ -58,7 +58,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
 Description: Ada Database Objects for PostgreSQL (runtime)
  This is the PostgreSQL database driver for Ada Database Objects.
 
-Package: libado2-dev
+Package: libado3-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -67,7 +67,7 @@ Description: Ada Database Objects (Development files)
  The Ada Database Objects provides a relational mapping to access
  databases in Ada applications.
 
-Package: libado-mysql2-dev
+Package: libado-mysql3-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -78,7 +78,7 @@ Description: Ada Database Objects for MySQL (Development files)
  .
  The package contains the Ada development files for the MySQL driver.
 
-Package: libado-sqlite2-dev
+Package: libado-sqlite3-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -89,7 +89,7 @@ Description: Ada Database Objects for SQLite (Development files)
  .
  The package contains the Ada development files for the SQLite driver.
 
-Package: libado-postgresql2-dev
+Package: libado-postgresql3-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
@@ -100,7 +100,7 @@ Description: Ada Database Objects for PostgreSQL (Development files)
  .
  The package contains the Ada development files for the PostgreSQL driver.
 
-Package: libado-all2-dev
+Package: libado-all3-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, ${ada:Depends}
