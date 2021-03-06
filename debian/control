@@ -4,10 +4,10 @@ Section: libdevel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
  dh-ada-library,
- gnat, gnat-9,
+ gnat, gnat-8,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
- libxmlada-sax9-dev,
+ libxmlada-sax8-dev,
  libutilada-xml2-dev,
  libutilada-sys2-dev,
  libsqlite3-dev,
@@ -18,8 +18,8 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  pandoc, texlive-fonts-extra
 Standards-Version: 4.1.4
 Homepage: https://github.com/stcarrez/ada-ado/
-Vcs-Git: https://github.com/stcarrez/ada-ado.git -b debian-gnat-9
-Vcs-Browser: https://github.com/stcarrez/ada-ado/tree/debian-gnat-9
+Vcs-Git: https://github.com/stcarrez/ada-ado.git -b debian-gnat-8
+Vcs-Browser: https://github.com/stcarrez/ada-ado/tree/debian-gnat-8
 
 Package: libado2.1.2
 Section: libs
