@@ -14,6 +14,7 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  libpq-dev,
  libmariadb-dev,
  postgresql-client-common,
+ sqlite3,
 # pandoc requires texlive-fonts-extra for PDF
  pandoc, texlive-fonts-extra
 Standards-Version: 4.1.4
