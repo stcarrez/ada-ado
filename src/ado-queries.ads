@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -210,6 +210,10 @@ package ADO.Queries is
    --  a query whose SQL pattern is defined in an XML query file.
    type Context is new ADO.SQL.Query with private;
 
+   --  Clear the query object.
+   overriding
+   procedure Clear (Query : in out Context);
+
    --  Set the query definition which identifies the SQL query to execute.
    --  The query is represented by the <tt>sql</tt> XML entry.
    procedure Set_Query (Into  : in out Context;
@@ -249,6 +253,13 @@ package ADO.Queries is
    function Get_SQL (From      : in Query_Definition_Access;
                      Manager   : in Query_Manager;
                      Use_Count : in Boolean) return String;
+
+   type Static_Loader_Access is
+     access function (Name : in String) return access constant String;
+
+   --  Set a static query loader to load SQL queries.
+   procedure Set_Query_Loader (Manager  : in out Query_Manager;
+                               Loader   : in Static_Loader_Access);
 
 private
 
@@ -365,6 +376,7 @@ private
       Driver  : Driver_Index := Driver_Index'First;
       Queries : Query_Table_Access;
       Files   : File_Table_Access;
+      Loader  : Static_Loader_Access;
    end record;
 
    overriding
