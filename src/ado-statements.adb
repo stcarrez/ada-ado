@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018, 2019 Stephane Carrez
+--  ado-statements -- Database statements
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -262,7 +262,7 @@ package body ADO.Statements is
    --  ------------------------------
    --  Get a double number from a C string terminated by \0
    --  ------------------------------
-   function Get_Double (Str : chars_ptr) return Long_Float is
+   function Get_Long_Float (Str : chars_ptr) return Long_Float is
       C : Character;
       P : chars_ptr := Str;
    begin
@@ -289,7 +289,7 @@ package body ADO.Statements is
          end loop;
          raise Invalid_Type with "Invalid floating point value";
       end;
-   end Get_Double;
+   end Get_Long_Float;
 
    --  ------------------------------
    --  Get a time from the C string passed in <b>Value</b>.
@@ -555,7 +555,7 @@ package body ADO.Statements is
                        Column : Natural) return Float is
    begin
       if Query.Proxy = null then
-         return Float (Query_Statement'Class (Query).Get_Double (Column));
+         return Float (Query_Statement'Class (Query).Get_Long_Float (Column));
       else
          return Query.Proxy.Get_Float (Column);
       end if;
@@ -567,15 +567,15 @@ package body ADO.Statements is
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    --  ------------------------------
-   function Get_Double (Query  : Query_Statement;
-                        Column : Natural) return Long_Float is
+   function Get_Long_Float (Query  : Query_Statement;
+                            Column : Natural) return Long_Float is
    begin
       if Query.Proxy = null then
          raise Invalid_Statement with "Double is not supported by database driver";
       else
-         return Query.Proxy.Get_Double (Column);
+         return Query.Proxy.Get_Long_Float (Column);
       end if;
-   end Get_Double;
+   end Get_Long_Float;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
