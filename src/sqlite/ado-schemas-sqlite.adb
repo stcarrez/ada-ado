@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas -- Database Schemas
---  Copyright (C) 2015, 2018, 2019, 2020 Stephane Carrez
+--  Copyright (C) 2015, 2018, 2019, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,10 @@ package body ADO.Schemas.Sqlite is
          return T_TINYINT;
       elsif Value = "smallint" then
          return T_SMALLINT;
+      elsif Value = "float" then
+         return T_FLOAT;
+      elsif Value = "double" then
+         return T_DOUBLE;
       elsif Value = "blob" then
          return T_BLOB;
       end if;
@@ -103,8 +107,9 @@ package body ADO.Schemas.Sqlite is
       while Stmt.Has_Elements loop
          Col           := new Column;
          Col.Name      := Stmt.Get_Unbounded_String (1);
-         Col.Collation := Stmt.Get_Unbounded_String (2);
-         Col.Default   := Stmt.Get_Unbounded_String (5);
+         if not Stmt.Is_Null (4) then
+            Col.Default   := Stmt.Get_Unbounded_String (4);
+         end if;
          if Last /= null then
             Last.Next_Column := Col;
          else
