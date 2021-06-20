@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2018, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,5 +42,8 @@ package ADO.Queries.Tests is
 
    --  Test the missing query.
    procedure Test_Missing_Query (T : in out Test);
+
+   --  Test the static query loader.
+   procedure Test_Query_Loader (T : in out Test);
 
 end ADO.Queries.Tests;
