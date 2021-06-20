@@ -183,6 +183,7 @@ package body ADO.Schemas.Tests is
          Assert_Equals (T, "version", To_Lower_Case (Get_Name (C)), "Invalid column name");
          T.Assert (Get_Type (C) = T_INTEGER, "Invalid column type");
          T.Assert (not Is_Null (C), "Column is null");
+         Assert_Equals (T, "", Get_Default (C), "Column has a default value");
       end;
 
       declare
@@ -190,6 +191,44 @@ package body ADO.Schemas.Tests is
       begin
          T.Assert (C = null, "Find_Column must return null for an unknown column");
       end;
+
+      Table := ADO.Schemas.Find_Table (Schema, "audit_property");
+      T.Assert (Table /= null, "Table schema for audit_property not found");
+
+      Assert_Equals (T, "audit_property", Get_Name (Table));
+      declare
+         C : Column_Cursor := Get_Columns (Table);
+         Nb_Columns : Integer := 0;
+      begin
+         while Has_Element (C) loop
+            Nb_Columns := Nb_Columns + 1;
+            Next (C);
+         end loop;
+         Assert_Equals (T, 7, Nb_Columns, "Invalid number of columns");
+      end;
+
+      declare
+         C : constant Column_Definition := Find_Column (Table, "float_value");
+      begin
+         T.Assert (C /= null, "Cannot find column 'float_value' in table schema");
+         Assert_Equals (T, "float_value", To_Lower_Case (Get_Name (C)), "Invalid column name");
+         T.Assert (Get_Type (C) = T_FLOAT, "Invalid column type");
+         T.Assert (not Is_Null (C), "Column is null");
+         T.Assert (not Is_Binary (C), "Column is binary");
+         T.Assert (not Is_Primary (C), "Column must be not be a primary key");
+      end;
+
+      declare
+         C : constant Column_Definition := Find_Column (Table, "double_value");
+      begin
+         T.Assert (C /= null, "Cannot find column 'double_value' in table schema");
+         Assert_Equals (T, "double_value", To_Lower_Case (Get_Name (C)), "Invalid column name");
+         T.Assert (Get_Type (C) = T_DOUBLE, "Invalid column type");
+         T.Assert (not Is_Null (C), "Column is null");
+         T.Assert (not Is_Binary (C), "Column is binary");
+         T.Assert (not Is_Primary (C), "Column must be not be a primary key");
+      end;
+
    end Test_Load_Schema;
 
    --  ------------------------------
