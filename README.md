@@ -33,7 +33,7 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
-## Version 2.2.0   -
+## Version 2.2.0   - Under Development
   - Improvement of query loaders
   - Fix reading database schema with float/double values
   - Rename Get_Double into Get_Long_Float
