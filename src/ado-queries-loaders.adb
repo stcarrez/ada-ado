@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2017, 2018, 2019, 2020 Stephane Carrez
+--  Copyright (C) 2011- 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -268,14 +268,32 @@ package body ADO.Queries.Loaders is
       Query_Mapper.Set_Context (Mapper, Loader'Access);
 
       --  Read the XML query file.
-      Reader.Parse (Path, Mapper);
+      if Ada.Directories.Exists (Path) then
+         Reader.Parse (Path, Mapper);
+         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+         return;
+      end if;
 
-      File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
-
-   exception
-      when Ada.IO_Exceptions.Name_Error =>
+      if Manager.Loader = null then
          Log.Error ("XML query file '{0}' does not exist", Path);
 
+         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+         return;
+      end if;
+
+      Log.Info ("Loading query {0} from static loader", File.File.Name.all);
+
+      declare
+         Content : constant access constant String
+           := Manager.Loader (File.File.Name.all);
+      begin
+         if Content /= null then
+            Reader.Parse_String (Content.all, Mapper);
+         else
+            Log.Error ("XML query file '{0}' does not exist", Path);
+         end if;
+         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+      end;
    end Read_Query;
 
    --  ------------------------------

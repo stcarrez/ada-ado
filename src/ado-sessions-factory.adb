@@ -136,4 +136,13 @@ package body ADO.Sessions.Factory is
       Factory.Audit := Manager;
    end Set_Audit_Manager;
 
+   --  ------------------------------
+   --  Set a static query loader to load SQL queries.
+   --  ------------------------------
+   procedure Set_Query_Loader (Factory  : in out Session_Factory;
+                               Loader   : in ADO.Queries.Static_Loader_Access) is
+   begin
+      Factory.Queries.Set_Query_Loader (Loader);
+   end Set_Query_Loader;
+
 end ADO.Sessions.Factory;

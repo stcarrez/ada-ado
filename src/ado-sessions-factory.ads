@@ -85,6 +85,10 @@ package ADO.Sessions.Factory is
    procedure Set_Audit_Manager (Factory : in out Session_Factory;
                                 Manager : in ADO.Audits.Audit_Manager_Access);
 
+   --  Set a static query loader to load SQL queries.
+   procedure Set_Query_Loader (Factory  : in out Session_Factory;
+                               Loader   : in ADO.Queries.Static_Loader_Access);
+
 private
 
    --  The session factory holds the necessary information to obtain a master or slave
