@@ -1,3 +1,8 @@
+Version 2.2.0   -
+  - Improvement of query loaders
+  - Fix reading database schema with float/double values
+  - Rename Get_Double into Get_Long_Float
+
 Version 2.1.2   - Feb 2021
   - Fix uninitialized float values in generated code used by unit tests
 

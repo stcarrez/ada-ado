@@ -33,8 +33,10 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
-## Version 2.1.2   - Feb 2021
-- Fix uninitialized float values in generated code used by unit tests
+## Version 2.2.0   -
+  - Improvement of query loaders
+  - Fix reading database schema with float/double values
+  - Rename Get_Double into Get_Long_Float
 
 [List all versions](https://github.com/stcarrez/ada-ado/blob/master/NEWS.md)
 
@@ -73,7 +75,7 @@ make samples.db
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
 
-  * [Ada Database Objects Programmer's Guide](https://ada-ado.readthedocs.io/en/latest/)
+  * [Ada Database Objects Programmer's Guide](https://ada-ado.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/ada-ado/blob/master/docs/ado-book.pdf)
   * [ADO Documentation](https://github.com/stcarrez/ada-ado/wiki)
   * [ADO Sessions](https://github.com/stcarrez/ada-ado/wiki/ADO_Sessions)
   * [ADO Statements](https://github.com/stcarrez/ada-ado/wiki/ADO_Statements)
