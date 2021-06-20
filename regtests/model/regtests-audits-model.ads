@@ -207,6 +207,34 @@ package Regtests.Audits.Model is
    function Get_Status (Object : in Email_Ref)
                  return ADO.Nullable_Integer;
 
+   --  Set the email date
+   procedure Set_Date (Object : in out Email_Ref;
+                       Value  : in ADO.Nullable_Time);
+
+   --  Get the email date
+   function Get_Date (Object : in Email_Ref)
+                 return ADO.Nullable_Time;
+
+   --  Set the email creation date
+   procedure Set_Create_Date (Object : in out Email_Ref;
+                              Value  : in Ada.Calendar.Time);
+
+   --  Get the email creation date
+   function Get_Create_Date (Object : in Email_Ref)
+                 return Ada.Calendar.Time;
+
+   --  Set the email info
+   procedure Set_Info (Object : in out Email_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String);
+   procedure Set_Info (Object : in out Email_Ref;
+                       Value : in String);
+
+   --  Get the email info
+   function Get_Info (Object : in Email_Ref)
+                 return Ada.Strings.Unbounded.Unbounded_String;
+   function Get_Info (Object : in Email_Ref)
+                 return String;
+
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
    procedure Load (Object  : in out Email_Ref;
@@ -293,6 +321,38 @@ package Regtests.Audits.Model is
    --  Get a float property value
    function Get_Float_Value (Object : in Property_Ref)
                  return Float;
+
+   --  Set a double property value
+   procedure Set_Double_Value (Object : in out Property_Ref;
+                               Value  : in Long_Float);
+
+   --  Get a double property value
+   function Get_Double_Value (Object : in Property_Ref)
+                 return Long_Float;
+
+   --  Set the property entity type
+   procedure Set_Kind (Object : in out Property_Ref;
+                       Value  : in ADO.Entity_Type);
+
+   --  Get the property entity type
+   function Get_Kind (Object : in Property_Ref)
+                 return ADO.Entity_Type;
+
+   --  Set the optional property entity type
+   procedure Set_Optional_Kind (Object : in out Property_Ref;
+                                Value  : in ADO.Nullable_Entity_Type);
+
+   --  Get the optional property entity type
+   function Get_Optional_Kind (Object : in Property_Ref)
+                 return ADO.Nullable_Entity_Type;
+
+   --  Set the optional object_id
+   procedure Set_Object_Id (Object : in out Property_Ref;
+                            Value  : in ADO.Identifier);
+
+   --  Get the optional object_id
+   function Get_Object_Id (Object : in Property_Ref)
+                 return ADO.Identifier;
 
    --  Load the entity identified by 'Id'.
    --  Raises the NOT_FOUND exception if it does not exist.
@@ -417,24 +477,33 @@ private
    COL_0_2_NAME : aliased constant String := "id";
    COL_1_2_NAME : aliased constant String := "user_email";
    COL_2_2_NAME : aliased constant String := "email_status";
+   COL_3_2_NAME : aliased constant String := "email_date";
+   COL_4_2_NAME : aliased constant String := "email_create_date";
+   COL_5_2_NAME : aliased constant String := "email_info";
 
    EMAIL_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count   => 3,
+     (Count   => 6,
       Table   => EMAIL_NAME'Access,
       Members => (
          1 => COL_0_2_NAME'Access,
          2 => COL_1_2_NAME'Access,
-         3 => COL_2_2_NAME'Access)
+         3 => COL_2_2_NAME'Access,
+         4 => COL_3_2_NAME'Access,
+         5 => COL_4_2_NAME'Access,
+         6 => COL_5_2_NAME'Access)
      );
    EMAIL_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := EMAIL_DEF'Access;
 
    EMAIL_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
-     (Count    => 2,
+     (Count    => 5,
       Of_Class => EMAIL_DEF'Access,
       Members  => (
          1 => 1,
-         2 => 2)
+         2 => 2,
+         3 => 3,
+         4 => 4,
+         5 => 5)
      );
    EMAIL_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
       := EMAIL_AUDIT_DEF'Access;
@@ -449,6 +518,9 @@ private
    with record
        Email : ADO.Nullable_String;
        Status : ADO.Nullable_Integer;
+       Date : ADO.Nullable_Time;
+       Create_Date : Ada.Calendar.Time;
+       Info : Ada.Strings.Unbounded.Unbounded_String;
    end record;
 
    type Email_Access is access all Email_Impl;
@@ -486,24 +558,36 @@ private
    COL_0_3_NAME : aliased constant String := "id";
    COL_1_3_NAME : aliased constant String := "user_email";
    COL_2_3_NAME : aliased constant String := "float_value";
+   COL_3_3_NAME : aliased constant String := "double_value";
+   COL_4_3_NAME : aliased constant String := "kind";
+   COL_5_3_NAME : aliased constant String := "optional_kind";
+   COL_6_3_NAME : aliased constant String := "object_id";
 
    PROPERTY_DEF : aliased constant ADO.Schemas.Class_Mapping :=
-     (Count   => 3,
+     (Count   => 7,
       Table   => PROPERTY_NAME'Access,
       Members => (
          1 => COL_0_3_NAME'Access,
          2 => COL_1_3_NAME'Access,
-         3 => COL_2_3_NAME'Access)
+         3 => COL_2_3_NAME'Access,
+         4 => COL_3_3_NAME'Access,
+         5 => COL_4_3_NAME'Access,
+         6 => COL_5_3_NAME'Access,
+         7 => COL_6_3_NAME'Access)
      );
    PROPERTY_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := PROPERTY_DEF'Access;
 
    PROPERTY_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
-     (Count    => 2,
+     (Count    => 6,
       Of_Class => PROPERTY_DEF'Access,
       Members  => (
          1 => 1,
-         2 => 2)
+         2 => 2,
+         3 => 3,
+         4 => 4,
+         5 => 5,
+         6 => 6)
      );
    PROPERTY_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
       := PROPERTY_AUDIT_DEF'Access;
@@ -518,6 +602,10 @@ private
    with record
        Value : ADO.Nullable_Integer;
        Float_Value : Float;
+       Double_Value : Long_Float;
+       Kind : ADO.Entity_Type;
+       Optional_Kind : ADO.Nullable_Entity_Type;
+       Object_Id : ADO.Identifier;
    end record;
 
    type Property_Access is access all Property_Impl;

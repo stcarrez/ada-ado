@@ -47,6 +47,12 @@ CREATE TABLE IF NOT EXISTS audit_email (
   `user_email` VARCHAR(32) UNIQUE ,
   /* the user email status */
   `email_status` INTEGER ,
+  /* the email date */
+  `email_date` DATETIME ,
+  /* the email creation date */
+  `email_create_date` DATETIME NOT NULL,
+  /* the email info */
+  `email_info` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
 /* This is a generic property */
@@ -56,7 +62,15 @@ CREATE TABLE IF NOT EXISTS audit_property (
   /* the property value */
   `user_email` INTEGER ,
   /* a float property value */
-  `float_value`  NOT NULL,
+  `float_value` FLOAT NOT NULL,
+  /* a double property value */
+  `double_value` DOUBLE NOT NULL,
+  /* the property entity type */
+  `kind` INTEGER NOT NULL,
+  /* the optional property entity type */
+  `optional_kind` INTEGER ,
+  /* the optional object_id */
+  `object_id` BIGINT ,
   PRIMARY KEY (`id`)
 );
 /* The Comment table records a user comment associated with a database entity.
