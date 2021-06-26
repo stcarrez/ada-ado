@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011 - 2020 Stephane Carrez
+--  ado-objects-tests -- Tests for ADO.Objects
+--  Copyright (C) 2011 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -422,6 +422,72 @@ package body ADO.Objects.Tests is
       Util.Tests.Assert_Equals (T, 123, Item3.Get_Value.Value, "Item3 value is invalid");
    end Test_String_Key;
 
+   --  ------------------------------
+   --  Test object creation/update/load with string as key.
+   --  ------------------------------
+   procedure Test_Float (T : in out Test) is
+      use Ada.Strings.Unbounded;
+
+      Item1 : Regtests.Simple.Model.Keys_Ref;
+      Item2 : Regtests.Simple.Model.Keys_Ref;
+      Item3 : Regtests.Simple.Model.Keys_Ref;
+      S     : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      Uuid  : constant String := Util.Tests.Get_Uuid;
+   begin
+      Item1.Set_Name (Uuid);
+      Item1.Set_Cost (23.44);
+      Item1.Save (S);
+
+      T.Assert (Item1.Is_Inserted, "Object with string key is not inserted");
+
+      Item2.Set_Name (ADO.Null_String);
+      Item2.Set_Cost (34.23);
+      Item2.Save (S);
+
+      Item3.Load (S, To_Unbounded_String (Item1.Get_Id));
+      T.Assert (Item3.Is_Loaded, "Item3 must be loaded");
+      T.Assert (not Item3.Get_Name.Is_Null, "Item3 value must not be null");
+      Util.Tests.Assert_Equals (T, Uuid, To_String (Item3.Get_Name.Value),
+                                "Item3 value is invalid");
+
+      Item1.Set_Id (String '(Item2.Get_Id));
+      Item1.Set_Cost (44.0);
+      Item1.Save (S);
+
+      Item2.Load (S, Item1.Get_Id);
+      T.Assert (Item2.Get_Cost = Item1.Get_Cost,
+                "Invalid Get_Cost value on item2");
+      T.Assert (Item2.Get_Name.Is_Null, "Get_Name value is null");
+
+      Item2.Set_Second_Key (String '(Item3.Get_Id));
+      Item2.Save (S);
+
+      Item1.Load (S, Item2.Get_Id);
+      Util.Tests.Assert_Equals (T, String '(Item3.Get_Id), String '(Item1.Get_Second_Key),
+                                "Get_Second_Key value is invalid");
+
+      Item1.Set_Name (Uuid);
+      Item1.Save (S);
+
+      Item2.Load (S, Item1.Get_Id);
+      T.Assert (not Item2.Get_Name.Is_Null, "Get_Name value is null");
+      Util.Tests.Assert_Equals (T, Uuid, To_String (Item2.Get_Name.Value),
+                                "Get_Name value is invalid");
+
+      Item2.Set_Name (Uuid);
+      Item2.Save (S);
+
+      Item2.Set_Name (ADO.Nullable_String '(Is_Null => False, Value => Item1.Get_Id));
+      Item2.Save (S);
+
+      Item1.Load (S, Item2.Get_Id);
+      T.Assert (not Item1.Get_Name.Is_Null, "Get_Name value is null");
+      Util.Tests.Assert_Equals (T, String '(Item1.Get_Id),
+                                To_String (Item1.Get_Name.Value),
+                                "Get_Name value is invalid");
+
+   end Test_Float;
+
    package Caller is new Util.Test_Caller (Test, "ADO.Objects");
 
    --  ------------------------------
@@ -443,6 +509,8 @@ package body ADO.Objects.Tests is
                        Test_Object_Nullable_Time'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Create (String key)",
                        Test_String_Key'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects (Float)",
+                       Test_Float'Access);
    end Add_Tests;
 
 end ADO.Objects.Tests;
