@@ -24,6 +24,8 @@ package body ADO.Queries.Tests is
 
    use Util.Tests;
 
+   function Loader (Name : in String) return access constant String;
+
    package Caller is new Util.Test_Caller (Test, "ADO.Queries");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -347,7 +349,6 @@ package body ADO.Queries.Tests is
       Query   : ADO.Queries.Context;
       Manager : Query_Manager;
       Config  : ADO.Connections.Configuration;
-      Count   : Natural := 0;
       Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
                                                                 "sqlite:///regtests.db");
    begin

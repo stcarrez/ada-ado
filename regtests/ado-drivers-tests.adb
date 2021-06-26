@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015, 2016, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016, 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ with Regtests;
 
 with ADO.Configs;
 with ADO.Statements;
-with ADO.Sessions;
+with ADO.Sessions.Factory;
 with ADO.Connections;
 package body ADO.Drivers.Tests is
 
@@ -58,6 +58,8 @@ package body ADO.Drivers.Tests is
                        Test_Empty_Connection'Access);
       Caller.Add_Test (Suite, "Test ADO.Databases (DB Closed errors)",
                        Test_Closed_Connection'Access);
+      Caller.Add_Test (Suite, "Test ADO.Drivers.Connections (Invalid)",
+                       Test_Invalid_Connection'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -345,5 +347,33 @@ package body ADO.Drivers.Tests is
             null;
       end;
    end Test_Closed_Connection;
+
+   --  ------------------------------
+   --  Test opening an invalid connection and make sure we get some error.
+   --  ------------------------------
+   procedure Test_Invalid_Connection (T : in out Test) is
+      use ADO.Sessions;
+
+      procedure Check (Connection : in String);
+
+      procedure Check (Connection : in String) is
+         Factory : ADO.Sessions.Factory.Session_Factory;
+         DB      : ADO.Sessions.Master_Session;
+      begin
+         Factory.Create (Connection);
+         DB := Factory.Get_Master_Session;
+         T.Assert (DB.Get_Status = ADO.Sessions.CLOSED, "No exception raised");
+         T.Fail ("No exception raised for " & Connection);
+
+      exception
+         when ADO.Configs.Connection_Error =>
+            null;
+      end Check;
+
+   begin
+      Check ("mysql://localhost:13456/ado?user=plop&socket=/dev/null");
+      Check ("postgresql://localhost:13456/ado?user=plop&socket=/dev/null");
+      Check ("");
+   end Test_Invalid_Connection;
 
 end ADO.Drivers.Tests;

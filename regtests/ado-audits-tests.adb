@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ with Util.Strings;
 with Ada.Text_IO;
 with Regtests.Audits.Model;
 
-with ADO.SQL;
 with ADO.Queries.Loaders;
 with ADO.Datasets;
 with ADO.Sessions.Entities;
