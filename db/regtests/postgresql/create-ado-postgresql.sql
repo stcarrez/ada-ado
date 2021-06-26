@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS audit_property (
   /* a float property value */
   "float_value" FLOAT NOT NULL,
   /* a double property value */
-  "double_value" DOUBLE NOT NULL,
+  "double_value" DOUBLE PRECISION NOT NULL,
   /* the property entity type */
   "kind" INTEGER NOT NULL,
   /* the optional property entity type */
@@ -127,7 +127,7 @@ CREATE TABLE IF NOT EXISTS test_keys (
   /* the cost */
   "cost" FLOAT NOT NULL,
   /* the total */
-  "total" DOUBLE NOT NULL,
+  "total" DOUBLE PRECISION NOT NULL,
   /* the user */
   "user_id" BIGINT NOT NULL,
   /* the second key */
