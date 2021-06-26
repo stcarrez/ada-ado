@@ -122,6 +122,15 @@ package body ADO.Objects.Tests is
                   Nullable_Time '(Value => <>, Is_Null => True),
                   Nullable_Time '(Value => TIME_VALUE2, Is_Null => False));
 
+   procedure Test_Object_Nullable_Boolean is
+     new Test_Op ("Nullable_Boolean",
+                  Nullable_Boolean, "=",
+                  Regtests.Statements.Model.Set_Bool_Value,
+                  Regtests.Statements.Model.Get_Bool_Value,
+                  Nullable_Boolean '(Value => True, Is_Null => False),
+                  Nullable_Boolean '(Value => <>, Is_Null => True),
+                  Nullable_Boolean '(Value => False, Is_Null => False));
+
    function Get_Allocate_Key (N : Identifier) return Object_Key;
 
    function Get_Allocate_Key (N : Identifier) return Object_Key is
@@ -507,6 +516,8 @@ package body ADO.Objects.Tests is
                        Test_Object_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Time)",
                        Test_Object_Nullable_Time'Access);
+      Caller.Add_Test (Suite, "Test ADO.Objects (Nullable_Boolean)",
+                       Test_Object_Nullable_Boolean'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects.Create (String key)",
                        Test_String_Key'Access);
       Caller.Add_Test (Suite, "Test ADO.Objects (Float)",
