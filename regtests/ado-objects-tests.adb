@@ -445,12 +445,14 @@ package body ADO.Objects.Tests is
    begin
       Item1.Set_Name (Uuid);
       Item1.Set_Cost (23.44);
+      Item1.Set_Total (0.0);
       Item1.Save (S);
 
       T.Assert (Item1.Is_Inserted, "Object with string key is not inserted");
 
       Item2.Set_Name (ADO.Null_String);
       Item2.Set_Cost (34.23);
+      Item2.Set_Total (10.0);
       Item2.Save (S);
 
       Item3.Load (S, To_Unbounded_String (Item1.Get_Id));
@@ -461,12 +463,19 @@ package body ADO.Objects.Tests is
 
       Item1.Set_Id (String '(Item2.Get_Id));
       Item1.Set_Cost (44.0);
+      Item1.Set_Total (20.0);
       Item1.Save (S);
 
       Item2.Load (S, Item1.Get_Id);
       T.Assert (Item2.Get_Cost = Item1.Get_Cost,
                 "Invalid Get_Cost value on item2");
+      T.Assert (Item2.Get_Total = Item1.Get_Total,
+                "Invalid Get_Total value on item2");
       T.Assert (Item2.Get_Name.Is_Null, "Get_Name value is null");
+      Util.Tests.Assert_Equals (T, 44, Integer (Item2.Get_Cost),
+                                "Invalid cost");
+      Util.Tests.Assert_Equals (T, 20, Integer (Item2.Get_Total),
+                                "Invalid total");
 
       Item2.Set_Second_Key (String '(Item3.Get_Id));
       Item2.Save (S);
