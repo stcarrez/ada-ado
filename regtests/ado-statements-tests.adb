@@ -200,7 +200,8 @@ package body ADO.Statements.Tests is
      new Test_Query_Get_Value_T (String, ADO.Statements.Get_String, "Get_String", "string_value");
 
    procedure Test_Query_Get_Time is
-     new Test_Query_Get_Value_T (Ada.Calendar.Time, ADO.Statements.Get_Time, "Get_Time", "time_value");
+     new Test_Query_Get_Value_T (Ada.Calendar.Time, ADO.Statements.Get_Time,
+                                 "Get_Time", "time_value");
 
    procedure Test_Query_Get_String_On_Null is
      new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64,
@@ -341,6 +342,33 @@ package body ADO.Statements.Tests is
       Name  : Ada.Strings.Unbounded.Unbounded_String;
       Value : Integer := 123456789;
    begin
+      begin
+         T.Assert (Stmt.Get_Column_Name (1) = "", "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
+      begin
+         T.Assert (Stmt.Get_Column_Count = 0, "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
+      begin
+         T.Assert (Stmt.Get_Column_Type (1) = ADO.Schemas.T_DOUBLE, "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
       Stmt := DB.Create_Statement ("SELECT name FROM entity_type");
       Stmt.Execute;
       while Stmt.Has_Elements loop
