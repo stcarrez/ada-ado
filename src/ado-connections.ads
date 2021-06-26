@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections -- Database connections
---  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,9 +46,6 @@ package ADO.Connections is
       Ident : String (1 .. 8) := (others => ' ');
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
-
-   --  Get the database driver index.
-   function Get_Driver_Index (Database : in Database_Connection) return Driver_Index;
 
    function Create_Statement (Database : in Database_Connection;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
