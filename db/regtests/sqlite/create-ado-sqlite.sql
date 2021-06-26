@@ -115,6 +115,24 @@ CREATE TABLE IF NOT EXISTS allocate (
   PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
+CREATE TABLE IF NOT EXISTS test_keys (
+  /* the user id */
+  `ID` VARCHAR(255) UNIQUE NOT NULL,
+  /* the allocate version. */
+  `version` INTEGER NOT NULL,
+  /* the name */
+  `NAME` VARCHAR(255) ,
+  /* the cost */
+  `cost` FLOAT NOT NULL,
+  /* the total */
+  `total` DOUBLE NOT NULL,
+  /* the user */
+  `user_id` BIGINT NOT NULL,
+  /* the second key */
+  `key_id` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+);
+/* Record representing a user */
 CREATE TABLE IF NOT EXISTS test_user (
   /* the user id */
   `ID` BIGINT UNIQUE NOT NULL,
@@ -174,6 +192,7 @@ INSERT OR IGNORE INTO entity_type (name) VALUES ("audit_property");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("TEST_COMMENTS");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_image");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("allocate");
+INSERT OR IGNORE INTO entity_type (name) VALUES ("test_keys");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_user");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_nullable_table");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_table");

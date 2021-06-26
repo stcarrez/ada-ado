@@ -117,6 +117,24 @@ CREATE TABLE IF NOT EXISTS allocate (
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
+CREATE TABLE IF NOT EXISTS test_keys (
+  /* the user id */
+  "id" VARCHAR(255) UNIQUE NOT NULL,
+  /* the allocate version. */
+  "version" INTEGER NOT NULL,
+  /* the name */
+  "name" VARCHAR(255) ,
+  /* the cost */
+  "cost" FLOAT NOT NULL,
+  /* the total */
+  "total" DOUBLE NOT NULL,
+  /* the user */
+  "user_id" BIGINT NOT NULL,
+  /* the second key */
+  "key_id" VARCHAR(255) NOT NULL,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
 CREATE TABLE IF NOT EXISTS test_user (
   /* the user id */
   "id" BIGINT UNIQUE NOT NULL,
@@ -171,5 +189,5 @@ CREATE TABLE IF NOT EXISTS test_table (
   PRIMARY KEY ("id")
 );
 INSERT INTO entity_type (name) VALUES
-('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_user'), ('test_nullable_table'), ('test_table')
+('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;

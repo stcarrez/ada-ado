@@ -116,6 +116,24 @@ CREATE TABLE IF NOT EXISTS allocate (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Record representing a user */
+CREATE TABLE IF NOT EXISTS test_keys (
+  /* the user id */
+  `ID` VARCHAR(255) BINARY UNIQUE NOT NULL,
+  /* the allocate version. */
+  `version` INTEGER NOT NULL,
+  /* the name */
+  `NAME` VARCHAR(255) BINARY ,
+  /* the cost */
+  `cost` FLOAT NOT NULL,
+  /* the total */
+  `total` DOUBLE NOT NULL,
+  /* the user */
+  `user_id` BIGINT NOT NULL,
+  /* the second key */
+  `key_id` VARCHAR(255) BINARY NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/* Record representing a user */
 CREATE TABLE IF NOT EXISTS test_user (
   /* the user id */
   `ID` BIGINT UNIQUE NOT NULL,
@@ -170,4 +188,4 @@ CREATE TABLE IF NOT EXISTS test_table (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT IGNORE INTO entity_type (name) VALUES
-("audit_info"), ("audit_email"), ("audit_property"), ("TEST_COMMENTS"), ("test_image"), ("allocate"), ("test_user"), ("test_nullable_table"), ("test_table");
+("audit_info"), ("audit_email"), ("audit_property"), ("TEST_COMMENTS"), ("test_image"), ("allocate"), ("test_keys"), ("test_user"), ("test_nullable_table"), ("test_table");
