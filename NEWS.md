@@ -1,4 +1,4 @@
-Version 2.2.0   -
+Version 2.2.0   - Jul 2021
   - Improvement of query loaders
   - Fix reading database schema with float/double values
   - Rename Get_Double into Get_Long_Float
