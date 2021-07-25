@@ -1,0 +1,60 @@
+Regtests.Simple.Model.Keys:
+  type: entity
+  table: test_keys
+  description: Record representing a user
+  hasList: true
+  indexes: 
+  id: 
+    id:
+      type: string
+      length: 255
+      column: ID
+      not-null: true
+      unique: true
+      description: the user id
+  fields: 
+    version:
+      type: integer
+      column: version
+      not-null: true
+      version: true
+      unique: false
+      description: the allocate version.
+    name:
+      type: string
+      length: 255
+      column: NAME
+      nullable: true
+      not-null: false
+      unique: false
+      description: the name
+    cost:
+      type: float
+      column: cost
+      not-null: true
+      unique: false
+      description: the cost
+    total:
+      type: double
+      column: total
+      not-null: true
+      unique: false
+      description: the total
+  oneToMany:
+    user:
+      type: Regtests.Simple.Model.User
+      column: user_id
+      not-null: true
+      useForeignKey: true
+      unique: false
+      description: the user
+    second_key:
+      type: Regtests.Simple.Model.Keys
+      column: key_id
+      length: 255
+      sqlLength: 255
+      not-null: true
+      useForeignKey: true
+      unique: false
+      description: the second key
+    

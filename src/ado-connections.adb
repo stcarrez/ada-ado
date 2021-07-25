@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections -- Database connections
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,16 +70,6 @@ package body ADO.Connections is
          raise;
 
    end Create_Connection;
-
-   --  ------------------------------
-   --  Get the database driver index.
-   --  ------------------------------
-   function Get_Driver_Index (Database : in Database_Connection) return Driver_Index is
-      Driver : constant Driver_Access
-         := Database_Connection'Class (Database).Get_Driver;
-   begin
-      return Driver.Get_Driver_Index;
-   end Get_Driver_Index;
 
    --  ------------------------------
    --  Get the driver unique index.

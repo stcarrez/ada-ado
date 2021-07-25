@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Objects Tests -- Tests for ADO.Objects
---  Copyright (C) 2011, 2020 Stephane Carrez
+--  ado-objects-tests -- Tests for ADO.Objects
+--  Copyright (C) 2011, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,9 @@ package ADO.Objects.Tests is
 
    --  Test object creation/update/load with string as key.
    procedure Test_String_Key (T : in out Test);
+
+   --  Test float.
+   procedure Test_Float (T : in out Test);
 
    --  Add the tests in the test suite
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite);

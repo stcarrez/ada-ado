@@ -554,6 +554,8 @@ package body Regtests.Audits.Model is
       Impl := new Email_Impl;
       Impl.Email.Is_Null := True;
       Impl.Status.Is_Null := True;
+      Impl.Date.Is_Null := True;
+      Impl.Create_Date := ADO.DEFAULT_TIME;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
@@ -629,6 +631,70 @@ package body Regtests.Audits.Model is
       return Impl.Status;
    end Get_Status;
 
+
+   procedure Set_Date (Object : in out Email_Ref;
+                       Value  : in ADO.Nullable_Time) is
+      Impl : Email_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Time (Impl.all, 4, Impl.Date, Value);
+   end Set_Date;
+
+   function Get_Date (Object : in Email_Ref)
+                  return ADO.Nullable_Time is
+      Impl : constant Email_Access
+         := Email_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Date;
+   end Get_Date;
+
+
+   procedure Set_Create_Date (Object : in out Email_Ref;
+                              Value  : in Ada.Calendar.Time) is
+      Impl : Email_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Time (Impl.all, 5, Impl.Create_Date, Value);
+   end Set_Create_Date;
+
+   function Get_Create_Date (Object : in Email_Ref)
+                  return Ada.Calendar.Time is
+      Impl : constant Email_Access
+         := Email_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Create_Date;
+   end Get_Create_Date;
+
+
+   procedure Set_Info (Object : in out Email_Ref;
+                        Value : in String) is
+      Impl : Email_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_String (Impl.all, 6, Impl.Info, Value);
+   end Set_Info;
+
+   procedure Set_Info (Object : in out Email_Ref;
+                       Value  : in Ada.Strings.Unbounded.Unbounded_String) is
+      Impl : Email_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Unbounded_String (Impl.all, 6, Impl.Info, Value);
+   end Set_Info;
+
+   function Get_Info (Object : in Email_Ref)
+                 return String is
+   begin
+      return Ada.Strings.Unbounded.To_String (Object.Get_Info);
+   end Get_Info;
+   function Get_Info (Object : in Email_Ref)
+                  return Ada.Strings.Unbounded.Unbounded_String is
+      Impl : constant Email_Access
+         := Email_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Info;
+   end Get_Info;
+
    --  Copy of the object.
    procedure Copy (Object : in Email_Ref;
                    Into   : in out Email_Ref) is
@@ -645,6 +711,9 @@ package body Regtests.Audits.Model is
             Copy.Copy (Impl.all);
             Copy.Email := Impl.Email;
             Copy.Status := Impl.Status;
+            Copy.Date := Impl.Date;
+            Copy.Create_Date := Impl.Create_Date;
+            Copy.Info := Impl.Info;
          end;
       end if;
       Into := Result;
@@ -789,6 +858,21 @@ package body Regtests.Audits.Model is
                           Value => Object.Status);
          Object.Clear_Modified (3);
       end if;
+      if Object.Is_Modified (4) then
+         Stmt.Save_Field (Name  => COL_3_2_NAME, --  email_date
+                          Value => Object.Date);
+         Object.Clear_Modified (4);
+      end if;
+      if Object.Is_Modified (5) then
+         Stmt.Save_Field (Name  => COL_4_2_NAME, --  email_create_date
+                          Value => Object.Create_Date);
+         Object.Clear_Modified (5);
+      end if;
+      if Object.Is_Modified (6) then
+         Stmt.Save_Field (Name  => COL_5_2_NAME, --  email_info
+                          Value => Object.Info);
+         Object.Clear_Modified (6);
+      end if;
       if Stmt.Has_Save_Fields then
          Stmt.Set_Filter (Filter => "id = ?");
          Stmt.Add_Param (Value => Object.Get_Key);
@@ -819,6 +903,12 @@ package body Regtests.Audits.Model is
                         Value => Object.Email);
       Query.Save_Field (Name  => COL_2_2_NAME, --  email_status
                         Value => Object.Status);
+      Query.Save_Field (Name  => COL_3_2_NAME, --  email_date
+                        Value => Object.Date);
+      Query.Save_Field (Name  => COL_4_2_NAME, --  email_create_date
+                        Value => Object.Create_Date);
+      Query.Save_Field (Name  => COL_5_2_NAME, --  email_info
+                        Value => Object.Info);
       Query.Execute (Result);
       if Result /= 1 then
          raise ADO.Objects.INSERT_ERROR;
@@ -865,6 +955,16 @@ package body Regtests.Audits.Model is
          else
             return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Status.Value));
          end if;
+      elsif Name = "date" then
+         if Impl.Date.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.Time.To_Object (Impl.Date.Value);
+         end if;
+      elsif Name = "create_date" then
+         return Util.Beans.Objects.Time.To_Object (Impl.Create_Date);
+      elsif Name = "info" then
+         return Util.Beans.Objects.To_Object (Impl.Info);
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -882,6 +982,9 @@ package body Regtests.Audits.Model is
       Object.Set_Key_Value (Stmt.Get_Identifier (0));
       Object.Email := Stmt.Get_Nullable_String (1);
       Object.Status := Stmt.Get_Nullable_Integer (2);
+      Object.Date := Stmt.Get_Nullable_Time (3);
+      Object.Create_Date := Stmt.Get_Time (4);
+      Object.Info := Stmt.Get_Unbounded_String (5);
       ADO.Objects.Set_Created (Object);
    end Load;
    function Property_Key (Id : in ADO.Identifier) return ADO.Objects.Object_Key is
@@ -920,6 +1023,10 @@ package body Regtests.Audits.Model is
       Impl := new Property_Impl;
       Impl.Value.Is_Null := True;
       Impl.Float_Value := 0.0;
+      Impl.Double_Value := 0.0;
+      Impl.Kind := 0;
+      Impl.Optional_Kind.Is_Null := True;
+      Impl.Object_Id := ADO.NO_IDENTIFIER;
       ADO.Objects.Set_Object (Object, Impl.all'Access);
    end Allocate;
 
@@ -990,6 +1097,74 @@ package body Regtests.Audits.Model is
       return Impl.Float_Value;
    end Get_Float_Value;
 
+
+   procedure Set_Double_Value (Object : in out Property_Ref;
+                               Value  : in Long_Float) is
+      Impl : Property_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Long_Float (Impl.all, 4, Impl.Double_Value, Value);
+   end Set_Double_Value;
+
+   function Get_Double_Value (Object : in Property_Ref)
+                  return Long_Float is
+      Impl : constant Property_Access
+         := Property_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Double_Value;
+   end Get_Double_Value;
+
+
+   procedure Set_Kind (Object : in out Property_Ref;
+                       Value  : in ADO.Entity_Type) is
+      Impl : Property_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Entity_Type (Impl.all, 5, Impl.Kind, Value);
+   end Set_Kind;
+
+   function Get_Kind (Object : in Property_Ref)
+                  return ADO.Entity_Type is
+      Impl : constant Property_Access
+         := Property_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Kind;
+   end Get_Kind;
+
+
+   procedure Set_Optional_Kind (Object : in out Property_Ref;
+                                Value  : in ADO.Nullable_Entity_Type) is
+      Impl : Property_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Entity_Type (Impl.all, 6, Impl.Optional_Kind, Value);
+   end Set_Optional_Kind;
+
+   function Get_Optional_Kind (Object : in Property_Ref)
+                  return ADO.Nullable_Entity_Type is
+      Impl : constant Property_Access
+         := Property_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Optional_Kind;
+   end Get_Optional_Kind;
+
+
+   procedure Set_Object_Id (Object : in out Property_Ref;
+                            Value  : in ADO.Identifier) is
+      Impl : Property_Access;
+   begin
+      Set_Field (Object, Impl);
+      ADO.Audits.Set_Field_Identifier (Impl.all, 7, Impl.Object_Id, Value);
+   end Set_Object_Id;
+
+   function Get_Object_Id (Object : in Property_Ref)
+                  return ADO.Identifier is
+      Impl : constant Property_Access
+         := Property_Impl (Object.Get_Load_Object.all)'Access;
+   begin
+      return Impl.Object_Id;
+   end Get_Object_Id;
+
    --  Copy of the object.
    procedure Copy (Object : in Property_Ref;
                    Into   : in out Property_Ref) is
@@ -1007,6 +1182,10 @@ package body Regtests.Audits.Model is
             Copy.all.Set_Key (Impl.all.Get_Key);
             Copy.Value := Impl.Value;
             Copy.Float_Value := Impl.Float_Value;
+            Copy.Double_Value := Impl.Double_Value;
+            Copy.Kind := Impl.Kind;
+            Copy.Optional_Kind := Impl.Optional_Kind;
+            Copy.Object_Id := Impl.Object_Id;
          end;
       end if;
       Into := Result;
@@ -1151,6 +1330,26 @@ package body Regtests.Audits.Model is
                           Value => Object.Float_Value);
          Object.Clear_Modified (3);
       end if;
+      if Object.Is_Modified (4) then
+         Stmt.Save_Field (Name  => COL_3_3_NAME, --  double_value
+                          Value => Object.Double_Value);
+         Object.Clear_Modified (4);
+      end if;
+      if Object.Is_Modified (5) then
+         Stmt.Save_Field (Name  => COL_4_3_NAME, --  kind
+                          Value => Object.Kind);
+         Object.Clear_Modified (5);
+      end if;
+      if Object.Is_Modified (6) then
+         Stmt.Save_Field (Name  => COL_5_3_NAME, --  optional_kind
+                          Value => Object.Optional_Kind);
+         Object.Clear_Modified (6);
+      end if;
+      if Object.Is_Modified (7) then
+         Stmt.Save_Field (Name  => COL_6_3_NAME, --  object_id
+                          Value => Object.Object_Id);
+         Object.Clear_Modified (7);
+      end if;
       if Stmt.Has_Save_Fields then
          Stmt.Set_Filter (Filter => "id = ?");
          Stmt.Add_Param (Value => Object.Get_Key);
@@ -1180,6 +1379,14 @@ package body Regtests.Audits.Model is
                         Value => Object.Value);
       Query.Save_Field (Name  => COL_2_3_NAME, --  float_value
                         Value => Object.Float_Value);
+      Query.Save_Field (Name  => COL_3_3_NAME, --  double_value
+                        Value => Object.Double_Value);
+      Query.Save_Field (Name  => COL_4_3_NAME, --  kind
+                        Value => Object.Kind);
+      Query.Save_Field (Name  => COL_5_3_NAME, --  optional_kind
+                        Value => Object.Optional_Kind);
+      Query.Save_Field (Name  => COL_6_3_NAME, --  object_id
+                        Value => Object.Object_Id);
       Query.Execute (Result);
       if Result /= 1 then
          raise ADO.Objects.INSERT_ERROR;
@@ -1222,6 +1429,18 @@ package body Regtests.Audits.Model is
          end if;
       elsif Name = "float_value" then
          return Util.Beans.Objects.To_Object (Impl.Float_Value);
+      elsif Name = "double_value" then
+         return Util.Beans.Objects.To_Object (Impl.Double_Value);
+      elsif Name = "kind" then
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Kind));
+      elsif Name = "optional_kind" then
+         if Impl.Optional_Kind.Is_Null then
+            return Util.Beans.Objects.Null_Object;
+         else
+            return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Optional_Kind.Value));
+         end if;
+      elsif Name = "object_id" then
+         return Util.Beans.Objects.To_Object (Long_Long_Integer (Impl.Object_Id));
       end if;
       return Util.Beans.Objects.Null_Object;
    end Get_Value;
@@ -1239,6 +1458,10 @@ package body Regtests.Audits.Model is
       Object.Set_Key_Value (Stmt.Get_Unbounded_String (0));
       Object.Value := Stmt.Get_Nullable_Integer (1);
       Object.Float_Value := Stmt.Get_Float (2);
+      Object.Double_Value := Stmt.Get_Long_Float (3);
+      Object.Kind := ADO.Entity_Type (Stmt.Get_Integer (4));
+      Object.Optional_Kind := Stmt.Get_Nullable_Entity_Type (5);
+      Object.Object_Id := Stmt.Get_Identifier (6);
       ADO.Objects.Set_Created (Object);
    end Load;
 

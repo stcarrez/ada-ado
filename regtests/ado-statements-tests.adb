@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-tests -- Test statements package
---  Copyright (C) 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2015, 2017, 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -178,6 +178,10 @@ package body ADO.Statements.Tests is
      new Test_Query_Get_Value_T (Nullable_Integer, ADO.Statements.Get_Nullable_Integer,
                                  "Get_Nullable_Integer", "int_value");
 
+   procedure Test_Query_Get_Nullable_Boolean is
+     new Test_Query_Get_Value_T (Nullable_Boolean, ADO.Statements.Get_Nullable_Boolean,
+                                 "Get_Nullable_Boolean", "bool_value");
+
    procedure Test_Query_Get_Nullable_Entity_Type is
      new Test_Query_Get_Value_T (Nullable_Entity_Type, ADO.Statements.Get_Nullable_Entity_Type,
                                  "Get_Nullable_Entity_Type", "entity_value");
@@ -194,6 +198,10 @@ package body ADO.Statements.Tests is
 
    procedure Test_Query_Get_String is
      new Test_Query_Get_Value_T (String, ADO.Statements.Get_String, "Get_String", "string_value");
+
+   procedure Test_Query_Get_Time is
+     new Test_Query_Get_Value_T (Ada.Calendar.Time, ADO.Statements.Get_Time,
+                                 "Get_Time", "time_value");
 
    procedure Test_Query_Get_String_On_Null is
      new Test_Query_Get_Value_On_Null_T (Int64, ADO.Statements.Get_Int64,
@@ -213,6 +221,8 @@ package body ADO.Statements.Tests is
                        Test_Query_Get_Integer'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Integer",
                        Test_Query_Get_Nullable_Integer'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Boolean",
+                       Test_Query_Get_Nullable_Boolean'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Natural",
                        Test_Query_Get_Natural'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Identifier",
@@ -223,6 +233,8 @@ package body ADO.Statements.Tests is
                        Test_Query_Get_String'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_String (NULL)",
                        Test_Query_Get_String_On_Null'Access);
+      Caller.Add_Test (Suite, "Test ADO.Statements.Get_Time",
+                       Test_Query_Get_Time'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Get_Nullable_Entity_Type",
                        Test_Query_Get_Nullable_Entity_Type'Access);
       Caller.Add_Test (Suite, "Test ADO.Statements.Create_Statement (using $entity_type[])",
@@ -330,6 +342,33 @@ package body ADO.Statements.Tests is
       Name  : Ada.Strings.Unbounded.Unbounded_String;
       Value : Integer := 123456789;
    begin
+      begin
+         T.Assert (Stmt.Get_Column_Name (1) = "", "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
+      begin
+         T.Assert (Stmt.Get_Column_Count = 0, "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
+      begin
+         T.Assert (Stmt.Get_Column_Type (1) = ADO.Schemas.T_DOUBLE, "Value returned");
+         T.Fail ("No exception raised");
+
+      exception
+         when Invalid_Statement =>
+            null;
+      end;
+
       Stmt := DB.Create_Statement ("SELECT name FROM entity_type");
       Stmt.Execute;
       while Stmt.Has_Elements loop

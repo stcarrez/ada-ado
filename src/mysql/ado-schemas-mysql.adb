@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,10 @@ package body ADO.Schemas.Mysql is
          return T_SMALLINT;
       elsif Value = "longblob" then
          return T_BLOB;
+      elsif Value = "float" then
+         return T_FLOAT;
+      elsif Value = "double" then
+         return T_DOUBLE;
       end if;
       Pos := Ada.Strings.Fixed.Index (Value, "(");
       if Pos > 0 then
