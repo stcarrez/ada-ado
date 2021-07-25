@@ -22,7 +22,7 @@ Homepage: https://github.com/stcarrez/ada-ado/
 Vcs-Git: https://github.com/stcarrez/ada-ado.git -b debian-gnat-7
 Vcs-Browser: https://github.com/stcarrez/ada-ado/tree/debian-gnat-7
 
-Package: libado2.1.2
+Package: libado2.2.0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -31,31 +31,31 @@ Description: Ada Database Objects (runtime)
  databases in Ada applications.  The package contains the runtime
  libraries.
 
-Package: libado-mysql2.1.2
+Package: libado-mysql2.2.0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.2.0 (= ${binary:Version})
 Description: Ada Database Objects for MySQL (runtime)
  This is the MySQL database driver for Ada Database Objects.
 
-Package: libado-sqlite2.1.2
+Package: libado-sqlite2.2.0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.2.0 (= ${binary:Version})
 Description: Ada Database Objects for SQLite (runtime)
  This is the SQLite database driver for Ada Database Objects.
 
-Package: libado-all2.1.2
+Package: libado-all2.2.0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.2.0 (= ${binary:Version})
 Description: Ada Database Objects drivers (runtime)
  This is the database driver loader for Ada Database Objects.
 
-Package: libado-postgresql2.1.2
+Package: libado-postgresql2.2.0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.1.2 (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libado2.2.0 (= ${binary:Version})
 Description: Ada Database Objects for PostgreSQL (runtime)
  This is the PostgreSQL database driver for Ada Database Objects.
 
