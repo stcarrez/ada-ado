@@ -30,6 +30,26 @@ Regtests.Audits.Model.Email:
       unique: false
       auditable: true
       description: the user email status
+    date:
+      type: date
+      column: email_date
+      unique: false
+      auditable: true
+      description: the email date
+    create_date:
+      type: date
+      column: email_create_date
+      nullable: false
+      unique: false
+      auditable: true
+      description: the email creation date
+    info:
+      type: string
+      column: email_info
+      nullable: false
+      unique: false
+      auditable: true
+      description: the email info
 
 Regtests.Audits.Model.Property:
   type: entity
@@ -63,6 +83,34 @@ Regtests.Audits.Model.Property:
       auditable: true
       nullable: false
       description: a float property value
+    double_value:
+      type: double
+      column: double_value
+      unique: false
+      auditable: true
+      nullable: false
+      description: a double property value
+    kind:
+      type: entity_type
+      column: kind
+      unique: false
+      auditable: true
+      nullable: false
+      description: the property entity type
+    optional_kind:
+      type: entity_type
+      column: optional_kind
+      unique: false
+      auditable: true
+      nullable: true
+      description: the optional property entity type
+    object_id:
+      type: identifier
+      column: object_id
+      unique: false
+      auditable: true
+      nullable: true
+      description: the optional object_id
 
 Regtests.Audits.Model.Audit:
   type: entity

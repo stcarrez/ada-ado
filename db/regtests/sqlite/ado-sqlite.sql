@@ -23,6 +23,12 @@ CREATE TABLE IF NOT EXISTS audit_email (
   `user_email` VARCHAR(32) UNIQUE ,
   /* the user email status */
   `email_status` INTEGER ,
+  /* the email date */
+  `email_date` DATETIME ,
+  /* the email creation date */
+  `email_create_date` DATETIME NOT NULL,
+  /* the email info */
+  `email_info` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
 /* This is a generic property */
@@ -32,7 +38,15 @@ CREATE TABLE IF NOT EXISTS audit_property (
   /* the property value */
   `user_email` INTEGER ,
   /* a float property value */
-  `float_value`  NOT NULL,
+  `float_value` FLOAT NOT NULL,
+  /* a double property value */
+  `double_value` DOUBLE NOT NULL,
+  /* the property entity type */
+  `kind` INTEGER NOT NULL,
+  /* the optional property entity type */
+  `optional_kind` INTEGER ,
+  /* the optional object_id */
+  `object_id` BIGINT ,
   PRIMARY KEY (`id`)
 );
 /* The Comment table records a user comment associated with a database entity.
@@ -74,6 +88,24 @@ CREATE TABLE IF NOT EXISTS allocate (
   `version` INTEGER NOT NULL,
   /* the sequence value */
   `NAME` VARCHAR(255) ,
+  PRIMARY KEY (`ID`)
+);
+/* Record representing a user */
+CREATE TABLE IF NOT EXISTS test_keys (
+  /* the user id */
+  `ID` VARCHAR(255) UNIQUE NOT NULL,
+  /* the allocate version. */
+  `version` INTEGER NOT NULL,
+  /* the name */
+  `NAME` VARCHAR(255) ,
+  /* the cost */
+  `cost` FLOAT NOT NULL,
+  /* the total */
+  `total` DOUBLE NOT NULL,
+  /* the user */
+  `user_id` BIGINT NOT NULL,
+  /* the second key */
+  `key_id` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`ID`)
 );
 /* Record representing a user */
@@ -136,6 +168,7 @@ INSERT OR IGNORE INTO entity_type (name) VALUES ("audit_property");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("TEST_COMMENTS");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_image");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("allocate");
+INSERT OR IGNORE INTO entity_type (name) VALUES ("test_keys");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_user");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_nullable_table");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("test_table");

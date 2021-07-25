@@ -1,8 +1,8 @@
 description = "Ada Database Objects (SQLite)"
 tags = ["database", "uml", "sql"]
 name = "ado_sqlite"
-version = "2.1.1"
-licenses = ["Apache 2.0"]
+version = "2.2.0"
+licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
@@ -20,7 +20,7 @@ This is the SQLite driver for the Ada Database Objects library.
 """
 
 [[depends-on]]
-ado = "^2.1.1"
+ado = "^2.2.0"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]

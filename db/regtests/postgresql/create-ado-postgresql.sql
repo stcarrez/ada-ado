@@ -49,6 +49,12 @@ CREATE TABLE IF NOT EXISTS audit_email (
   "user_email" VARCHAR(32) UNIQUE ,
   /* the user email status */
   "email_status" INTEGER ,
+  /* the email date */
+  "email_date" DATE ,
+  /* the email creation date */
+  "email_create_date" DATE NOT NULL,
+  /* the email info */
+  "email_info" VARCHAR(255) NOT NULL,
   PRIMARY KEY ("id")
 );
 /* This is a generic property */
@@ -59,6 +65,14 @@ CREATE TABLE IF NOT EXISTS audit_property (
   "user_email" INTEGER ,
   /* a float property value */
   "float_value" FLOAT NOT NULL,
+  /* a double property value */
+  "double_value" DOUBLE PRECISION NOT NULL,
+  /* the property entity type */
+  "kind" INTEGER NOT NULL,
+  /* the optional property entity type */
+  "optional_kind" INTEGER ,
+  /* the optional object_id */
+  "object_id" BIGINT ,
   PRIMARY KEY ("id")
 );
 /* The Comment table records a user comment associated with a database entity.
@@ -100,6 +114,24 @@ CREATE TABLE IF NOT EXISTS allocate (
   "version" INTEGER NOT NULL,
   /* the sequence value */
   "name" VARCHAR(255) ,
+  PRIMARY KEY ("id")
+);
+/* Record representing a user */
+CREATE TABLE IF NOT EXISTS test_keys (
+  /* the user id */
+  "id" VARCHAR(255) UNIQUE NOT NULL,
+  /* the allocate version. */
+  "version" INTEGER NOT NULL,
+  /* the name */
+  "name" VARCHAR(255) ,
+  /* the cost */
+  "cost" FLOAT NOT NULL,
+  /* the total */
+  "total" DOUBLE PRECISION NOT NULL,
+  /* the user */
+  "user_id" BIGINT NOT NULL,
+  /* the second key */
+  "key_id" VARCHAR(255) NOT NULL,
   PRIMARY KEY ("id")
 );
 /* Record representing a user */
@@ -157,5 +189,5 @@ CREATE TABLE IF NOT EXISTS test_table (
   PRIMARY KEY ("id")
 );
 INSERT INTO entity_type (name) VALUES
-('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_user'), ('test_nullable_table'), ('test_table')
+('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;

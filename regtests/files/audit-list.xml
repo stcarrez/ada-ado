@@ -1,0 +1,13 @@
+<query-mapping>
+    <query name='property-list'>
+       <comment>Get the list of properties</comment>
+       <sql>select * from audit_property</sql>
+       <sql-count>select count(*) from audit_property</sql-count>
+    </query>
+
+    <query name='email-list'>
+       <comment>Get the list of properties</comment>
+       <sql>select * from audit_email</sql>
+       <sql-count>select count(*) from audit_email</sql-count>
+    </query>
+</query-mapping>

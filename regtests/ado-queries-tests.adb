@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019, 2020 Stephane Carrez
+--  Copyright (C) 2011 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,8 @@ package body ADO.Queries.Tests is
 
    use Util.Tests;
 
+   function Loader (Name : in String) return access constant String;
+
    package Caller is new Util.Test_Caller (Test, "ADO.Queries");
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -42,6 +44,8 @@ package body ADO.Queries.Tests is
                        Test_Set_Limit'Access);
       Caller.Add_Test (Suite, "Test ADO.Queries.Get_SQL (raise Query_Error)",
                        Test_Missing_Query'Access);
+      Caller.Add_Test (Suite, "Test ADO.Queries.Set_Query_Loader",
+                       Test_Query_Loader'Access);
    end Add_Tests;
 
    package Simple_Query_File is
@@ -54,6 +58,10 @@ package body ADO.Queries.Tests is
 
    package Missing_Query_File is
      new ADO.Queries.Loaders.File (Path => "regtests/files/missing-query.xml",
+                                   Sha1 => "");
+
+   package Internal_Query_File is
+     new ADO.Queries.Loaders.File (Path => "regtests/files/internal-query.xml",
                                    Sha1 => "");
 
    package Simple_Query is
@@ -71,6 +79,10 @@ package body ADO.Queries.Tests is
    package Value_Query is
      new ADO.Queries.Loaders.Query (Name => "value",
                                     File => Multi_Query_File.File'Access);
+
+   package Internal_Query is
+     new ADO.Queries.Loaders.Query (Name => "internal-query",
+                                    File => Internal_Query_File.File'Access);
 
    package Missing_Query_SQLite is
      new ADO.Queries.Loaders.Query (Name => "missing-query-sqlite",
@@ -94,6 +106,7 @@ package body ADO.Queries.Tests is
    pragma Warnings (Off, Missing_Query_SQLite);
    pragma Warnings (Off, Missing_Query_MySQL);
    pragma Warnings (Off, Missing_Query_Postgresql);
+   pragma Warnings (Off, Internal_Query);
 
    procedure Test_Load_Queries (T : in out Test) is
       use ADO.Connections;
@@ -208,7 +221,9 @@ package body ADO.Queries.Tests is
          for Query of Manager.Queries.all loop
             if Pass = 1 then
                T.Assert (Query.Is_Null, "Query must not be loaded");
-            elsif Missing_Query.Query.Query /= Pos then
+            elsif Missing_Query.Query.Query /= Pos
+              and Internal_Query.Query.Query /= Pos
+            then
                T.Assert (not Query.Is_Null, "Query must have been loaded");
             else
                T.Assert (Query.Is_Null, "Query must not be loaded (not found)");
@@ -314,5 +329,36 @@ package body ADO.Queries.Tests is
       end;
       T.Assert (Count > 0, "No Query_Error exception was raised");
    end Test_Missing_Query;
+
+   Q1 : aliased constant String := "<query-mapping><query name='internal-query'>"
+     & "<sql>SELECT 'internal-query'</sql></query></query-mapping>";
+
+   function Loader (Name : in String) return access constant String is
+   begin
+      if Name = "regtests/files/internal-query.xml" then
+         return Q1'Access;
+      end if;
+
+      return null;
+   end Loader;
+
+   --  ------------------------------
+   --  Test the static query loader.
+   --  ------------------------------
+   procedure Test_Query_Loader (T : in out Test) is
+      Query   : ADO.Queries.Context;
+      Manager : Query_Manager;
+      Config  : ADO.Connections.Configuration;
+      Config_URL : constant String := Util.Tests.Get_Parameter ("test.database",
+                                                                "sqlite:///regtests.db");
+   begin
+      Config.Set_Connection (Config_URL);
+      Manager.Set_Query_Loader (Loader'Access);
+      ADO.Queries.Loaders.Initialize (Manager, Config);
+      Query.Set_Query ("internal-query");
+
+      Assert_Equals (T, "SELECT 'internal-query'", Query.Get_SQL (Manager));
+
+   end Test_Query_Loader;
 
 end ADO.Queries.Tests;

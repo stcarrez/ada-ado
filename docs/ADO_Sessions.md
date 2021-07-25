@@ -95,7 +95,6 @@ The MySQL database driver supports the following properties:
 | socket      | The optional Unix socket path for a Unix socket base connection |
 | encoding    | The encoding to be used for the connection (ex: UTF-8) |
 
-
 ### SQLite Database Driver
 The SQLite database driver can be initialize explicitly by using the `ado_mysql`
 GNAT project and calling the initialization procedure.
@@ -117,7 +116,6 @@ Config : Util.Properties.Manager;
 
 The SQLite database driver will pass all the properties as SQLite `pragma` allowing
 the configuration of the SQLite database.
-
 
 ### PostgreSQL Database Driver
 The PostgreSQL database driver can be initialize explicitly by using the `ado_mysql`
@@ -145,8 +143,6 @@ The PostgreSQL database driver supports the following properties:
 | user        | The user name to connect to the server |
 | password    | The user password to connect to the server |
 
-
-
 ## Connection string
 The database connection string is an URI that specifies the database driver to use as well
 as the information for the database driver to connect to the database.
@@ -158,7 +154,6 @@ driver://[host][:port]/[database][?property1][=value1]...
 
 The database connection string is passed to the session factory that maintains connections
 to the database (see ADO.Sessions.Factory).
-
 
 ## Session Factory
 The session factory is the entry point to obtain a database session.
@@ -196,7 +191,6 @@ all the database connections.  This includes:
 
   * some application specific global cache.
 
-
 ## Database Caches
 The ADO cache manager allows to create and maintain cache of values and use the cache
 from the SQL expander to replace cached values before evaluating the SQL.  The SQL expander
@@ -220,5 +214,4 @@ they will declare their cache as follows:
 A cache group is identified by a unique name and is represented by the <tt>Cache_Type</tt>
 base class.  The cache group instance is registered in the cache manager by using the
 <tt>Add_Cache</tt> operation.
-
 

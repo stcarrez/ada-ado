@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  pschema - Print the database schema
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,7 +124,7 @@ begin
                         Ada.Text_IO.Put_Line (Natural'Image (Get_Size (Col)));
                      end if;
                      Ada.Text_IO.Put ("      column: ");
-                     Ada.Text_IO.Put (Get_Name (Col));
+                     Ada.Text_IO.Put_Line (Get_Name (Col));
                      Ada.Text_IO.Put ("      not-null: ");
                      Ada.Text_IO.Put_Line ((if Is_Null (Col) then "true" else "false"));
                   end if;
@@ -152,6 +152,10 @@ begin
                      Ada.Text_IO.Put_Line (Get_Name (Col));
                      Ada.Text_IO.Put ("      not-null: ");
                      Ada.Text_IO.Put_Line ((if Is_Null (Col) then "true" else "false"));
+                     if Get_Default (Col)'Length > 0 then
+                        Ada.Text_Io.Put ("      default: ");
+                        Ada.Text_Io.Put_Line (Get_Default (Col));
+                     end if;
                   end if;
                end;
                Next (Table_Iter);

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015, 2016, 2018 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016, 2018, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,5 +58,8 @@ package ADO.Drivers.Tests is
 
    --  Test the connection operations on a closed connection.
    procedure Test_Closed_Connection (T : in out Test);
+
+   --  Test opening an invalid connection and make sure we get some error.
+   procedure Test_Invalid_Connection (T : in out Test);
 
 end ADO.Drivers.Tests;
