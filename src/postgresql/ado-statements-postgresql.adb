@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-postgresql -- Postgresql query statements
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -558,16 +558,16 @@ package body ADO.Statements.Postgresql is
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    --  ------------------------------
    overriding
-   function Get_Double (Query  : Postgresql_Query_Statement;
-                        Column : Natural) return Long_Float is
+   function Get_Long_Float (Query  : Postgresql_Query_Statement;
+                            Column : Natural) return Long_Float is
       Field  : constant chars_ptr := Query.Get_Field (Column);
    begin
       if Field = null then
          raise Invalid_Type with "NULL cannot be converted to Long_Float";
       else
-         return Get_Double (Field);
+         return Get_Long_Float (Field);
       end if;
-   end Get_Double;
+   end Get_Long_Float;
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and

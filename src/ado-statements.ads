@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Statements -- Database statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  ado-statements -- Database statements
+--  Copyright (C) 2009 - 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -228,8 +228,8 @@ package ADO.Statements is
    --  return it as an <b>Long_Float</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
-   function Get_Double (Query  : Query_Statement;
-                        Column : Natural) return Long_Float;
+   function Get_Long_Float (Query  : Query_Statement;
+                            Column : Natural) return Long_Float;
 
    --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Boolean</b>.
@@ -523,7 +523,7 @@ private
    function Get_Int64 (Str : chars_ptr) return Int64;
 
    --  Get a double number from a C string terminated by \0
-   function Get_Double (Str : chars_ptr) return Long_Float;
+   function Get_Long_Float (Str : chars_ptr) return Long_Float;
 
    --  Get a time from the C string passed in <b>Value</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.

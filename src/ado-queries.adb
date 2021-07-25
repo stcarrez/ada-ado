@@ -20,6 +20,21 @@ with ADO.Queries.Loaders;
 package body ADO.Queries is
 
    --  ------------------------------
+   --  Clear the query object.
+   --  ------------------------------
+   overriding
+   procedure Clear (Query : in out Context) is
+   begin
+      Query.Last := 0;
+      Query.First := 0;
+      Query.Last_Index := 0;
+      Query.Query_Def := null;
+      Query.Max_Row_Count := 0;
+      Query.Is_Count := False;
+      ADO.SQL.Query (Query).Clear;
+   end Clear;
+
+   --  ------------------------------
    --  Set the query definition which identifies the SQL query to execute.
    --  The query is represented by the <tt>sql</tt> XML entry.
    --  ------------------------------
@@ -149,6 +164,15 @@ package body ADO.Queries is
          raise Query_Error with "Default query '" & From.Name.all & "' is empty";
       end if;
    end Get_SQL;
+
+   --  ------------------------------
+   --  Set a static query loader to load SQL queries.
+   --  ------------------------------
+   procedure Set_Query_Loader (Manager  : in out Query_Manager;
+                               Loader   : in Static_Loader_Access) is
+   begin
+      Manager.Loader := Loader;
+   end Set_Query_Loader;
 
    overriding
    procedure Finalize (Manager : in out Query_Manager) is
