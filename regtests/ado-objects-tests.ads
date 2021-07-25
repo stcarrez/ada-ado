@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Objects Tests -- Tests for ADO.Objects
+--  ado-objects-tests -- Tests for ADO.Objects
 --  Copyright (C) 2011, 2020, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
