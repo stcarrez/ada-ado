@@ -396,5 +396,3 @@ sequence identified and updates it by adding the sequence block size.  The
 HiLo sequence generator will allocate the identifiers until the block is
 full after which a new block will be allocated.
 
-
-

@@ -59,7 +59,6 @@ query by looking at an operation provided by the <tt>Expander</tt> interface.  S
 is useful to replace parameters that are global to a session or to an application.
 
 
-
 ## Query Statements
 The database query statement is represented by the `Query_Statement` type.
 The `Create_Statement` operation is provided on the `Session` type
@@ -279,5 +278,4 @@ Query.Set_Count_Query (Samples.User.Model.Query_User_List);
 ...
 Count : Natural := ADO.Datasets.Get_Count (Session, Query);
 ```
-
 
