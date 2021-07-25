@@ -45,8 +45,8 @@ section to install them and run the configure again after the installation.
 """
 
 [[depends-on]]
-utilada = "^2.4.0"
-utilada_xml = "^2.4.0"
+utilada = "^2.4.1"
+utilada_xml = "^2.4.1"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
