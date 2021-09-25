@@ -33,6 +33,9 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
+## Version 2.2.1   - Under development
+  - Fix #4: Is_Loaded predicate operation is false when an object is not yet inserted in the database
+
 ## Version 2.2.0   - Jul 2021
   - Improvement of query loaders
   - Fix reading database schema with float/double values
