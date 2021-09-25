@@ -61,6 +61,7 @@ package body ADO.Objects.Tests is
       Set_Value (Item1, Val1);
       Item1.Save (DB);
       T.Assert (Item1.Is_Inserted, Name & " item is created");
+      T.Assert (Item1.Is_Loaded, Name & " item is created hence loaded");
       --  Util.Tests.Assert_Equals (T, T'Image (Val), T'Image (
 
       --  Load in a second item and check the value.
@@ -346,6 +347,7 @@ package body ADO.Objects.Tests is
          User.Set_Name ("John");
          T.Assert (not User.Is_Null, "User should not be NULL");
          T.Assert (not User.Is_Inserted, "User was not saved and not yet inserted in database");
+         T.Assert (not User.Is_Loaded, "User was not saved and not yet loaded from database");
 
          User.Set_Value (1);
          User.Save (S);
