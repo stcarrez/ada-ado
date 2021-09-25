@@ -243,7 +243,7 @@ package body ADO.Objects is
       if Object.Object = null then
          return False;
       else
-         return Object.Object.Is_Loaded;
+         return Object.Object.Is_Loaded and Object.Object.Is_Created;
       end if;
    end Is_Loaded;
 
