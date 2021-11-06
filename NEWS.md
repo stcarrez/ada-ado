@@ -1,5 +1,6 @@
 Version 2.2.1   -
   - Fix #4: Is_Loaded predicate operation is false when an object is not yet inserted in the database
+  - Fix #5: Exception raised when SQLite Query_Statement is finalized if the SQL query was invalid
 
 Version 2.2.0   - Jul 2021
   - Improvement of query loaders
