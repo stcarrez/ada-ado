@@ -182,9 +182,9 @@ package body ADO.Statements.Sqlite is
    procedure Release_Stmt (Connection : access ADO.Connections.Sqlite.Sqlite3;
                            Stmt       : access Sqlite3_H.sqlite3_stmt) is
       Result : int;
+      pragma Unreferenced (Result);
    begin
       Result := Sqlite3_H.sqlite3_finalize (Stmt);
-      Check_Error (Connection, "", Result);
    end Release_Stmt;
 
    --  ------------------------------
