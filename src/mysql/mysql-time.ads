@@ -26,8 +26,8 @@ package Mysql.Time is
    --
 
    subtype enum_mysql_timestamp_type is unsigned;
-   MYSQL_TIMESTAMP_NONE : constant enum_mysql_timestamp_type := -2;
-   MYSQL_TIMESTAMP_ERROR : constant enum_mysql_timestamp_type := -1;
+   MYSQL_TIMESTAMP_NONE : constant enum_mysql_timestamp_type := 16#fffffffe#;
+   MYSQL_TIMESTAMP_ERROR : constant enum_mysql_timestamp_type := 16#ffffffff#;
    MYSQL_TIMESTAMP_DATE : constant enum_mysql_timestamp_type := 0;
    MYSQL_TIMESTAMP_DATETIME : constant enum_mysql_timestamp_type := 1;
    MYSQL_TIMESTAMP_TIME : constant enum_mysql_timestamp_type := 2;
