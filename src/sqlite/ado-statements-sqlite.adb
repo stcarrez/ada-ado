@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -182,7 +182,7 @@ package body ADO.Statements.Sqlite is
    procedure Release_Stmt (Connection : access ADO.Connections.Sqlite.Sqlite3;
                            Stmt       : access Sqlite3_H.sqlite3_stmt) is
       Result : int;
-      pragma Unreferenced (Result);
+      pragma Unreferenced (Connection, Result);
    begin
       Result := Sqlite3_H.sqlite3_finalize (Stmt);
    end Release_Stmt;
