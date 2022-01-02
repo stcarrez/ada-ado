@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections-sqlite -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2019, 2021 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 
 with Sqlite3_H;
 private with Ada.Strings.Unbounded;
+private with Util.Concurrent.Counters;
 private with Ada.Containers.Doubly_Linked_Lists;
 package ADO.Connections.Sqlite is
 
@@ -38,9 +39,10 @@ private
 
    --  Database connection implementation
    type Database_Connection is new ADO.Connections.Database_Connection with record
-      Server : aliased access Sqlite3_H.sqlite3;
-      Name   : Unbounded_String;
-      URI    : Unbounded_String;
+      Server       : aliased access Sqlite3_H.sqlite3;
+      Name         : Unbounded_String;
+      URI          : Unbounded_String;
+      Transactions : Util.Concurrent.Counters.Counter_Access;
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 
@@ -99,9 +101,10 @@ private
    procedure Close (Database : in out Database_Connection);
 
    type SQLite_Database is record
-      Server : aliased access Sqlite3_H.sqlite3;
-      Name   : Unbounded_String;
-      URI    : Unbounded_String;
+      Server       : aliased access Sqlite3_H.sqlite3;
+      Transactions : Util.Concurrent.Counters.Counter_Access;
+      Name         : Unbounded_String;
+      URI          : Unbounded_String;
    end record;
 
    package Database_List is

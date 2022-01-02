@@ -101,9 +101,14 @@ package body ADO.Connections.Sqlite is
    --  Start a transaction.
    --  ------------------------------
    procedure Begin_Transaction (Database : in out Database_Connection) is
+      Transactions : Integer;
    begin
       if Database.Server = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
+      Util.Concurrent.Counters.Increment (Database.Transactions.all, Transactions);
+      if Transactions = 0 then
+         ADO.Statements.Sqlite.Execute (Database.Server, "BEGIN TRANSACTION");
       end if;
    end Begin_Transaction;
 
@@ -111,9 +116,16 @@ package body ADO.Connections.Sqlite is
    --  Commit the current transaction.
    --  ------------------------------
    procedure Commit (Database : in out Database_Connection) is
+      Is_Zero : Boolean;
    begin
       if Database.Server = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
+      if Util.Concurrent.Counters.Value (Database.Transactions.all) > 0 then
+         Util.Concurrent.Counters.Decrement (Database.Transactions.all, Is_Zero);
+         if Is_Zero then
+            ADO.Statements.Sqlite.Execute (Database.Server, "COMMIT TRANSACTION");
+         end if;
       end if;
    end Commit;
 
@@ -124,6 +136,10 @@ package body ADO.Connections.Sqlite is
    begin
       if Database.Server = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
+      end if;
+      if Util.Concurrent.Counters.Value (Database.Transactions.all) > 0 then
+         Util.Concurrent.Counters.Decrement (Database.Transactions.all);
+         ADO.Statements.Sqlite.Execute (Database.Server, "ROLLBACK TRANSACTION");
       end if;
    end Rollback;
 
@@ -166,6 +182,7 @@ package body ADO.Connections.Sqlite is
                Database.URI := DB.URI;
                Database.Name := DB.Name;
                Database.Server := DB.Server;
+               Database.Transactions := DB.Transactions;
                Result := Ref.Create (Database.all'Access);
                return;
             end if;
@@ -239,11 +256,13 @@ package body ADO.Connections.Sqlite is
                Database.Server := Handle;
                Database.Name   := To_Unbounded_String (Config.Get_Database);
                Database.URI    := To_Unbounded_String (URI);
+               Database.Transactions := new Util.Concurrent.Counters.Counter;
                Result := Ref.Create (Database.all'Access);
 
                DB.Server := Handle;
                DB.Name := Database.Name;
                DB.URI := Database.URI;
+               DB.Transactions := Database.Transactions;
                Database_List.Prepend (Container => List, New_Item => DB);
 
                --  Configure the connection by setting up the SQLite 'pragma X=Y' SQL commands.
