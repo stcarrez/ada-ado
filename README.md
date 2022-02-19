@@ -89,6 +89,7 @@ The Ada Database Objects sources as well as a wiki documentation is provided on:
 # Presentations
 
   * [Persistence with Ada Database Objects](https://fr.slideshare.net/StephaneCarrez1/persistence-with-ada-database-objects-ado) FOSDEM 2019
+  * Uses Ada Database Objects: [Implementing a build manager in Ada](https://www.slideshare.net/StephaneCarrez1/implementing-a-build-manager-in-ada)
 
 # Database Drivers
 
