@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sqlite Database -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with System;
 with Interfaces.C.Strings;
 
 with Util.Log;
@@ -163,6 +164,17 @@ package body ADO.Connections.Sqlite is
       ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
 
+   function Busy_Handler (Arg1  : System.Address;
+                          Count : Interfaces.C.int)
+                         return Interfaces.C.int with Convention => C;
+
+   function Busy_Handler (Arg1  : System.Address;
+                          Count : Interfaces.C.int) return Interfaces.C.int is
+   begin
+      delay 0.001;
+      return (if Count > 10_000 then 0 else 1);
+   end Busy_Handler;
+
    protected body Sqlite_Connections is
 
       procedure Open (Config : in Configuration'Class;
@@ -271,6 +283,9 @@ package body ADO.Connections.Sqlite is
                --    temp_store=MEMORY
                --    encoding='UTF-8'
                Config.Iterate (Process => Configure'Access);
+               Status := Sqlite3_H.sqlite3_busy_handler (Handle,
+                                                         Busy_Handler'Access,
+                                                         Database.all'Address);
             end;
          end;
       end Open;
