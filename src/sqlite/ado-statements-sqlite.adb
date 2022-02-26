@@ -120,6 +120,9 @@ package body ADO.Statements.Sqlite is
                           Result     : in int) is
    begin
       if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
+         if Result = Sqlite3_H.SQLITE_BUSY then
+            raise ADO.Objects.LAZY_LOCK;
+         end if;
          declare
             Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errmsg (Connection);
             Msg   : constant String := Strings.Value (Error);
