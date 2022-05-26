@@ -17,7 +17,8 @@ dnl
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/ado.ads)
+AC_INIT
+AC_CONFIG_SRCDIR([src/ado.ads])
 
 # Current release settings
 ADO_MAJOR_VERSION=2
@@ -243,8 +244,7 @@ fi
 AC_MSG_RESULT($opts)
 AC_SUBST(ADO_POSTGRESQL_LIBRARY_OPTIONS)
 
-AC_OUTPUT(
-Makefile.conf
+AC_CONFIG_FILES([Makefile.conf
 ado.gpr
 ado_tests.gpr
 samples.gpr
@@ -252,5 +252,6 @@ ado_mysql.gpr
 ado_sqlite.gpr
 ado_postgresql.gpr
 ado_all.gpr
-)
+])
+AC_OUTPUT
 AC_MSG_NOTICE([supported databases: $DB])
