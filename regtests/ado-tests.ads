@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Tests -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2015 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,5 +49,8 @@ package ADO.Tests is
 
    --  Test the To_Object and To_Identifier operations.
    procedure Test_Identifier_To_Object (T : in out Test);
+
+   --  Test database reload.
+   procedure Test_Reload (T : in out Test);
 
 end ADO.Tests;
