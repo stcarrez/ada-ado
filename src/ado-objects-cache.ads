@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  objects.cache -- Object cache
---  Copyright (C) 2009, 2010 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
 
 with Ada.Finalization;
 
-with ADO.Objects;
 with Ada.Containers.Indefinite_Hashed_Sets;
 
 --  The <b>ADO.Objects.Cache</b> holds a cache of object records.
