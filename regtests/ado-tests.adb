@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ with Regtests;
 
 with Regtests.Simple.Model;
 with Regtests.Images.Model;
+with Regtests.Comments;
 
 with Util.Assertions;
 with Util.Measures;
@@ -331,6 +332,56 @@ package body ADO.Tests is
    end Test_Blob;
 
    --  ------------------------------
+   --  Test database reload.
+   --  ------------------------------
+   procedure Test_Reload (T : in out Test) is
+      User : Regtests.Simple.Model.User_Ref;
+      Cmt  : Regtests.Comments.Comment_Ref;
+   begin
+      --  Create an object and comment within a transaction.
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         S.Begin_Transaction;
+         User.Set_Name ("Joe");
+         User.Set_Value (0);
+         User.Save (S);
+         Cmt.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String ("A comment from Joe"));
+         Cmt.Set_User (User);
+         Cmt.Set_Entity_Id (2);
+         Cmt.Set_Entity_Type (1);
+         Cmt.Set_Date (Ada.Calendar.Clock);
+         Cmt.Save (S);
+         S.Commit;
+      end;
+
+      --  Update the comment.
+      declare
+         S  : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+         C2 : Regtests.Comments.Comment_Ref;
+         Updated : Boolean;
+         Found   : Boolean;
+      begin
+         S.Begin_Transaction;
+         C2.Load (S, Cmt.Get_Id, Found);
+         T.Assert (Found, "Comment must be loaded");
+
+         C2.Set_Message (Ada.Strings.Unbounded.To_Unbounded_String ("A updated comment from Joe"));
+         C2.Save (S);
+         S.Commit;
+         Cmt.Reload (S, Updated);
+         T.Assert (Updated, "Reload must return Update=true");
+
+         Cmt.Reload (S, Updated);
+         T.Assert (not Updated, "Reload must return Update=false");
+
+         C2.Reload (S, Updated);
+         T.Assert (not Updated, "Reload must return Update=false");
+      end;
+
+   end Test_Reload;
+
+   --  ------------------------------
    --  Test the To_Object and To_Identifier operations.
    --  ------------------------------
    procedure Test_Identifier_To_Object (T : in out Test) is
@@ -365,6 +416,8 @@ package body ADO.Tests is
                        Test_Blob'Access);
       Caller.Add_Test (Suite, "Test ADO.Utils.To_Object/To_Identifier",
                        Test_Identifier_To_Object'Access);
+      Caller.Add_Test (Suite, "Test Object.Reload",
+                       Test_Reload'Access);
    end Add_Tests;
 
 end ADO.Tests;
