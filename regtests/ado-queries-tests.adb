@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-tests -- Test loading of database queries
---  Copyright (C) 2011 - 2021 Stephane Carrez
+--  Copyright (C) 2011 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,11 @@ with ADO.Queries.Loaders;
 package body ADO.Queries.Tests is
 
    use Util.Tests;
+
+   Init_Time : constant Ada.Calendar.Time
+     := Ada.Calendar.Time_Of (Year  => Ada.Calendar.Year_Number'First,
+                              Month => 1,
+                              Day   => 1);
 
    function Loader (Name : in String) return access constant String;
 
@@ -194,7 +199,7 @@ package body ADO.Queries.Tests is
                            "Invalid query for 'simple-query'");
          end;
          for J in Manager.Files'Range loop
-            Manager.Files (J).Next_Check := 0;
+            Manager.Files (J).Next_Check := Init_Time;
          end loop;
       end loop;
    end Test_Reload_Queries;
