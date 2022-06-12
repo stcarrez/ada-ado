@@ -39,6 +39,7 @@ section to install them and run the configure again after the installation.
   - Fix #7: Update SQLite support to 3.31.1
   - Fix #8: Add SQlite busy handler to handle the SQLITE_BUSY error
   - Fix #9: Better handling of SQLITE_BUSY error
+  - Fix #10: Error 'XML query file does not exist' when the query is loaded from a static embedded loader
 
 ## Version 2.2.0   - Jul 2021
   - Improvement of query loaders
