@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ with Util.Strings;
 with Util.Refs;
 with ADO.SQL;
 
-private with Interfaces;
 private with ADO.Configs;
 with Ada.Strings.Unbounded;
 with Ada.Finalization;
@@ -347,7 +346,7 @@ private
    subtype Query_Index_Table is Query_Index range 1 .. Query_Index'Last;
    subtype File_Index_Table is File_Index range 1 .. File_Index'Last;
 
-   type Query_File_Info is record
+   type Query_File_Info is limited record
       --  Query absolute path name (after path resolution).
       Path          : Ada.Strings.Unbounded.Unbounded_String;
 
@@ -355,10 +354,10 @@ private
       File          : Query_File_Access;
 
       --  Stamp when the query file will be checked.
-      Next_Check    : Interfaces.Unsigned_32;
+      Next_Check    : Ada.Calendar.Time;
 
       --  Stamp identifying the modification date of the query file.
-      Last_Modified : Interfaces.Unsigned_32;
+      Last_Modified : Ada.Calendar.Time;
    end record;
 
    --  Find the query with the given name.

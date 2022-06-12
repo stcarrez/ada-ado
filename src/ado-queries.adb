@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries -- Database Queries
---  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -146,7 +146,7 @@ package body ADO.Queries is
       ADO.Queries.Loaders.Read_Query (Manager, From);
       Query := Manager.Queries (From.Query);
       if Query.Is_Null then
-         raise Query_Error with "Query '" & From.Name.all & "'does not exist";
+         raise Query_Error with "Query '" & From.Name.all & "' does not exist";
       end if;
       if Use_Count then
          if Length (Query.Value.Count_Query (Manager.Driver).SQL) > 0 then
@@ -154,7 +154,7 @@ package body ADO.Queries is
          elsif Length (Query.Value.Count_Query (Driver_Index'First).SQL) > 0 then
             return To_String (Query.Value.Count_Query (Driver_Index'First).SQL);
          else
-            raise Query_Error with "Default count-query '" & From.Name.all & "'is empty";
+            raise Query_Error with "Default count-query '" & From.Name.all & "' is empty";
          end if;
       elsif Length (Query.Value.Main_Query (Manager.Driver).SQL) > 0 then
          return To_String (Query.Value.Main_Query (Manager.Driver).SQL);
