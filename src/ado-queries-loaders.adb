@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-queries-loaders -- Loader for Database Queries
---  Copyright (C) 2011- 2021 Stephane Carrez
+--  Copyright (C) 2011- 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
-with Interfaces;
-
 with Ada.IO_Exceptions;
 with Ada.Directories;
 
@@ -31,17 +29,22 @@ package body ADO.Queries.Loaders is
 
    use Util.Log;
    use ADO.Connections;
-   use Interfaces;
    use Ada.Calendar;
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Queries.Loaders");
 
-   Base_Time : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (Year  => 1970,
-                                                                   Month => 1,
-                                                                   Day   => 1);
+   Init_Time : constant Ada.Calendar.Time
+     := Ada.Calendar.Time_Of (Year  => Ada.Calendar.Year_Number'First,
+                              Month => 1,
+                              Day   => 1);
+
+   Infinity_Time : constant Ada.Calendar.Time
+     := Ada.Calendar.Time_Of (Year  => Ada.Calendar.Year_Number'Last,
+                              Month => 1,
+                              Day   => 1);
 
    --  Check for file modification time at most every 60 seconds.
-   FILE_CHECK_DELTA_TIME : constant Unsigned_32 := 60;
+   FILE_CHECK_DELTA_TIME : constant Duration := 60.0;
 
    --  The list of query files defined by the application.
    Query_Files : Query_File_Access := null;
@@ -49,12 +52,8 @@ package body ADO.Queries.Loaders is
    Last_Query  : Query_Index := 0;
    Last_File   : File_Index := 0;
 
-   --  Convert a Time to an Unsigned_32.
-   function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32;
-   pragma Inline_Always (To_Unsigned_32);
-
    --  Get the modification time of the XML query file associated with the query.
-   function Modification_Time (File : in Query_File_Info) return Unsigned_32;
+   function Modification_Time (File : in Query_File_Info) return Ada.Calendar.Time;
 
    --  Initialize the query SQL pattern with the value
    procedure Set_Query_Pattern (Into  : in out Query_Pattern;
@@ -102,33 +101,24 @@ package body ADO.Queries.Loaders is
    end Find_Driver;
 
    --  ------------------------------
-   --  Convert a Time to an Unsigned_32.
-   --  ------------------------------
-   function To_Unsigned_32 (T : in Ada.Calendar.Time) return Unsigned_32 is
-      D : constant Duration := Duration '(T - Base_Time);
-   begin
-      return Unsigned_32 (D);
-   end To_Unsigned_32;
-
-   --  ------------------------------
    --  Get the modification time of the XML query file associated with the query.
    --  ------------------------------
-   function Modification_Time (File : in Query_File_Info) return Unsigned_32 is
+   function Modification_Time (File : in Query_File_Info) return Ada.Calendar.Time is
       Path : constant String := To_String (File.Path);
    begin
-      return To_Unsigned_32 (Ada.Directories.Modification_Time (Path));
+      return Ada.Directories.Modification_Time (Path);
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
          Log.Error ("XML query file '{0}' does not exist", Path);
-         return 0;
+         return Init_Time;
    end Modification_Time;
 
    --  ------------------------------
    --  Returns True if the XML query file must be reloaded.
    --  ------------------------------
    function Is_Modified (File : in out Query_File_Info) return Boolean is
-      Now : constant Unsigned_32 := To_Unsigned_32 (Ada.Calendar.Clock);
+      Now : constant Ada.Calendar.Time := Ada.Calendar.Clock;
    begin
       --  Have we passed the next check time?
       if File.Next_Check > Now then
@@ -140,7 +130,7 @@ package body ADO.Queries.Loaders is
 
       --  See if the file was changed.
       declare
-         M : constant Unsigned_32 := Modification_Time (File);
+         M : constant Ada.Calendar.Time := Modification_Time (File);
       begin
          if File.Last_Modified = M then
             return False;
@@ -169,8 +159,7 @@ package body ADO.Queries.Loaders is
 
       --  The Query_Loader holds context and state information for loading
       --  the XML query file and initializing the Query_Definition.
-      type Query_Loader is record
-         --  File       : Query_File_Access;
+      type Query_Loader is limited record
          Hash_Value : Unbounded_String;
          Query_Def  : Query_Definition_Access;
          Query      : Query_Info_Ref.Ref;
@@ -249,7 +238,7 @@ package body ADO.Queries.Loaders is
       Path       : constant String := To_String (File.Path);
    begin
       Log.Info ("Reading XML query {0}", Path);
-      --  Loader.File   := Into;
+
       Loader.Driver := 0;
 
       --  Create the mapping to load the XML query file.
@@ -270,14 +259,14 @@ package body ADO.Queries.Loaders is
       --  Read the XML query file.
       if Ada.Directories.Exists (Path) then
          Reader.Parse (Path, Mapper);
-         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+         File.Next_Check := Ada.Calendar.Clock + FILE_CHECK_DELTA_TIME;
          return;
       end if;
 
       if Manager.Loader = null then
          Log.Error ("XML query file '{0}' does not exist", Path);
 
-         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
+         File.Next_Check := Ada.Calendar.Clock + FILE_CHECK_DELTA_TIME;
          return;
       end if;
 
@@ -289,10 +278,11 @@ package body ADO.Queries.Loaders is
       begin
          if Content /= null then
             Reader.Parse_String (Content.all, Mapper);
+            File.Next_Check := Infinity_Time;
          else
             Log.Error ("XML query file '{0}' does not exist", Path);
+            File.Next_Check := Ada.Calendar.Clock + FILE_CHECK_DELTA_TIME;
          end if;
-         File.Next_Check := To_Unsigned_32 (Ada.Calendar.Clock) + FILE_CHECK_DELTA_TIME;
       end;
    end Read_Query;
 
@@ -348,8 +338,8 @@ package body ADO.Queries.Loaders is
                                                                  Paths => Paths);
          begin
             Manager.Files (File.File).File := File;
-            Manager.Files (File.File).Last_Modified := 0;
-            Manager.Files (File.File).Next_Check := 0;
+            Manager.Files (File.File).Last_Modified := Init_Time;
+            Manager.Files (File.File).Next_Check := Init_Time;
             Manager.Files (File.File).Path := To_Unbounded_String (Path);
 
             if Load then
