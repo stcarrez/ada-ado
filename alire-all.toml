@@ -35,5 +35,5 @@ disabled = true
 type = "post-fetch"
 command = ["gnatprep", "-DHAVE_MYSQL=True", "-DHAVE_SQLITE=True", "-DHAVE_POSTGRESQL=True",
   "src/drivers/ado-drivers-initialize.gpb",
-  "src/drivers/ado-drivers-initialite.adb"
+  "src/drivers/ado-drivers-initialize.adb"
 ]
