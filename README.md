@@ -9,6 +9,7 @@
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-2.2.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.2.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
+[![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-ado)
 ![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.2.0.svg)
 
 Ada Database Objects is an Ada05 library that provides
