@@ -21,7 +21,7 @@ This is the PostgreSQL driver for the Ada Database Objects library.
 
 [[depends-on]]
 ado = "^2.2.1"
-postgresql = "*"
+libpq = "*"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
