@@ -35,7 +35,7 @@ with Util.Beans.Basic.Lists;
 pragma Warnings (On);
 package Samples.User.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
 
    type User_Ref is new ADO.Objects.Object_Ref with null record;
 
@@ -275,6 +275,7 @@ private
    procedure Save (Object  : in out User_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
