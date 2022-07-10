@@ -33,7 +33,7 @@ with Util.Beans.Basic.Lists;
 pragma Warnings (On);
 package Regtests.Simple.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
 
    type Allocate_Ref is new ADO.Objects.Object_Ref with null record;
 
@@ -449,6 +449,7 @@ private
    procedure Save (Object  : in out Allocate_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Allocate_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
@@ -520,6 +521,7 @@ private
    procedure Save (Object  : in out Keys_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Keys_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
@@ -585,6 +587,7 @@ private
    procedure Save (Object  : in out User_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out User_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 

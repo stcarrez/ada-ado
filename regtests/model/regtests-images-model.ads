@@ -34,7 +34,7 @@ with Util.Beans.Basic.Lists;
 pragma Warnings (On);
 package Regtests.Images.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
 
    type Image_Ref is new ADO.Objects.Object_Ref with null record;
 
@@ -194,6 +194,7 @@ private
    procedure Save (Object  : in out Image_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Image_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 

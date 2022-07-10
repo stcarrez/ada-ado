@@ -34,7 +34,7 @@ with Util.Beans.Basic.Lists;
 pragma Warnings (On);
 package Regtests.Statements.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
 
    type Nullable_Table_Ref is new ADO.Objects.Object_Ref with null record;
 
@@ -385,6 +385,7 @@ private
    procedure Save (Object  : in out Nullable_Table_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Nullable_Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
@@ -459,6 +460,7 @@ private
    procedure Save (Object  : in out Table_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 

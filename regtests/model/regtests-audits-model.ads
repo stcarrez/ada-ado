@@ -35,7 +35,7 @@ with ADO.Audits;
 pragma Warnings (On);
 package Regtests.Audits.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
 
    type Audit_Ref is new ADO.Objects.Object_Ref with null record;
 
@@ -464,6 +464,7 @@ private
    procedure Save (Object  : in out Audit_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Audit_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
@@ -545,6 +546,7 @@ private
    procedure Save (Object  : in out Email_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Email_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 
@@ -630,6 +632,7 @@ private
    procedure Save (Object  : in out Property_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class);
 
+   overriding
    procedure Create (Object  : in out Property_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class);
 

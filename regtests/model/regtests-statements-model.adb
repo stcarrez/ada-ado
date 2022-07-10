@@ -26,7 +26,7 @@ with Util.Beans.Objects.Time;
 pragma Warnings (On);
 package body Regtests.Statements.Model is
 
-   pragma Style_Checks ("-mr");
+   pragma Style_Checks ("-mrIu");
    pragma Warnings (Off, "formal parameter * is not referenced");
    pragma Warnings (Off, "use clause for type *");
    pragma Warnings (Off, "use clause for private type *");
@@ -64,6 +64,7 @@ package body Regtests.Statements.Model is
    end Set_Field;
 
    --  Internal method to allocate the Object_Record instance
+   overriding
    procedure Allocate (Object : in out Nullable_Table_Ref) is
       Impl : Nullable_Table_Access;
    begin
@@ -253,6 +254,7 @@ package body Regtests.Statements.Model is
       Into := Result;
    end Copy;
 
+   overriding
    procedure Find (Object  : in out Nullable_Table_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -333,6 +335,7 @@ package body Regtests.Statements.Model is
       end;
    end Reload;
 
+   overriding
    procedure Save (Object  : in out Nullable_Table_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -348,6 +351,7 @@ package body Regtests.Statements.Model is
       end if;
    end Save;
 
+   overriding
    procedure Delete (Object  : in out Nullable_Table_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : constant ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -360,6 +364,7 @@ package body Regtests.Statements.Model is
    --  --------------------
    --  Free the object
    --  --------------------
+   overriding
    procedure Destroy (Object : access Nullable_Table_Impl) is
       type Nullable_Table_Impl_Ptr is access all Nullable_Table_Impl;
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
@@ -371,6 +376,7 @@ package body Regtests.Statements.Model is
       Unchecked_Free (Ptr);
    end Destroy;
 
+   overriding
    procedure Find (Object  : in out Nullable_Table_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -403,6 +409,7 @@ package body Regtests.Statements.Model is
       end if;
    end Load;
 
+   overriding
    procedure Save (Object  : in out Nullable_Table_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement
@@ -465,6 +472,7 @@ package body Regtests.Statements.Model is
       end if;
    end Save;
 
+   overriding
    procedure Create (Object  : in out Nullable_Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Query : ADO.Statements.Insert_Statement
@@ -496,6 +504,7 @@ package body Regtests.Statements.Model is
       ADO.Objects.Set_Created (Object);
    end Create;
 
+   overriding
    procedure Delete (Object  : in out Nullable_Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Delete_Statement
@@ -628,6 +637,7 @@ package body Regtests.Statements.Model is
    end Set_Field;
 
    --  Internal method to allocate the Object_Record instance
+   overriding
    procedure Allocate (Object : in out Table_Ref) is
       Impl : Table_Access;
    begin
@@ -811,6 +821,7 @@ package body Regtests.Statements.Model is
       Into := Result;
    end Copy;
 
+   overriding
    procedure Find (Object  : in out Table_Ref;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -891,6 +902,7 @@ package body Regtests.Statements.Model is
       end;
    end Reload;
 
+   overriding
    procedure Save (Object  : in out Table_Ref;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -906,6 +918,7 @@ package body Regtests.Statements.Model is
       end if;
    end Save;
 
+   overriding
    procedure Delete (Object  : in out Table_Ref;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Impl : constant ADO.Objects.Object_Record_Access := Object.Get_Object;
@@ -918,6 +931,7 @@ package body Regtests.Statements.Model is
    --  --------------------
    --  Free the object
    --  --------------------
+   overriding
    procedure Destroy (Object : access Table_Impl) is
       type Table_Impl_Ptr is access all Table_Impl;
       procedure Unchecked_Free is new Ada.Unchecked_Deallocation
@@ -929,6 +943,7 @@ package body Regtests.Statements.Model is
       Unchecked_Free (Ptr);
    end Destroy;
 
+   overriding
    procedure Find (Object  : in out Table_Impl;
                    Session : in out ADO.Sessions.Session'Class;
                    Query   : in ADO.SQL.Query'Class;
@@ -961,6 +976,7 @@ package body Regtests.Statements.Model is
       end if;
    end Load;
 
+   overriding
    procedure Save (Object  : in out Table_Impl;
                    Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Update_Statement
@@ -1023,6 +1039,7 @@ package body Regtests.Statements.Model is
       end if;
    end Save;
 
+   overriding
    procedure Create (Object  : in out Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Query : ADO.Statements.Insert_Statement
@@ -1054,6 +1071,7 @@ package body Regtests.Statements.Model is
       ADO.Objects.Set_Created (Object);
    end Create;
 
+   overriding
    procedure Delete (Object  : in out Table_Impl;
                      Session : in out ADO.Sessions.Master_Session'Class) is
       Stmt : ADO.Statements.Delete_Statement
