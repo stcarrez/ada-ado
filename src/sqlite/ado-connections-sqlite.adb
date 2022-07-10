@@ -101,6 +101,7 @@ package body ADO.Connections.Sqlite is
    --  ------------------------------
    --  Start a transaction.
    --  ------------------------------
+   overriding
    procedure Begin_Transaction (Database : in out Database_Connection) is
       Transactions : Integer;
    begin
@@ -116,6 +117,7 @@ package body ADO.Connections.Sqlite is
    --  ------------------------------
    --  Commit the current transaction.
    --  ------------------------------
+   overriding
    procedure Commit (Database : in out Database_Connection) is
       Is_Zero : Boolean;
    begin
@@ -133,6 +135,7 @@ package body ADO.Connections.Sqlite is
    --  ------------------------------
    --  Rollback the current transaction.
    --  ------------------------------
+   overriding
    procedure Rollback (Database : in out Database_Connection) is
    begin
       if Database.Server = null then
@@ -324,6 +327,7 @@ package body ADO.Connections.Sqlite is
    --  ------------------------------
    --  Initialize the database connection manager.
    --  ------------------------------
+   overriding
    procedure Create_Connection (D      : in out Sqlite_Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is

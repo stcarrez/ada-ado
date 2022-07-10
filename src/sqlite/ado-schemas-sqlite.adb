@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas -- Database Schemas
---  Copyright (C) 2015, 2018, 2019, 2020, 2021 Stephane Carrez
+--  Copyright (C) 2015, 2018, 2019, 2020, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ package body ADO.Schemas.Sqlite is
          return T_DATE;
       elsif Value = "datetime" then
          return T_DATE_TIME;
-      elsif Value = "int" or Value = "integer" then
+      elsif Value = "int" or else Value = "integer" then
          return T_INTEGER;
       elsif Value = "bigint" then
          return T_LONG_INTEGER;
@@ -58,7 +58,7 @@ package body ADO.Schemas.Sqlite is
          begin
             if Name = "varchar" then
                return T_VARCHAR;
-            elsif Name = "real" or Name = "float" or Name = "double" then
+            elsif Name = "real" or else Name = "float" or else Name = "double" then
                return T_FLOAT;
             elsif Name = "int" then
                return T_INTEGER;

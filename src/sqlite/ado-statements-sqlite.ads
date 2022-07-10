@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -143,6 +143,7 @@ package ADO.Statements.Sqlite is
    --  return it as an <b>Time</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
+   overriding
    function Get_Time (Query  : Sqlite_Query_Statement;
                       Column : Natural) return Ada.Calendar.Time;
 

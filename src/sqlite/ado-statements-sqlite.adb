@@ -119,7 +119,7 @@ package body ADO.Statements.Sqlite is
                           SQL        : in String;
                           Result     : in int) is
    begin
-      if Result /= Sqlite3_H.SQLITE_OK and Result /= Sqlite3_H.SQLITE_DONE then
+      if Result /= Sqlite3_H.SQLITE_OK and then Result /= Sqlite3_H.SQLITE_DONE then
          if Result = Sqlite3_H.SQLITE_BUSY then
             raise ADO.Objects.LAZY_LOCK;
          end if;
@@ -409,6 +409,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Execute the query
    --  ------------------------------
+   overriding
    procedure Execute (Query : in out Sqlite_Query_Statement) is
       Result : int;
    begin
@@ -457,6 +458,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Returns True if there is more data (row) to fetch
    --  ------------------------------
+   overriding
    function Has_Elements (Query : in Sqlite_Query_Statement) return Boolean is
    begin
       return Query.Status = HAS_ROW;
@@ -500,6 +502,7 @@ package body ADO.Statements.Sqlite is
    --  ------------------------------
    --  Get the number of rows returned by the query
    --  ------------------------------
+   overriding
    function Get_Row_Count (Query : in Sqlite_Query_Statement) return Natural is
       pragma Unreferenced (Query);
    begin
@@ -622,7 +625,7 @@ package body ADO.Statements.Sqlite is
       end if;
       Text := Sqlite3_H.sqlite3_column_blob (Query.Stmt, int (Column));
       Len  := Sqlite3_H.sqlite3_column_bytes (Query.Stmt, int (Column));
-      if Text = System.Null_Address or Len <= 0 then
+      if Text = System.Null_Address or else Len <= 0 then
          return Null_Blob;
       else
          return Get_Blob (Size => Natural (Len),
@@ -636,6 +639,7 @@ package body ADO.Statements.Sqlite is
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
    --  ------------------------------
+   overriding
    function Get_Time (Query  : in Sqlite_Query_Statement;
                       Column : in Natural) return Ada.Calendar.Time is
       use type Interfaces.C.Strings.chars_ptr;
