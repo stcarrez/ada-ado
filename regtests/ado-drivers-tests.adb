@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-drivers-tests -- Unit tests for database drivers
---  Copyright (C) 2014, 2015, 2016, 2018, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2014, 2015, 2016, 2018, 2019, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,7 +88,7 @@ package body ADO.Drivers.Tests is
       Sqlite_Driver : constant Driver_Access := Connections.Get_Driver ("sqlite");
       Postgres_Driver : constant Driver_Access := Connections.Get_Driver ("postgresql");
    begin
-      T.Assert (Mysql_Driver /= null or Sqlite_Driver /= null or Postgres_Driver /= null,
+      T.Assert (Mysql_Driver /= null or else Sqlite_Driver /= null or else Postgres_Driver /= null,
                 "No database driver was found!");
    end Test_Get_Driver;
 
@@ -119,15 +119,15 @@ package body ADO.Drivers.Tests is
       if Postgres_Driver /= null then
          T.Assert (Postgres_Driver.Get_Driver_Index > 0, "The driver index must be positive");
       end if;
-      if Mysql_Driver /= null and Sqlite_Driver /= null then
+      if Mysql_Driver /= null and then Sqlite_Driver /= null then
          T.Assert (Mysql_Driver.Get_Driver_Index /= Sqlite_Driver.Get_Driver_Index,
                    "Two drivers must have different driver indexes");
       end if;
-      if Mysql_Driver /= null and Postgres_Driver /= null then
+      if Mysql_Driver /= null and then Postgres_Driver /= null then
          T.Assert (Mysql_Driver.Get_Driver_Index /= Postgres_Driver.Get_Driver_Index,
                    "Two drivers must have different driver indexes");
       end if;
-      if Sqlite_Driver /= null and Postgres_Driver /= null then
+      if Sqlite_Driver /= null and then Postgres_Driver /= null then
          T.Assert (Sqlite_Driver.Get_Driver_Index /= Postgres_Driver.Get_Driver_Index,
                    "Two drivers must have different driver indexes");
       end if;

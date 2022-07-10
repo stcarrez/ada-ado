@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,6 +88,7 @@ package body ADO.Audits.Tests is
                        Test_Audit_Field'Access);
    end Add_Tests;
 
+   overriding
    procedure Set_Up (T : in out Test) is
       pragma Unreferenced (T);
    begin

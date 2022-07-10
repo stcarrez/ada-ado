@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ package ADO.Audits.Tests is
 
    type Test is new Util.Tests.Test with null record;
 
+   overriding
    procedure Set_Up (T : in out Test);
 
    --  Test populating Audit_Fields

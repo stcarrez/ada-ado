@@ -57,6 +57,7 @@ package body ADO.Tests is
                 "Exception " & Exception_Name (E) & " does not have any message");
    end Assert_Has_Message;
 
+   overriding
    procedure Set_Up (T : in out Test) is
    begin
       null;

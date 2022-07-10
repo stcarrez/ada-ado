@@ -227,7 +227,7 @@ package body ADO.Queries.Tests is
             if Pass = 1 then
                T.Assert (Query.Is_Null, "Query must not be loaded");
             elsif Missing_Query.Query.Query /= Pos
-              and Internal_Query.Query.Query /= Pos
+              and then Internal_Query.Query.Query /= Pos
             then
                T.Assert (not Query.Is_Null, "Query must have been loaded");
             else

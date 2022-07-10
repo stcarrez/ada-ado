@@ -26,6 +26,7 @@ package ADO.Tests is
       I2 : Integer;
    end record;
 
+   overriding
    procedure Set_Up (T : in out Test);
 
    procedure Test_Load (T : in out Test);
