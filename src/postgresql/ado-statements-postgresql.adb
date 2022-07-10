@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-postgresql -- Postgresql query statements
---  Copyright (C) 2018, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -165,6 +165,7 @@ package body ADO.Statements.Postgresql is
    --  ------------------------------
    --  Append the boolean item in the buffer.
    --  ------------------------------
+   overriding
    procedure Escape_Sql (D      : in Dialect;
                          Buffer : in out Unbounded_String;
                          Item   : in Boolean) is
@@ -471,7 +472,7 @@ package body ADO.Statements.Postgresql is
 
          --  Report an error if the query failed
          Status := PQ.PQresultStatus (Stmt.Result);
-         if Status /= PQ.PGRES_TUPLES_OK and Status /= PQ.PGRES_COMMAND_OK then
+         if Status /= PQ.PGRES_TUPLES_OK and then Status /= PQ.PGRES_COMMAND_OK then
             declare
                Message : constant String := Strings.Value (PQ.PQerrorMessage (Stmt.Connection));
             begin
@@ -527,7 +528,7 @@ package body ADO.Statements.Postgresql is
       if Query.Result = PQ.Null_PGresult then
          return True;
       end if;
-      if Column >= Query.Max_Column or Query.Row >= Query.Row_Count then
+      if Column >= Query.Max_Column or else Query.Row >= Query.Row_Count then
          return True;
       end if;
       return PQ.PQgetisnull (Query.Result, Query.Row, Interfaces.C.int (Column)) = 1;
@@ -604,15 +605,15 @@ package body ADO.Statements.Postgresql is
             if C = ASCII.NUL then
                return True;
             end if;
-            if C /= 'r' and C /= 'R' then
+            if C /= 'r' and then C /= 'R' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             C := Field.all;
-            if C /= 'u' and C /= 'U' then
+            if C /= 'u' and then C /= 'U' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             C := Field.all;
-            if C /= 'e' and C /= 'E' then
+            if C /= 'e' and then C /= 'E' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             return True;
@@ -622,19 +623,19 @@ package body ADO.Statements.Postgresql is
             if C = ASCII.NUL then
                return False;
             end if;
-            if C /= 'a' and C /= 'A' then
+            if C /= 'a' and then C /= 'A' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             C := Field.all;
-            if C /= 'l' and C /= 'L' then
+            if C /= 'l' and then C /= 'L' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             C := Field.all;
-            if C /= 's' and C /= 'S' then
+            if C /= 's' and then C /= 'S' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             C := Field.all;
-            if C /= 'e' and C /= 'E' then
+            if C /= 'e' and then C /= 'E' then
                raise Invalid_Type with "Invalid boolean value";
             end if;
             return False;

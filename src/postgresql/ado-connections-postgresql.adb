@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Postgresql Database -- Postgresql Database connections
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -100,6 +100,7 @@ package body ADO.Connections.Postgresql is
    --  ------------------------------
    --  Start a transaction.
    --  ------------------------------
+   overriding
    procedure Begin_Transaction (Database : in out Database_Connection) is
    begin
       Database.Execute ("BEGIN");
@@ -108,6 +109,7 @@ package body ADO.Connections.Postgresql is
    --  ------------------------------
    --  Commit the current transaction.
    --  ------------------------------
+   overriding
    procedure Commit (Database : in out Database_Connection) is
    begin
       Database.Execute ("COMMIT");
@@ -116,6 +118,7 @@ package body ADO.Connections.Postgresql is
    --  ------------------------------
    --  Rollback the current transaction.
    --  ------------------------------
+   overriding
    procedure Rollback (Database : in out Database_Connection) is
    begin
       Database.Execute ("ROLLBACK");
@@ -181,6 +184,7 @@ package body ADO.Connections.Postgresql is
    --  Postgresql://localhost:3306/db
    --
    --  ------------------------------
+   overriding
    procedure Create_Connection (D      : in out Postgresql_Driver;
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class) is
