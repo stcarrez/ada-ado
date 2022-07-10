@@ -286,6 +286,14 @@ package body ADO.Connections.Sqlite is
                Status := Sqlite3_H.sqlite3_busy_handler (Handle,
                                                          Busy_Handler'Access,
                                                          Database.all'Address);
+               if Status /= 0 then
+                  declare
+                     Error : constant Strings.chars_ptr := Sqlite3_H.sqlite3_errstr (Status);
+                     Msg   : constant String := Strings.Value (Error);
+                  begin
+                     Log.Error ("Cannot setup SQLite busy handler: {0}", Msg);
+                  end;
+               end if;
             end;
          end;
       end Open;
