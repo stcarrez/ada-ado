@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2017, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -254,25 +254,31 @@ package ADO.Parameters is
    --  The <b>List</b> is an implementation of the parameter list.
    type List is new Abstract_List with private;
 
+   overriding
    procedure Add_Parameter (Params : in out List;
                             Param  : in Parameter);
 
+   overriding
    procedure Set_Parameters (Params : in out List;
                              From   : in Abstract_List'Class);
 
    --  Return the number of parameters in the list.
+   overriding
    function Length (Params : in List) return Natural;
 
    --  Return the parameter at the given position
+   overriding
    function Element (Params   : in List;
                      Position : in Natural) return Parameter;
 
    --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   overriding
    procedure Query_Element (Params   : in List;
                             Position : in Natural;
                             Process  : not null access procedure (Element : in Parameter));
 
    --  Clear the list of parameters.
+   overriding
    procedure Clear (Params : in out List);
 
 private

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado.schemas -- Database Schemas
---  Copyright (C) 2009, 2010, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ package body ADO.Schemas is
    procedure Free is new
      Ada.Unchecked_Deallocation (Object => Schema,
                                  Name   => Schema_Access);
-
 
    --  ------------------------------
    --  Get the hash value associated with the class mapping.
@@ -246,6 +245,7 @@ package body ADO.Schemas is
       end if;
    end Get_Tables;
 
+   overriding
    procedure Finalize (Schema : in out Schema_Definition) is
    begin
       if Schema.Schema /= null then

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-cache-discrete -- Simple cache management for discrete types
---  Copyright (C) 2017 Stephane Carrez
+--  Copyright (C) 2017, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 
 package body ADO.Caches.Discrete is
-
 
    --  ------------------------------
    --  Expand the name into a target parameter value to be used in the SQL query.

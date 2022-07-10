@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements -- Database statements
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,12 +33,14 @@ package body ADO.Statements is
       return Query.Query;
    end Get_Query;
 
+   overriding
    procedure Add_Parameter (Query : in out Statement;
                             Param : in ADO.Parameters.Parameter) is
    begin
       Query.Query.Add_Parameter (Param);
    end Add_Parameter;
 
+   overriding
    procedure Set_Parameters (Query : in out Statement;
                              From  : in ADO.Parameters.Abstract_List'Class) is
    begin
@@ -48,6 +50,7 @@ package body ADO.Statements is
    --  ------------------------------
    --  Return the number of parameters in the list.
    --  ------------------------------
+   overriding
    function Length (Query : in Statement) return Natural is
    begin
       return Query.Query.Length;
@@ -56,6 +59,7 @@ package body ADO.Statements is
    --  ------------------------------
    --  Return the parameter at the given position
    --  ------------------------------
+   overriding
    function Element (Query    : in Statement;
                      Position : in Natural) return ADO.Parameters.Parameter is
    begin
@@ -65,6 +69,7 @@ package body ADO.Statements is
    --  ------------------------------
    --  Execute the <b>Process</b> procedure with the given parameter as argument.
    --  ------------------------------
+   overriding
    procedure Query_Element (Query    : in Statement;
                             Position : in Natural;
                             Process  : not null access
@@ -76,6 +81,7 @@ package body ADO.Statements is
    --  ------------------------------
    --  Clear the list of parameters.
    --  ------------------------------
+   overriding
    procedure Clear (Query : in out Statement) is
    begin
       Query.Query.Clear;
@@ -218,7 +224,7 @@ package body ADO.Statements is
          end if;
          P := P + 1;
       end loop;
-      while C >= '0' and C <= '9' loop
+      while C >= '0' and then C <= '9' loop
          Result := Result * 10 + unsigned_long (Character'Pos (C) - Character'Pos ('0'));
          P := P + 1;
          C := P.all;
@@ -322,7 +328,7 @@ package body ADO.Statements is
       begin
          for I in 1 .. Nb_Digits loop
             C := Ptr.all;
-            if not (C >= '0' and C <= '9') then
+            if not (C >= '0' and then C <= '9') then
                raise Invalid_Type with "Invalid date format";
             end if;
             Result := Result * 10 + Character'Pos (C) - Character'Pos ('0');
@@ -390,7 +396,7 @@ package body ADO.Statements is
                Secs := Get_Number (Field, 2);
                Field := Field + 2;
                C := Field.all;
-               if C /= '.' and C /= ASCII.NUL then
+               if C /= '.' and then C /= ASCII.NUL then
                   raise Invalid_Type with "Invalid date format";
                end if;
                Dt := Duration (Hours * 3600) + Duration (Mins * 60) + Duration (Secs);

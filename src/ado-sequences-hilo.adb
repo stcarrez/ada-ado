@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,7 @@ package body ADO.Sequences.Hilo is
    --  table stored in the database.  One database access is necessary
    --  every N allocations.
    --  ------------------------------
+   overriding
    procedure Allocate (Gen : in out HiLoGenerator;
                        Id  : in out Objects.Object_Record'Class) is
    begin

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-configs -- Database connection configuration
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,7 +72,7 @@ package body ADO.Configs is
    function Is_On (Name   : in String) return Boolean is
       Value : constant String := Global_Config.Get (Name, "");
    begin
-      return Value = "on" or Value = "true" or Value = "1";
+      return Value = "on" or else Value = "true" or else Value = "1";
    end Is_On;
 
    --  ------------------------------
@@ -128,12 +128,11 @@ package body ADO.Configs is
       Pos := Index (URI, "?", Slash_Pos);
       if Pos - 1 > Slash_Pos + 1 then
          Config.Database := To_Unbounded_String (URI (Slash_Pos + 1 .. Pos - 1));
-      elsif Pos = 0 and Slash_Pos + 1 < URI'Last then
+      elsif Pos = 0 and then Slash_Pos + 1 < URI'Last then
          Config.Database := To_Unbounded_String (URI (Slash_Pos + 1 .. URI'Last));
       else
          Config.Database := Null_Unbounded_String;
       end if;
-
 
       --  Parse the optional properties
       if Pos > Slash_Pos then
@@ -221,7 +220,7 @@ package body ADO.Configs is
                    Name   : in String) return Boolean is
       Value : constant String := Config.Get_Property (Name);
    begin
-      return Value = "on" or Value = "true" or Value = "1";
+      return Value = "on" or else Value = "true" or else Value = "1";
    end Is_On;
 
    --  ------------------------------

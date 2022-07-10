@@ -179,48 +179,54 @@ package body ADO.Queries.Loaders is
                             Value : in Util.Beans.Objects.Object) is
       begin
          case Field is
-         when FIELD_CLASS_NAME =>
-            Append (Into.Hash_Value, " class=");
-            Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
+            when FIELD_CLASS_NAME =>
+               Append (Into.Hash_Value, " class=");
+               Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
 
-         when FIELD_PROPERTY_TYPE =>
-            Append (Into.Hash_Value, " type=");
-            Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
+            when FIELD_PROPERTY_TYPE =>
+               Append (Into.Hash_Value, " type=");
+               Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
 
-         when FIELD_PROPERTY_NAME =>
-            Append (Into.Hash_Value, " name=");
-            Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
+            when FIELD_PROPERTY_NAME =>
+               Append (Into.Hash_Value, " name=");
+               Append (Into.Hash_Value, Util.Beans.Objects.To_Unbounded_String (Value));
 
-         when FIELD_QUERY_NAME =>
-            Into.Query_Def  := Find_Query (File, Util.Beans.Objects.To_String (Value));
-            Into.Driver := 0;
-            if Into.Query_Def /= null then
-               Into.Query := Query_Info_Ref.Create;
-            end if;
+            when FIELD_QUERY_NAME =>
+               Into.Query_Def  := Find_Query (File, Util.Beans.Objects.To_String (Value));
+               Into.Driver := 0;
+               if Into.Query_Def /= null then
+                  Into.Query := Query_Info_Ref.Create;
+               end if;
 
-         when FIELD_SQL_DRIVER =>
-            Into.Driver := Find_Driver (Util.Beans.Objects.To_String (Value));
+            when FIELD_SQL_DRIVER =>
+               Into.Driver := Find_Driver (Util.Beans.Objects.To_String (Value));
 
-         when FIELD_SQL =>
-            if not Into.Query.Is_Null and Into.Driver >= 0 and Into.Query_Def /= null then
-               Set_Query_Pattern (Into.Query.Value.Main_Query (Driver_Index (Into.Driver)),
-                                  Value);
-            end if;
-            Into.Driver := 0;
+            when FIELD_SQL =>
+               if not Into.Query.Is_Null
+                 and then Into.Driver >= 0
+                 and then Into.Query_Def /= null
+               then
+                  Set_Query_Pattern (Into.Query.Value.Main_Query (Driver_Index (Into.Driver)),
+                                     Value);
+               end if;
+               Into.Driver := 0;
 
-         when FIELD_SQL_COUNT =>
-            if not Into.Query.Is_Null and Into.Driver >= 0 and Into.Query_Def /= null then
-               Set_Query_Pattern (Into.Query.Value.Count_Query (Driver_Index (Into.Driver)),
-                                  Value);
-            end if;
-            Into.Driver := 0;
+            when FIELD_SQL_COUNT =>
+               if not Into.Query.Is_Null
+                 and then Into.Driver >= 0
+                 and then Into.Query_Def /= null
+               then
+                  Set_Query_Pattern (Into.Query.Value.Count_Query (Driver_Index (Into.Driver)),
+                                     Value);
+               end if;
+               Into.Driver := 0;
 
-         when FIELD_QUERY =>
-            if Into.Query_Def /= null then
-               --  Now we can safely setup the query info associated with the query definition.
-               Manager.Queries (Into.Query_Def.Query) := Into.Query;
-            end if;
-            Into.Query_Def := null;
+            when FIELD_QUERY =>
+               if Into.Query_Def /= null then
+                  --  Now we can safely setup the query info associated with the query definition.
+                  Manager.Queries (Into.Query_Def.Query) := Into.Query;
+               end if;
+               Into.Query_Def := null;
 
          end case;
       end Set_Member;

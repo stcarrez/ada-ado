@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-c -- Support for driver implementation
---  Copyright (C) 2009, 2010, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,7 @@ package body ADO.C is
    --  ------------------------------
    --  Reclaim the storage held by the C string.
    --  ------------------------------
+   overriding
    procedure Finalize (S : in out String_Ptr) is
    begin
       Strings.Free (S.Ptr);

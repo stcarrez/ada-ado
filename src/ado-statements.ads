@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements -- Database statements
---  Copyright (C) 2009 - 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,26 +105,32 @@ package ADO.Statements is
 
    function Get_Query (Query : Statement) return ADO.SQL.Query_Access;
 
+   overriding
    procedure Add_Parameter (Query : in out Statement;
                             Param : in ADO.Parameters.Parameter);
 
+   overriding
    procedure Set_Parameters (Query : in out Statement;
                              From  : in ADO.Parameters.Abstract_List'Class);
 
    --  Return the number of parameters in the list.
+   overriding
    function Length (Query : in Statement) return Natural;
 
    --  Return the parameter at the given position
+   overriding
    function Element (Query    : in Statement;
                      Position : in Natural) return ADO.Parameters.Parameter;
 
    --  Execute the <b>Process</b> procedure with the given parameter as argument.
+   overriding
    procedure Query_Element (Query    : in Statement;
                             Position : in Natural;
                             Process  : not null access
                               procedure (Element : in ADO.Parameters.Parameter));
 
    --  Clear the list of parameters.
+   overriding
    procedure Clear (Query : in out Statement);
 
    subtype Query_String is String;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions-factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -95,7 +95,9 @@ package body ADO.Sessions.Factory is
       ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
-      if Factory.Source.Get_Database /= "" and not Configs.Is_On (Configs.NO_ENTITY_LOAD) then
+      if Factory.Source.Get_Database /= ""
+        and then not Configs.Is_On (Configs.NO_ENTITY_LOAD)
+      then
          declare
             S : Session := Factory.Get_Session;
          begin
@@ -118,7 +120,9 @@ package body ADO.Sessions.Factory is
       ADO.Queries.Loaders.Initialize (Factory.Queries, Factory.Source);
       Initialize_Sequences (Factory);
 
-      if Factory.Source.Get_Database /= "" and not Configs.Is_On (Configs.NO_ENTITY_LOAD) then
+      if Factory.Source.Get_Database /= ""
+        and then not Configs.Is_On (Configs.NO_ENTITY_LOAD)
+      then
          declare
             S : Session := Factory.Get_Session;
          begin

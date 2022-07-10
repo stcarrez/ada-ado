@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-c -- Support for driver implementation
---  Copyright (C) 2009, 2010, 2011, 2012, 2018 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,7 @@ private
    end record;
 
    --  Reclaim the storage held by the C string.
+   overriding
    procedure Finalize (S : in out String_Ptr);
 
 end ADO.C;

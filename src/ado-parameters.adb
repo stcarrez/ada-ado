@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Parameters -- Parameters for queries
---  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -521,7 +521,7 @@ package body ADO.Parameters is
       --  ------------------------------
       procedure Replace_Parameter (Position : in Natural) is
       begin
-         if Position = 0 or Position > Max then
+         if Position = 0 or else Position > Max then
             Log.Warn ("Invalid parameter '{0}' in query '{1}'",
                       Natural'Image (Position), SQL);
          else
@@ -602,20 +602,20 @@ package body ADO.Parameters is
             exit when Pos + 1 > SQL'Last;
             Pos := Pos + 2;
 
-         elsif C = ':' and Pos + 1 <= SQL'Last then
+         elsif C = ':' and then Pos + 1 <= SQL'Last then
             if First_Pos <= Pos - 1 then
                Append (Buffer, SQL (First_Pos .. Pos - 1));
             end if;
             Pos := Pos + 1;
             C := SQL (Pos);
-            if C >= '0' and C <= '9' then
+            if C >= '0' and then C <= '9' then
                Num := 0;
                loop
                   Num := Num * 10 + Natural (Character'Pos (C) - Character'Pos ('0'));
                   Pos := Pos + 1;
                   exit when Pos > SQL'Last;
                   C := SQL (Pos);
-                  exit when not (C >= '0' and C <= '9');
+                  exit when not (C >= '0' and then C <= '9');
                end loop;
                Replace_Parameter (Position => Num);
                First_Pos := Pos;
@@ -626,8 +626,10 @@ package body ADO.Parameters is
                begin
                   --  Isolate the parameter name.
                   loop
-                     exit when not (C >= 'a' and C <= 'z') and not (C >= 'A' and C <= 'Z')
-                       and not (C >= '0' and C <= '9') and C /= '_';
+                     exit when not (C >= 'a' and then C <= 'z')
+                       and then not (C >= 'A' and then C <= 'Z')
+                       and then not (C >= '0' and then C <= '9')
+                       and then C /= '_';
                      Pos := Pos + 1;
                      exit when Pos > SQL'Last;
                      C := SQL (Pos);
@@ -705,6 +707,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Add the parameter in the list.
    --  ------------------------------
+   overriding
    procedure Add_Parameter (Params : in out List;
                             Param  : in Parameter) is
       Pos : Parameter_Vectors.Extended_Index;
@@ -728,6 +731,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Return the number of parameters in the list.
    --  ------------------------------
+   overriding
    function Length (Params : in List) return Natural is
    begin
       return Natural (Length (Params.Params));
@@ -736,6 +740,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Clear the list of parameters.
    --  ------------------------------
+   overriding
    procedure Clear (Params : in out List) is
    begin
       Parameter_Vectors.Clear (Params.Params);
@@ -744,6 +749,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Set the parameters from another parameter list.
    --  ------------------------------
+   overriding
    procedure Set_Parameters (Params : in out List;
                              From   : in Abstract_List'Class) is
       L : constant List'Class := List'Class (From);
@@ -754,6 +760,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Return the parameter at the given position
    --  ------------------------------
+   overriding
    function Element (Params   : in List;
                      Position : in Natural) return Parameter is
    begin
@@ -763,6 +770,7 @@ package body ADO.Parameters is
    --  ------------------------------
    --  Execute the <b>Process</b> procedure with the given parameter as argument.
    --  ------------------------------
+   overriding
    procedure Query_Element (Params   : in List;
                             Position : in Natural;
                             Process  : not null access procedure (Element : in Parameter)) is

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits -- Auditing support
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ package body ADO.Audits is
       Audits  : constant Audit_Array_Access := Object.Audits;
       Last    : Audit_Info_Index;
    begin
-      if Manager /= null and Audits /= null then
+      if Manager /= null and then Audits /= null then
          Last := 1;
          for Pos in Audits'Range loop
             exit when Audits (Pos).Field = 0;

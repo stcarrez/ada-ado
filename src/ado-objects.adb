@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Objects -- Database objects
---  Copyright (C) 2009 - 2020 Stephane Carrez
+--  Copyright (C) 2009 - 2020, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -243,7 +243,7 @@ package body ADO.Objects is
       if Object.Object = null then
          return False;
       else
-         return Object.Object.Is_Loaded and Object.Object.Is_Created;
+         return Object.Object.Is_Loaded and then Object.Object.Is_Created;
       end if;
    end Is_Loaded;
 
@@ -346,12 +346,12 @@ package body ADO.Objects is
       Util.Concurrent.Counters.Increment (Ref.Object.Session.Counter);
    end Set_Key_Value;
 
-
    --  ------------------------------
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
    --  Returns true if the two objects have the same primary key.
    --  ------------------------------
+   overriding
    function "=" (Left : Object_Ref; Right : Object_Ref) return Boolean is
    begin
       --  Same target object
@@ -359,7 +359,7 @@ package body ADO.Objects is
          return True;
       end if;
       --  One of the target object is null
-      if Left.Object = null or Right.Object = null then
+      if Left.Object = null or else Right.Object = null then
          return False;
       end if;
       return Left.Object.Key = Right.Object.Key;
@@ -369,7 +369,7 @@ package body ADO.Objects is
                          Object : in Object_Record_Access) is
       Is_Zero : Boolean;
    begin
-      if Ref.Object /= null and Ref.Object /= Object then
+      if Ref.Object /= null and then Ref.Object /= Object then
          Util.Concurrent.Counters.Decrement (Ref.Object.Counter, Is_Zero);
          if Is_Zero then
             Destroy (Ref.Object);

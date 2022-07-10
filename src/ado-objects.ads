@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-objects -- Database objects
---  Copyright (C) 2009 - 2020 Stephane Carrez
+--  Copyright (C) 2009 - 2020, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -197,6 +197,7 @@ package ADO.Objects is
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
    --  Returns true if the two objects have the same primary key.
+   overriding
    function "=" (Left : Object_Key; Right : Object_Key) return Boolean
      renames Equivalent_Elements;
 
@@ -372,6 +373,7 @@ package ADO.Objects is
    --  Check if the two objects are the same database objects.
    --  The comparison is only made on the primary key.
    --  Returns true if the two objects have the same primary key.
+   overriding
    function "=" (Left : Object_Ref; Right : Object_Ref) return Boolean;
 
    procedure Set_Object (Ref    : in out Object_Ref'Class;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sql -- Basic SQL Generation
---  Copyright (C) 2010, 2011, 2012, 2015, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ package body ADO.SQL is
    --  --------------------
    --  Clear the SQL buffer.
    --  --------------------
+   overriding
    procedure Clear (Target : in out Buffer) is
    begin
       Target.Buf := To_Unbounded_String ("");
@@ -135,6 +136,7 @@ package body ADO.SQL is
    --  --------------------
    --  Set the SQL dialect description object.
    --  --------------------
+   overriding
    procedure Set_Dialect (Target : in out Query;
                           D      : in ADO.Dialects.Dialect_Access) is
    begin
@@ -162,7 +164,7 @@ package body ADO.SQL is
    function Has_Filter (Source : in Query) return Boolean is
    begin
       return Source.Filter.Buf /= Null_Unbounded_String
-        and Length (Source.Filter.Buf) > 0;
+        and then Length (Source.Filter.Buf) > 0;
    end Has_Filter;
 
    --  --------------------
@@ -180,7 +182,7 @@ package body ADO.SQL is
    function Has_Join (Source : in Query) return Boolean is
    begin
       return Source.Join.Buf /= Null_Unbounded_String
-        and Length (Source.Join.Buf) > 0;
+        and then Length (Source.Join.Buf) > 0;
    end Has_Join;
 
    --  --------------------
@@ -199,6 +201,7 @@ package body ADO.SQL is
    --  Set the parameters from another parameter list.
    --  If the parameter list is a query object, also copy the filter part.
    --  --------------------
+   overriding
    procedure Set_Parameters (Params : in out Query;
                              From   : in ADO.Parameters.Abstract_List'Class) is
    begin
@@ -239,6 +242,7 @@ package body ADO.SQL is
    --  ------------------------------
    --  Set the SQL dialect description object.
    --  ------------------------------
+   overriding
    procedure Set_Dialect (Target : in out Update_Query;
                           D      : in ADO.Dialects.Dialect_Access) is
    begin
