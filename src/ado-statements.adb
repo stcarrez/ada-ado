@@ -20,6 +20,7 @@ with Ada.Calendar.Formatting;
 
 with Util.Log;
 with Util.Log.Loggers;
+with Util.Refs;
 with System.Storage_Elements;
 with Ada.Unchecked_Deallocation;
 package body ADO.Statements is
@@ -413,10 +414,9 @@ package body ADO.Statements is
    --  ------------------------------
    function Get_Blob (Data : in chars_ptr;
                       Size : in Natural) return Blob_Ref is
-      use Util.Refs;
       use Ada.Streams;
 
-      B :  constant Blob_Access := new Blob '(Ref_Entity with
+      B :  constant Blob_Access := new Blob '(Util.Refs.Ref_Entity with
                                               Len    => Stream_Element_Offset (Size),
                                               others => <>);
       P : chars_ptr := Data;
