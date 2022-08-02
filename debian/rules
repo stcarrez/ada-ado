@@ -36,8 +36,8 @@ override_dh_auto_test::
 
 override_dh_auto_install::
 
-version=2.1.2
-aliversion=3
+version=2.3.0
+aliversion=4
 
 ado_LIB_PKG = libado$(version)
 ado_DEV_PKG = libado$(aliversion)-dev
