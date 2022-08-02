@@ -7,10 +7,10 @@
 [![Test Status](https://img.shields.io/jenkins/t/https/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
 [![codecov](https://codecov.io/gh/stcarrez/ada-ado/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-ado)
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
-[![Download](https://img.shields.io/badge/download-2.2.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.2.0.tar.gz)
+[![Download](https://img.shields.io/badge/download-2.3.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.3.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-ado)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.2.0.svg)
+![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.3.0.svg)
 
 Ada Database Objects is an Ada05 library that provides
 object relational mapping to access a database in Ada05.
@@ -34,18 +34,13 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
-## Version 2.2.1   - Under development
+## Version 2.3.0   - Aug 2022
   - Fix #4: Is_Loaded predicate operation is false when an object is not yet inserted in the database
   - Fix #5: Exception raised when SQLite Query_Statement is finalized if the SQL query was invalid
   - Fix #7: Update SQLite support to 3.31.1
   - Fix #8: Add SQlite busy handler to handle the SQLITE_BUSY error
   - Fix #9: Better handling of SQLITE_BUSY error
   - Fix #10: Error 'XML query file does not exist' when the query is loaded from a static embedded loader
-
-## Version 2.2.0   - Jul 2021
-  - Improvement of query loaders
-  - Fix reading database schema with float/double values
-  - Rename Get_Double into Get_Long_Float
 
 [List all versions](https://github.com/stcarrez/ada-ado/blob/master/NEWS.md)
 
