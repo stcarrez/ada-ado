@@ -1,3 +1,6 @@
+Version 2.4.0   - Under development
+  - Feature #11: Support to audit creation of new objects in the database
+
 Version 2.3.0   - Aug 2022
   - Fix #4: Is_Loaded predicate operation is false when an object is not yet inserted in the database
   - Fix #5: Exception raised when SQLite Query_Statement is finalized if the SQL query was invalid
