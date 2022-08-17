@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits -- Auditing support
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -196,6 +196,11 @@ package ADO.Audits is
                                   Field  : in Column_Index;
                                   Into   : in out T;
                                   Value  : in T);
+
+   --  Allocate a key for the object and create an audit record for this new entry.
+   procedure Allocate (Session : in out ADO.Sessions.Master_Session'Class;
+                       Object  : in out Auditable_Object_Record'Class;
+                       Field   : in Column_Index);
 
 private
 

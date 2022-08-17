@@ -384,4 +384,15 @@ package body ADO.Audits is
       end if;
    end Set_Field_Operation;
 
+   --  --------------------
+   --  Allocate a key for the object and create an audit record for this new entry.
+   --  --------------------
+   procedure Allocate (Session : in out ADO.Sessions.Master_Session'Class;
+                       Object  : in out Auditable_Object_Record'Class;
+                       Field   : in Column_Index) is
+   begin
+      Session.Allocate (Id => Object);
+      Object.Audit_Field (Field, UBO.Null_Object, ADO.Objects.To_Object (Object.Get_Key));
+   end Allocate;
+
 end ADO.Audits;
