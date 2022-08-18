@@ -211,6 +211,11 @@ package ADO.SQL is
    procedure Append_Fields (Update : in out Update_Query;
                             Mode   : in Boolean := False);
 
+   --  Read the file for SQL statements separated by ';' and execute the
+   --  `Process` procedure with each SQL statement that is read.
+   procedure Read_File (Path    : in String;
+                        Process : not null access procedure (SQL : in String));
+
 private
 
    type Buffer is new ADO.Parameters.List with record

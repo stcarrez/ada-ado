@@ -15,6 +15,8 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+with Ada.Text_IO;
+with Util.Strings.Builders;
 
 --  Utilities for creating SQL queries and statements.
 package body ADO.SQL is
@@ -404,5 +406,49 @@ package body ADO.SQL is
          Append (Target => Update.SQL, SQL => To_String (Update.Set_Fields.Buf));
       end if;
    end Append_Fields;
+
+   --  --------------------
+   --  Read the file for SQL statements separated by ';' and execute the
+   --  `Process` procedure with each SQL statement that is read.
+   --  --------------------
+   procedure Read_File (Path    : in String;
+                        Process : not null access procedure (SQL : in String)) is
+      File : Ada.Text_IO.File_Type;
+      SQL  : Util.Strings.Builders.Builder (1024);
+   begin
+      Ada.Text_IO.Open (File => File,
+                        Mode => Ada.Text_IO.In_File,
+                        Name => Path);
+      begin
+         while not Ada.Text_IO.End_Of_File (File) loop
+            declare
+               Line : constant String := Ada.Text_IO.Get_Line (File);
+            begin
+               if Util.Strings.Builders.Length (SQL) > 0 then
+                  Util.Strings.Builders.Append (SQL, ' ');
+               end if;
+               for C of Line loop
+                  if C = ';' then
+                     if Util.Strings.Builders.Length (SQL) > 0 then
+                        Process (Util.Strings.Builders.To_Array (SQL));
+                     end if;
+                     Util.Strings.Builders.Clear (SQL);
+                  else
+                     Util.Strings.Builders.Append (SQL, C);
+                  end if;
+               end loop;
+            end;
+         end loop;
+         if Util.Strings.Builders.Length (SQL) > 0 then
+            Process (Util.Strings.Builders.To_Array (SQL));
+         end if;
+
+      exception
+         when others =>
+            Ada.Text_IO.Close (File);
+            raise;
+      end;
+      Ada.Text_IO.Close (File);
+   end Read_File;
 
 end ADO.SQL;
