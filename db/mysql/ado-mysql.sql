@@ -1,6 +1,6 @@
 /* File generated automatically by dynamo */
 /* Entity table that enumerates all known database tables */
-CREATE TABLE IF NOT EXISTS entity_type (
+CREATE TABLE IF NOT EXISTS ado_entity_type (
   /* the database table unique entity index */
   `id` INTEGER  AUTO_INCREMENT,
   /* the database entity name */
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS entity_type (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /* Sequence generator */
-CREATE TABLE IF NOT EXISTS sequence (
+CREATE TABLE IF NOT EXISTS ado_sequence (
   /* the sequence name */
   `name` VARCHAR(127) UNIQUE NOT NULL,
   /* the sequence record version */
@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS sequence (
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT IGNORE INTO entity_type (name) VALUES
-("entity_type"), ("sequence");
+("ado_entity_type"), ("ado_sequence");
