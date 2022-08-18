@@ -98,6 +98,9 @@ private package ADO.Model is
    --  Table definition
    ENTITY_TYPE_TABLE : aliased constant ADO.Schemas.Class_Mapping;
 
+   --  Table definition
+   VERSION_TABLE : aliased constant ADO.Schemas.Class_Mapping;
+
 private
    SEQUENCE_NAME : aliased constant String := "ado_sequence";
    COL_0_1_NAME : aliased constant String := "name";
@@ -131,5 +134,17 @@ private
    procedure Load (Object  : in out Sequence_Ref;
                    Stmt    : in out ADO.Statements.Query_Statement'Class;
                    Session : in out ADO.Sessions.Session'Class);
+
+   VERSION_NAME : aliased constant String := "ado_version";
+   COL_0_3_NAME : aliased constant String := "name";
+   COL_1_3_NAME : aliased constant String := "version";
+   VERSION_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
+     (Count => 2,
+      Table => VERSION_NAME'Access,
+      Members => (
+                  COL_0_3_NAME'Access,
+                  COL_1_3_NAME'Access
+                 )
+     );
 
 end ADO.Model;

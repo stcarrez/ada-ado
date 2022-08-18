@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping default-cascade="none">
+    <class name="ADO.Model.Version" table="ado_version" dynamic-insert="true" dynamic-update="true"
+           model="">
+        <comment>Database schema version (per module)</comment>
+        <id name="name" type="String" unsaved-value="0">
+            <comment>the module name</comment>
+            <column name="name" not-null="true" unique="true" sql-type="VARCHAR(127)"/>
+            <generator class="none"/>
+        </id>
+        <property name="version" type="Integer">
+            <comment>the database version schema for this module</comment>
+            <column name="version" not-null="true" unique="false" sql-type="INTEGER"/>
+        </property>
+    </class>
+</hibernate-mapping>

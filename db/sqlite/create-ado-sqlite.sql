@@ -19,5 +19,14 @@ CREATE TABLE IF NOT EXISTS ado_sequence (
   `block_size` BIGINT NOT NULL,
   PRIMARY KEY (`name`)
 );
+/* Database schema version (per module) */
+CREATE TABLE IF NOT EXISTS ado_version (
+  /* the module name */
+  `name` VARCHAR(127) UNIQUE NOT NULL,
+  /* the database version schema for this module */
+  `version` INTEGER NOT NULL,
+  PRIMARY KEY (`name`)
+);
 INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_entity_type");
 INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_sequence");
+INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_version");
