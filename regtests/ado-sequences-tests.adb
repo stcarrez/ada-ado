@@ -73,7 +73,7 @@ package body ADO.Sequences.Tests is
                        Test_Create_Factory'Access);
    end Add_Tests;
 
-   SEQUENCE_NAME : aliased constant String := "sequence";
+   SEQUENCE_NAME : aliased constant String := "ado_sequence";
 
    Sequence_Table : aliased ADO.Schemas.Class_Mapping
      := ADO.Schemas.Class_Mapping '(Count => 0, Table => SEQUENCE_NAME'Access, Members => <>);

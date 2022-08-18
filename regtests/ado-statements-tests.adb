@@ -319,8 +319,8 @@ package body ADO.Statements.Tests is
       Stmt  : ADO.Statements.Query_Statement;
       Count : Natural := 0;
    begin
-      Stmt := DB.Create_Statement ("SELECT name FROM entity_type "
-                                   & "WHERE entity_type.id = $entity_type[test_user]");
+      Stmt := DB.Create_Statement ("SELECT name FROM ado_entity_type "
+                                   & "WHERE ado_entity_type.id = $entity_type[test_user]");
       Stmt.Execute;
       while Stmt.Has_Elements loop
          Util.Tests.Assert_Equals (T, "test_user", Stmt.Get_String (0), "Invalid query response");
@@ -369,7 +369,7 @@ package body ADO.Statements.Tests is
             null;
       end;
 
-      Stmt := DB.Create_Statement ("SELECT name FROM entity_type");
+      Stmt := DB.Create_Statement ("SELECT name FROM ado_entity_type");
       Stmt.Execute;
       while Stmt.Has_Elements loop
          Name := Stmt.Get_Unbounded_String (0);
@@ -435,7 +435,7 @@ package body ADO.Statements.Tests is
       Value : Integer := 123456789;
       Time  : Ada.Calendar.Time with Unreferenced;
    begin
-      Stmt := DB.Create_Statement ("SELECT name, id FROM entity_type");
+      Stmt := DB.Create_Statement ("SELECT name, id FROM ado_entity_type");
       Stmt.Execute;
       while Stmt.Has_Elements loop
          Name := Stmt.Get_Unbounded_String (0);
