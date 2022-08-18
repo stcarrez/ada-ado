@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hibernate-mapping default-cascade="none">
-    <class name="ADO.Model.Sequence" table="sequence" dynamic-insert="true" dynamic-update="true"
+    <class name="ADO.Model.Sequence" table="ado_sequence" dynamic-insert="true" dynamic-update="true"
            model="">
         <comment>Sequence generator</comment>
         <id name="name" type="String" unsaved-value="0">

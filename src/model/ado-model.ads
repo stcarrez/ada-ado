@@ -99,7 +99,7 @@ private package ADO.Model is
    ENTITY_TYPE_TABLE : aliased constant ADO.Schemas.Class_Mapping;
 
 private
-   SEQUENCE_NAME : aliased constant String := "sequence";
+   SEQUENCE_NAME : aliased constant String := "ado_sequence";
    COL_0_1_NAME : aliased constant String := "name";
    COL_1_1_NAME : aliased constant String := "version";
    COL_2_1_NAME : aliased constant String := "value";
@@ -115,7 +115,7 @@ private
                  )
      );
 
-   ENTITY_TYPE_NAME : aliased constant String := "entity_type";
+   ENTITY_TYPE_NAME : aliased constant String := "ado_entity_type";
    COL_0_2_NAME : aliased constant String := "id";
    COL_1_2_NAME : aliased constant String := "name";
    ENTITY_TYPE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=

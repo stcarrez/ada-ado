@@ -1,6 +1,6 @@
 ADO.Model.Entity_Type:
   type: entity
-  table: entity_type
+  table: ado_entity_type
   schema: schema_name
   readOnly: true
   description: Entity table that enumerates all known database tables
@@ -17,5 +17,3 @@ ADO.Model.Entity_Type:
       column: name
       unique: true
       description: the database entity name
-      options:
-        comment: User's email address
