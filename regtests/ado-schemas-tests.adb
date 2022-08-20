@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Directories;
+with Ada.Text_IO;
 
 with Util.Test_Caller;
 with Util.Strings.Vectors;
@@ -53,6 +54,8 @@ package body ADO.Schemas.Tests is
                        Test_Empty_Schema'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Create_Database",
                        Test_Create_Schema'Access);
+      Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Scan_Migration",
+                       Test_Scan_Migration'Access);
    end Add_Tests;
 
    --  ------------------------------
@@ -292,14 +295,12 @@ package body ADO.Schemas.Tests is
    procedure Test_Create_Schema (T : in out Test) is
       use ADO.Sessions.Sources;
 
-      Msg      : Util.Strings.Vectors.Vector;
+      Unused_Msg : Util.Strings.Vectors.Vector;
       Cfg      : Data_Source := Data_Source (Regtests.Get_Controller);
       Driver   : constant String := Cfg.Get_Driver;
       Database : constant String := Cfg.Get_Database;
       Path     : constant String :=
         "db/regtests/" & Cfg.Get_Driver & "/create-ado-" & Driver & ".sql";
-
-      pragma Unreferenced (Msg);
    begin
       if Driver = "sqlite" then
          if Ada.Directories.Exists (Database & ".test") then
@@ -309,15 +310,69 @@ package body ADO.Schemas.Tests is
          ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
                                                 Config      => Cfg,
                                                 Schema_Path => Path,
-                                                Messages    => Msg);
+                                                Messages    => Unused_Msg);
          T.Assert (Ada.Directories.Exists (Database & ".test"),
                    "The sqlite database was not created");
       else
          ADO.Schemas.Databases.Create_Database (Admin       => Cfg,
                                                 Config      => Cfg,
                                                 Schema_Path => Path,
-                                                Messages    => Msg);
+                                                Messages    => Unused_Msg);
       end if;
    end Test_Create_Schema;
+
+   --  ------------------------------
+   --  Test the scan of migration.
+   --  ------------------------------
+   procedure Test_Scan_Migration (T : in out Test) is
+      Path    : constant String := Util.Tests.Get_Path ("regtests/files/migration1");
+      S       : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      List    : ADO.Schemas.Databases.Upgrade_List;
+   begin
+      --  Cleanup the ado_version table to force a migration for the unit test.
+      S.Execute ("DELETE FROM ado_version WHERE name = 'awa'");
+      S.Execute ("DELETE FROM ado_version WHERE name = 'awa-blogs'");
+      S.Execute ("UPDATE ado_version SET version = 0 WHERE name = 'ado'");
+
+      ADO.Schemas.Databases.Scan_Migration (S, Path, List);
+      for Upgrade of List loop
+         Ada.Text_IO.Put_Line (To_String (Upgrade.Name) & " => "
+                               & To_String (Upgrade.Path) & " " & Upgrade.Version'Image);
+      end loop;
+
+      ADO.Schemas.Databases.Sort_Migration (List);
+
+      Ada.Text_IO.Put_Line ("Sorted:");
+      for Upgrade of List loop
+         Ada.Text_IO.Put_Line (To_String (Upgrade.Name) & " => "
+                               & To_String (Upgrade.Path) & " " & Upgrade.Version'Image);
+      end loop;
+
+      Util.Tests.Assert_Equals (T, 7, Natural (List.Length), "Invalid number of upgrade");
+      declare
+         R : Unbounded_String;
+      begin
+         for Upgrade of List loop
+            Append (R, Upgrade.Name);
+            Append (R, Upgrade.Version'Image);
+         end loop;
+         Util.Tests.Assert_Equals
+           (T, "ado 1ado 2awa-blogs 1awa 1awa 2awa 3awa-blogs 2",
+            R, "Invalid migration order");
+      end;
+
+      declare
+         Files : Util.Strings.Vectors.Vector;
+      begin
+         for Upgrade of List loop
+            ADO.Schemas.Databases.Run_Migration
+               (S, Upgrade, Files, ADO.Sessions.Execute'Access);
+         end loop;
+      end;
+
+      --  Run again, we should find nothing in the list.
+      ADO.Schemas.Databases.Scan_Migration (S, Path, List);
+      Util.Tests.Assert_Equals (T, 0, Natural (List.Length), "Upgrade list must be empty");
+   end Test_Scan_Migration;
 
 end ADO.Schemas.Tests;

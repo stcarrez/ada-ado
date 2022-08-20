@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  schemas Tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2015, 2018 Stephane Carrez
+--  ado-schemas-tests -- Test loading of database schema
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,5 +40,8 @@ package ADO.Schemas.Tests is
 
    --  Test the creation of database.
    procedure Test_Create_Schema (T : in out Test);
+
+   --  Test the scan of migration.
+   procedure Test_Scan_Migration (T : in out Test);
 
 end ADO.Schemas.Tests;
