@@ -95,7 +95,7 @@ DOC_OPTIONS=-f markdown --listings --number-sections --toc
 HTML_OPTIONS=-f markdown --listings --number-sections --toc --css pandoc.css
 
 $(eval $(call pandoc_build,ado-book,$(ADO_DOC),\
-	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md; \
+	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md docs/version.md; \
 	cat docs/Model.md docs/ADO_Objects.md > docs/ADO_Model.md))
 
 generate:
