@@ -27,6 +27,6 @@ CREATE TABLE IF NOT EXISTS ado_version (
   "version" INTEGER NOT NULL,
   PRIMARY KEY ("name")
 );
-INSERT INTO entity_type (name) VALUES
+INSERT INTO ado_entity_type (name) VALUES
 ('ado_entity_type'), ('ado_sequence'), ('ado_version')
   ON CONFLICT DO NOTHING;

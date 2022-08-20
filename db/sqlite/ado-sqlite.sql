@@ -25,6 +25,6 @@ CREATE TABLE IF NOT EXISTS ado_version (
   `version` INTEGER NOT NULL,
   PRIMARY KEY (`name`)
 );
-INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_entity_type");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_sequence");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("ado_version");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_entity_type");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_sequence");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_version");

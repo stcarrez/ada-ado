@@ -27,5 +27,5 @@ CREATE TABLE IF NOT EXISTS ado_version (
   `version` INTEGER NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT IGNORE INTO entity_type (name) VALUES
+INSERT IGNORE INTO ado_entity_type (name) VALUES
 ("ado_entity_type"), ("ado_sequence"), ("ado_version");
