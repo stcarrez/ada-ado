@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS ado_version (
   PRIMARY KEY (`name`)
 );
 INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_version");
-INSERT OR IGNORE INTO ado_version (name, version) VALUES ("ado", 2);
+
