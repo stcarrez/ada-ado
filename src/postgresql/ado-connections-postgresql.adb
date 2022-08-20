@@ -23,6 +23,7 @@ with Util.Log;
 with Util.Log.Loggers;
 with Util.Processes.Tools;
 with ADO.Statements.Postgresql;
+with ADO.Statements.Create;
 with ADO.Schemas.Postgresql;
 with ADO.Sessions;
 with ADO.C;
@@ -134,6 +135,27 @@ package body ADO.Connections.Postgresql is
       ADO.Schemas.Postgresql.Load_Schema (Database, Schema,
                                           Ada.Strings.Unbounded.To_String (Database.Name));
    end Load_Schema;
+
+   --  ------------------------------
+   --  Check if the table with the given name exists in the database.
+   --  ------------------------------
+   overriding
+   function Has_Table (Database : in Database_Connection;
+                       Name     : in String) return Boolean is
+      Stmt  : ADO.Statements.Query_Statement
+        := Create.Create_Statement
+          (Database.Create_Statement
+             ("SELECT COUNT(*) FROM information_schema.TABLES "
+                & "WHERE TABLE_SCHEMA LIKE :database AND "
+                & "TABLE_TYPE LIKE 'BASE TABLE' AND "
+                & "TABLE_NAME = :name"));
+   begin
+      Stmt.Bind_Param ("database", Database.Name);
+      Stmt.Bind_Param ("name", Name);
+      Stmt.Execute;
+
+      return Stmt.Get_Result_Integer > 0;
+   end Has_Table;
 
    --  ------------------------------
    --  Execute a simple SQL statement

@@ -24,6 +24,7 @@ with Util.Processes.Tools;
 with Util.Properties;
 with ADO.Sessions;
 with ADO.Statements.Sqlite;
+with ADO.Statements.Create;
 with ADO.Schemas.Sqlite;
 
 package body ADO.Connections.Sqlite is
@@ -166,6 +167,24 @@ package body ADO.Connections.Sqlite is
    begin
       ADO.Schemas.Sqlite.Load_Schema (Database, Schema);
    end Load_Schema;
+
+   --  ------------------------------
+   --  Check if the table with the given name exists in the database.
+   --  ------------------------------
+   overriding
+   function Has_Table (Database : in Database_Connection;
+                       Name     : in String) return Boolean is
+      Stmt  : ADO.Statements.Query_Statement
+        := Create.Create_Statement
+          (Database.Create_Statement
+             ("SELECT COUNT(*) FROM sqlite_master "
+              & "WHERE type='table' AND name=:name"));
+   begin
+      Stmt.Bind_Param ("name", Name);
+      Stmt.Execute;
+
+      return Stmt.Get_Result_Integer > 0;
+   end Has_Table;
 
    function Busy_Handler (Arg1  : System.Address;
                           Count : Interfaces.C.int)

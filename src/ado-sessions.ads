@@ -130,6 +130,10 @@ package ADO.Sessions is
    procedure Load_Schema (Database : in Session;
                           Schema   : out ADO.Schemas.Schema_Definition);
 
+   --  Check if the table with the given name exists in the database.
+   function Has_Table (Database : in Session;
+                       Name     : in String) return Boolean;
+
    --  Internal method to get the session proxy associated with the given database session.
    --  The session proxy is associated with some ADO objects to be able to retrieve the database
    --  session for the implementation of lazy loading.  The session proxy is kept until the

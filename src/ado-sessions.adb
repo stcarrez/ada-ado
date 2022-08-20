@@ -240,6 +240,16 @@ package body ADO.Sessions is
       Database.Impl.Database.Value.Load_Schema (Schema);
    end Load_Schema;
 
+   --  ------------------------------
+   --  Check if the table with the given name exists in the database.
+   --  ------------------------------
+   function Has_Table (Database : in Session;
+                       Name     : in String) return Boolean is
+   begin
+      Check_Session (Database, "Has_Table {0}");
+      return Database.Impl.Database.Value.Has_Table (Name);
+   end Has_Table;
+
    --  ---------
    --  Master Session
    --  ---------

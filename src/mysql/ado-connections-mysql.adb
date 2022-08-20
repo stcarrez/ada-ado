@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections-mysql -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ with Util.Processes.Tools;
 with ADO.Sessions.Sources;
 with ADO.Sessions.Factory;
 with ADO.Statements.Mysql;
+with ADO.Statements.Create;
 with ADO.Schemas.Mysql;
 with ADO.Parameters;
 with ADO.Queries;
@@ -161,6 +162,27 @@ package body ADO.Connections.Mysql is
    begin
       ADO.Schemas.Mysql.Load_Schema (Database, Schema);
    end Load_Schema;
+
+   --  ------------------------------
+   --  Check if the table with the given name exists in the database.
+   --  ------------------------------
+   overriding
+   function Has_Table (Database : in Database_Connection;
+                       Name     : in String) return Boolean is
+      Stmt  : ADO.Statements.Query_Statement
+        := Create.Create_Statement
+          (Database.Create_Statement
+             ("SELECT COUNT(*) FROM information_schema.TABLES "
+                & "WHERE TABLE_SCHEMA LIKE :database AND "
+                & "TABLE_TYPE LIKE 'BASE TABLE' AND "
+                & "TABLE_NAME = :name"));
+   begin
+      Stmt.Bind_Param ("database", Database.Name);
+      Stmt.Bind_Param ("name", Name);
+      Stmt.Execute;
+
+      return Stmt.Get_Result_Integer > 0;
+   end Has_Table;
 
    --  ------------------------------
    --  Execute a simple SQL statement

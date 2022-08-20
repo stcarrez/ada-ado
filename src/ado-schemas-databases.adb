@@ -54,6 +54,8 @@ package body ADO.Schemas.Databases is
                              Path    : in String;
                              Result  : out Upgrade_List) is
       use Ada.Directories;
+
+      function Get_Module_Version (Name : in String) return Natural;
       procedure Module_Migration (Path : in String;
                                   Name : in String);
       procedure Add_Migration (Path : in String;
@@ -62,6 +64,11 @@ package body ADO.Schemas.Databases is
 
       function Is_Number (Item : in String) return Boolean
          is (for all C of Item => C in '0' .. '9');
+
+      --  Special case for ado module migration.  If ado_version does not exist,
+      --  we must not run the SELECT on ado_version to get a module version and
+      --  we want to proceed.
+      Has_Version_Table : constant Boolean := Session.Has_Table ("ado_version");
 
       procedure Add_Migration (Path : in String;
                                Name : in String;
@@ -81,22 +88,30 @@ package body ADO.Schemas.Databases is
          Result.Append (Upgrade);
       end Add_Migration;
 
+      function Get_Module_Version (Name : in String) return Natural is
+      begin
+         if not Has_Version_Table then
+            return 0;
+         end if;
+         declare
+            Stmt : ADO.Statements.Query_Statement
+              := Session.Create_Statement ("SELECT version FROM ado_version WHERE name = ?");
+         begin
+            Stmt.Add_Param (Name);
+            Stmt.Execute;
+            return Stmt.Get_Result_Integer;
+         end;
+      end Get_Module_Version;
+
       procedure Module_Migration (Path : in String;
                                   Name : in String) is
-         Current_Version : Natural;
-         Stmt : ADO.Statements.Query_Statement
-          := Session.Create_Statement ("SELECT version FROM ado_version WHERE name = ?");
-
+         Current_Version : constant Natural := Get_Module_Version (Name);
          Filter  : constant Filter_Type := (Ordinary_File => False,
                                             Directory     => True,
                                             others        => False);
          Search  : Search_Type;
          Ent     : Ada.Directories.Directory_Entry_Type;
       begin
-         Stmt.Add_Param (Name);
-         Stmt.Execute;
-         Current_Version := Stmt.Get_Result_Integer;
-
          Start_Search (Search, Directory => Path,
                       Pattern => "*", Filter => Filter);
          while More_Entries (Search) loop

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections-postgresql -- Postgresql Database connections
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -122,5 +122,10 @@ private
    overriding
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition);
+
+   --  Check if the table with the given name exists in the database.
+   overriding
+   function Has_Table (Database : in Database_Connection;
+                       Name     : in String) return Boolean;
 
 end ADO.Connections.Postgresql;

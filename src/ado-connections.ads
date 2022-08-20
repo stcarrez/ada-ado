@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections -- Database connections
---  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019, 2021 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019, 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,6 +82,10 @@ package ADO.Connections is
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Database_Connection;
                           Schema   : out ADO.Schemas.Schema_Definition) is abstract;
+
+   --  Check if the table with the given name exists in the database.
+   function Has_Table (Database : in Database_Connection;
+                       Name     : in String) return Boolean is abstract;
 
    --  Get the database driver which manages this connection.
    function Get_Driver (Database : in Database_Connection)
