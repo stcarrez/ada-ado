@@ -87,6 +87,8 @@ ADO_DOC= \
   pagebreak.tex \
   ADO_Model.md \
   pagebreak.tex \
+  Migration.md \
+  pagebreak.tex \
   Debugging.md
 
 DOC_OPTIONS=-f markdown --listings --number-sections --toc

@@ -7,5 +7,6 @@ pages:
   - Session: ADO_Sessions.md
   - Database Statement: ADO_Statements.md
   - Model Mapping: ADO_Model.md
+  - Database schema migration: Migration.md
   - Trouble shotting: Debugging.md
 theme: readthedocs
