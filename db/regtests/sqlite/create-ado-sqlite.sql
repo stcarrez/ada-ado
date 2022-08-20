@@ -2,13 +2,13 @@ pragma synchronous=OFF;
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
 /* Entity table that enumerates all known database tables */
-CREATE TABLE IF NOT EXISTS entity_type (
+CREATE TABLE IF NOT EXISTS ado_entity_type (
   /* the database table unique entity index */
   `id` INTEGER  PRIMARY KEY AUTOINCREMENT,
   /* the database entity name */
   `name` VARCHAR(127) UNIQUE );
 /* Sequence generator */
-CREATE TABLE IF NOT EXISTS sequence (
+CREATE TABLE IF NOT EXISTS ado_sequence (
   /* the sequence name */
   `name` VARCHAR(127) UNIQUE NOT NULL,
   /* the sequence record version */
@@ -19,8 +19,17 @@ CREATE TABLE IF NOT EXISTS sequence (
   `block_size` BIGINT NOT NULL,
   PRIMARY KEY (`name`)
 );
-INSERT OR IGNORE INTO entity_type (name) VALUES ("entity_type");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("sequence");
+/* Database schema version (per module) */
+CREATE TABLE IF NOT EXISTS ado_version (
+  /* the module name */
+  `name` VARCHAR(127) UNIQUE NOT NULL,
+  /* the database version schema for this module */
+  `version` INTEGER NOT NULL,
+  PRIMARY KEY (`name`)
+);
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_entity_type");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_sequence");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_version");
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
 /* This is the Audit_Info table */
@@ -186,13 +195,13 @@ CREATE TABLE IF NOT EXISTS test_table (
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
 );
-INSERT OR IGNORE INTO entity_type (name) VALUES ("audit_info");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("audit_email");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("audit_property");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("TEST_COMMENTS");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("test_image");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("allocate");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("test_keys");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("test_user");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("test_nullable_table");
-INSERT OR IGNORE INTO entity_type (name) VALUES ("test_table");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_info");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_email");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_property");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("TEST_COMMENTS");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_image");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("allocate");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_keys");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_user");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_nullable_table");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_table");

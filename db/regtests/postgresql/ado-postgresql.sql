@@ -162,6 +162,6 @@ CREATE TABLE IF NOT EXISTS test_table (
   "entity_value" INTEGER NOT NULL,
   PRIMARY KEY ("id")
 );
-INSERT INTO entity_type (name) VALUES
+INSERT INTO ado_entity_type (name) VALUES
 ('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;

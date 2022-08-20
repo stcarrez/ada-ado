@@ -17,4 +17,4 @@ CREATE TABLE IF NOT EXISTS user (
   `status` INTEGER NOT NULL,
   PRIMARY KEY (`id`)
 );
-INSERT OR IGNORE INTO entity_type (name) VALUES ("user");
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("user");

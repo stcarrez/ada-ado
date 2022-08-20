@@ -1,7 +1,7 @@
 /* Copied from ado-postgresql.sql*/
 /* File generated automatically by dynamo */
 /* Entity table that enumerates all known database tables */
-CREATE TABLE IF NOT EXISTS entity_type (
+CREATE TABLE IF NOT EXISTS ado_entity_type (
   /* the database table unique entity index */
   "id" SERIAL,
   /* the database entity name */
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS entity_type (
   PRIMARY KEY ("id")
 );
 /* Sequence generator */
-CREATE TABLE IF NOT EXISTS sequence (
+CREATE TABLE IF NOT EXISTS ado_sequence (
   /* the sequence name */
   "name" VARCHAR(127) UNIQUE NOT NULL,
   /* the sequence record version */
@@ -20,8 +20,16 @@ CREATE TABLE IF NOT EXISTS sequence (
   "block_size" BIGINT NOT NULL,
   PRIMARY KEY ("name")
 );
-INSERT INTO entity_type (name) VALUES
-('entity_type'), ('sequence')
+/* Database schema version (per module) */
+CREATE TABLE IF NOT EXISTS ado_version (
+  /* the module name */
+  "name" VARCHAR(127) UNIQUE NOT NULL,
+  /* the database version schema for this module */
+  "version" INTEGER NOT NULL,
+  PRIMARY KEY ("name")
+);
+INSERT INTO ado_entity_type (name) VALUES
+('ado_entity_type'), ('ado_sequence'), ('ado_version')
   ON CONFLICT DO NOTHING;
 /* Copied from ado-postgresql.sql*/
 /* File generated automatically by dynamo */
@@ -188,6 +196,6 @@ CREATE TABLE IF NOT EXISTS test_table (
   "entity_value" INTEGER NOT NULL,
   PRIMARY KEY ("id")
 );
-INSERT INTO entity_type (name) VALUES
+INSERT INTO ado_entity_type (name) VALUES
 ('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;

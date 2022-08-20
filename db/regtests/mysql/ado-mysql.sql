@@ -162,5 +162,5 @@ CREATE TABLE IF NOT EXISTS test_table (
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT IGNORE INTO entity_type (name) VALUES
+INSERT IGNORE INTO ado_entity_type (name) VALUES
 ("audit_info"), ("audit_email"), ("audit_property"), ("TEST_COMMENTS"), ("test_image"), ("allocate"), ("test_keys"), ("test_user"), ("test_nullable_table"), ("test_table");

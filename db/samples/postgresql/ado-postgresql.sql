@@ -17,6 +17,6 @@ CREATE TABLE IF NOT EXISTS user (
   "status" INTEGER NOT NULL,
   PRIMARY KEY ("id")
 );
-INSERT INTO entity_type (name) VALUES
+INSERT INTO ado_entity_type (name) VALUES
 ('user')
   ON CONFLICT DO NOTHING;
