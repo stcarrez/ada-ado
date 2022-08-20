@@ -225,9 +225,7 @@ Reference counting is used so that the object can be stored, shared and the memo
 management is handled automatically.  It defines generic operations to be able to:
 
   * load the database record and map it to the Ada object,
-
   * save the Ada object into the database either by inserting or updating it,
-
   * delete the database record.
 
 The Dynamo code generator will generate a specific tagged type for each database table
