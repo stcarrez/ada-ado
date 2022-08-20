@@ -61,7 +61,7 @@ package body ADO.Schemas.Databases is
                                Version : in Positive);
 
       function Is_Number (Item : in String) return Boolean
-         is (for all C of Item => C >= '0' and C <= '9');
+         is (for all C of Item => C in '0' .. '9');
 
       procedure Add_Migration (Path : in String;
                                Name : in String;
@@ -133,7 +133,7 @@ package body ADO.Schemas.Databases is
          declare
             Name : constant String := Ada.Directories.Simple_Name (Ent);
          begin
-            if Name /= "." and Name /= ".." then
+            if Name /= "." and then Name /= ".." then
                Module_Migration (Ada.Directories.Full_Name (Ent), Name);
             end if;
          end;
