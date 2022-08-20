@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -218,6 +218,17 @@ package body ADO.Sessions is
          return Stmt;
       end;
    end Create_Statement;
+
+   --  ------------------------------
+   --  Execute the SQL statement.
+   --  ------------------------------
+   procedure Execute (Database : in Session'Class;
+                      SQL      : in String) is
+      Stmt : ADO.Statements.Query_Statement
+         := Database.Create_Statement (SQL);
+   begin
+      Stmt.Execute;
+   end Execute;
 
    --  ------------------------------
    --  Load the database schema definition for the current database.

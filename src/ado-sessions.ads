@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Sessions -- Sessions Management
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019 Stephane Carrez
+--  ado-sessions -- Sessions Management
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -121,6 +121,10 @@ package ADO.Sessions is
                               Query    : in ADO.SQL.Query'Class;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Query_Statement;
+
+   --  Execute the SQL statement.
+   procedure Execute (Database : in Session'Class;
+                      SQL      : in String);
 
    --  Load the database schema definition for the current database.
    procedure Load_Schema (Database : in Session;
