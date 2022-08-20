@@ -274,7 +274,7 @@ package body ADO.Statements.Sqlite is
       end if;
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
       ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
-      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
+      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " AS o SET ");
       ADO.SQL.Append_Fields (Update => Stmt.This_Query);
       if Stmt.This_Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
