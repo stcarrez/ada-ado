@@ -138,7 +138,7 @@ To create manually the database, you can proceed to the following steps:
 
 1. Create the 'ado_test' database in MySQL
 ```
-mysql -u root
+sudo mysql
 mysql> CREATE DATABASE ado_test;
 ```
 
@@ -150,7 +150,7 @@ mysql> CREATE USER 'ado_test' IDENTIFIED BY '';
 ```
 mysql> GRANT SELECT, INSERT, UPDATE, DELETE,
        CREATE, DROP, CREATE TEMPORARY TABLES, EXECUTE,
-       SHOW VIEW ON `ado_test`.* TO ado@'%';
+       SHOW VIEW ON `ado_test`.* TO ado_test@'%';
 mysql> FLUSH PRIVILEGES;
 ```
 
