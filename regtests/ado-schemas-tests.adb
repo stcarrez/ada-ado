@@ -348,7 +348,7 @@ package body ADO.Schemas.Tests is
                                & To_String (Upgrade.Path) & " " & Upgrade.Version'Image);
       end loop;
 
-      Util.Tests.Assert_Equals (T, 7, Natural (List.Length), "Invalid number of upgrade");
+      Util.Tests.Assert_Equals (T, 6, Natural (List.Length), "Invalid number of upgrade");
       declare
          R : Unbounded_String;
       begin
@@ -357,7 +357,7 @@ package body ADO.Schemas.Tests is
             Append (R, Upgrade.Version'Image);
          end loop;
          Util.Tests.Assert_Equals
-           (T, "ado 1ado 2awa-blogs 1awa 1awa 2awa 3awa-blogs 2",
+           (T, "ado 1ado 2awa 1awa-blogs 1awa 2awa-blogs 2",
             R, "Invalid migration order");
       end;
 
