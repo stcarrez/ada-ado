@@ -16,7 +16,6 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Util.Test_Caller;
-with Util.Strings;
 
 package body ADO.SQL.Tests is
 
@@ -32,6 +31,8 @@ package body ADO.SQL.Tests is
    --  Test Read_SQL file and spliting a file in SQL statements.
    --  ------------------------------
    procedure Test_Read_File (T : in out Test) is
+      procedure Process (SQL : in String);
+
       Count : Natural := 0;
 
       procedure Process (SQL : in String) is
