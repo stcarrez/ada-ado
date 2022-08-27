@@ -242,6 +242,7 @@ package body ADO.Connections.Postgresql is
             Message : constant String := Strings.Value (PQ.PQerrorMessage (Connection));
          begin
             Log.Error ("Cannot connect to '{0}': {1}", Config.Get_Log_URI, Message);
+            PQ.PQfinish (Connection);
             raise ADO.Configs.Connection_Error with
               "Cannot connect to Postgresql server: " & Message;
          end;
