@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2011, 2012, 2015, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -88,24 +88,31 @@ package body ADO.Sequences.Tests is
       Prev_Id     : Identifier := ADO.NO_IDENTIFIER;
    begin
       Seq_Factory.Set_Default_Generator (ADO.Sequences.Hilo.Create_HiLo_Generator'Access,
-                                         Factory'Unchecked_Access);
+                                         Factory'Unchecked_Access,
+                                         False);
+      declare
+         S : ADO.Sessions.Master_Session;
       begin
-         Seq_Factory.Allocate (Obj);
+         Seq_Factory.Allocate (S, Obj);
          T.Assert (False, "No exception raised.");
 
       exception
-         when ADO.Sessions.Connection_Error =>
+         when ADO.Sessions.Connection_Error | Sessions.Session_Error =>
             null;  --  Good! An exception is expected because the session factory is empty.
       end;
 
       --  Make a real connection.
       Controller.Set_Connection (ADO.Configs.Get_Config ("test.database"));
       Factory.Create (Controller);
-      for I in 1 .. 1_000 loop
-         Seq_Factory.Allocate (Obj);
-         T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
-         Prev_Id := Obj.Get_Key_Value;
-      end loop;
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         for I in 1 .. 1_000 loop
+            Seq_Factory.Allocate (S, Obj);
+            T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
+            Prev_Id := Obj.Get_Key_Value;
+         end loop;
+      end;
 
       --  Erase the sequence entry used for the allocate entity table.
       declare
@@ -122,11 +129,15 @@ package body ADO.Sequences.Tests is
       end;
 
       --  Create new objects.  This forces the creation of a new entry in the sequence table.
-      for I in 1 .. 1_00 loop
-         Seq_Factory.Allocate (Obj);
-         T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
-         Prev_Id := Obj.Get_Key_Value;
-      end loop;
+      declare
+         S : ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         for I in 1 .. 1_00 loop
+            Seq_Factory.Allocate (S, Obj);
+            T.Assert (Obj.Get_Key_Value /= Prev_Id, "Invalid id was allocated");
+            Prev_Id := Obj.Get_Key_Value;
+         end loop;
+      end;
    end Test_Create_Factory;
 
    overriding
