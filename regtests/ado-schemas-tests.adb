@@ -348,6 +348,18 @@ package body ADO.Schemas.Tests is
                                & To_String (Upgrade.Path) & " " & Upgrade.Version'Image);
       end loop;
 
+      --  Reverse the order and sort again to make sure the Sort is correct.
+      ADO.Schemas.Databases.Upgrade_Lists.Reverse_Elements (List);
+
+      ADO.Schemas.Databases.Sort_Migration (List);
+
+      Ada.Text_IO.Put_Line ("Sorted:");
+      for Upgrade of List loop
+         Ada.Text_IO.Put_Line (To_String (Upgrade.Name) & " => "
+                                 & To_String (Upgrade.Path) & " " & Upgrade.Version'Image
+                                 & " [" & To_String (Upgrade.Depend) & "]");
+      end loop;
+
       Util.Tests.Assert_Equals (T, 6, Natural (List.Length), "Invalid number of upgrade");
       declare
          R : Unbounded_String;
@@ -357,7 +369,7 @@ package body ADO.Schemas.Tests is
             Append (R, Upgrade.Version'Image);
          end loop;
          Util.Tests.Assert_Equals
-           (T, "ado 1ado 2awa 1awa-blogs 1awa 2awa-blogs 2",
+           (T, "ado 1awa 1awa-blogs 1ado 2awa 2awa-blogs 2",
             R, "Invalid migration order");
       end;
 
