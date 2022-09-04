@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Directories;
+with Ada.Characters.Handling;
 
 with Util.Log.Loggers;
 with Util.Files;
@@ -27,6 +28,10 @@ with ADO.Statements;
 package body ADO.Schemas.Databases is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Schemas.Databases");
+
+   function Is_Space (C : in Character) return Boolean
+     is (Ada.Characters.Handling.Is_Space (C)
+           or else Ada.Characters.Handling.Is_Line_Terminator (C));
 
    --  ------------------------------
    --  Create the database and initialize it with the schema SQL file.
@@ -79,10 +84,30 @@ package body ADO.Schemas.Databases is
          Upgrade.Path := To_Unbounded_String (Path);
          Upgrade.Version := Version;
          declare
+            procedure Read (Line : in String);
+
             Dep_Path : constant String := Util.Files.Compose (Path, "depend.conf");
+
+            procedure Read (Line : in String) is
+               First : Natural := Line'First;
+               Last  : Natural := Line'Last;
+            begin
+               while First <= Last and then Is_Space (Line (First)) loop
+                  First := First + 1;
+               end loop;
+               while Last >= First and then Is_Space (Line (Last)) loop
+                  Last := Last - 1;
+               end loop;
+               if First < Last then
+                  if Length (Upgrade.Depend) > 0 then
+                     Append (Upgrade.Depend, " ");
+                  end if;
+                  Append (Upgrade.Depend, Line (First .. Last));
+               end if;
+            end Read;
          begin
             if Ada.Directories.Exists (Dep_Path) then
-               Util.Files.Read_File (Dep_Path, Upgrade.Depend);
+               Util.Files.Read_File (Dep_Path, Read'Access);
             end if;
          end;
          Result.Append (Upgrade);
@@ -163,6 +188,10 @@ package body ADO.Schemas.Databases is
    procedure Sort_Migration (List : in out Upgrade_List) is
       function Depend_Version (Dep : in String; Name : in String) return Natural;
       function "<" (Left, Right : in Upgrade_Type) return Boolean;
+      function Find (Name : in String; Version : in Positive) return String;
+      procedure Add_Dependencies (Upgrade : in out Upgrade_Type;
+                                  Depend  : in String);
+      procedure Update_Dependencies (Upgrade : in out Upgrade_Type);
 
       function Depend_Version (Dep : in String; Name : in String) return Natural is
          Pos : Positive := Dep'First;
@@ -170,15 +199,21 @@ package body ADO.Schemas.Databases is
          Sep2 : Natural;
       begin
          while Pos <= Dep'Last loop
+            while Is_Space (Dep (Pos)) and then Pos <= Dep'Last loop
+               Pos := Pos + 1;
+            end loop;
+            exit when Pos > Dep'Last;
             Sep1 := Util.Strings.Index (Dep, ':', Pos);
             exit when Sep1 = 0;
             Sep2 := Util.Strings.Index (Dep, ' ', Sep1);
             if Sep2 = 0 then
                Sep2 := Dep'Last;
+            else
+               Sep2 := Sep2 - 1;
             end if;
             if Dep (Pos .. Sep1 - 1) = Name then
                begin
-                  return Natural'Value (Dep (Sep1 + 1 .. Sep2 - 1));
+                  return Natural'Value (Dep (Sep1 + 1 .. Sep2));
 
                exception
                   when Constraint_Error =>
@@ -197,22 +232,117 @@ package body ADO.Schemas.Databases is
             return Left.Version < Right.Version;
          end if;
 
-         D := Depend_Version (To_String (Right.Depend), To_String (Left.Name));
-         if D > 0 then
-            return Left.Version < D;
-         end if;
+         declare
+            Left_Depend : constant String := To_String (Left.Depend);
+            Right_Depend : constant String := To_String (Right.Depend);
+         begin
+            D := Depend_Version (Right_Depend, To_String (Left.Name));
+            if D > 0 then
+               return Left.Version <= D;
+            end if;
 
-         D := Depend_Version (To_String (Left.Depend), To_String (Right.Name));
-         if D > 0 then
-            return D < Right.Version;
-         end if;
+            D := Depend_Version (Left_Depend, To_String (Right.Name));
+            if D > 0 then
+               return D > Right.Version;
+            end if;
+
+            if Left_Depend'Length /= Right_Depend'Length then
+               return Left_Depend'Length < Right_Depend'Length;
+            end if;
+         end;
 
          return Left.Name < Right.Name;
       end "<";
 
       package Sort is
          new Upgrade_Lists.Generic_Sorting ("<" => "<");
+
+      function Find (Name : in String; Version : in Positive) return String is
+      begin
+         for Upgrade of List loop
+            if Upgrade.Version = Version and then Upgrade.Name = Name then
+               return To_String (Upgrade.Depend);
+            end if;
+         end loop;
+         return "";
+      end Find;
+
+      procedure Add_Dependencies (Upgrade : in out Upgrade_Type;
+                                  Depend  : in String) is
+         Pos    : Positive := Depend'First;
+         Sep1   : Natural;
+         Sep2   : Natural;
+      begin
+         while Pos <= Depend'Last loop
+            while Is_Space (Depend (Pos)) and then Pos <= Depend'Last loop
+               Pos := Pos + 1;
+            end loop;
+            exit when Pos > Depend'Last;
+            Sep1 := Util.Strings.Index (Depend, ':', Pos);
+            exit when Sep1 = 0;
+            Sep2 := Util.Strings.Index (Depend, ' ', Sep1);
+            if Sep2 = 0 then
+               Sep2 := Depend'Last;
+            else
+               Sep2 := Sep2 - 1;
+            end if;
+            declare
+               Version : constant Natural
+                 := Depend_Version (To_String (Upgrade.Depend), Depend (Pos .. Sep1 - 1));
+            begin
+               if Version = 0 then
+                  Append (Upgrade.Depend, " ");
+                  Append (Upgrade.Depend, Depend (Pos .. Sep2));
+
+                  Log.Debug ("Add dependency {0} to {1}, now using {2}",
+                             Depend (Pos .. Sep2), To_String (Upgrade.Name),
+                             To_String (Upgrade.Depend));
+               end if;
+            end;
+            Pos := Sep2 + 1;
+         end loop;
+      end Add_Dependencies;
+
+      procedure Update_Dependencies (Upgrade : in out Upgrade_Type) is
+         Depend : constant String := To_String (Upgrade.Depend);
+         Pos    : Positive := Depend'First;
+         Sep1   : Natural;
+         Sep2   : Natural;
+      begin
+         while Pos <= Depend'Last loop
+            while Is_Space (Depend (Pos)) and then Pos <= Depend'Last loop
+               Pos := Pos + 1;
+            end loop;
+            exit when Pos > Depend'Last;
+            Sep1 := Util.Strings.Index (Depend, ':', Pos);
+            exit when Sep1 = 0;
+            Sep2 := Util.Strings.Index (Depend, ' ', Sep1);
+            if Sep2 = 0 then
+               Sep2 := Depend'Last;
+            else
+               Sep2 := Sep2 - 1;
+            end if;
+
+            --  Add the dependencies defined for the component+version we depend on.
+            declare
+               Version : Positive;
+            begin
+               Version := Positive'Value (Depend (Sep1 + 1 .. Sep2));
+               Add_Dependencies (Upgrade, Find (Depend (Pos .. Sep1 - 1), Version));
+
+            exception
+               when Constraint_Error =>
+                  null;
+            end;
+            Pos := Sep2 + 1;
+         end loop;
+      end Update_Dependencies;
+
    begin
+      for Upgrade of List loop
+         Update_Dependencies (Upgrade);
+      end loop;
+
       Sort.Sort (List);
    end Sort_Migration;
 
