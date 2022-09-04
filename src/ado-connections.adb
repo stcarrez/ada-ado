@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections -- Database connections
---  Copyright (C) 2010 - 2021 Stephane Carrez
+--  Copyright (C) 2010 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +46,17 @@ package body ADO.Connections is
          return Driver.Get_Driver_Index;
       end if;
    end Get_Driver;
+
+   function Has_Limited_Transactions (Config : in Configuration'Class) return Boolean is
+      Name    : constant String := Config.Get_Driver;
+      Driver  : constant Driver_Access := Get_Driver (Name);
+   begin
+      if Driver = null then
+         raise ADO.Configs.Connection_Error with "Database driver '" & Name & "' not found";
+      else
+         return Driver.Has_Limited_Transactions;
+      end if;
+   end Has_Limited_Transactions;
 
    --  ------------------------------
    --  Create a new connection using the configuration parameters.

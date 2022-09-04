@@ -109,7 +109,9 @@ package ADO.Connections is
    --  Create a new connection using the configuration parameters.
    procedure Create_Connection (Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class)
-     with Post => not Result.Is_Null;
+   with Post => not Result.Is_Null;
+
+   function Has_Limited_Transactions (Config : in Configuration'Class) return Boolean;
 
    --  ------------------------------
    --  Database Driver
@@ -129,6 +131,13 @@ package ADO.Connections is
                               Config      : in Configs.Configuration'Class;
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector) is abstract;
+
+   --  Returns true if the database has limited transaction support.
+   --  The HiLo sequence generator must not use a separate database
+   --  connection and it should use the current database connection instead
+   --  to avoid database locks.
+   function Has_Limited_Transactions (Config : in Driver) return Boolean
+     is (False);
 
    --  Get the driver unique index.
    function Get_Driver_Index (D : in Driver) return Driver_Index;
