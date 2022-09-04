@@ -147,13 +147,13 @@ mysql> CREATE DATABASE ado_test;
 
 2. Create the 'ado' user and give the access rights:
 ```
-mysql> CREATE USER 'ado_test' IDENTIFIED BY '';
+mysql> CREATE USER 'ado' IDENTIFIED BY '';
 ```
 
 ```
 mysql> GRANT SELECT, INSERT, UPDATE, DELETE,
        CREATE, DROP, CREATE TEMPORARY TABLES, EXECUTE,
-       SHOW VIEW ON `ado_test`.* TO ado_test@'%';
+       SHOW VIEW ON `ado_test`.* TO ado@'%';
 mysql> FLUSH PRIVILEGES;
 ```
 
