@@ -2,6 +2,7 @@
 
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado.json)](https://alire.ada.dev/crates/ado)
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_sqlite.json)](https://alire.ada.dev/crates/ado_sqlite)
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_mysql.json)](https://alire.ada.dev/crates/ado_mysql)
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_postgresql.json)](https://alire.ada.dev/crates/ado_postgresql)
 [![Build Status](https://img.shields.io/jenkins/s/https/jenkins.vacs.fr/Bionic-Ada-ADO.svg)](https://jenkins.vacs.fr/job/Bionic-Ada-ADO/)
 [![Test Status](https://img.shields.io/jenkins/t/https/jenkins.vacs.fr/Bionic-Ada-ADO.svg)](https://jenkins.vacs.fr/job/Bionic-Ada-ADO/)
