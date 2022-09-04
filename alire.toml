@@ -50,7 +50,7 @@ utilada_xml = "^2.5.0"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
-BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
+ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 
 [configuration]
 disabled = true
