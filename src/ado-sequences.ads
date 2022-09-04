@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018 Stephane Carrez
+--  ado-sequences -- Database sequence generator
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 -----------------------------------------------------------------------
 
 with Ada.Finalization;
-with Ada.Strings.Unbounded.Hash;
-with Ada.Containers.Hashed_Maps;
+with Ada.Strings.Hash;
+with Ada.Containers.Indefinite_Hashed_Maps;
 with ADO.Sessions;
 with ADO.Objects;
 limited with ADO.Sessions.Factory;
@@ -52,21 +52,21 @@ package ADO.Sequences is
    --  ------------------------------
    --  Abstract sequence generator
    --  ------------------------------
-   type Generator is abstract new Ada.Finalization.Limited_Controlled with private;
+   type Generator (Name_Length : Natural) is
+     abstract new Ada.Finalization.Limited_Controlled with private;
    type Generator_Access is access all Generator'Class;
 
-   --  Get the name of the sequence.
-   function Get_Sequence_Name (Gen : in Generator'Class) return String;
-
    --  Allocate an identifier using the generator.
-   procedure Allocate (Gen : in out Generator;
-                       Id  : in out Objects.Object_Record'Class) is abstract;
+   procedure Allocate (Gen     : in out Generator;
+                       Session : in out ADO.Sessions.Master_Session'Class;
+                       Id      : in out Objects.Object_Record'Class) is abstract;
 
    --  Get a session to connect to the database.
    function Get_Session (Gen : in Generator) return ADO.Sessions.Master_Session'Class;
 
    type Generator_Factory is access
-     function (Sess_Factory : in Session_Factory_Access)
+     function (Sess_Factory : in Session_Factory_Access;
+               Name         : in String)
                return Generator_Access;
 
    --  ------------------------------
@@ -79,11 +79,11 @@ package ADO.Sequences is
 
    --  Allocate a unique identifier for the given sequence.
    procedure Allocate (Manager : in out Factory;
+                       Session : in out ADO.Sessions.Master_Session'Class;
                        Id      : in out Objects.Object_Record'Class);
 
    --  Set a generator to be used for the given sequence.
    procedure Set_Generator (Manager : in out Factory;
-                            Name    : in String;
                             Gen     : in Generator_Access);
 
    --  Set the default factory for creating generators.
@@ -91,16 +91,18 @@ package ADO.Sequences is
    procedure Set_Default_Generator
      (Manager      : in out Factory;
       Factory      : in Generator_Factory;
-      Sess_Factory : in Session_Factory_Access);
+      Sess_Factory : in Session_Factory_Access;
+      Use_New_Session : in Boolean);
 
 private
 
-   use Ada.Strings.Unbounded;
-
-   type Generator is abstract new Ada.Finalization.Limited_Controlled with record
-      Name    : Unbounded_String;
-      Factory : Session_Factory_Access;
-   end record;
+   type Generator (Name_Length : Natural) is
+     abstract new Ada.Finalization.Limited_Controlled with
+      record
+         Factory         : Session_Factory_Access;
+         Use_New_Session : Boolean := True;
+         Name            : String (1 .. Name_Length);
+      end record;
 
    --  Each sequence generator is accessed through a protected type
    --  to make sure the allocation is unique and works in multi-threaded
@@ -108,13 +110,10 @@ private
    protected type Sequence_Generator is
 
       --  Allocate a unique identifier for the given sequence.
-      procedure Allocate (Id   : in out Objects.Object_Record'Class);
+      procedure Allocate (Session : in out Sessions.Master_Session'Class;
+                          Id      : in out Objects.Object_Record'Class);
 
-      procedure Set_Generator (Name : in Unbounded_String;
-                               Gen  : in Generator_Access);
-
-      --  Free the generator
-      procedure Clear;
+      procedure Set_Generator (Gen  : in Generator_Access);
 
    private
       Generator : Generator_Access;
@@ -122,12 +121,11 @@ private
    type Sequence_Generator_Access is access all Sequence_Generator;
 
    --  Map to keep track of allocation generators for each sequence.
-   package Sequence_Maps is new Ada.Containers.Hashed_Maps
-     (Key_Type     => Unbounded_String,
+   package Sequence_Maps is new Ada.Containers.Indefinite_Hashed_Maps
+     (Key_Type     => String,
       Element_Type => Sequence_Generator_Access,
-      Hash         => Ada.Strings.Unbounded.Hash,
-      Equivalent_Keys => "=",
-      "=" => "=");
+      Hash         => Ada.Strings.Hash,
+      Equivalent_Keys => "=");
 
    --  The sequence factory map is also accessed through a protected type.
    protected type Factory_Map is
@@ -135,17 +133,17 @@ private
       --  Get the sequence generator associated with the name.
       --  If there is no such generator, an entry is created by using
       --  the default generator.
-      procedure Get_Generator (Name : in Unbounded_String;
-                               Gen  : out Sequence_Generator_Access);
+      procedure Get_Generator (Name : in String;
+                               Seq  : out Sequence_Generator_Access);
 
       --  Set the sequence generator associated with the name.
-      procedure Set_Generator (Name : in Unbounded_String;
-                               Gen  : in Sequence_Generator_Access);
+      procedure Set_Generator (Gen  : in Generator_Access);
 
       --  Set the default sequence generator.
       procedure Set_Default_Generator
         (Gen : in Generator_Factory;
-         Factory : in Session_Factory_Access);
+         Factory : in Session_Factory_Access;
+         Gen_Use_New_Session : in Boolean);
 
       --  Clear the factory map.
       procedure Clear;
@@ -153,6 +151,7 @@ private
       Map              : Sequence_Maps.Map;
       Create_Generator : Generator_Factory;
       Sess_Factory     : Session_Factory_Access;
+      Use_New_Session  : Boolean := True;
    end Factory_Map;
 
    type Factory is new Ada.Finalization.Limited_Controlled with record

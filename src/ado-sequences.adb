@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Sequences -- Database sequence generator
+--  ado-sequences -- Database sequence generator
 --  Copyright (C) 2009, 2010, 2011, 2012, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -29,20 +29,12 @@ package body ADO.Sequences is
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Sequences");
 
    procedure Free is new
-     Ada.Unchecked_Deallocation (Object => ADO.Sequences.Sequence_Generator,
-                                 Name   => ADO.Sequences.Sequence_Generator_Access);
+     Ada.Unchecked_Deallocation (Object => Sequence_Generator,
+                                 Name   => Sequence_Generator_Access);
 
    procedure Free is new
      Ada.Unchecked_Deallocation (Object => Generator'Class,
                                  Name   => Generator_Access);
-
-   --  ------------------------------
-   --  Get the name of the sequence.
-   --  ------------------------------
-   function Get_Sequence_Name (Gen : in Generator'Class) return String is
-   begin
-      return To_String (Gen.Name);
-   end Get_Sequence_Name;
 
    --  ------------------------------
    --  Get a session to connect to the database.
@@ -57,22 +49,17 @@ package body ADO.Sequences is
       --  ------------------------------
       --  Allocate a unique identifier for the given sequence.
       --  ------------------------------
-      procedure Allocate (Id : in out Objects.Object_Record'Class) is
+      procedure Allocate (Session : in out Sessions.Master_Session'Class;
+                          Id      : in out Objects.Object_Record'Class) is
       begin
-         Generator.Allocate (Id);
+         Generator.Allocate (Session, Id);
       end Allocate;
 
-      procedure Set_Generator (Name : in Unbounded_String;
-                               Gen  : in Generator_Access) is
-      begin
-         Gen.Name  := Name;
-         Generator := Gen;
-      end Set_Generator;
-
-      procedure Clear is
+      procedure Set_Generator (Gen : in Generator_Access) is
       begin
          Free (Generator);
-      end Clear;
+         Generator := Gen;
+      end Set_Generator;
 
    end Sequence_Generator;
 
@@ -80,25 +67,22 @@ package body ADO.Sequences is
    --  Allocate a unique identifier for the given table.
    --  ------------------------------
    procedure Allocate (Manager : in out Factory;
+                       Session : in out ADO.Sessions.Master_Session'Class;
                        Id      : in out ADO.Objects.Object_Record'Class) is
       Gen  : Sequence_Generator_Access;
       Name : constant Util.Strings.Name_Access := Id.Get_Table_Name;
    begin
-      Manager.Map.Get_Generator (To_Unbounded_String (Name.all), Gen);
-      Gen.Allocate (Id);
+      Manager.Map.Get_Generator (Name.all, Gen);
+      Gen.Allocate (Session, Id);
    end Allocate;
 
    --  ------------------------------
    --  Set a generator to be used for the given sequence.
    --  ------------------------------
    procedure Set_Generator (Manager : in out Factory;
-                            Name    : in String;
                             Gen     : in Generator_Access) is
-      N  : constant Unbounded_String := To_Unbounded_String (Name);
-      G  : constant Sequence_Generator_Access := new Sequence_Generator;
    begin
-      G.Set_Generator (N, Gen);
-      Manager.Map.Set_Generator (N, G);
+      Manager.Map.Set_Generator (Gen);
    end Set_Generator;
 
    --  ------------------------------
@@ -108,9 +92,10 @@ package body ADO.Sequences is
    procedure Set_Default_Generator
      (Manager      : in out Factory;
       Factory      : in Generator_Factory;
-      Sess_Factory : in Session_Factory_Access) is
+      Sess_Factory : in Session_Factory_Access;
+      Use_New_Session : in Boolean) is
    begin
-      Manager.Map.Set_Default_Generator (Factory, Sess_Factory);
+      Manager.Map.Set_Default_Generator (Factory, Sess_Factory, Use_New_Session);
    end Set_Default_Generator;
 
    --  The sequence factory map is also accessed through a protected type.
@@ -121,40 +106,48 @@ package body ADO.Sequences is
       --  If there is no such generator, an entry is created by using
       --  the default generator.
       --  ------------------------------
-      procedure Get_Generator (Name : in Unbounded_String;
-                               Gen  : out Sequence_Generator_Access) is
+      procedure Get_Generator (Name : in String;
+                               Seq  : out Sequence_Generator_Access) is
          Pos : constant Cursor := Find (Map, Name);
       begin
          if not Has_Element (Pos) then
-            Log.Info ("Creating sequence generator for {0}", To_String (Name));
+            Log.Info ("Creating sequence generator for {0}", Name);
 
-            Gen := new Sequence_Generator;
-            Gen.Set_Generator (Name, Create_Generator.all (Sess_Factory));
-            Insert (Map, Name, Gen);
+            declare
+               Generator : constant Generator_Access
+                 := Create_Generator.all (Sess_Factory, Name);
+            begin
+               Generator.Use_New_Session := Use_New_Session;
+               Seq := new Sequence_Generator;
+               Seq.Set_Generator (Generator);
+            end;
+            Insert (Map, Name, Seq);
          else
-            Gen := Element (Pos);
+            Seq := Element (Pos);
          end if;
       end Get_Generator;
 
       --  ------------------------------
       --  Set the sequence generator associated with the name.
       --  ------------------------------
-      procedure Set_Generator (Name : in Unbounded_String;
-                               Gen  : in Sequence_Generator_Access) is
-         Pos : constant Cursor := Find (Map, Name);
+      procedure Set_Generator (Gen : in Generator_Access) is
+         Pos : constant Cursor := Find (Map, Gen.Name);
       begin
-         Log.Info ("Setting sequence generator for {0}", To_String (Name));
+         Log.Info ("Setting sequence generator for {0}", Gen.Name);
 
          if not Has_Element (Pos) then
-            Insert (Map, Name, Gen);
+            declare
+               Seq : constant Sequence_Generator_Access := new Sequence_Generator;
+            begin
+               Seq.Set_Generator (Gen);
+               Insert (Map, Gen.Name, Seq);
+            end;
          else
             declare
-               Node : Sequence_Generator_Access := Element (Pos);
+               Seq : constant Sequence_Generator_Access := Element (Pos);
             begin
-               Node.Clear;
-               Free (Node);
+               Seq.Set_Generator (Gen);
             end;
-            Replace_Element (Map, Pos, Gen);
          end if;
       end Set_Generator;
 
@@ -163,10 +156,12 @@ package body ADO.Sequences is
       --  ------------------------------
       procedure Set_Default_Generator
         (Gen     : in Generator_Factory;
-         Factory : in Session_Factory_Access) is
+         Factory : in Session_Factory_Access;
+         Gen_Use_New_Session : in Boolean) is
       begin
          Create_Generator := Gen;
          Sess_Factory := Factory;
+         Use_New_Session := Gen_Use_New_Session;
       end Set_Default_Generator;
 
       --  ------------------------------
@@ -178,14 +173,14 @@ package body ADO.Sequences is
 
          loop
             declare
-               Pos  : Cursor := Map.First;
-               Node : Sequence_Generator_Access;
+               Pos : Cursor := Map.First;
+               Seq : Sequence_Generator_Access;
             begin
                exit when not Has_Element (Pos);
-               Node := Element (Pos);
+               Seq := Element (Pos);
                Map.Delete (Pos);
-               Node.all.Clear;
-               Free (Node);
+               Seq.all.Set_Generator (null);
+               Free (Seq);
             end;
          end loop;
       end Clear;

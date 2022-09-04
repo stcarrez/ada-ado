@@ -288,7 +288,7 @@ package body ADO.Sessions is
                        Id       : in out ADO.Objects.Object_Record'Class) is
    begin
       Check_Session (Database);
-      ADO.Sequences.Allocate (Database.Sequences.all, Id);
+      ADO.Sequences.Allocate (Database.Sequences.all, Database, Id);
    end Allocate;
 
    --  ------------------------------

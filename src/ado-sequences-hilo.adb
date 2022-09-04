@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Sequences -- Database sequence generator
+--  ado-sequences-hilo-- HiLo Database sequence generator
 --  Copyright (C) 2009, 2010, 2011, 2012, 2018, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -32,17 +32,22 @@ package body ADO.Sequences.Hilo is
 
    Log : constant Loggers.Logger := Loggers.Create ("ADO.Sequences.Hilo");
 
-   type HiLoGenerator_Access is access all HiLoGenerator'Class;
+   type Hilo_Generator_Access is access all Hilo_Generator'Class;
 
    --  ------------------------------
    --  Create a high low sequence generator
    --  ------------------------------
    function Create_HiLo_Generator
-     (Sess_Factory : in Session_Factory_Access)
+     (Sess_Factory : in Session_Factory_Access;
+      Name         : in String)
       return Generator_Access is
-      Result : constant HiLoGenerator_Access := new HiLoGenerator;
+      Result : constant Hilo_Generator_Access
+        := new Hilo_Generator '(Ada.Finalization.Limited_Controlled with
+                                Name_Length => Name'Length,
+                                Factory => Sess_Factory,
+                                Name => Name,
+                                others => <>);
    begin
-      Result.Factory := Sess_Factory;
       return Result.all'Access;
    end Create_HiLo_Generator;
 
@@ -53,12 +58,13 @@ package body ADO.Sequences.Hilo is
    --  every N allocations.
    --  ------------------------------
    overriding
-   procedure Allocate (Gen : in out HiLoGenerator;
-                       Id  : in out Objects.Object_Record'Class) is
+   procedure Allocate (Gen     : in out Hilo_Generator;
+                       Session : in out ADO.Sessions.Master_Session'Class;
+                       Id      : in out Objects.Object_Record'Class) is
    begin
       --  Get a new sequence range
       if Gen.Next_Id >= Gen.Last_Id then
-         Allocate_Sequence (Gen);
+         Allocate_Sequence (Gen, Session);
       end if;
 
       Id.Set_Key_Value (Gen.Next_Id);
@@ -68,11 +74,12 @@ package body ADO.Sequences.Hilo is
    --  ------------------------------
    --  Allocate a new sequence block.
    --  ------------------------------
-   procedure Allocate_Sequence (Gen : in out HiLoGenerator) is
-      Name      : constant String := Get_Sequence_Name (Gen);
+   procedure Allocate_Sequence (Gen     : in out Hilo_Generator;
+                                Session : in out ADO.Sessions.Master_Session'Class) is
       Value     : Identifier;
       Seq_Block : Sequence_Ref;
-      DB        : Master_Session'Class := Gen.Get_Session;
+      DB        : Master_Session'Class
+        := (if Gen.Use_New_Session then Gen.Get_Session else Session);
    begin
       for Retry in 1 .. 10 loop
          --  Allocate a new sequence within a transaction.
@@ -80,11 +87,11 @@ package body ADO.Sequences.Hilo is
             Query : ADO.SQL.Query;
             Found : Boolean;
          begin
-            Log.Info ("Allocate sequence range for {0}", Name);
+            Log.Info ("Allocate sequence range for {0}", Gen.Name);
 
             DB.Begin_Transaction;
             Query.Set_Filter ("name = ?");
-            Query.Bind_Param (Position => 1, Value => Name);
+            Query.Bind_Param (Position => 1, Value => Gen.Name);
             Seq_Block.Find (Session => DB, Query => Query, Found => Found);
 
             begin
@@ -94,7 +101,7 @@ package body ADO.Sequences.Hilo is
                   Seq_Block.Save (DB);
                else
                   Value := 1;
-                  Seq_Block.Set_Name (Name);
+                  Seq_Block.Set_Name (Gen.Name);
                   Seq_Block.Set_Block_Size (Gen.Block_Size);
                   Seq_Block.Set_Value (Value + Seq_Block.Get_Block_Size);
                   Seq_Block.Create (DB);
@@ -119,7 +126,7 @@ package body ADO.Sequences.Hilo is
                raise;
          end;
       end loop;
-      Log.Error ("Cannot allocate sequence range");
+      Log.Error ("Cannot allocate sequence range for {0}", Gen.Name);
       raise Allocate_Error with "Cannot allocate unique identifier";
    end Allocate_Sequence;
 

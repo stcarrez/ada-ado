@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
---  ADO Sequences Hilo-- HiLo Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2017 Stephane Carrez
+--  ado-sequences-hilo-- HiLo Database sequence generator
+--  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
 
 --  === HiLo Sequence Generator ===
 --  The HiLo sequence generator.  This sequence generator uses a database table
---  `sequence` to allocate blocks of identifiers for a given sequence name.
+--  `ado_sequence` to allocate blocks of identifiers for a given sequence name.
 --  The sequence table contains one row for each sequence.  It keeps track of
---  the next available sequence identifier (in the `value column).
+--  the next available sequence identifier (in the `value` column).
 --
 --  To allocate a sequence block, the HiLo generator obtains the next available
 --  sequence identified and updates it by adding the sequence block size.  The
@@ -31,7 +31,8 @@ package ADO.Sequences.Hilo is
    --  ------------------------------
    --  High Low sequence generator
    --  ------------------------------
-   type HiLoGenerator is new Generator with private;
+   type Hilo_Generator (Name_Length : Natural) is
+     new Generator with private;
 
    DEFAULT_BLOCK_SIZE : constant Identifier := 100;
 
@@ -40,19 +41,22 @@ package ADO.Sequences.Hilo is
    --  table stored in the database.  One database access is necessary
    --  every N allocations.
    overriding
-   procedure Allocate (Gen : in out HiLoGenerator;
-                       Id  : in out Objects.Object_Record'Class);
+   procedure Allocate (Gen     : in out Hilo_Generator;
+                       Session : in out ADO.Sessions.Master_Session'Class;
+                       Id      : in out Objects.Object_Record'Class);
 
    --  Allocate a new sequence block.
-   procedure Allocate_Sequence (Gen : in out HiLoGenerator);
+   procedure Allocate_Sequence (Gen     : in out Hilo_Generator;
+                                Session : in out ADO.Sessions.Master_Session'Class);
 
    function Create_HiLo_Generator
-     (Sess_Factory : in Session_Factory_Access)
+     (Sess_Factory : in Session_Factory_Access;
+      Name         : in String)
       return Generator_Access;
 
 private
 
-   type HiLoGenerator is new Generator with record
+   type Hilo_Generator (Name_Length : Natural) is new Generator (Name_Length) with record
       Last_Id    : Identifier := NO_IDENTIFIER;
       Next_Id    : Identifier := NO_IDENTIFIER;
       Block_Size : Identifier := DEFAULT_BLOCK_SIZE;

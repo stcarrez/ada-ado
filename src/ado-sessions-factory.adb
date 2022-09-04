@@ -78,7 +78,8 @@ package body ADO.Sessions.Factory is
       Factory.Sequences := Factory.Seq_Factory'Unchecked_Access;
       Set_Default_Generator (Factory.Seq_Factory,
                              ADO.Sequences.Hilo.Create_HiLo_Generator'Access,
-                             Factory'Unchecked_Access);
+                             Factory'Unchecked_Access,
+                             not Factory.Source.Has_Limited_Transactions);
    end Initialize_Sequences;
 
    --  ------------------------------
