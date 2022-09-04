@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Sequences -- Database sequence generator
+--  ado-tests -- Various tests on database access
 --  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -23,6 +23,9 @@ with ADO.Statements;
 with ADO.Objects;
 with ADO.Sessions;
 with ADO.Utils;
+with ADO.SQL;
+with ADO.Queries;
+with ADO.Datasets;
 with Regtests;
 
 with Regtests.Simple.Model;
@@ -34,6 +37,7 @@ with Util.Measures;
 with Util.Log;
 with Util.Log.Loggers;
 with Util.Beans.Objects;
+with Util.Concurrent.Counters;
 with Util.Test_Caller;
 
 package body ADO.Tests is
@@ -399,6 +403,115 @@ package body ADO.Tests is
                 "To_Identifier must return the correct identifier");
    end Test_Identifier_To_Object;
 
+   --  ------------------------------
+   --  Test some concurrency aspects.
+   --  ------------------------------
+   procedure Test_Concurrency (T : in out Test) is
+      Username      : constant String := "Joe-" & Util.Tests.Get_Uuid;
+      Task_Count    : constant Natural := 2;
+      Count_By_Task : constant Natural := 100;
+      C             : Util.Concurrent.Counters.Counter;
+   begin
+      --  Change sequence allocator to use blocks of 5 for test_comments.
+      declare
+         DB : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
+      begin
+         Db.Execute ("UPDATE ado_sequence SET block_size = 5 WHERE name = 'TEST_COMMENTS'");
+      end;
+
+      declare
+
+         task type Worker is
+            entry Start (Ident : Natural;
+                         Count : Natural);
+         end Worker;
+
+         task body Worker is
+            Cnt : Natural;
+            TId : Natural;
+         begin
+            accept Start (Ident : in Natural;
+                          Count : in Natural) do
+               Tid := Ident;
+               Cnt := Count;
+            end Start;
+
+            --  Get an object from the pool, increment the value and put it back in the pool.
+            for I in 1 .. Cnt loop
+               declare
+                  S     : ADO.Sessions.Master_Session;
+                  User  : Regtests.Simple.Model.User_Ref;
+                  Cmt   : Regtests.Comments.Comment_Ref;
+                  Query : ADO.SQL.Query;
+                  Found : Boolean;
+               begin
+                  S := Regtests.Get_Master_Database;
+                  for Retry in 1 .. 10 loop
+                     begin
+                        S.Begin_Transaction;
+                        Query.Bind_Param (1, Username);
+                        Query.Set_Filter ("name = ?");
+                        User.Find (S, Query, Found);
+                        if not Found then
+                           User.Set_Name (Username);
+                           User.Save (S);
+                        end if;
+                        Cmt.Set_Message ("Comment" & I'Image & " from Joe in task" & Tid'Image);
+                        Cmt.Set_User (User);
+                        Cmt.Set_Entity_Id (2);
+                        Cmt.Set_Entity_Type (1);
+                        Cmt.Set_Date (Ada.Calendar.Clock);
+                        Cmt.Save (S);
+                        S.Commit;
+                        Util.Concurrent.Counters.Increment (C);
+                        exit;
+
+                     exception
+                        when Ado.Objects.Lazy_Lock =>
+                           Log.Warn ("Retry insert comment in database");
+                           delay 0.3 * Retry;
+
+                     end;
+                  end loop;
+               end;
+            end loop;
+
+         exception
+            when E : others =>
+               Log.Error ("Exception raised", E);
+
+         end Worker;
+
+         type Worker_Array is array (1 .. Task_Count) of Worker;
+         Tasks : Worker_Array;
+      begin
+         for I in Tasks'Range loop
+            Tasks (I).Start (I, Count_By_Task);
+         end loop;
+
+         --  Leaving the Worker task scope means we are waiting for our tasks to finish.
+      end;
+
+      Util.Tests.Assert_Equals (T, Task_Count * Count_By_Task,
+                                Util.Concurrent.Counters.Value (C),
+                                "Invalid number of loops executed");
+
+      declare
+         DB    : constant ADO.Sessions.Session := Regtests.Get_Database;
+         Query : ADO.Queries.Context;
+         Count : Natural;
+      begin
+         Query.Set_SQL ("SELECT COUNT(*) FROM TEST_COMMENTS AS cmt "
+                          & "INNER JOIN test_user AS user ON cmt.user_fk = user.id "
+                          & "WHERE user.name = ?");
+         Query.Bind_Param (1, Username);
+         Count := ADO.Datasets.Get_Count (DB, Query);
+         Util.Tests.Assert_Equals (T, Task_Count * Count_By_Task,
+                                   Count,
+                                   "Invalid number of comment created");
+      end;
+   end Test_Concurrency;
+
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
       Caller.Add_Test (Suite, "Test Object_Ref.Load", Test_Load'Access);
@@ -419,6 +532,8 @@ package body ADO.Tests is
                        Test_Identifier_To_Object'Access);
       Caller.Add_Test (Suite, "Test Object.Reload",
                        Test_Reload'Access);
+      Caller.Add_Test (Suite, "Test concurrency",
+                       Test_Concurrency'Access);
    end Add_Tests;
 
 end ADO.Tests;

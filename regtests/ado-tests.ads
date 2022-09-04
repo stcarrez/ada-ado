@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  ADO Tests -- Database sequence generator
+--  ado-tests -- Various tests on database access
 --  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
@@ -53,5 +53,8 @@ package ADO.Tests is
 
    --  Test database reload.
    procedure Test_Reload (T : in out Test);
+
+   --  Test some concurrency aspects.
+   procedure Test_Concurrency (T : in out Test);
 
 end ADO.Tests;
