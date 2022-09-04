@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections-sqlite -- SQLite Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2019, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 with Sqlite3_H;
 private with Ada.Strings.Unbounded;
 private with Util.Concurrent.Counters;
-private with Ada.Containers.Doubly_Linked_Lists;
 package ADO.Connections.Sqlite is
 
    --  Create database option.
@@ -38,11 +37,11 @@ private
    use Ada.Strings.Unbounded;
 
    --  Database connection implementation
-   type Database_Connection is new ADO.Connections.Database_Connection with record
+   type Database_Connection is new Connections.Database_Connection with record
       Server       : aliased access Sqlite3_H.sqlite3;
       Name         : Unbounded_String;
       URI          : Unbounded_String;
-      Transactions : Util.Concurrent.Counters.Counter_Access;
+      Transactions : Util.Concurrent.Counters.Counter;
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 
@@ -105,30 +104,7 @@ private
    overriding
    procedure Close (Database : in out Database_Connection);
 
-   type SQLite_Database is record
-      Server       : aliased access Sqlite3_H.sqlite3;
-      Transactions : Util.Concurrent.Counters.Counter_Access;
-      Name         : Unbounded_String;
-      URI          : Unbounded_String;
-   end record;
-
-   package Database_List is
-     new Ada.Containers.Doubly_Linked_Lists (Element_Type => SQLite_Database);
-
-   protected type Sqlite_Connections is
-
-      procedure Open (Config : in Configuration'Class;
-                      Result : in out Ref.Ref'Class);
-
-      procedure Clear;
-
-   private
-      List : Database_List.List;
-   end Sqlite_Connections;
-
-   type Sqlite_Driver is new ADO.Connections.Driver with record
-      Map : Sqlite_Connections;
-   end record;
+   type Sqlite_Driver is new ADO.Connections.Driver with null record;
 
    --  Create a new SQLite connection using the configuration parameters.
    overriding
@@ -136,9 +112,14 @@ private
                                 Config : in Configuration'Class;
                                 Result : in out Ref.Ref'Class);
 
+   overriding
+   function Has_Limited_Transactions (Config : in Sqlite_Driver) return Boolean
+     is (True);
+
    --  Create the database and initialize it with the schema SQL file.
-   --  The `Admin` parameter describes the database connection with administrator access.
-   --  The `Config` parameter describes the target database connection.
+   --  The `Admin` parameter describes the database connection with
+   --  administrator access.  The `Config` parameter describes the target
+   --  database connection.
    overriding
    procedure Create_Database (D           : in out Sqlite_Driver;
                               Admin       : in Configs.Configuration'Class;

@@ -121,6 +121,7 @@ package body ADO.Statements.Sqlite is
    begin
       if Result /= Sqlite3_H.SQLITE_OK and then Result /= Sqlite3_H.SQLITE_DONE then
          if Result = Sqlite3_H.SQLITE_BUSY then
+            Log.Info ("SQLite busy, query failed: '{0}'", SQL);
             raise ADO.Objects.LAZY_LOCK;
          end if;
          declare
