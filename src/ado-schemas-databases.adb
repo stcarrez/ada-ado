@@ -57,7 +57,7 @@ package body ADO.Schemas.Databases is
    --  ------------------------------
    procedure Scan_Migration (Session : in ADO.Sessions.Session'Class;
                              Path    : in String;
-                             Result  : out Upgrade_List) is
+                             Result  : in out Upgrade_List) is
       use Ada.Directories;
 
       function Get_Module_Version (Name : in String) return Natural;
@@ -165,7 +165,6 @@ package body ADO.Schemas.Databases is
    begin
       Log.Debug ("Scan directory {0} for database migration", Path);
 
-      Result.Clear;
       Start_Search (Search, Directory => Path,
                     Pattern => "*", Filter => Filter);
       while More_Entries (Search) loop

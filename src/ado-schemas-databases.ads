@@ -53,7 +53,7 @@ package ADO.Schemas.Databases is
    --  be sorted by using `Sort_Migration` to honor the module dependencies.
    procedure Scan_Migration (Session : in ADO.Sessions.Session'Class;
                              Path    : in String;
-                             Result  : out Upgrade_List);
+                             Result  : in out Upgrade_List);
 
    --  Sort the list of upgrade directories depending on the module dependencies.
    procedure Sort_Migration (List : in out Upgrade_List);
