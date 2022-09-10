@@ -269,13 +269,18 @@ package body ADO.Statements.Sqlite is
    overriding
    procedure Execute (Stmt   : in out Sqlite_Update_Statement;
                       Result : out Integer) is
+      Allow_As : constant Boolean := Sqlite3_H.Sqlite3_libversion_number > 3025000;
    begin
       if Stmt.Connection = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
       end if;
       ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
       ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
-      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " AS o SET ");
+      if Allow_As then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " AS o SET ");
+      else
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " SET ");
+      end if;
       ADO.SQL.Append_Fields (Update => Stmt.This_Query);
       if Stmt.This_Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
