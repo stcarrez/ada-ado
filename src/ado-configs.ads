@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-configs -- Database connection configuration
---  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2016, 2017, 2018, 2019, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,9 @@ package ADO.Configs is
 
    --  Configuration property to skip reading the database table entities.
    NO_ENTITY_LOAD : constant String := "ado.entities.ignore";
+
+   --  Configuration property to define the the search paths for database schema migration.
+   MIGRATE_PATHS_CONFIG : constant String := "ado.migrate.paths";
 
    --  Maximum number of columns allowed for a table (SQLite limit is 2000).
    MAX_COLUMNS : constant := 2000;
