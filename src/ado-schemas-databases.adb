@@ -441,7 +441,7 @@ package body ADO.Schemas.Databases is
          Result : Integer;
       begin
          Stmt.Save_Field ("version", Upgrade.Version);
-         Stmt.Set_Filter ("o.name = :name AND o.version < :version");
+         Stmt.Set_Filter ("name = :name AND version < :version");
          Stmt.Bind_Param ("name", Upgrade.Name);
          Stmt.Bind_Param ("version", Upgrade.Version);
          Stmt.Execute (Result);
