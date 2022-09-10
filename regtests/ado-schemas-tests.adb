@@ -383,6 +383,7 @@ package body ADO.Schemas.Tests is
       end;
 
       --  Run again, we should find nothing in the list.
+      List.Clear;
       ADO.Schemas.Databases.Scan_Migration (S, Path, List);
       Util.Tests.Assert_Equals (T, 0, Natural (List.Length), "Upgrade list must be empty");
    end Test_Scan_Migration;
