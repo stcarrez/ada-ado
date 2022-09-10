@@ -148,6 +148,8 @@ endif
 	${CP} dynamo.xml $(DESTDIR)${dynamodir}/ado/
 	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/ado/
 	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/ado/
+	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/migrate
+	(cd db/migrate && tar --exclude='*~' -cf - . ) | (cd $(DESTDIR)${dynamodir}/ado/db/migrate && tar xf -)
 
 uninstall::
 	rm -rf $(DESTDIR)${dynamodir}/ado
