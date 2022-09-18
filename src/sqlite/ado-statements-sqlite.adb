@@ -269,7 +269,7 @@ package body ADO.Statements.Sqlite is
    overriding
    procedure Execute (Stmt   : in out Sqlite_Update_Statement;
                       Result : out Integer) is
-      Allow_As : constant Boolean := Sqlite3_H.Sqlite3_libversion_number > 3025000;
+      Allow_As : constant Boolean := Sqlite3_H.sqlite3_libversion_number > 3025000;
    begin
       if Stmt.Connection = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
