@@ -751,6 +751,21 @@ package body ADO.Statements is
 
    --  ------------------------------
    --  Get the column value at position <b>Column</b> and
+   --  return it as an <b>Entity_Type</b>.
+   --  Raises <b>Invalid_Type</b> if the value cannot be converted.
+   --  Raises <b>Invalid_Column</b> if the column does not exist.
+   --  ------------------------------
+   function Get_Entity_Type (Query  : Query_Statement;
+                             Column : Natural) return Entity_Type is
+   begin
+      if Query.Proxy = null then
+         return Entity_Type (Query_Statement'Class (Query).Get_Integer (Column));
+      end if;
+      return Query.Proxy.all.Get_Entity_Type (Column);
+   end Get_Entity_Type;
+
+   --  ------------------------------
+   --  Get the column value at position <b>Column</b> and
    --  return it as an <b>Nullable_Entity_Type</b>.
    --  Raises <b>Invalid_Type</b> if the value cannot be converted.
    --  Raises <b>Invalid_Column</b> if the column does not exist.
