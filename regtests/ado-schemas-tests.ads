@@ -41,6 +41,9 @@ package ADO.Schemas.Tests is
    --  Test the creation of database.
    procedure Test_Create_Schema (T : in out Test);
 
+   --  Test the sort migration.
+   procedure Test_Sort_Migration (T : in out Test);
+
    --  Test the scan of migration.
    procedure Test_Scan_Migration (T : in out Test);
 

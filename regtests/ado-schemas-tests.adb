@@ -54,6 +54,8 @@ package body ADO.Schemas.Tests is
                        Test_Empty_Schema'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Create_Database",
                        Test_Create_Schema'Access);
+      Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Sort_Migration",
+                       Test_Sort_Migration'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Databases.Scan_Migration",
                        Test_Scan_Migration'Access);
    end Add_Tests;
@@ -320,6 +322,101 @@ package body ADO.Schemas.Tests is
                                                 Messages    => Unused_Msg);
       end if;
    end Test_Create_Schema;
+
+
+   --  ------------------------------
+   --  Test the sort migration.
+   --  ------------------------------
+   procedure Test_Sort_Migration (T : in out Test) is
+      use ADO.Schemas.Databases;
+
+      function To_Ustring (Value : in String) return Ada.Strings.Unbounded.Unbounded_String
+        is (Ada.Strings.Unbounded.To_Unbounded_String (Value));
+
+      function To_String (Value : in Upgrade_Type) return String
+        is (To_String (Value.Name) & ":"  & Value.Version'Image & "("
+              & To_String (Value.Path) & ") [" & To_String (Value.Depend) & "]");
+
+      Ado_1   : constant Upgrade_Type := (Version => 1,
+                                          Name    => To_Ustring ("ado"),
+                                          Depend  => To_Ustring (""),
+                                          Path    => To_Ustring ("1"));
+      Awa_1   : constant Upgrade_Type := (Version => 1,
+                                          Name    => To_Ustring ("awa"),
+                                          Depend  => To_Ustring ("ado:1"),
+                                          Path    => To_Ustring ("2"));
+      Blog_1  : constant Upgrade_Type := (Version => 1,
+                                          Name    => To_Ustring ("awa-blogs"),
+                                          Depend  => To_Ustring ("awa:1 ado:1"),
+                                          Path    => To_Ustring ("3"));
+      Ado_2   : constant Upgrade_Type := (Version => 2,
+                                          Name    => To_Ustring ("ado"),
+                                          Depend  => To_Ustring (""),
+                                          Path    => To_Ustring ("4"));
+      Awa_2   : constant Upgrade_Type := (Version => 2,
+                                          Name    => To_Ustring ("awa"),
+                                          Depend  => To_Ustring ("ado:2"),
+                                          Path    => To_Ustring ("5"));
+      Blog_2  : constant Upgrade_Type := (Version => 2,
+                                          Name    => To_Ustring ("awa-blogs"),
+                                          Depend  => To_Ustring ("awa:2 ado:2"),
+                                          Path    => To_Ustring ("6"));
+      List    : ADO.Schemas.Databases.Upgrade_List;
+   begin
+      List.Append (Ado_1);
+      List.Append (Awa_1);
+      List.Append (Blog_1);
+      List.Append (Ado_2);
+      List.Append (Awa_2);
+      List.Append (Blog_2);
+      ADO.Schemas.Databases.Upgrade_Lists.Reverse_Elements (List);
+
+      T.Assert (Ado_1 < Ado_2, "ado:1 < ado:2");
+      T.Assert (not (Ado_2 < Ado_1), "not ado:2 < ado:1");
+      T.Assert (Ado_1 < Awa_1, "ado:1 < awa:1");
+      T.Assert (not (Awa_1 < Ado_1), "not awa:1 < ado:1");
+      T.Assert (Ado_1 < Blog_1, "ado:1 < blog:1");
+      T.Assert (not (Blog_1 < Ado_1), "not blog:1 < ado:1");
+      T.Assert (Ado_1 < Blog_2, "ado:1 < blog:2");
+      T.Assert (not (Blog_2 < Ado_1), "not blog:2 < ado:1");
+      T.Assert (Blog_1 < Ado_2, "blog:1 < ado:2");
+      T.Assert (not (Ado_2 < Blog_1), "not ado:2 < blog:1");
+      T.Assert (Blog_1 < Blog_2, "blog:1 < blog:2");
+      T.Assert (not (Blog_2 < Blog_1), "not blog:2 < blog:1");
+      T.Assert (Blog_1 < Awa_2, "blog:1 < awa:2");
+      T.Assert (not (Awa_2 < Blog_1), "not awa:2 < blog:1");
+      T.Assert (Ado_1 < Awa_2, "ado:1 < awa:2");
+      T.Assert (not (Awa_2 < Ado_1), "not awa:2 < ado:1");
+      T.Assert (Ado_2 < Awa_2, "ado:2 < awa:2");
+      T.Assert (not (Awa_2 < Ado_2), "not awa:2 < ado:2");
+      T.Assert (Awa_2 < Blog_2, "awa:2 < blog:2");
+      T.Assert (not (Blog_2 < Awa_2), "not blog:2 < awa:2");
+
+      ADO.Schemas.Databases.Sort_Migration (List);
+
+      Ada.Text_IO.Put_Line ("Sorted:");
+      declare
+         I : Natural := 0;
+         J : Natural := 0;
+      begin
+         for Right of List loop
+            I := I + 1;
+            J := 0;
+            for Left of List loop
+               J := J + 1;
+               exit when J > I;
+               if I = J then
+                  T.Assert (not (Left < Right), "Invalid comparison");
+               elsif Left < Right then
+                  Ada.Text_Io.Put_Line (To_String (Left) & " < " & To_String (Right));
+               else
+                  Ada.Text_Io.Put_Line ("ERROR: " & To_String (Left) & " < " & To_String (Right));
+                  T.Assert (Left < Right, "Invalid comparison");
+               end if;
+            end loop;
+         end loop;
+      end;
+   end Test_Sort_Migration;
 
    --  ------------------------------
    --  Test the scan of migration.
