@@ -33,6 +33,81 @@ package body ADO.Schemas.Databases is
      is (Ada.Characters.Handling.Is_Space (C)
            or else Ada.Characters.Handling.Is_Line_Terminator (C));
 
+   function Depend_Version (Dep : in String; Name : in String) return Natural;
+
+   function Depend_Version (Dep : in String; Name : in String) return Natural is
+      Pos : Positive := Dep'First;
+      Sep1 : Natural;
+      Sep2 : Natural;
+   begin
+      while Pos <= Dep'Last loop
+         while Is_Space (Dep (Pos)) and then Pos <= Dep'Last loop
+            Pos := Pos + 1;
+         end loop;
+         exit when Pos > Dep'Last;
+         Sep1 := Util.Strings.Index (Dep, ':', Pos);
+         exit when Sep1 = 0;
+         Sep2 := Util.Strings.Index (Dep, ' ', Sep1);
+         if Sep2 = 0 then
+            Sep2 := Dep'Last;
+         else
+            Sep2 := Sep2 - 1;
+         end if;
+         if Dep (Pos .. Sep1 - 1) = Name then
+            begin
+               return Natural'Value (Dep (Sep1 + 1 .. Sep2));
+
+            exception
+               when Constraint_Error =>
+                  return 0;
+            end;
+         end if;
+         Pos := Sep2 + 1;
+      end loop;
+      return 0;
+   end Depend_Version;
+
+   function "<" (Left, Right : in Upgrade_Type) return Boolean is
+   begin
+      if Left.Name = Right.Name then
+         return Left.Version < Right.Version;
+      end if;
+
+      declare
+         Left_Depend : constant String := To_String (Left.Depend);
+         Right_Depend : constant String := To_String (Right.Depend);
+         D1, D2 : Natural;
+      begin
+         D1 := Depend_Version (Right_Depend, To_String (Left.Name));
+         if D1 > 0 then
+            if Left.Version < D1 then
+               return True;
+            elsif Left.Version > D1 then
+               return False;
+            end if;
+         end if;
+
+         D2 := Depend_Version (Left_Depend, To_String (Right.Name));
+         if D2 > 0 then
+            if D2 > Right.Version then
+               return False;
+            elsif D2 < Right.Version then
+               return True;
+            elsif D1 > 0 then
+               return False;
+            end if;
+         elsif D1 > 0 then
+            return True;
+         end if;
+
+         if Left_Depend'Length /= Right_Depend'Length then
+            return Left_Depend'Length < Right_Depend'Length;
+         end if;
+      end;
+
+      return Left.Name < Right.Name;
+   end "<";
+
    --  ------------------------------
    --  Create the database and initialize it with the schema SQL file.
    --  ------------------------------
@@ -185,73 +260,10 @@ package body ADO.Schemas.Databases is
    --  Sort the list of upgrade directories depending on the module dependencies.
    --  ------------------------------
    procedure Sort_Migration (List : in out Upgrade_List) is
-      function Depend_Version (Dep : in String; Name : in String) return Natural;
-      function "<" (Left, Right : in Upgrade_Type) return Boolean;
       function Find (Name : in String; Version : in Positive) return String;
       procedure Add_Dependencies (Upgrade : in out Upgrade_Type;
                                   Depend  : in String);
       procedure Update_Dependencies (Upgrade : in out Upgrade_Type);
-
-      function Depend_Version (Dep : in String; Name : in String) return Natural is
-         Pos : Positive := Dep'First;
-         Sep1 : Natural;
-         Sep2 : Natural;
-      begin
-         while Pos <= Dep'Last loop
-            while Is_Space (Dep (Pos)) and then Pos <= Dep'Last loop
-               Pos := Pos + 1;
-            end loop;
-            exit when Pos > Dep'Last;
-            Sep1 := Util.Strings.Index (Dep, ':', Pos);
-            exit when Sep1 = 0;
-            Sep2 := Util.Strings.Index (Dep, ' ', Sep1);
-            if Sep2 = 0 then
-               Sep2 := Dep'Last;
-            else
-               Sep2 := Sep2 - 1;
-            end if;
-            if Dep (Pos .. Sep1 - 1) = Name then
-               begin
-                  return Natural'Value (Dep (Sep1 + 1 .. Sep2));
-
-               exception
-                  when Constraint_Error =>
-                     return 0;
-               end;
-            end if;
-            Pos := Sep2 + 1;
-         end loop;
-         return 0;
-      end Depend_Version;
-
-      function "<" (Left, Right : in Upgrade_Type) return Boolean is
-         D : Natural;
-      begin
-         if Left.Name = Right.Name then
-            return Left.Version < Right.Version;
-         end if;
-
-         declare
-            Left_Depend : constant String := To_String (Left.Depend);
-            Right_Depend : constant String := To_String (Right.Depend);
-         begin
-            D := Depend_Version (Right_Depend, To_String (Left.Name));
-            if D > 0 then
-               return Left.Version <= D;
-            end if;
-
-            D := Depend_Version (Left_Depend, To_String (Right.Name));
-            if D > 0 then
-               return D > Right.Version;
-            end if;
-
-            if Left_Depend'Length /= Right_Depend'Length then
-               return Left_Depend'Length < Right_Depend'Length;
-            end if;
-         end;
-
-         return Left.Name < Right.Name;
-      end "<";
 
       package Sort is
          new Upgrade_Lists.Generic_Sorting ("<" => "<");

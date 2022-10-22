@@ -29,6 +29,9 @@ package ADO.Schemas.Databases is
       Path    : UString;
    end record;
 
+   --  Compare two upgrade records and tell whether Left must be run before Right.
+   function "<" (Left, Right : in Upgrade_Type) return Boolean;
+
    package Upgrade_Lists is
       new Ada.Containers.Doubly_Linked_Lists (Upgrade_Type);
 
