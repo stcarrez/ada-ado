@@ -20,3 +20,6 @@ CREATE TABLE IF NOT EXISTS user (
 INSERT INTO ado_entity_type (name) VALUES
 ('user')
   ON CONFLICT DO NOTHING;
+INSERT INTO ado_version (name, version)
+  VALUES ("ado", 2)
+  ON CONFLICT DO NOTHING;

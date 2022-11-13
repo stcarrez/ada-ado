@@ -199,3 +199,6 @@ CREATE TABLE IF NOT EXISTS test_table (
 INSERT INTO ado_entity_type (name) VALUES
 ('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;
+INSERT INTO ado_version (name, version)
+  VALUES ("ado", 2)
+  ON CONFLICT DO NOTHING;

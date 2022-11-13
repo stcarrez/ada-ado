@@ -18,3 +18,4 @@ CREATE TABLE IF NOT EXISTS user (
   PRIMARY KEY (`id`)
 );
 INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("user");
+INSERT OR IGNORE INTO ado_version (name, version) VALUES ("ado", 2);

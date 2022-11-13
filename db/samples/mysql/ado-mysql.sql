@@ -19,3 +19,4 @@ CREATE TABLE IF NOT EXISTS user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT IGNORE INTO ado_entity_type (name) VALUES
 ("user");
+INSERT IGNORE INTO ado_version (name, version) VALUES ("ado", 2);

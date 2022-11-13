@@ -205,3 +205,4 @@ INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_keys");
 INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_user");
 INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_nullable_table");
 INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_table");
+INSERT OR IGNORE INTO ado_version (name, version) VALUES ("ado", 2);
