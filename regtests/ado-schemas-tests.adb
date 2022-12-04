@@ -323,7 +323,6 @@ package body ADO.Schemas.Tests is
       end if;
    end Test_Create_Schema;
 
-
    --  ------------------------------
    --  Test the sort migration.
    --  ------------------------------
