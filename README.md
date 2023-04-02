@@ -40,6 +40,7 @@ section to install them and run the configure again after the installation.
   - Feature #12: Support for database migration
   - Fix #14: Problems with SQLite transactions
   - Fix #15: Use ADO_BUILD instead of BUILD in the Alire crate configuration
+  - Fix #16: Status SQLITE_ROW is treated as an error
 
 ## Version 2.3.0   - Aug 2022
   - Fix #4: Is_Loaded predicate operation is false when an object is not yet inserted in the database
