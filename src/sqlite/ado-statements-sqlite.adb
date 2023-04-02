@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009 - 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,7 +119,10 @@ package body ADO.Statements.Sqlite is
                           SQL        : in String;
                           Result     : in int) is
    begin
-      if Result /= Sqlite3_H.SQLITE_OK and then Result /= Sqlite3_H.SQLITE_DONE then
+      if Result /= Sqlite3_H.SQLITE_OK
+        and then Result /= Sqlite3_H.SQLITE_DONE
+        and then Result /= Sqlite3_H.SQLITE_ROW
+      then
          if Result = Sqlite3_H.SQLITE_BUSY then
             Log.Info ("SQLite busy, query failed: '{0}'", SQL);
             raise ADO.Objects.LAZY_LOCK;
