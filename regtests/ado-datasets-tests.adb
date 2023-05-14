@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-datasets-tests -- Test executing queries and using datasets
---  Copyright (C) 2013, 2014, 2015, 2017, 2019 Stephane Carrez
+--  Copyright (C) 2013, 2014, 2015, 2017, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,6 +58,7 @@ package body ADO.Datasets.Tests is
       Query.Set_Count_Query (User_List_Query.Query'Access);
       Query.Bind_Param ("filter", String '("test-list"));
       Count := ADO.Datasets.Get_Count (DB, Query);
+      DB.Begin_Transaction;
       for I in 1 .. 100 loop
          declare
             User : Regtests.Simple.Model.User_Ref;
@@ -87,6 +88,7 @@ package body ADO.Datasets.Tests is
       Query.Set_SQL ("SELECT COUNT(*) FROM test_nullable_table");
       Count := ADO.Datasets.Get_Count (DB, Query);
 
+      DB.Begin_Transaction;
       for I in 1 .. 100 loop
          declare
             Item : Regtests.Statements.Model.Nullable_Table_Ref;

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018, 2019, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -120,6 +120,7 @@ package body ADO.Audits.Tests is
 
       E1 := ADO.Sessions.Entities.Find_Entity_Type (DB, "audit_email");
       E2 := ADO.Sessions.Entities.Find_Entity_Type (DB, "audit_property");
+      DB.Begin_Transaction;
       for I in List'Range loop
          Email := Regtests.Audits.Model.Null_Email;
          Email.Set_Email ("Email" & Util.Strings.Image (I) & "@nowhere.com");
@@ -131,6 +132,7 @@ package body ADO.Audits.Tests is
       end loop;
       DB.Commit;
 
+      DB.Begin_Transaction;
       for Id of List loop
          Email.Load (DB, Id);
          Email.Set_Status (ADO.Nullable_Integer '(Email.Get_Status.Value + 1, False));
@@ -186,6 +188,7 @@ package body ADO.Audits.Tests is
       end loop;
       DB.Commit;
 
+      DB.Begin_Transaction;
       for Id of List loop
          Email.Load (DB, Id);
          Email.Set_Status (ADO.Null_Integer);
