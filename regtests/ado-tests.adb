@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-tests -- Various tests on database access
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -502,8 +502,8 @@ package body ADO.Tests is
          Count : Natural;
       begin
          Query.Set_SQL ("SELECT COUNT(*) FROM TEST_COMMENTS AS cmt "
-                          & "INNER JOIN test_user AS user ON cmt.user_fk = user.id "
-                          & "WHERE user.name = ?");
+                          & "INNER JOIN test_user AS u ON cmt.user_fk = u.id "
+                          & "WHERE u.name = ?");
          Query.Bind_Param (1, Username);
          Count := ADO.Datasets.Get_Count (DB, Query);
          Util.Tests.Assert_Equals (T, Task_Count * Count_By_Task,
