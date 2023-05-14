@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-tests -- Test loading of database schema
---  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009, 2010, 2011, 2015, 2018, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,9 @@ package ADO.Schemas.Tests is
 
    --  Test the Table_Cursor operations and check the result schema.
    procedure Test_Table_Iterator (T : in out Test);
+
+   --  Test the Has_Table operation
+   procedure Test_Has_Table (T : in out Test);
 
    --  Test the Table_Cursor operations on an empty schema.
    procedure Test_Empty_Schema (T : in out Test);

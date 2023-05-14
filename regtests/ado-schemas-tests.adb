@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-tests -- Test loading of database schema
---  Copyright (C) 2009 - 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,6 +48,8 @@ package body ADO.Schemas.Tests is
                        Test_Find_Entity_Type_Error'Access);
       Caller.Add_Test (Suite, "Test ADO.Sessions.Load_Schema",
                        Test_Load_Schema'Access);
+      Caller.Add_Test (Suite, "Test ADO.Sessions.Has_Table",
+                       Test_Has_Table'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table",
                        Test_Table_Iterator'Access);
       Caller.Add_Test (Suite, "Test ADO.Schemas.Get_Table (Empty schema)",
@@ -279,6 +281,16 @@ package body ADO.Schemas.Tests is
          end if;
       end;
    end Test_Table_Iterator;
+
+   --  ------------------------------
+   --  Test the Has_Table operation
+   --  ------------------------------
+   procedure Test_Has_Table (T : in out Test) is
+      S      : constant ADO.Sessions.Session := Regtests.Get_Database;
+   begin
+      T.Assert (S.Has_Table ("ado_version"), "Has_Table failed for test table");
+      T.Assert (not S.Has_Table ("ado_version_fake"), "Has_Table found an fake table");
+   end Test_Has_Table;
 
    --  ------------------------------
    --  Test the Table_Cursor operations on an empty schema.
