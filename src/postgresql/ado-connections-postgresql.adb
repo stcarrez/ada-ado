@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Postgresql Database -- Postgresql Database connections
---  Copyright (C) 2018, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -145,16 +145,17 @@ package body ADO.Connections.Postgresql is
       Stmt  : ADO.Statements.Query_Statement
         := Create.Create_Statement
           (Database.Create_Statement
-             ("SELECT COUNT(*) FROM information_schema.TABLES "
-                & "WHERE TABLE_SCHEMA LIKE :database AND "
-                & "TABLE_TYPE LIKE 'BASE TABLE' AND "
-                & "TABLE_NAME = :name"));
+             ("SELECT to_regclass(:name)"));
    begin
-      Stmt.Bind_Param ("database", Database.Name);
+      --  Stmt.Bind_Param ("database", Database.Name);
       Stmt.Bind_Param ("name", Name);
       Stmt.Execute;
 
-      return Stmt.Get_Result_Integer > 0;
+      if not Stmt.Has_Elements then
+         return False;
+      end if;
+
+      return not Stmt.Is_Null (0);
    end Has_Table;
 
    --  ------------------------------
