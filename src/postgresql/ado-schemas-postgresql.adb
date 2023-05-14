@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-postgresql -- Postgresql Database Schemas
---  Copyright (C) 2018, 2019 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,12 +41,24 @@ package body ADO.Schemas.Postgresql is
          return T_DATE_TIME;
       elsif Value = "integer" then
          return T_INTEGER;
+      elsif Value = "smallint" then
+         return T_SMALLINT;
       elsif Value = "bigint" then
          return T_LONG_INTEGER;
       elsif Value = "bytea" then
          return T_BLOB;
       elsif Value = "character varying" then
          return T_VARCHAR;
+      elsif Value = "text" or else Value = "xml" or else Value = "json" then
+         return T_VARCHAR;
+      elsif Value = "double precision" then
+         return T_DOUBLE;
+      elsif Value = "real" then
+         return T_FLOAT;
+      elsif Value = "money" then
+         return T_DECIMAL;
+      elsif Value = "boolean" then
+         return T_BOOLEAN;
       end if;
       return T_UNKNOWN;
    end String_To_Type;
