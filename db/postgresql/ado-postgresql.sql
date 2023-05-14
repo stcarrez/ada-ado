@@ -31,5 +31,5 @@ INSERT INTO ado_entity_type (name) VALUES
 ('ado_entity_type'), ('ado_sequence'), ('ado_version')
   ON CONFLICT DO NOTHING;
 INSERT INTO ado_version (name, version)
-  VALUES ("ado", 2)
+  VALUES ('ado', 2)
   ON CONFLICT DO NOTHING;

@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS ado_version (
 INSERT INTO ado_entity_type (name) VALUES
 ('ado_entity_type'), ('ado_sequence'), ('ado_version')
   ON CONFLICT DO NOTHING;
+INSERT INTO ado_version (name, version)
+  VALUES ('ado', 2)
+  ON CONFLICT DO NOTHING;
 /* Copied from ado-postgresql.sql*/
 /* File generated automatically by dynamo */
 /* This is the Audit_Info table */
@@ -72,7 +75,7 @@ CREATE TABLE IF NOT EXISTS audit_property (
   /* the property value */
   "user_email" INTEGER ,
   /* a float property value */
-  "float_value" FLOAT NOT NULL,
+  "float_value" REAL NOT NULL,
   /* a double property value */
   "double_value" DOUBLE PRECISION NOT NULL,
   /* the property entity type */
@@ -133,7 +136,7 @@ CREATE TABLE IF NOT EXISTS test_keys (
   /* the name */
   "name" VARCHAR(255) ,
   /* the cost */
-  "cost" FLOAT NOT NULL,
+  "cost" REAL NOT NULL,
   /* the total */
   "total" DOUBLE PRECISION NOT NULL,
   /* the user */
@@ -200,5 +203,5 @@ INSERT INTO ado_entity_type (name) VALUES
 ('audit_info'), ('audit_email'), ('audit_property'), ('TEST_COMMENTS'), ('test_image'), ('allocate'), ('test_keys'), ('test_user'), ('test_nullable_table'), ('test_table')
   ON CONFLICT DO NOTHING;
 INSERT INTO ado_version (name, version)
-  VALUES ("ado", 2)
+  VALUES ('ado', 2)
   ON CONFLICT DO NOTHING;
