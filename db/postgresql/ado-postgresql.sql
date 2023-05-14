@@ -1,4 +1,5 @@
 /* File generated automatically by dynamo */
+SET client_min_messages = warning;
 /* Entity table that enumerates all known database tables */
 CREATE TABLE IF NOT EXISTS ado_entity_type (
   /* the database table unique entity index */

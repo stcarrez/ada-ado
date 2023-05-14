@@ -1,4 +1,5 @@
 /* File generated automatically by dynamo */
+SET client_min_messages = warning;
 /* This is the Audit_Info table */
 CREATE TABLE IF NOT EXISTS audit_info (
   /*  */
