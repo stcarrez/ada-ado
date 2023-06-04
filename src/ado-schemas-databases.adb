@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-databases -- Database creation and upgrade
---  Copyright (C) 2018, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -115,9 +115,14 @@ package body ADO.Schemas.Databases is
                               Config      : in ADO.Sessions.Sources.Data_Source'Class;
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector) is
+      use type Connections.Driver_Access;
+
       Name   : constant String := Config.Get_Driver;
       Driver : constant Connections.Driver_Access := Connections.Get_Driver (Name);
    begin
+      if Driver = null then
+         raise ADO.Configs.Connection_Error with "Database driver '" & Name & "' not found";
+      end if;
       Messages.Clear;
       Driver.Create_Database (Admin       => Admin,
                               Config      => Config,
