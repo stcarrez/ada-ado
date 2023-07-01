@@ -171,14 +171,14 @@ $(eval $(call ada_library,ado_postgresql))
 endif
 
 $(eval $(call ada_library,ado_all))
-$(eval $(call alire_publish,alire.toml,ad/ado,ado-$(VERSION).toml))
+$(eval $(call alire_publish,.,ad/ado,ado-$(VERSION).toml))
 ifeq ($(HAVE_POSTGRESQL),yes)
-$(eval $(call alire_publish,alire-postgresql.toml,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))
+$(eval $(call alire_publish,./alire/postgresql,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))
 endif
 ifeq ($(HAVE_MYSQL),yes)
-$(eval $(call alire_publish,alire-mysql.toml,ad/ado_mysql,ado_mysql-$(VERSION).toml))
+$(eval $(call alire_publish,./alire/mysql,ad/ado_mysql,ado_mysql-$(VERSION).toml))
 endif
 ifeq ($(HAVE_SQLITE),yes)
-$(eval $(call alire_publish,alire-sqlite.toml,ad/ado_sqlite,ado_sqlite-$(VERSION).toml))
+$(eval $(call alire_publish,./alire/sqlite,ad/ado_sqlite,ado_sqlite-$(VERSION).toml))
 endif
-$(eval $(call alire_publish,alire-all.toml,ad/ado_all,ado_all-$(VERSION).toml))
+$(eval $(call alire_publish,./alire/all,ad/ado_all,ado_all-$(VERSION).toml))
