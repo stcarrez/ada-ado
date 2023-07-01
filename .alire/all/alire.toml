@@ -1,28 +1,28 @@
 description = "Ada Database Objects (All drivers)"
 tags = ["database", "uml", "sql", "mysql", "mariadb", "sqlite", "postgresql"]
 name = "ado_all"
-version = "2.3.0"
+version = "2.4.0"
 licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
-project-files = [".alire/all/ado_all.gpr"]
+project-files = ["ado_all.gpr"]
 website = "https://gitlab.com/stcarrez/ada-ado"
 long-description = """
 
-[![Build Status](https://img.shields.io/jenkins/s/https/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
-[![Test Status](https://img.shields.io/jenkins/t/https/jenkins.vacs.fr/Ada-ADO.svg)](https://jenkins.vacs.fr/job/Ada-ADO/)
-[![codecov](https://codecov.io/gh/stcarrez/ada-ado/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/ada-ado)
+[![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/build.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/summary)
+[![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/xunits)
+[![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/summary)
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
 
-This is the MySQL driver for the Ada Database Objects library.
+This crate give access to the PostgreSQL, MySQL and SQLite drivers for the Ada Database Objects library.
 
 """
 
 [[depends-on]]
-ado_postgresql = "^2.3.0"
-ado_sqlite = "^2.3.0"
-ado_mysql = "^2.3.0"
+ado_postgresql = "^2.4.0"
+ado_sqlite = "^2.4.0"
+ado_mysql = "^2.4.0"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
