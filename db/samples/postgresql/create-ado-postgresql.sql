@@ -1,5 +1,6 @@
 /* Copied from ado-postgresql.sql*/
 /* File generated automatically by dynamo */
+SET client_min_messages = warning;
 /* Entity table that enumerates all known database tables */
 CREATE TABLE IF NOT EXISTS ado_entity_type (
   /* the database table unique entity index */
@@ -31,8 +32,12 @@ CREATE TABLE IF NOT EXISTS ado_version (
 INSERT INTO ado_entity_type (name) VALUES
 ('ado_entity_type'), ('ado_sequence'), ('ado_version')
   ON CONFLICT DO NOTHING;
+INSERT INTO ado_version (name, version)
+  VALUES ('ado', 2)
+  ON CONFLICT DO NOTHING;
 /* Copied from ado-postgresql.sql*/
 /* File generated automatically by dynamo */
+SET client_min_messages = warning;
 /* Record representing a user */
 CREATE TABLE IF NOT EXISTS user (
   /* the user identifier */
@@ -55,5 +60,5 @@ INSERT INTO ado_entity_type (name) VALUES
 ('user')
   ON CONFLICT DO NOTHING;
 INSERT INTO ado_version (name, version)
-  VALUES ("ado", 2)
+  VALUES ('ado', 2)
   ON CONFLICT DO NOTHING;
