@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-postgresql -- PostgreSQL Database Drivers
---  Copyright (C) 2019 Stephane Carrez
+--  Copyright (C) 2019, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 with Util.Properties;
 
 --  === PostgreSQL Database Driver ===
---  The PostgreSQL database driver can be initialize explicitly by using the `ado_mysql`
+--  The PostgreSQL database driver can be initialize explicitly by using the `ado_postgresql`
 --  GNAT project and calling the initialization procedure.
 --
 --    ADO.Postgresql.Initialize ("db.properties");
