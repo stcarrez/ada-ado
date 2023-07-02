@@ -53,8 +53,16 @@ section to install them and run the configure again after the installation.
 
 [List all versions](https://gitlab.com/stcarrez/ada-ado/blob/master/NEWS.md)
 
+## Build with Alire
 
-# Build
+```
+alr with ado
+alr with ado_sqlite
+alr with ado_mysql
+alr with ado_postgresql
+```
+
+## Build with configure
 
 To build ADO, you will need:
 
