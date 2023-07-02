@@ -2,24 +2,34 @@
 
 This chapter explains how to build and install the library.
 
-## Before Building
+## Using Alire
 
-Before building ADO, you will need:
+The Ada Database Objects library is available as several Alire crates to simplify the installation
+and setup your project.  Run the following commands to setup your project to use the library:
 
-* [Ada Utility Library](https://github.com/stcarrez/ada-util)
-* [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
-* Either the PostgreSQL, MySQL or SQLite development headers installed.
+```
+alr index --update-all
+alr with ado
+```
 
-First get, build and install the [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
-and then get, build and install the [Ada Utility Library](https://github.com/stcarrez/ada-util).
+The database drivers for SQLite, MySQL and SQLite are provided as separate crates.  Choose the database
+drivers you want to use and run one or some of the following commands:
 
-## Database Driver Installation
+```
+alr with ado_sqlite
+alr with ado_mysql
+alr with ado_postgresql
+```
+
+## Without Alire
+
+### Database Driver Installation
 
 The PostgreSQL, MySQL and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 The configure script will fail if it does not find any database driver.
 
-### Ubuntu
+#### Ubuntu
 
 MySQL Development installation
 ```
@@ -41,7 +51,7 @@ PostgreSQL Development installation
 sudo apt-get install postgresql-client libpq-dev
 ```
 
-### Windows
+#### Windows
 
 It is recommended to use msys2 available at https://www.msys2.org/
 and use the `pacman` command to install the required packages.
@@ -81,7 +91,19 @@ cp win32/*.lib C:/GNAT/2019/lib
 cp win32/*.a C:/GNAT/2019/lib
 ```
 
-## Configuration
+
+### Before Building
+
+Before building ADO, you will need:
+
+* [Ada Utility Library](https://github.com/stcarrez/ada-util)
+* [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
+* Either the PostgreSQL, MySQL or SQLite development headers installed.
+
+First get, build and install the [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
+and then get, build and install the [Ada Utility Library](https://github.com/stcarrez/ada-util).
+
+### Configuration
 
 The library uses the `configure` script to detect the build environment, check which databases
 are available and configure everything before building.  If some component is missing, the
@@ -106,7 +128,7 @@ In most cases you will configure with the following command:
 ./configure
 ```
 
-## Build
+### Build
 
 After configuration is successful, you can build the library by running:
 ```
@@ -129,7 +151,7 @@ and with a SQLite database, use the following command:
 bin/ado_harness -config test-sqlite.properties
 ```
 
-## Installation
+### Installation
 The installation is done by running the `install` target:
 
 ```

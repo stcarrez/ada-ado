@@ -96,7 +96,7 @@ The MySQL database driver supports the following properties:
 | encoding    | The encoding to be used for the connection (ex: UTF-8) |
 
 ### SQLite Database Driver
-The SQLite database driver can be initialize explicitly by using the `ado_mysql`
+The SQLite database driver can be initialize explicitly by using the `ado_sqlite`
 GNAT project and calling the initialization procedure.
 
 ```Ada
@@ -118,7 +118,7 @@ The SQLite database driver will pass all the properties as SQLite `pragma` allow
 the configuration of the SQLite database.
 
 ### PostgreSQL Database Driver
-The PostgreSQL database driver can be initialize explicitly by using the `ado_mysql`
+The PostgreSQL database driver can be initialize explicitly by using the `ado_postgresql`
 GNAT project and calling the initialization procedure.
 
 ```Ada

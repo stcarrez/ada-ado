@@ -385,9 +385,9 @@ Id : Identifier;
 
 ### HiLo Sequence Generator
 The HiLo sequence generator.  This sequence generator uses a database table
-`sequence` to allocate blocks of identifiers for a given sequence name.
+`ado_sequence` to allocate blocks of identifiers for a given sequence name.
 The sequence table contains one row for each sequence.  It keeps track of
-the next available sequence identifier (in the `value column).
+the next available sequence identifier (in the `value` column).
 
 To allocate a sequence block, the HiLo generator obtains the next available
 sequence identified and updates it by adding the sequence block size.  The
