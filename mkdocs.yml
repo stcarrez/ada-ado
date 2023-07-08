@@ -1,6 +1,6 @@
 site_name: Ada Database Objects
 docs_dir: docs
-pages:
+nav:
   - Introduction: index.md
   - Installation: Installation.md
   - Tutorial: Tutorial.md
