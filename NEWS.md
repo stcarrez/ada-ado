@@ -1,4 +1,4 @@
-Version 2.4.0   - Under development
+Version 2.4.0   - Aug 2023
   - Feature #11: Support to audit creation of new objects in the database
   - Feature #12: Support for database migration
   - Fix #14: Problems with SQLite transactions
