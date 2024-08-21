@@ -54,17 +54,17 @@ regtests/src/ado-testsuite-drivers.adb: regtests/src/ado-testsuite-drivers.gpb
 test:	test-sqlite test-mysql test-postgresql
 
 test-sqlite:		build regtests.db
-ifeq ($(HAVE_SQLITE),yes)
+ifneq (, ${SQLITE})
 	bin/ado_harness -l $(NAME):SQLite: -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
 endif
 
 test-mysql:		build create-mysql-tests
-ifeq ($(HAVE_MYSQL),yes)
+ifneq (, ${MYSQL})
 	bin/ado_harness -l $(NAME):MySQL: -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
 endif
 
 test-postgresql:	build create-postgresql-tests
-ifeq ($(HAVE_POSTGRESQL),yes)
+ifneq (, ${PSQL})
 	bin/ado_harness -l $(NAME):Postgresql: -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
