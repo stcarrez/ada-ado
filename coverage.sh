@@ -1,6 +1,6 @@
 #!/bin/sh
 NAME=ado.cov
-lcov --quiet --base-directory . --directory . \
+alr exec -- lcov --quiet --base-directory . --directory . \
    --no-external \
    --exclude '*/b__*.adb' \
    --exclude '*/samples/*' \
