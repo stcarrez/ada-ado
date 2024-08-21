@@ -1,6 +1,16 @@
 NAME=ado
+VERSION=2.4.1
+
+DIST_DIR=ada-ado-$(VERSION)
+DIST_FILE=ada-ado-$(VERSION).tar.gz
+
+MAKE_ARGS += -XADO_BUILD=$(BUILD)
 
 -include Makefile.conf
+
+SQLITE?=$(shell which sqlite3)
+MYSQL?=$(shell which mysql)
+PSQL=$(shell which psql)
 
 ifeq ($(HAVE_SQLITE),yes)
 GNAT_SQLITE_VAR=True
@@ -29,28 +39,28 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 include Makefile.defaults
 
 # Build executables for all mains defined by the project.
-build-test::  setup
-	$(GNATMAKE) $(GPRFLAGS) -p -P$(NAME)_tests $(MAKE_ARGS) -largs -Llib/$(NAME)/static
+build-test::  lib-setup
+	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
-setup:: src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb src/drivers/ado-drivers-initialize.adb
+lib-setup:: mysql/src/mysql-lib.ads regtests/src/ado-testsuite-drivers.adb drivers/src/ado-drivers-initialize.adb
 
 # Configure the driver file
-src/drivers/ado-drivers-initialize.adb: src/drivers/ado-drivers-initialize.gpb Makefile.conf
+drivers/src/ado-drivers-initialize.adb: drivers/src/ado-drivers-initialize.gpb Makefile.conf
 	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
 	          -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
 	          -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
-		  src/drivers/ado-drivers-initialize.gpb $@
+		  drivers/src/ado-drivers-initialize.gpb $@
 
-src/mysql/mysql-lib.ads: src/mysql/mysql-lib.gpb Makefile.conf
+mysql/src/mysql-lib.ads: mysql/src/mysql-lib.gpb Makefile.conf
 	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's,^ *,,' -e 's,  , ,g' -e 's, $$,,g' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
     libs=`echo "$$libs" | sed -e 's,ASCII.NUL & "" & ASCII.NUL,ASCII.NUL,g'`;\
 	gnatprep -DMYSQL_LIB="$$libs" src/mysql/mysql-lib.gpb $@
 
-regtests/ado-testsuite-drivers.adb: regtests/ado-testsuite-drivers.gpb Makefile.conf
+regtests/src/ado-testsuite-drivers.adb: regtests/src/ado-testsuite-drivers.gpb Makefile.conf
 	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
 	         -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
 	         -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
-		 regtests/ado-testsuite-drivers.gpb $@
+		 regtests/src/ado-testsuite-drivers.gpb $@
 
 # Build and run the unit tests
 test:	test-sqlite test-mysql test-postgresql
@@ -70,7 +80,7 @@ ifeq ($(HAVE_POSTGRESQL),yes)
 	bin/ado_harness -l $(NAME):Postgresql: -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
-CLEAN_FILES=src/drivers/ado-drivers-initialize.adb src/mysql/mysql-lib.ads regtests/ado-testsuite-drivers.adb
+CLEAN_FILES=drivers/src/ado-drivers-initialize.adb mysql/src/mysql-lib.ads regtests/src/ado-testsuite-drivers.adb
 
 ADO_DOC= \
   title.md \
@@ -104,28 +114,28 @@ generate:
 
 # Create the test sqlite database
 regtests.db:
-ifeq ($(HAVE_SQLITE),yes)
-	sqlite3 $@ < db/regtests/sqlite/create-ado-sqlite.sql
+ifneq (, ${SQLITE})
+	$(SQLITE) $@ < db/regtests/sqlite/create-ado-sqlite.sql
 endif
 
 # Create the samples sqlite database
 samples.db:
-ifeq ($(HAVE_SQLITE),yes)
-	sqlite3 $@ < db/samples/sqlite/create-ado-sqlite.sql
+ifneq (, ${SQLITE})
+	$(SQLITE) $@ < db/samples/sqlite/create-ado-sqlite.sql
 endif
 
 # Create the tables in the database.
 # (The database itself must have been created)
 create-mysql-tests:
-ifeq ($(HAVE_MYSQL),yes)
-	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
-	mysql --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
+ifneq (, ${MYSQL})
+	$(MYSQL) --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/drop-ado-mysql.sql
+	$(MYSQL) --defaults-extra-file=db/regtests/mysql/mysql.cnf < db/regtests/mysql/create-ado-mysql.sql
 endif
 
 create-postgresql-tests:
-ifeq ($(HAVE_POSTGRESQL),yes)
-	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/drop-ado-postgresql.sql
-	psql -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
+ifneq (, ${PSQL})
+	$(PSQL) -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/drop-ado-postgresql.sql
+	$(PSQL) -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
 install:: install-data
@@ -133,18 +143,12 @@ install:: install-data
 install-data::
 	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db
 	${CP} db/*.xml $(DESTDIR)${dynamodir}/ado/db/
-ifeq ($(HAVE_MYSQL),yes)
 	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/mysql
 	${CP} db/mysql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/mysql
-endif
-ifeq ($(HAVE_POSTGRESQL),yes)
 	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/postgresql
 	${CP} db/postgresql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/postgresql
-endif
-ifeq ($(HAVE_SQLITE),yes)
 	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/sqlite
 	${CP} db/sqlite/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/sqlite
-endif
 	${CP} dynamo.xml $(DESTDIR)${dynamodir}/ado/
 	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/ado/
 	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/ado/
@@ -156,21 +160,12 @@ uninstall::
 
 .PHONY: doc
 
-$(eval $(call ada_library,$(NAME)))
+$(eval $(call ada_library,$(NAME),.))
+$(eval $(call ada_library,ado_sqlite,sqlite))
+$(eval $(call ada_library,ado_mysql,mysql))
+$(eval $(call ada_library,ado_postgresql,postgresql))
 
-ifeq ($(HAVE_SQLITE),yes)
-$(eval $(call ada_library,ado_sqlite))
-endif
-
-ifeq ($(HAVE_MYSQL),yes)
-$(eval $(call ada_library,ado_mysql))
-endif
-
-ifeq ($(HAVE_POSTGRESQL),yes)
-$(eval $(call ada_library,ado_postgresql))
-endif
-
-$(eval $(call ada_library,ado_all))
+$(eval $(call ada_library,ado_all,drivers))
 $(eval $(call alire_publish,.,ad/ado,ado-$(VERSION).toml))
 ifeq ($(HAVE_POSTGRESQL),yes)
 $(eval $(call alire_publish,.alire/postgresql,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))

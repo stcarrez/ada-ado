@@ -14,6 +14,7 @@ ado = "*"
 ado_sqlite = "*"
 ado_mysql = "*"
 ado_postgresql = "*"
+ado_all = "*"
 utilada = "^2.6.0"
 utilada_xml = "^2.6.0"
 utilada_unit = "^2.6.0"
@@ -26,3 +27,4 @@ ado = { path = '..' }
 ado_sqlite = { path = '../sqlite' }
 ado_mysql = { path = '../mysql' }
 ado_postgresql = { path = '../postgresql' }
+ado_all = { path = '../drivers' }
