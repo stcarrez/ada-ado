@@ -29,3 +29,7 @@ ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 
 [configuration]
 disabled = true
+
+[[actions]]
+type = "post-fetch"
+command = ["sh", "./alire-setup.sh"]
