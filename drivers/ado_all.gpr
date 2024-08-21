@@ -13,10 +13,10 @@ project Ado_All is
    for Library_Name use "ado_all";
    for Library_Kind use Library_Type;
    for Library_Version use "lib" & Project'Library_Name & ".so." & Version;
-   for Source_Dirs use ("../../src/drivers");
+   for Source_Dirs use ("src");
 
-   for Library_Dir use "../../lib/ado_all/" & Project'Library_Kind;
-   for Object_Dir use "../../obj/ado_all/" & Project'Library_Kind;
+   for Library_Dir use "../lib/ado_all/" & Project'Library_Kind;
+   for Object_Dir use "../obj/ado_all/" & Project'Library_Kind;
 
    --  For a shared library, we want the library to be initialized automatically
    --  (Library_Auto_Init = true).  The 'gnatmake' tool invokes 'gnatbind' correctly
