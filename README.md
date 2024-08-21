@@ -35,6 +35,9 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
+## Version 2.4.1   - Under development
+  - Cleanup build environment to drop configure
+
 ## Version 2.4.0   - Aug 2023
   - Feature #11: Support to audit creation of new objects in the database
   - Feature #12: Support for database migration
@@ -54,32 +57,23 @@ alr with ado_mysql
 alr with ado_postgresql
 ```
 
-## Build with configure
-
-To build ADO, you will need:
-
-* [Ada Util](https://gitlab.com/stcarrez/ada-util)
-* [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
-
-You should have installed either Postgresql, MySQL or SQLite before
-running the configure script.  For Windows, please read
-the file [win32/README](win32/README.md) that gives some installation hints.
-
-Build with the following commands:
-```
-./configure
-make
-```
-
 # Samples
 
 The samples can be built using:
+
 ```
-gnatmake -Psamples
-```   
+make samples
+```
+
+or
+```
+cd samples
+alr build
+```
 
 Before launching the samples, the database must have been created.
 For SQLite, use:
+
 ```
 make samples.db
 ```
@@ -112,7 +106,7 @@ sudo apt-get install postgresql-client libpq-dev
 
 MySQL Development installation
 ```
-sudo apt-get install mariadb-client libmariadb-client-lgpl-dev
+sudo apt-get install mariadb-client libmariadb-dev
 ```
 
 SQLite Development installation

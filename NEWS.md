@@ -1,3 +1,6 @@
+Version 2.4.1   - Under development
+  - Cleanup build environment to drop configure
+
 Version 2.4.0   - Aug 2023
   - Feature #11: Support to audit creation of new objects in the database
   - Feature #12: Support for database migration
