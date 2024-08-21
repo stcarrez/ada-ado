@@ -1,4 +1,7 @@
 #!/bin/sh
+if test -f src/mysql-lib.ads; then
+  exit 0
+fi
 PKG_CONFIG=`which pkg-config`
 if test "T$PKG_CONFIG" != T; then
   MYSQL_LIBS=`pkg-config --libs mariadb`
