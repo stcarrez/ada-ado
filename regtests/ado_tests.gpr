@@ -1,0 +1,26 @@
+with "ado_config";
+with "utilada_sys";
+with "utilada_unit";
+with "ado_sqlite";
+with "ado_mysql";
+with "ado_postgresql";
+
+project Ado_Tests is
+
+   for Languages use ("Ada");
+
+   Mains := ("ado_harness");
+
+   for Source_Dirs use ("src", "src/model");
+
+   for Main use Mains;
+
+   for Object_Dir use "../" & Ado_Config'Object_Dir & "/obj";
+   for Exec_Dir use "../bin";
+
+   package Binder renames Ado_Config.Binder;
+   package Builder renames Ado_Config.Builder;
+   package Compiler renames Ado_Config.Compiler;
+   package Linker renames Ado_Config.Linker;
+
+end Ado_Tests;
