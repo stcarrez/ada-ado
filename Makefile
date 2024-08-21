@@ -42,21 +42,9 @@ include Makefile.defaults
 build-test::  lib-setup
 	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
-lib-setup:: mysql/src/mysql-lib.ads regtests/src/ado-testsuite-drivers.adb drivers/src/ado-drivers-initialize.adb
+lib-setup:: regtests/src/ado-testsuite-drivers.adb
 
-# Configure the driver file
-drivers/src/ado-drivers-initialize.adb: drivers/src/ado-drivers-initialize.gpb Makefile.conf
-	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
-	          -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
-	          -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
-		  drivers/src/ado-drivers-initialize.gpb $@
-
-mysql/src/mysql-lib.ads: mysql/src/mysql-lib.gpb Makefile.conf
-	libs=`echo '"$(MYSQL_LIBS)"' | sed -e 's,^ *,,' -e 's,  , ,g' -e 's, $$,,g' | sed -e 's, ," \& ASCII.NUL \& ",g'` ; \
-    libs=`echo "$$libs" | sed -e 's,ASCII.NUL & "" & ASCII.NUL,ASCII.NUL,g'`;\
-	gnatprep -DMYSQL_LIB="$$libs" src/mysql/mysql-lib.gpb $@
-
-regtests/src/ado-testsuite-drivers.adb: regtests/src/ado-testsuite-drivers.gpb Makefile.conf
+regtests/src/ado-testsuite-drivers.adb: regtests/src/ado-testsuite-drivers.gpb
 	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
 	         -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
 	         -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
