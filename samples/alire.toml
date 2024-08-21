@@ -1,0 +1,29 @@
+description = "Ada Database Objects (samples)"
+tags = ["database", "uml", "sql"]
+name = "ado_tests"
+version = "2.4.1"
+licenses = "Apache-2.0"
+authors = ["Stephane.Carrez@gmail.com"]
+maintainers = ["Stephane.Carrez@gmail.com"]
+maintainers-logins = ["stcarrez"]
+project-files = ["ado_samples.gpr"]
+website = "https://gitlab.com/stcarrez/ada-ado"
+
+[[depends-on]]
+ado = "*"
+ado_sqlite = "*"
+ado_mysql = "*"
+ado_postgresql = "*"
+ado_all = "*"
+utilada = "^2.6.0"
+utilada_xml = "^2.6.0"
+
+[configuration]
+disabled = true
+
+[[pins]]
+ado = { path = '..' }
+ado_sqlite = { path = '../sqlite' }
+ado_mysql = { path = '../mysql' }
+ado_postgresql = { path = '../postgresql' }
+ado_all = { path = '../drivers' }
