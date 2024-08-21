@@ -18,10 +18,10 @@ lib/
 ado-aunit.xml
 regtests/results/
 regtests/ado-testsuite.adb
-regtests/ado-testsuite-drivers.adb
+regtests/src/ado-testsuite-drivers.adb
 src/drivers/ado-drivers-initialize.adb
 regtests.db
-src/mysql/mysql-lib.ads
+mysql/src/mysql-lib.ads
 docs/ado-book.html
 alire
 cover
