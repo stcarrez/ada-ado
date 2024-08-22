@@ -19,7 +19,9 @@ ado-aunit.xml
 regtests/results/
 regtests/ado-testsuite.adb
 regtests/src/ado-testsuite-drivers.adb
-src/drivers/ado-drivers-initialize.adb
+drivers/src/ado-drivers-initialize.adb
+drivers/ado_all.gpr
+drivers/ado_all.def
 regtests.db
 mysql/src/mysql-lib.ads
 docs/ado-book.html

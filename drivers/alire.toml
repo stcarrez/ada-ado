@@ -19,21 +19,9 @@ This crate give access to the PostgreSQL, MySQL and SQLite drivers for the Ada D
 
 """
 
-[[depends-on]]
-ado_postgresql = "^2.4.0"
-ado_sqlite = "^2.4.0"
-ado_mysql = "^2.4.0"
-
-[gpr-externals]
-ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
-BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
-
 [configuration]
 disabled = true
 
 [[actions]]
 type = "post-fetch"
-command = ["gnatprep", "-DHAVE_MYSQL=True", "-DHAVE_SQLITE=True", "-DHAVE_POSTGRESQL=True",
-  "src/ado-drivers-initialize.gpb",
-  "src/ado-drivers-initialize.adb"
-]
+command = ["sh", "./alire-setup.sh"]
