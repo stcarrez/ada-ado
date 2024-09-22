@@ -1,0 +1,23 @@
+# Default configuration
+[default]
+color="yes"
+ignore-files=[
+"spdx-tool:ignore.txt",
+"spdx-tool:ignore-docs.txt"
+]
+ignore=[
+"*.md",
+"*.xml",
+"*.properties",
+"*.html",
+"*.tex",
+"*.gpr",
+"*.toml",
+"*.yml",
+"*.conf",
+"*.dll",
+"*.keywords",
+".readthedocs.yaml",
+"*.sql"
+]
+
