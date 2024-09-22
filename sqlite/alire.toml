@@ -20,7 +20,7 @@ This is the SQLite driver for the Ada Database Objects library.
 """
 
 [[depends-on]]
-ado = "^2.4.1"
+ado = "^2.4.0"
 libsqlite3 = "any"
 
 [gpr-externals]

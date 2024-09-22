@@ -20,7 +20,7 @@ This is the PostgreSQL driver for the Ada Database Objects library.
 """
 
 [[depends-on]]
-ado = "^2.4.1"
+ado = "^2.4.0"
 libpq = "*"
 
 [gpr-externals]
