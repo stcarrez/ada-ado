@@ -12,24 +12,6 @@ SQLITE?=$(shell which sqlite3)
 MYSQL?=$(shell which mysql)
 PSQL=$(shell which psql)
 
-ifeq ($(HAVE_SQLITE),yes)
-GNAT_SQLITE_VAR=True
-else
-GNAT_SQLITE_VAR=False
-endif
-
-ifeq ($(HAVE_MYSQL),yes)
-GNAT_MYSQL_VAR=True
-else
-GNAT_MYSQL_VAR=False
-endif
-
-ifeq ($(HAVE_POSTGRESQL),yes)
-GNAT_POSTGRESQL_VAR=True
-else
-GNAT_POSTGRESQL_VAR=False
-endif
-
 STATIC_MAKE_ARGS = $(MAKE_ARGS) -XADO_LIBRARY_TYPE=static
 SHARED_MAKE_ARGS = $(MAKE_ARGS) -XADO_LIBRARY_TYPE=relocatable
 SHARED_MAKE_ARGS += -XUTILADA_BASE_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
@@ -42,13 +24,7 @@ include Makefile.defaults
 build-test::  lib-setup
 	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
-lib-setup:: regtests/src/ado-testsuite-drivers.adb
-
-regtests/src/ado-testsuite-drivers.adb: regtests/src/ado-testsuite-drivers.gpb
-	gnatprep -DHAVE_MYSQL=$(GNAT_MYSQL_VAR) \
-	         -DHAVE_SQLITE=$(GNAT_SQLITE_VAR) \
-	         -DHAVE_POSTGRESQL=$(GNAT_POSTGRESQL_VAR) \
-		 regtests/src/ado-testsuite-drivers.gpb $@
+lib-setup::
 
 # Build and run the unit tests
 test:	test-sqlite test-mysql test-postgresql
@@ -155,13 +131,13 @@ $(eval $(call ada_library,ado_postgresql,postgresql))
 
 $(eval $(call ada_library,ado_all,drivers))
 $(eval $(call alire_publish,.,ad/ado,ado-$(VERSION).toml))
-ifeq ($(HAVE_POSTGRESQL),yes)
-$(eval $(call alire_publish,.alire/postgresql,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))
+ifneq (, ${PSQL})
+$(eval $(call alire_publish,postgresql,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))
 endif
-ifeq ($(HAVE_MYSQL),yes)
-$(eval $(call alire_publish,.alire/mysql,ad/ado_mysql,ado_mysql-$(VERSION).toml))
+ifneq (, ${MYSQL})
+$(eval $(call alire_publish,mysql,ad/ado_mysql,ado_mysql-$(VERSION).toml))
 endif
-ifeq ($(HAVE_SQLITE),yes)
-$(eval $(call alire_publish,.alire/sqlite,ad/ado_sqlite,ado_sqlite-$(VERSION).toml))
+ifneq (, ${SQLITE})
+$(eval $(call alire_publish,sqlite,ad/ado_sqlite,ado_sqlite-$(VERSION).toml))
 endif
-$(eval $(call alire_publish,.alire/all,ad/ado_all,ado_all-$(VERSION).toml))
+$(eval $(call alire_publish,drivers,ad/ado_all,ado_all-$(VERSION).toml))
