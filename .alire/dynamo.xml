@@ -1,8 +1,0 @@
-<project>
-    <name>ado</name>
-    <property name="author_email">Stephane.Carrez@gmail.com</property>
-    <property name="skip_awa_audit_field">yes</property>
-    <property name="author">Stephane Carrez</property>
-    <property name="db_dir">../db</property>
-    <depend name="util"></depend>
-</project>
