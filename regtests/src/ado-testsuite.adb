@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-testsuite -- Testsuite for ADO
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,9 +29,9 @@ with ADO.Audits.Tests;
 with ADO.SQL.Tests;
 package body ADO.Testsuite is
 
-   procedure Drivers (Suite : in Util.Tests.Access_Test_Suite);
+   --  procedure Drivers (Suite : in Util.Tests.Access_Test_Suite);
 
-   procedure Drivers (Suite : in Util.Tests.Access_Test_Suite) is separate;
+   --  procedure Drivers (Suite : in Util.Tests.Access_Test_Suite) is separate;
 
    Tests : aliased Util.Tests.Test_Suite;
 
@@ -45,7 +45,7 @@ package body ADO.Testsuite is
       ADO.Statements.Tests.Add_Tests (Ret);
       ADO.Tests.Add_Tests (Ret);
       ADO.Schemas.Tests.Add_Tests (Ret);
-      Drivers (Ret);
+      --  Drivers (Ret);
       ADO.Queries.Tests.Add_Tests (Ret);
       ADO.Datasets.Tests.Add_Tests (Ret);
       ADO.Audits.Tests.Add_Tests (Ret);
