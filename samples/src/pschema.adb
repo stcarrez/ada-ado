@@ -1,13 +1,12 @@
 -----------------------------------------------------------------------
 --  pschema - Print the database schema
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2021 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 
 with ADO;
 with ADO.Drivers;
-with ADO.Configs;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Schemas;
@@ -22,7 +21,6 @@ with Util.Log.Loggers;
 procedure Pschema is
 
    use ADO;
-   use Ada;
    use ADO.Schemas;
    use Util.Strings.Transforms;
 
@@ -142,8 +140,8 @@ begin
                      Ada.Text_IO.Put ("      not-null: ");
                      Ada.Text_IO.Put_Line ((if Is_Null (Col) then "true" else "false"));
                      if Get_Default (Col)'Length > 0 then
-                        Ada.Text_Io.Put ("      default: ");
-                        Ada.Text_Io.Put_Line (Get_Default (Col));
+                        Ada.Text_IO.Put ("      default: ");
+                        Ada.Text_IO.Put_Line (Get_Default (Col));
                      end if;
                   end if;
                end;
