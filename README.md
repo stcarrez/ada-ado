@@ -35,16 +35,8 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
-## Version 2.4.1   - Under development
+## Version 2.4.1   - Sep 2024
   - Cleanup build environment to drop configure
-
-## Version 2.4.0   - Aug 2023
-  - Feature #11: Support to audit creation of new objects in the database
-  - Feature #12: Support for database migration
-  - Fix #14: Problems with SQLite transactions
-  - Fix #15: Use ADO_BUILD instead of BUILD in the Alire crate configuration
-  - Fix #16: Status SQLITE_ROW is treated as an error
-  - Fix #18: Has_Table does not work for PostgreSQL
 
 [List all versions](https://gitlab.com/stcarrez/ada-ado/blob/master/NEWS.md)
 
