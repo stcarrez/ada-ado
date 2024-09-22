@@ -1,7 +1,7 @@
 #!/bin/sh
 NAME=ado.cov
 alr exec -- lcov --quiet --base-directory . --directory . \
-   --no-external \
+   --no-external --ignore-errors gcov,unused \
    --exclude '*/<unknown>' \
    --exclude '*/b__*.adb' \
    --exclude '*/samples/*' \
