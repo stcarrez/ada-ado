@@ -29,6 +29,10 @@ disabled = true
 type = "post-fetch"
 command = ["sh", "./alire-setup.sh"]
 
+[[actions]]
+type = "pre-build"
+command = ["sh", "./alire-setup.sh"]
+
 [[pins]]
 ado = { path='..' }
 ado_sqlite = { path = '../sqlite' }
