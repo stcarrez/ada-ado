@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-audits-tests -- Audit tests
---  Copyright (C) 2018, 2019, 2021, 2022, 2023 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021, 2022, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -185,7 +185,7 @@ package body ADO.Audits.Tests is
       end loop;
       DB.Commit;
 
-      Prop.set_Id (Util.Tests.Get_Uuid);
+      Prop.Set_Id (Util.Tests.Get_Uuid);
       for I in 1 .. 10 loop
          Prop.Set_Value ((Value => I, Is_Null => False));
          Prop.Set_Float_Value (3.0 * Float (I));

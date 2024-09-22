@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-tests -- Various tests on database access
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018, 2019, 2022, 2023 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -405,7 +405,7 @@ package body ADO.Tests is
       declare
          DB : constant ADO.Sessions.Master_Session := Regtests.Get_Master_Database;
       begin
-         Db.Execute ("UPDATE ado_sequence SET block_size = 5 WHERE name = 'TEST_COMMENTS'");
+         DB.Execute ("UPDATE ado_sequence SET block_size = 5 WHERE name = 'TEST_COMMENTS'");
       end;
 
       declare
@@ -417,7 +417,7 @@ package body ADO.Tests is
 
          task body Worker is
             Cnt : Natural;
-            TId : Natural;
+            Tid : Natural;
          begin
             accept Start (Ident : in Natural;
                           Count : in Natural) do
@@ -456,7 +456,7 @@ package body ADO.Tests is
                         exit;
 
                      exception
-                        when Ado.Objects.Lazy_Lock =>
+                        when ADO.Objects.LAZY_LOCK =>
                            Log.Warn ("Retry insert comment in database");
                            delay 0.3 * Retry;
 

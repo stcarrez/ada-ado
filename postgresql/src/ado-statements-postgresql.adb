@@ -1,13 +1,12 @@
 -----------------------------------------------------------------------
 --  ado-statements-postgresql -- Postgresql query statements
---  Copyright (C) 2018, 2019, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2021, 2022, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 
 with Interfaces.C;
 with Interfaces.C.Strings;
-with Ada.Unchecked_Conversion;
 
 with Util.Log;
 with Util.Log.Loggers;

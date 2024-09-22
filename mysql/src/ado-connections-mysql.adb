@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-connections-mysql -- MySQL Database connections
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2017, 2018, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -335,6 +335,12 @@ package body ADO.Connections.Mysql is
                               Schema_Path : in String;
                               Messages    : out Util.Strings.Vectors.Vector) is
       pragma Unreferenced (D);
+
+      function Has_Database (DB   : in ADO.Sessions.Session'Class;
+                             Name : in String) return Boolean;
+
+      function Has_Tables (DB   : in ADO.Sessions.Session'Class;
+                           Name : in String) return Boolean;
 
       --  Create the MySQL tables in the database.  The tables are created by launching
       --  the external command 'mysql' and using the create-xxx-mysql.sql generated scripts.

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-tests -- Test loading of database schema
---  Copyright (C) 2009 - 2023 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -114,7 +114,8 @@ package body ADO.Schemas.Tests is
       declare
          P : ADO.Parameters.Parameter
            := ADO.Parameters.Parameter'(T => ADO.Parameters.T_INTEGER, Num => 0,
-                                        Len => 0, Value_Len => 0, Position => 0, Name => "");
+                                        Len => 0, Value_Len => 0, Position => 0, Name => "")
+          with Unreferenced;
       begin
          P := C.Expand ("something");
          T.Assert (False, "Expand did not raise the No_Entity_Type exception");
@@ -408,9 +409,9 @@ package body ADO.Schemas.Tests is
                if I = J then
                   T.Assert (not (Left < Right), "Invalid comparison");
                elsif Left < Right then
-                  Ada.Text_Io.Put_Line (To_String (Left) & " < " & To_String (Right));
+                  Ada.Text_IO.Put_Line (To_String (Left) & " < " & To_String (Right));
                else
-                  Ada.Text_Io.Put_Line ("ERROR: " & To_String (Left) & " < " & To_String (Right));
+                  Ada.Text_IO.Put_Line ("ERROR: " & To_String (Left) & " < " & To_String (Right));
                   T.Assert (Left < Right, "Invalid comparison");
                end if;
             end loop;

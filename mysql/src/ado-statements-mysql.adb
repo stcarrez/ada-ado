@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-mysql -- MySQL Statements
---  Copyright (C) 2009, 2010, 2011, 2012, 2013, 2015, 2018, 2019, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -193,7 +193,7 @@ package body ADO.Statements.Mysql is
       Log.Debug ("Execute {0}", Query);
 
       --  Execute the query
-      return Mysql_Real_Query (Connection, ADO.C.To_C (Sql), Query'Length);
+      return mysql_real_query (Connection, ADO.C.To_C (Sql), Query'Length);
    end Execute;
 
    --  ------------------------------
