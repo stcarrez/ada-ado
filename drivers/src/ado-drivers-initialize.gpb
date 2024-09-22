@@ -15,7 +15,7 @@ with ADO.Connections.Sqlite;
 with ADO.Connections.Postgresql;
 #end if;
 
-separate (ADO.Drivers)a
+separate (ADO.Drivers)
 procedure Initialize is
 
 begin
