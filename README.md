@@ -11,7 +11,7 @@
 [![Download](https://img.shields.io/badge/download-2.4.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.4.0.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-ado)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.4.0.svg)
+[![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.4.0.svg)](Commits)
 
 Ada Database Objects is an Ada05 library that provides
 object relational mapping to access a database in Ada05.
