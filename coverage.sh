@@ -7,5 +7,5 @@ alr exec -- lcov --quiet --base-directory . --directory . \
    --exclude '*/samples/*' \
    --exclude '*/regtests*' -c -o $NAME
 rm -rf cover
-genhtml --quiet --ignore-errors source -o ./cover -t "test coverage" --num-spaces 4 $NAME
+genhtml --quiet --ignore-errors source,gcov -o ./cover -t "test coverage" --num-spaces 4 $NAME
  
