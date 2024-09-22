@@ -20,7 +20,7 @@ This crate give access to the PostgreSQL, MySQL and SQLite drivers for the Ada D
 """
 
 [[depends-on]]
-ado = "^2.4.1"
+ado = "^2.4.0"
 
 [configuration]
 disabled = true
