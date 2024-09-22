@@ -1,7 +1,7 @@
 description = "Ada Database Objects (PostgreSQL)"
 tags = ["database", "uml", "sql", "postgresql"]
 name = "ado_postgresql"
-version = "2.4.0"
+version = "2.4.1"
 licenses = "Apache-2.0"
 authors = ["Stephane.Carrez@gmail.com"]
 maintainers = ["Stephane.Carrez@gmail.com"]
@@ -20,7 +20,7 @@ This is the PostgreSQL driver for the Ada Database Objects library.
 """
 
 [[depends-on]]
-ado = "^2.4.0"
+ado = "^2.4.1"
 libpq = "*"
 
 [gpr-externals]
@@ -29,3 +29,6 @@ ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 
 [configuration]
 disabled = true
+
+[[pins]]
+ado = { path='..' }
