@@ -20,6 +20,8 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 
 include Makefile.defaults
 
+DEFAULT_ADA_PROJECT_PATH=$(SRC_ROOT):$(SRC_ROOT)/sqlite:$(SRC_ROOT)/mysql:$(SRC_ROOT)/postgresql:$(SRC_ROOT)/drivers:$(ADA_PROJECT_PATH)
+
 # Build executables for all mains defined by the project.
 build-test::  lib-setup
 	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
@@ -123,6 +125,10 @@ uninstall::
 	rm -rf $(DESTDIR)${dynamodir}/ado
 
 .PHONY: doc
+
+lib-setup::
+	cd mysql && sh ./alire-setup.sh
+	cd drivers && sh ./alire-setup.sh
 
 $(eval $(call ada_library,$(NAME),.))
 $(eval $(call ada_library,ado_sqlite,sqlite))
