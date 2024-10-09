@@ -20,7 +20,25 @@ SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
 
 include Makefile.defaults
 
-DEFAULT_ADA_PROJECT_PATH=$(SRC_ROOT):$(SRC_ROOT)/sqlite:$(SRC_ROOT)/mysql:$(SRC_ROOT)/postgresql:$(SRC_ROOT)/drivers:$(ADA_PROJECT_PATH)
+HAVE_SQLITE?=yes
+HAVE_MYSQL?=yes
+HAVE_POSTGRESQL?=yes
+
+DEFAULT_ADA_PROJECT_PATH=$(SRC_ROOT)
+
+ifeq ($(HAVE_SQLITE),yes)
+DEFAULT_ADA_PROJECT_PATH:=$(DEFAULT_ADA_PROJECT_PATH):$(SRC_ROOT)/sqlite
+endif
+
+ifeq ($(HAVE_MYSQL),yes)
+DEFAULT_ADA_PROJECT_PATH:=$(DEFAULT_ADA_PROJECT_PATH):$(SRC_ROOT)/mysql
+endif
+
+ifeq ($(HAVE_POSTGRESQL),yes)
+DEFAULT_ADA_PROJECT_PATH:=$(DEFAULT_ADA_PROJECT_PATH):$(SRC_ROOT)/postgresql
+endif
+
+DEFAULT_ADA_PROJECT_PATH:=$(DEFAULT_ADA_PROJECT_PATH):$(SRC_ROOT)/drivers:$(ADA_PROJECT_PATH)
 
 # Build executables for all mains defined by the project.
 build-test::  lib-setup
@@ -29,20 +47,26 @@ build-test::  lib-setup
 lib-setup::
 
 # Build and run the unit tests
-test:	test-sqlite test-mysql test-postgresql
+
+ifeq ($(HAVE_SQLITE),yes)
+test::  test-sqlite
 
 test-sqlite:		build regtests.db
-ifneq (, ${SQLITE})
+
 	bin/ado_harness -l $(NAME):SQLite: -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
 endif
 
+ifeq ($(HAVE_MYSQL),yes)
+test:: test-mysql
+
 test-mysql:		build create-mysql-tests
-ifneq (, ${MYSQL})
 	bin/ado_harness -l $(NAME):MySQL: -p MySQL -xml ado-mysql-aunit.xml -config test-mysql.properties
 endif
 
+ifeq ($(HAVE_POSTGRESQL),yes)
+test:: test-postgresql
+
 test-postgresql:	build create-postgresql-tests
-ifneq (, ${PSQL})
 	bin/ado_harness -l $(NAME):Postgresql: -p Postgresql -xml ado-postgresql-aunit.xml -config test-postgresql.properties
 endif
 
@@ -127,23 +151,38 @@ uninstall::
 .PHONY: doc
 
 lib-setup::
+ifneq ($(HAVE_ALIRE),yes)
+ifeq ($(HAVE_MYSQL),yes)
 	cd mysql && sh ./alire-setup.sh
-	cd drivers && sh ./alire-setup.sh
+endif
+	cd drivers && sh ./alire-setup.sh sqlite=$(HAVE_SQLITE) mysql=$(HAVE_MYSQL) postgresql=$(HAVE_POSTGRESQL)
+endif
 
 $(eval $(call ada_library,$(NAME),.))
+ifeq ($(HAVE_SQLITE),yes)
 $(eval $(call ada_library,ado_sqlite,sqlite))
+endif
+ifeq ($(HAVE_MYSQL),yes)
 $(eval $(call ada_library,ado_mysql,mysql))
+endif
+ifeq ($(HAVE_POSTGRESQL),yes)
 $(eval $(call ada_library,ado_postgresql,postgresql))
+endif
 
 $(eval $(call ada_library,ado_all,drivers))
 $(eval $(call alire_publish,.,ad/ado,ado-$(VERSION).toml))
-ifneq (, ${PSQL})
+ifeq ($(HAVE_POSTGRESQL),yes)
 $(eval $(call alire_publish,postgresql,ad/ado_postgresql,ado_postgresql-$(VERSION).toml))
 endif
-ifneq (, ${MYSQL})
+ifeq ($(HAVE_MYSQL),yes)
 $(eval $(call alire_publish,mysql,ad/ado_mysql,ado_mysql-$(VERSION).toml))
 endif
-ifneq (, ${SQLITE})
+ifeq ($(HAVE_SQLITE),yes)
 $(eval $(call alire_publish,sqlite,ad/ado_sqlite,ado_sqlite-$(VERSION).toml))
 endif
 $(eval $(call alire_publish,drivers,ad/ado_all,ado_all-$(VERSION).toml))
+
+setup::
+	echo "HAVE_SQLITE=$(HAVE_SQLITE)" >> Makefile.conf
+	echo "HAVE_MYSQL=$(HAVE_MYSQL)" >> Makefile.conf
+	echo "HAVE_POSTGRESQL=$(HAVE_POSTGRESQL)" >> Makefile.conf

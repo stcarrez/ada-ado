@@ -1,4 +1,19 @@
 #!/bin/sh
+for i in $*; do
+    case $i in
+        sqlite=yes)
+            ADO_SQLITE_ALIRE_PREFIX=True
+            ;;
+
+        mysql=yes)
+            ADO_MYSQL_ALIRE_PREFIX=True
+            ;;
+
+        postgresql=yes)
+            ADO_POSTGRESQL_ALIRE_PREFIX=True
+            ;;
+    esac
+done
 (
  test "T$ADO_SQLITE_ALIRE_PREFIX" != T && echo HAVE_SQLITE:=True || echo HAVE_SQLITE:=False
 

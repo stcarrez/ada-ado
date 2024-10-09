@@ -1,9 +1,6 @@
 with "ado_config";
 with "utilada_sys";
 with "utilada_unit";
-with "ado_sqlite";
-with "ado_mysql";
-with "ado_postgresql";
 with "ado_all";
 
 project Ado_Tests is
