@@ -40,14 +40,60 @@ section to install them and run the configure again after the installation.
 
 [List all versions](https://gitlab.com/stcarrez/ada-ado/blob/master/NEWS.md)
 
-## Build with Alire
+## Using with Alire
+
+If you are using [Alire](https://alire.ada.dev/) in your project, run the following command
+within your [Alire](https://alire.ada.dev/) project to use the library:
 
 ```
 alr with ado
+```
+
+Depending on your project, you may need one or some of the following other components
+to get the support for SQLite, MySQL or PostgreSQL:
+
+```
 alr with ado_sqlite
 alr with ado_mysql
 alr with ado_postgresql
 ```
+
+## Using without Alire
+
+If you don't have [Alire](https://alire.ada.dev/) or want to build and install the library
+on a specific place, run a `setup` command to configure the build as well as installation
+directory.
+For a detailed description on how you can configure, build and install the library
+refer to the [Installation](https://ada-ado.readthedocs.io/en/latest/Installation/) guide.
+Otherwise, you can easily configure and build the library with the steps described below.
+
+The support for SQLite, MySQL and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
+variable is defined.  Run the setup command that records in the `Makefile.conf` the configuration
+you want to build.
+
+The `HAVE_ALIRE` configuration allows you to build with [Alire](https://alire.ada.dev/) or not.
+
+The example below enables the SQLite and PostgreSQL components but disables
+the MySQL support and disables the use of [Alire](https://alire.ada.dev/) to build
+the library.
+
+```
+make setup BUILD=debug PREFIX=/build/install \
+  HAVE_SQLITE=yes HAVE_POSTGRESQL=yes \
+  HAVE_MYSQL=no HAVE_ALIRE=no
+```
+
+Then build, run the unit tests and install by using:
+
+```
+make
+make test
+make install
+```
+
+To use the installed libraries, make sure your `ADA_PROJECT_PATH` contains the directory
+where you installed the libraries (configured by the `PREFIX=<path>` option in the setup phase).
+The installed GNAT projects are the same as those used when using [Alire](https://alire.ada.dev/).
 
 # Samples
 
@@ -58,6 +104,7 @@ make samples
 ```
 
 or
+
 ```
 cd samples
 alr build
