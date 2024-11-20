@@ -15,12 +15,12 @@
 
 Ada Database Objects is an Ada05 library that provides
 object relational mapping to access a database in Ada05.
-The library supports Postgresql, MySQL, SQLite as databases.
+The library supports Postgresql, MySQL/MariaDB, SQLite as databases.
 Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
 The ORM uses an YAML, XML mapping file or an UML model, a code generator and a runtime library
 for the implementation.  It provides a database driver for [Postgresql](https://www.postgresql.org/),
-[MySQL](https://www.mysql.com/) and [SQLite](https://www.sqlite.org/).  The ORM helps your
+[MySQL](https://www.mysql.com/)/[MariaDB](https://www.mariadb.org) and [SQLite](https://www.sqlite.org/).  The ORM helps your
 application by providing a mapping of your database tables directly in the target programming
 language: Ada05 in our case.  The development process is the following:
 
@@ -50,7 +50,7 @@ alr with ado
 ```
 
 Depending on your project, you may need one or some of the following other components
-to get the support for SQLite, MySQL or PostgreSQL:
+to get the support for SQLite, MySQL/MariaDB or PostgreSQL. Use ado_mysql for MariaDB.
 
 ```
 alr with ado_sqlite
@@ -67,14 +67,14 @@ For a detailed description on how you can configure, build and install the libra
 refer to the [Installation](https://ada-ado.readthedocs.io/en/latest/Installation/) guide.
 Otherwise, you can easily configure and build the library with the steps described below.
 
-The support for SQLite, MySQL and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
+The support for SQLite, MySQL/MariaDB and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
 variable is defined.  Run the setup command that records in the `Makefile.conf` the configuration
 you want to build.
 
 The `HAVE_ALIRE` configuration allows you to build with [Alire](https://alire.ada.dev/) or not.
 
 The example below enables the SQLite and PostgreSQL components but disables
-the MySQL support and disables the use of [Alire](https://alire.ada.dev/) to build
+the MySQL/MariaDB support and disables the use of [Alire](https://alire.ada.dev/) to build
 the library.
 
 ```
@@ -135,7 +135,7 @@ The Ada Database Objects sources as well as a wiki documentation is provided on:
 
 # Database Drivers
 
-The Postgresql, MySQL and SQLite development headers and runtime are necessary for building
+The Postgresql, MySQL/MariaDB and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 
 Postgresql Development installation
@@ -143,7 +143,7 @@ Postgresql Development installation
 sudo apt-get install postgresql-client libpq-dev
 ```
 
-MySQL Development installation
+MySQL/MariaDB Development installation
 ```
 sudo apt-get install mariadb-client libmariadb-dev
 ```
@@ -159,7 +159,7 @@ For Windows, check [win32/README](win32/README.md) to install the libraries.
 
 Create the tests database by using the Dynamo command.
 (Dynamo is available at: https://gitlab.com/stcarrez/dynamo)
-Note: change 'root' and 'password' to a MySQL user that has admin access rights
+Note: change 'root' and 'password' to a MySQL/MariaDB user that has admin access rights
 ('create database' and 'grant option' privileges).
 ```
 dynamo create-database db/regtests root password
@@ -170,11 +170,11 @@ You can also specify the connection string and create the schema by using:
 dynamo create-database db/regtests 'mysql://localhost:3306/ado_test?user=ado' root password
 ```
 
-### MySQL setup
+### MySQL/MariaDB setup
 
 To create manually the database, you can proceed to the following steps:
 
-1. Create the 'ado_test' database in MySQL
+1. Create the 'ado_test' database in MySQL/MariaDB
 ```
 sudo mysql
 mysql> CREATE DATABASE ado_test;
@@ -221,7 +221,7 @@ psql "postgresql://localhost:5432/ado_test?user=ado&password=ado" \
 
 # Testing
 
-Before running the unit tests for MySQL or Postgresql, you must create the
+Before running the unit tests for MySQL/MariaDB or Postgresql, you must create the
 test database as described in [Database Creation](#database-creation).
 
 The unit tests are built and executed using:
