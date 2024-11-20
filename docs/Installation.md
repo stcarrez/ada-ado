@@ -12,8 +12,8 @@ alr index --update-all
 alr with ado
 ```
 
-The database drivers for SQLite, MySQL and SQLite are provided as separate crates.  Choose the database
-drivers you want to use and run one or some of the following commands:
+The database drivers for SQLite, MySQL/MariaDB and SQLite are provided as separate crates. Choose the 
+database drivers you want to use and run one or some of the commands below. For MariaDB use ado_mysql. 
 
 ```
 alr with ado_sqlite
@@ -25,13 +25,13 @@ alr with ado_postgresql
 
 ### Database Driver Installation
 
-The PostgreSQL, MySQL and SQLite development headers and runtime are necessary for building
+The PostgreSQL, MySQL/MariaDB and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 The configure script will fail if it does not find any database driver.
 
 #### Ubuntu
 
-MySQL Development installation
+MySQL/MariaDB Development installation
 ```
 sudo apt-get install libmysqlclient-dev
 ```
@@ -65,8 +65,8 @@ pacman -S mingw-w64-x86_64-sqlite3
 ```
 
 For Windows, the installation is a little bit more complex and manual.
-You may either download the files from MySQL and SQLite download sites
-or you may use the files provided by Ada Database Objects
+You may either download the files from MySQL/MariaDB and SQLite download 
+sites or you may use the files provided by Ada Database Objects
 in the `win32` directory.
 
 For Windows 32-bit, extract the files:
@@ -82,7 +82,8 @@ cd win32 && unzip sqlite-dll-win64-x64-3290000.zip
 ```
 
 If your GNAT 2019 compiler is installed in `C:/GNAT/2019`, you may
-install the liblzma, MySQL and SQLite libraries by using msys cp with:
+install the liblzma, MySQL/MariaDB and SQLite libraries by using msys 
+cp with:
 
 ```
 cp win32/*.dll C:/GNAT/2019/bin
@@ -98,7 +99,7 @@ Before building ADO, you will need:
 
 * [Ada Utility Library](https://github.com/stcarrez/ada-util)
 * [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
-* Either the PostgreSQL, MySQL or SQLite development headers installed.
+* Either the PostgreSQL, MySQL/MariaDB or SQLite development headers installed.
 
 First get, build and install the [XML/Ada](https://libre.adacore.com/libre/tools/xmlada/)
 and then get, build and install the [Ada Utility Library](https://github.com/stcarrez/ada-util).
@@ -113,7 +114,7 @@ and you may use:
   * `--prefix=DIR` to control the installation directory,
   * `--with-mysql=PATH` to control the path where `mysql_config` is installed,
   * `--with-ada-util=PATH` to control the installation path of [Ada Utility Library](https://github.com/stcarrez/ada-util),
-  * `--enable-mysql` to enable the support for MySQL,
+  * `--enable-mysql` to enable the support for MySQL/MariaDB,
   * `--enable-postgresql` to enable the support for PostgreSQL,
   * `--enable-sqlite` to enable the support for SQLite,
   * `--enable-shared` to enable the build of shared libraries,
@@ -142,7 +143,7 @@ make test
 ```
 And unit tests are executed by running the `bin/ado_harness` test program.  A configuration
 file is necessary to control the test parameters including the test database to be used.
-To run the tests with a MySQL database, use the following command:
+To run the tests with a MySQL/MariaDB database, use the following command:
 ```
 bin/ado_harness -config test-mysql.properties
 ```
