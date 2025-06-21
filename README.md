@@ -4,14 +4,15 @@
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_sqlite.json)](https://alire.ada.dev/crates/ado_sqlite)
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_mysql.json)](https://alire.ada.dev/crates/ado_mysql)
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/ado_postgresql.json)](https://alire.ada.dev/crates/ado_postgresql)
+[![Ada 2012](https://img.shields.io/badge/2012-inside-green?logo=ada&logoColor=white&logoSize=auto)](https://adaic.org/ada-resources/standards/ada12)
 [![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/build.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/summary)
 [![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/xunits)
 [![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/summary)
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
-[![Download](https://img.shields.io/badge/download-2.4.0-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.4.0.tar.gz)
+[![Download](https://img.shields.io/badge/download-2.4.1-brightgreen.svg)](http://download.vacs.fr/ada-ado/ada-ado-2.4.1.tar.gz)
 [![License](https://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-ado)
-[![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.4.0.svg)](Commits)
+[![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.4.1.svg)](Commits)
 
 Ada Database Objects is an Ada05 library that provides
 object relational mapping to access a database in Ada05.
