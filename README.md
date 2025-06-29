@@ -36,6 +36,9 @@ You need at least one of these databases (or all of then).  The configure script
 fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
 section to install them and run the configure again after the installation.
 
+## Version 2.4.2   - Under development
+  - Fix #25: Schema column 'text' not recognized by SQLite driver
+
 ## Version 2.4.1   - Sep 2024
   - Cleanup build environment to drop configure
 
