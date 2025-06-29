@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas -- Database Schemas
---  Copyright (C) 2015, 2018, 2019, 2020, 2021, 2022 Stephane Carrez
+--  Copyright (C) 2015, 2018, 2019, 2020, 2021, 2022, 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -39,6 +39,8 @@ package body ADO.Schemas.Sqlite is
          return T_DOUBLE;
       elsif Value = "blob" then
          return T_BLOB;
+      elsif Value = "text" then
+         return T_VARCHAR;
       end if;
       Pos := Ada.Strings.Fixed.Index (Value, "(");
       if Pos > 0 then
