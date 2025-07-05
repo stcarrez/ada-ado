@@ -27,4 +27,10 @@ library project Ado is
    package Builder renames Ado_Config.Builder;
    package Compiler renames Ado_Config.Compiler;
 
+   package Install is
+      for Artifacts ("share/dynamo/ado") use ("dynamo.xml", "NOTICE.txt", "LICENSE.txt");
+      for Artifacts ("share/dynamo/ado/db") use ("db/*.xml");
+      for Artifacts ("share/dynamo/ado/db/migrate") use ("db/migrate/*");
+   end Install;
+
 end Ado;

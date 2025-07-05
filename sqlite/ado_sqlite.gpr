@@ -58,4 +58,8 @@ project Ado_Sqlite is
    package Builder renames Ado_Config.Builder;
    package Compiler renames Ado_Config.Compiler;
 
+   package Install is
+      for Artifacts ("share/dynamo/ado/db/sqlite") use ("../db/sqlite/*");
+   end Install;
+
 end Ado_Sqlite;

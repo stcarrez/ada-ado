@@ -36,4 +36,8 @@ project Ado_Postgresql is
    package Builder renames Ado_Config.Builder;
    package Compiler renames Ado_Config.Compiler;
 
+   package Install is
+      for Artifacts ("share/dynamo/ado/db/postgresql") use ("../db/postgresql/*");
+   end Install;
+
 end Ado_Postgresql;
