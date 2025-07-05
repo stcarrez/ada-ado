@@ -15,13 +15,14 @@ with ADO.Sessions;
 with ADO.Statements.Sqlite;
 with ADO.Statements.Create;
 with ADO.Schemas.Sqlite;
+with ADO.Sqlite.Runtime;
 
 package body ADO.Connections.Sqlite is
 
    use ADO.Statements.Sqlite;
    use Interfaces.C;
 
-   pragma Linker_Options ("-lsqlite3");
+   pragma Linker_Options (ADO.Sqlite.Runtime.LIBNAME);
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Databases.Sqlite");
 

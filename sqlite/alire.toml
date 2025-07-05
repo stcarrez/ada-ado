@@ -25,7 +25,8 @@ libsqlite3 = "any"
 
 [gpr-externals]
 ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
-BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
+ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
+ADO_USE_SQLCIPHER = ["yes", "no"]
 
 [configuration]
 disabled = true

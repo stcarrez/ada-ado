@@ -5,6 +5,10 @@ project Ado_Sqlite is
    Version := Ado.Version;
    Library_Dir := Ado.Library_Dir;
 
+   type Yes_No is ("yes", "no");
+
+   Use_SqlCipher : Yes_No := external ("ADO_USE_SQLCIPHER", "no");
+
    Library_Type : Ado_Config.Library_Type_Type := external ("ADO_LIBRARY_TYPE", "static");
 
    for Library_Name use "ado_sqlite";
@@ -16,9 +20,27 @@ project Ado_Sqlite is
    for Library_Dir use "../lib/ado_sqlite/" & Project'Library_Kind;
    for Object_Dir use "../obj/ado_sqlite/" & Project'Library_Kind;
 
+   package Naming is
+      case Use_SqlCipher is
+         when "yes" =>
+            for Specification ("ADO.Sqlite.Runtime")
+               use "ado-sqlite-runtime__sqlcipher.ads";
+
+         when "no" =>
+            for Specification ("ADO.Sqlite.Runtime")
+               use "ado-sqlite-runtime__sqlite3.ads";
+
+      end case;
+   end Naming;
+
    case Library_Type is
       when "relocatable" =>
-        for Library_Options use ("-lsqlite3");
+        case Use_SqlCipher is
+	   when "yes" =>
+              for Library_Options use ("-lsqlcipher");
+	   when "no" =>
+              for Library_Options use ("-lsqlite3");
+        end case;
 
       when others =>
         null;
