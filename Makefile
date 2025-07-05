@@ -9,20 +9,29 @@ MAKE_ARGS += -XADO_BUILD=$(BUILD)
 -include Makefile.conf
 
 SQLITE?=$(shell which sqlite3)
+SQLCIPHER?=$(shell which sqlcipher)
 MYSQL?=$(shell which mysql)
 PSQL=$(shell which psql)
+
+include Makefile.defaults
+
+HAVE_SQLITE?=yes
+HAVE_SQLCIPHER?=yes
+HAVE_MYSQL?=yes
+HAVE_POSTGRESQL?=yes
+
+# Force HAVE_SQLITE if SQLCipher is selected.
+ifeq ($(HAVE_SQLCIPHER),yes)
+HAVE_SQLITE=yes
+
+MAKE_ARGS += -XADO_USE_SQLCIPHER=yes
+endif
 
 STATIC_MAKE_ARGS = $(MAKE_ARGS) -XADO_LIBRARY_TYPE=static
 SHARED_MAKE_ARGS = $(MAKE_ARGS) -XADO_LIBRARY_TYPE=relocatable
 SHARED_MAKE_ARGS += -XUTILADA_BASE_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
 SHARED_MAKE_ARGS += -XXMLADA_BUILD=relocatable
 SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
-
-include Makefile.defaults
-
-HAVE_SQLITE?=yes
-HAVE_MYSQL?=yes
-HAVE_POSTGRESQL?=yes
 
 DEFAULT_ADA_PROJECT_PATH=$(SRC_ROOT)
 
@@ -52,8 +61,14 @@ ifeq ($(HAVE_SQLITE),yes)
 test::  test-sqlite
 
 test-sqlite:		build regtests.db
-
 	bin/ado_harness -l $(NAME):SQLite: -p SQLite -t 120 -xml ado-sqlite-aunit.xml -config test-sqlite.properties
+endif
+
+ifeq ($(HAVE_SQLCIPHER),yes)
+test::  test-sqlcipher
+
+test-sqlcipher:		build regtests.cipher
+	bin/ado_harness -v -l $(NAME):SQLCipher: -p SQLCipher -t 120 -xml ado-sqlite-aunit.xml -config test-sqlcipher.properties
 endif
 
 ifeq ($(HAVE_MYSQL),yes)
@@ -108,10 +123,20 @@ ifneq (, ${SQLITE})
 	$(SQLITE) $@ < db/regtests/sqlite/create-ado-sqlite.sql
 endif
 
+regtests.cipher:
+ifneq (, ${SQLCIPHER})
+	(echo "pragma key='test-password';"; cat db/regtests/sqlite/create-ado-sqlite.sql) | $(SQLCIPHER) $@
+endif
+
 # Create the samples sqlite database
 samples.db:
 ifneq (, ${SQLITE})
 	$(SQLITE) $@ < db/samples/sqlite/create-ado-sqlite.sql
+endif
+
+samples.cipher:
+ifneq (, ${SQLCIPHER})
+	(echo "pragma key='samples-password';"; cat db/samples/sqlite/create-ado-sqlite.sql) | $(SQLCIPHER) $@
 endif
 
 # Create the tables in the database.
@@ -184,5 +209,6 @@ $(eval $(call alire_publish,drivers,ad/ado_all,ado_all-$(VERSION).toml))
 
 setup::
 	echo "HAVE_SQLITE=$(HAVE_SQLITE)" >> Makefile.conf
+	echo "HAVE_SQLCIPHER=$(HAVE_SQLCIPHER)" >> Makefile.conf
 	echo "HAVE_MYSQL=$(HAVE_MYSQL)" >> Makefile.conf
 	echo "HAVE_POSTGRESQL=$(HAVE_POSTGRESQL)" >> Makefile.conf
