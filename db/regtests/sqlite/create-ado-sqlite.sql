@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS ado_version (
   `version` INTEGER NOT NULL,
   PRIMARY KEY (`name`)
 );
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_entity_type");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_sequence");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("ado_version");
-INSERT OR IGNORE INTO ado_version (name, version) VALUES ("ado", 2);
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('ado_entity_type');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('ado_sequence');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('ado_version');
+INSERT OR IGNORE INTO ado_version (name, version) VALUES ('ado', 2);
 /* Copied from ado-sqlite.sql*/
 /* File generated automatically by dynamo */
 /* This is the Audit_Info table */
@@ -196,14 +196,14 @@ CREATE TABLE IF NOT EXISTS test_table (
   `ENTITY_VALUE` INTEGER NOT NULL,
   PRIMARY KEY (`ID`)
 );
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_info");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_email");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("audit_property");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("TEST_COMMENTS");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_image");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("allocate");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_keys");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_user");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_nullable_table");
-INSERT OR IGNORE INTO ado_entity_type (name) VALUES ("test_table");
-INSERT OR IGNORE INTO ado_version (name, version) VALUES ("ado", 2);
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('audit_info');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('audit_email');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('audit_property');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('TEST_COMMENTS');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('test_image');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('allocate');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('test_keys');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('test_user');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('test_nullable_table');
+INSERT OR IGNORE INTO ado_entity_type (name) VALUES ('test_table');
+INSERT OR IGNORE INTO ado_version (name, version) VALUES ('ado', 2);
