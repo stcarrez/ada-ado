@@ -15,17 +15,17 @@ specific to the database type and the `ADO.Drivers` package among others provide
 an abstraction that allows to make the different databases look like they have almost
 the same interface.
 
-A database driver exists for SQLite, MySQL and PostgreSQL. The driver
+A database driver exists for SQLite/SQLCipher, MySQL and PostgreSQL. The driver
 is either statically linked to the application or it can be loaded dynamically if it was
 built as a shared library.  For a dynamic load, the driver shared library name must be
 prefixed by `libada_ado_`.  For example, for a `mysql` driver, the shared
 library name is `libada_ado_mysql.so`.
 
-| Driver name | Database       |
-| ----------- | ---------      |
-| mysql       | MySQL, MariaDB |
-| sqlite      | SQLite         |
-| postgresql  | PostgreSQL     |
+| Driver name | Database          |
+| ----------- | ---------         |
+| mysql       | MySQL, MariaDB    |
+| sqlite      | SQLite, SQLCipher |
+| postgresql  | PostgreSQL        |
 
 The database drivers are initialized automatically but in some cases, you may want
 to control some database driver configuration parameter.  In that case,
@@ -96,7 +96,7 @@ The MySQL database driver supports the following properties:
 | encoding    | The encoding to be used for the connection (ex: UTF-8) |
 
 ### SQLite Database Driver
-The SQLite database driver can be initialize explicitly by using the `ado_sqlite`
+The SQLite database driver can be initialized explicitly by using the `ado_sqlite`
 GNAT project and calling the initialization procedure.
 
 ```Ada
@@ -115,7 +115,16 @@ Config : Util.Properties.Manager;
 ```
 
 The SQLite database driver will pass all the properties as SQLite `pragma` allowing
-the configuration of the SQLite database.
+the configuration of the SQLite database.  When the driver is compiled with the
+`-XADO_USE_SQLCIPHER=yes` option, the SQLCipher runtime will be used and you can
+either use a standard SQLite database or an SQLCipher database.  The database
+encryption key must be configured as a `key` configuration property, for
+example:
+
+```Ada
+  Config.Set ("ado.database",
+              "sqlite:///regtests.cipher?key='db-password'");
+```
 
 ### PostgreSQL Database Driver
 The PostgreSQL database driver can be initialize explicitly by using the `ado_postgresql`

@@ -60,7 +60,7 @@ The following loggers are interesting:
 | ADO.Drivers    | Database drivers and connection to servers |
 | ADO.Sessions   | Database session management                |
 | ADO.Statements | SQL statements execution                   |
-| ADO.Queries    | Named queries identification and retreival |
+| ADO.Queries    | Named queries identification and retrieval |
 
 ## Handling exceptions
 

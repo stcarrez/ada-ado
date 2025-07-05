@@ -25,28 +25,33 @@ alr with ado_postgresql
 
 ### Database Driver Installation
 
-The PostgreSQL, MySQL/MariaDB and SQLite development headers and runtime are necessary for building
+The PostgreSQL, MySQL/MariaDB and SQLite/SQLCipher development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 The configure script will fail if it does not find any database driver.
 
 #### Ubuntu
 
-MySQL/MariaDB Development installation
+MySQL/MariaDB development installation
 ```
 sudo apt-get install libmysqlclient-dev
 ```
 
-MariaDB Development installation
+MariaDB development installation
 ```
 sudo apt-get install mariadb-client libmariadb-client-lgpl-dev
 ```
 
-SQLite Development installation
+SQLite development installation
 ```
 sudo apt-get install libsqlite3-dev
 ```
 
-PostgreSQL Development installation
+SQLCipher development installation
+```
+sudo apt-get install sqlcipher libsqlcipher-dev
+```
+
+PostgreSQL development installation
 ```
 sudo apt-get install postgresql-client libpq-dev
 ```
@@ -106,41 +111,41 @@ and then get, build and install the [Ada Utility Library](https://github.com/stc
 
 ### Configuration
 
-The library uses the `configure` script to detect the build environment, check which databases
-are available and configure everything before building.  If some component is missing, the
-`configure` script will report an error.  The `configure` script provides several standard options
-and you may use:
+The support for SQLite, SQLCipher, MySQL/MariaDB and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
+variable is defined.  Run the setup command that records in the `Makefile.conf` the configuration
+you want to build.
 
-  * `--prefix=DIR` to control the installation directory,
-  * `--with-mysql=PATH` to control the path where `mysql_config` is installed,
-  * `--with-ada-util=PATH` to control the installation path of [Ada Utility Library](https://github.com/stcarrez/ada-util),
-  * `--enable-mysql` to enable the support for MySQL/MariaDB,
-  * `--enable-postgresql` to enable the support for PostgreSQL,
-  * `--enable-sqlite` to enable the support for SQLite,
-  * `--enable-shared` to enable the build of shared libraries,
-  * `--disable-static` to disable the build of static libraries,
-  * `--enable-distrib` to build for a distribution and strip symbols,
-  * `--disable-distrib` to build with debugging support,
-  * `--enable-coverage` to build with code coverage support (`-fprofile-arcs -ftest-coverage`),
-  * `--help` to get a detailed list of supported options.
+The `HAVE_ALIRE` configuration allows you to build with [Alire](https://alire.ada.dev/) or not.
 
-In most cases you will configure with the following command:
+The example below enables the SQLite and PostgreSQL components but disables
+the MySQL/MariaDB support and disables the use of [Alire](https://alire.ada.dev/) to build
+the library.
+
 ```
-./configure
+make setup BUILD=debug PREFIX=/build/install \
+  HAVE_SQLITE=yes HAVE_SQLCIPHER=yes HAVE_POSTGRESQL=yes \
+  HAVE_MYSQL=no HAVE_ALIRE=no
 ```
 
 ### Build
 
 After configuration is successful, you can build the library by running:
+
 ```
 make
 ```
 
+To use the installed libraries, make sure your `ADA_PROJECT_PATH` contains the directory
+where you installed the libraries (configured by the `PREFIX=<path>` option in the setup phase).
+The installed GNAT projects are the same as those used when using [Alire](https://alire.ada.dev/).
+
 After building, it is good practice to run the unit tests before installing the library.
 The unit tests are built and executed using:
+
 ```
 make test
 ```
+
 And unit tests are executed by running the `bin/ado_harness` test program.  A configuration
 file is necessary to control the test parameters including the test database to be used.
 To run the tests with a MySQL/MariaDB database, use the following command:

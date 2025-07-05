@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ADO Drivers -- Database Drivers
---  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2019 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2013, 2018, 2019, 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -13,17 +13,17 @@ with Util.Properties;
 --  an abstraction that allows to make the different databases look like they have almost
 --  the same interface.
 --
---  A database driver exists for SQLite, MySQL and PostgreSQL. The driver
+--  A database driver exists for SQLite/SQLCipher, MySQL and PostgreSQL. The driver
 --  is either statically linked to the application or it can be loaded dynamically if it was
 --  built as a shared library.  For a dynamic load, the driver shared library name must be
 --  prefixed by `libada_ado_`.  For example, for a `mysql` driver, the shared
 --  library name is `libada_ado_mysql.so`.
 --
---  | Driver name | Database       |
---  | ----------- | ---------      |
---  | mysql       | MySQL, MariaDB |
---  | sqlite      | SQLite         |
---  | postgresql  | PostgreSQL     |
+--  | Driver name | Database          |
+--  | ----------- | ---------         |
+--  | mysql       | MySQL, MariaDB    |
+--  | sqlite      | SQLite, SQLCipher |
+--  | postgresql  | PostgreSQL        |
 --
 --  The database drivers are initialized automatically but in some cases, you may want
 --  to control some database driver configuration parameter.  In that case,
