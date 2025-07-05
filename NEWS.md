@@ -1,4 +1,5 @@
 Version 2.4.2   - Under development
+  - Feature #26: Add support for SQLCipher
   - Fix #25: Schema column 'text' not recognized by SQLite driver
 
 Version 2.4.1   - Sep 2024
