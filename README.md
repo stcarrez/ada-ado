@@ -144,7 +144,7 @@ The Ada Database Objects sources as well as a wiki documentation is provided on:
 The Postgresql, MySQL/MariaDB and SQLite development headers and runtime are necessary for building
 the ADO driver.  The configure script will use them to enable the ADO drivers.
 
-Postgresql Development installation
+Postgresql development installation
 ```
 sudo apt-get install postgresql-client libpq-dev
 ```
@@ -154,12 +154,12 @@ MySQL/MariaDB Development installation
 sudo apt-get install mariadb-client libmariadb-dev
 ```
 
-SQLite Development installation
+SQLite development installation
 ```
 sudo apt-get install sqlite3 libsqlite3-dev
 ```
 
-SQLCipher Development installation
+SQLCipher development installation
 ```
 sudo apt-get install sqlcipher libsqlcipher-dev
 ```
