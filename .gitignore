@@ -23,6 +23,7 @@ drivers/src/ado-drivers-initialize.adb
 drivers/ado_all.gpr
 drivers/ado_all.def
 regtests.db
+regtests.cipher
 mysql/src/mysql-lib.ads
 docs/ado-book.html
 alire
@@ -30,6 +31,7 @@ cover
 wiki
 ado.cov
 samples.db
+samples.cipher
 *.substvars
 debian/lib*
 debian/.debhelper/
