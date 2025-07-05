@@ -15,7 +15,11 @@ long-description = """
 [![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/ada-ado/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/ada-ado/summary)
 [![Documentation Status](https://readthedocs.org/projects/ada-ado/badge/?version=latest)](https://ada-ado.readthedocs.io/en/latest/?badge=latest)
 
-This is the SQLite driver for the Ada Database Objects library.
+This is the SQLite or SQLCipher driver for the Ada Database Objects library.
+
+The choice between SQLite and SQLCipher is controlled by the `ADO_USE_SQLCIPHER` gpr external variable.
+Use `-XADO_USE_SQLCIPHER=yes` if you want to use the SQLCipher support.  The database encryption key
+is configured by using a `pragma key`.
 
 """
 
