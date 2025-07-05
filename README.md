@@ -21,7 +21,8 @@ Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
 The ORM uses an YAML, XML mapping file or an UML model, a code generator and a runtime library
 for the implementation.  It provides a database driver for [Postgresql](https://www.postgresql.org/),
-[MySQL](https://www.mysql.com/)/[MariaDB](https://www.mariadb.org) and [SQLite](https://www.sqlite.org/).  The ORM helps your
+[MySQL](https://www.mysql.com/)/[MariaDB](https://www.mariadb.org), [SQLite](https://www.sqlite.org/) or
+[SQLCipher](https://www.zetetic.net/sqlcipher/).  The ORM helps your
 application by providing a mapping of your database tables directly in the target programming
 language: Ada05 in our case.  The development process is the following:
 
@@ -72,7 +73,7 @@ For a detailed description on how you can configure, build and install the libra
 refer to the [Installation](https://ada-ado.readthedocs.io/en/latest/Installation/) guide.
 Otherwise, you can easily configure and build the library with the steps described below.
 
-The support for SQLite, MySQL/MariaDB and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
+The support for SQLite, SQLCipher, MySQL/MariaDB and PostgreSQL are enabled only when a `HAVE_XXX=yes` configuration
 variable is defined.  Run the setup command that records in the `Makefile.conf` the configuration
 you want to build.
 
@@ -84,7 +85,7 @@ the library.
 
 ```
 make setup BUILD=debug PREFIX=/build/install \
-  HAVE_SQLITE=yes HAVE_POSTGRESQL=yes \
+  HAVE_SQLITE=yes HAVE_SQLCIPHER=yes HAVE_POSTGRESQL=yes \
   HAVE_MYSQL=no HAVE_ALIRE=no
 ```
 
@@ -157,6 +158,12 @@ SQLite Development installation
 ```
 sudo apt-get install sqlite3 libsqlite3-dev
 ```
+
+SQLCipher Development installation
+```
+sudo apt-get install sqlcipher libsqlcipher-dev
+```
+
 For Windows, check [win32/README](win32/README.md) to install the libraries.
 
 
@@ -240,6 +247,10 @@ bin/ado_harness -config test-mysql.properties
 or
 ```
 bin/ado_harness -config test-sqlite.properties
+```
+or
+```
+bin/ado_harness -config test-sqlcipher.properties
 ```
 or
 ```
