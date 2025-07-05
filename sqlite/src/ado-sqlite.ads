@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sqlite -- SQLite Database Drivers
---  Copyright (C) 2019, 2023 Stephane Carrez
+--  Copyright (C) 2019, 2023, 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -8,7 +8,7 @@
 with Util.Properties;
 
 --  === SQLite Database Driver ===
---  The SQLite database driver can be initialize explicitly by using the `ado_sqlite`
+--  The SQLite database driver can be initialized explicitly by using the `ado_sqlite`
 --  GNAT project and calling the initialization procedure.
 --
 --    ADO.Sqlite.Initialize ("db.properties");
@@ -23,7 +23,14 @@ with Util.Properties;
 --      ADO.Sqlite.Initialize (Config);
 --
 --  The SQLite database driver will pass all the properties as SQLite `pragma` allowing
---  the configuration of the SQLite database.
+--  the configuration of the SQLite database.  When the driver is compiled with the
+--  `-XADO_USE_SQLCIPHER=yes` option, the SQLCipher runtime will be used and you can
+--  either use a standard SQLite database or an SQLCipher database.  The database
+--  encryption key must be configured as a `key` configuration property, for
+--  example:
+--
+--      Config.Set ("ado.database",
+--                  "sqlite:///regtests.cipher?key='db-password'");
 --
 package ADO.Sqlite is
 
