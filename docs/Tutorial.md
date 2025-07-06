@@ -190,7 +190,7 @@ To get access to a MySQL database, the factory could be initialized as follows:
 And to use an SQLite database, you could use:
 
 ```
-   ADO.Sessions.Factory.Create (Factory, "sqlite:///tests.db");
+   ADO.Sessions.Factory.Create (Factory, "sqlite:tests.db");
 ```
 
 For a PostgreSQL database, the factory would look like:
