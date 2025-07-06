@@ -125,6 +125,36 @@ For SQLite, use:
 make samples.db
 ```
 
+## Examples overview
+
+| Source              | Example                                                                      |
+|----------------------------------|------------------------------------------------------------------------------|
+| [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb) | List users (`SELECT...FROM`) |
+| [sql_add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_add_user.adb) | Insert user (`INSERT INTO...`) |
+| [list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/list_user.adb) | ORM version of list users (`SELECT...FROM`) |
+| [add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/add_user.adb) | ORM version of insert users (`INSERT INTO`) |
+| [print_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/print_user.adb) | ORM version of find user (`SELECT...`) |
+| [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb) | Print database schema |
+
+### SQL only examples
+
+| Package              | Example                                                                      |
+|----------------------------------|------------------------------------------------------------------------------|
+| `ADO.Sessions` | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb)|
+| `ADO.Statements` | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb) [sql_add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_add_user.adb)|
+| `ADO.Schemas` | [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb)|
+| `ADO.Sessions.Load_Schema` | [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb)|
+
+### ORM examples
+
+| Package              | Example                                                                      |
+|----------------------------------|------------------------------------------------------------------------------|
+| `ADO.Sessions`  | [list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/list_user.adb)|
+| `ADO.Queries`   | [list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/list_user.adb) [userdb.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/userdb.adb)|
+| `ADO.Objects`   | [userdb.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/userdb.adb)|
+| `ADO.SQL`       | [print_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/print_user.adb) [userdb.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/userdb.adb)|
+
+
 # Documentation
 
 The Ada Database Objects sources as well as a wiki documentation is provided on:
