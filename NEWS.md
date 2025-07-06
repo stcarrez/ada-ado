@@ -1,6 +1,7 @@
 Version 2.4.2   - Under development
   - Feature #26: Add support for SQLCipher
   - Feature #27: Simplify data source connection string for SQLite
+  - Feature #29: Improve direct SQL query capabilities (Non-ORM)
   - Fix #25: Schema column 'text' not recognized by SQLite driver
 
 Version 2.4.1   - Sep 2024
