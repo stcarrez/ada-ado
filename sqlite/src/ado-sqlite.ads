@@ -18,7 +18,7 @@ with Util.Properties;
 --
 --    Config : Util.Properties.Manager;
 --    ...
---      Config.Set ("ado.database", "sqlite:///regtests.db?synchronous=OFF&encoding=UTF-8");
+--      Config.Set ("ado.database", "sqlite:regtests.db?synchronous=OFF&encoding=UTF-8");
 --      Config.Set ("ado.queries.path", ".;db");
 --      ADO.Sqlite.Initialize (Config);
 --
@@ -30,7 +30,7 @@ with Util.Properties;
 --  example:
 --
 --      Config.Set ("ado.database",
---                  "sqlite:///regtests.cipher?key='db-password'");
+--                  "sqlite:regtests.cipher?key='db-password'");
 --
 package ADO.Sqlite is
 
