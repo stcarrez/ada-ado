@@ -341,6 +341,21 @@ package body ADO.Sessions is
       end;
    end Create_Statement;
 
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
+                              return Delete_Statement is
+   begin
+      Check_Session (Database);
+      declare
+         Stmt : constant Delete_Statement_Access
+           := Database.Impl.Database.Value.Create_Statement (null);
+      begin
+         Stmt.Append (Query);
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
+      end;
+   end Create_Statement;
+
    --  ------------------------------
    --  Create an update statement
    --  ------------------------------
@@ -353,6 +368,21 @@ package body ADO.Sessions is
          Stmt : constant Update_Statement_Access
            := Database.Impl.Database.Value.Create_Statement (Table);
       begin
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
+      end;
+   end Create_Statement;
+
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
+                              return Update_Statement is
+   begin
+      Check_Session (Database);
+      declare
+         Stmt : constant Update_Statement_Access
+           := Database.Impl.Database.Value.Create_Statement (null);
+      begin
+         Stmt.Append (Query);
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
                                                         Database.Impl.Values.all'Access);
       end;

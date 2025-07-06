@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-postgresql -- Postgresql query statements
---  Copyright (C) 2018, 2019, 2021, 2022, 2024 Stephane Carrez
+--  Copyright (C) 2018 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -237,8 +237,10 @@ package body ADO.Statements.Postgresql is
    procedure Execute (Stmt   : in out Postgresql_Delete_Statement;
                       Result : out Natural) is
    begin
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
-      ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
+      if Stmt.Table /= null then
+         ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
+         ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
+      end if;
       if Stmt.Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => Stmt.Query.Get_Join);
       end if;
@@ -295,10 +297,12 @@ package body ADO.Statements.Postgresql is
    procedure Execute (Stmt   : in out Postgresql_Update_Statement;
                       Result : out Integer) is
    begin
-      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
-      ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
-      ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " AS o SET ");
-      ADO.SQL.Append_Fields (Update => Stmt.This_Query);
+      if Stmt.Table /= null then
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => "UPDATE ");
+         ADO.SQL.Append_Name (Target => Stmt.This_Query.SQL, Name => Stmt.Table.Table.all);
+         ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => " AS o SET ");
+         ADO.SQL.Append_Fields (Update => Stmt.This_Query);
+      end if;
       if Stmt.This_Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.This_Query.SQL, SQL => Stmt.This_Query.Get_Join);
       end if;

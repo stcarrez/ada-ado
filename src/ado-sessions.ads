@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions -- Sessions Management
---  Copyright (C) 2009 - 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -161,9 +161,17 @@ package ADO.Sessions is
                               Table    : in ADO.Schemas.Class_Mapping_Access)
                               return Delete_Statement;
 
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
+                              return Delete_Statement;
+
    --  Create an update statement
    function Create_Statement (Database : in Master_Session;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Update_Statement;
+
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
                               return Update_Statement;
 
    --  Create an insert statement

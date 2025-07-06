@@ -197,8 +197,10 @@ package body ADO.Statements.Sqlite is
       if Stmt.Connection = null then
          raise ADO.Sessions.Session_Error with "Database connection is closed";
       end if;
-      ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
-      ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
+      if Stmt.Table /= null then
+         ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => "DELETE FROM ");
+         ADO.SQL.Append_Name (Target => Stmt.Query.SQL, Name => Stmt.Table.Table.all);
+      end if;
       if Stmt.Query.Has_Join then
          ADO.SQL.Append (Target => Stmt.Query.SQL, SQL => Stmt.Query.Get_Join);
       end if;
