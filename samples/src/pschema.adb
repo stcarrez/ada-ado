@@ -10,13 +10,16 @@ with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Schemas;
+with ADO.Configs;
 
 with Ada.Text_IO;
 with Ada.Exceptions;
 with Ada.Command_Line;
+with Ada.Directories;
 
 with Util.Strings.Transforms;
 with Util.Log.Loggers;
+with Util.Properties;
 
 procedure Pschema is
 
@@ -57,12 +60,17 @@ procedure Pschema is
    end To_Model_Type;
 
    Factory    : ADO.Sessions.Factory.Session_Factory;
-
+   Props      : Util.Properties.Manager;
 begin
    Util.Log.Loggers.Initialize ("samples.properties");
 
    --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
+   if Ada.Directories.Exists ("samples.properties") then
+      Props.Load_Properties ("samples.properties");
+   end if;
+
+   Props.Set (ADO.Configs.NO_ENTITY_LOAD, "true");
+   ADO.Drivers.Initialize (Props);
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.
