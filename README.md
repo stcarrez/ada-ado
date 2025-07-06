@@ -108,14 +108,15 @@ The installed GNAT projects are the same as those used when using [Alire](https:
 The samples can be built using:
 
 ```
-make samples
+cd samples
+alr build
 ```
 
-or
+If you want to build the examples with SQLcipher, use:
 
 ```
 cd samples
-alr build
+alr build -- -XADO_USE_SQLCIPHER=yes
 ```
 
 Before launching the samples, the database must have been created.
@@ -124,6 +125,26 @@ For SQLite, use:
 ```
 make samples.db
 ```
+
+For SQLCipher, use:
+
+```
+make samples.cipher
+```
+
+For PostgreSQL and MySQL, create the database and setup the schema by using either `db/samples/postgresql/create-ado-postgresql.sql` or
+`db/samples/mysql/create-ado-mysql.sql`.
+
+Before launching the example, look at the `samples.properties` or `samples/samples.properties` file and comment or uncomment
+one of the following lines to choose the database (below, the configuration using SQLite):
+
+```
+# ado.database=mysql://localhost:3306/ado_test?user=ado&encoding=utf8
+# ado.database=postgresql://localhost:5432/ado_test?user=ado&password=ado
+# ado.database=sqlite:samples.cipher?key='samples-password'&synchronous=OFF&encoding='UTF-8'&journal_mode=WAL
+ado.database=sqlite:samples.db?synchronous=OFF&encoding='UTF-8'&journal_mode=WAL
+```
+
 
 ## Examples overview
 
