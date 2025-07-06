@@ -159,6 +159,7 @@ package body ADO.Drivers.Tests is
       Check ("mysql://test2:3307/db2?user=admin&password=admin", "test2", 3307, "db2");
       Check ("sqlite:///test.db", "", 0, "test.db");
       Check ("sqlite:///test2.db?user=root&encoding=UTF-8", "", 0, "test2.db");
+      Check ("sqlite:test.db", "", 0, "test.db");
    end Test_Set_Connection;
 
    --  ------------------------------
