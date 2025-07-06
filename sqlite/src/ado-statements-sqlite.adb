@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-statements-sqlite -- SQLite database statements
---  Copyright (C) 2009 - 2023 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -395,6 +395,9 @@ package body ADO.Statements.Sqlite is
          Release_Stmt (Stmt.Connection, Stmt.Stmt);
          Stmt.Stmt := null;
       end if;
+      if Query'Length = 0 then
+         raise ADO.Statements.SQL_Error with "Trying to execute an empty SQL Query";
+      end if;
       Result := sqlite3_prepare_v2 (db     => Stmt.Connection,
                                     zSql   => Query,
                                     nByte  => Query'Length,
@@ -428,6 +431,9 @@ package body ADO.Statements.Sqlite is
       begin
          --  Execute the query
          Prepare (Query, Expanded_Query);
+         if Query.Stmt = null then
+            raise ADO.Statements.SQL_Error with "Invalid SQL Query: " & Expanded_Query;
+         end if;
 
          Result := Sqlite3_H.sqlite3_step (Query.Stmt);
          if Result = Sqlite3_H.SQLITE_ROW then

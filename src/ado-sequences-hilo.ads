@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-hilo-- HiLo Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -32,7 +32,7 @@ package ADO.Sequences.Hilo is
    overriding
    procedure Allocate (Gen     : in out Hilo_Generator;
                        Session : in out ADO.Sessions.Master_Session'Class;
-                       Id      : in out Objects.Object_Record'Class);
+                       Id      : in out Identifier);
 
    --  Allocate a new sequence block.
    procedure Allocate_Sequence (Gen     : in out Hilo_Generator;

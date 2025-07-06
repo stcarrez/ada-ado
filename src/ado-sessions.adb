@@ -280,6 +280,14 @@ package body ADO.Sessions is
       ADO.Sequences.Allocate (Database.Sequences.all, Database, Id);
    end Allocate;
 
+   procedure Allocate (Database : in out Master_Session;
+                       Name     : in String;
+                       Id       : out ADO.Identifier) is
+   begin
+      Check_Session (Database);
+      ADO.Sequences.Allocate (Database.Sequences.all, Database, Name, Id);
+   end Allocate;
+
    --  ------------------------------
    --  Flush the objects that were modified.
    --  ------------------------------
@@ -362,6 +370,24 @@ package body ADO.Sessions is
          Stmt : constant Insert_Statement_Access
            := Database.Impl.Database.Value.Create_Statement (Table);
       begin
+         return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
+                                                        Database.Impl.Values.all'Access);
+      end;
+   end Create_Statement;
+
+   --  ------------------------------
+   --  Create an insert statement
+   --  ------------------------------
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
+                              return Insert_Statement is
+   begin
+      Check_Session (Database);
+      declare
+         Stmt : constant Insert_Statement_Access
+           := Database.Impl.Database.Value.Create_Statement (null);
+      begin
+         Stmt.Append (Query);
          return ADO.Statements.Create.Create_Statement (Stmt.all'Access,
                                                         Database.Impl.Values.all'Access);
       end;

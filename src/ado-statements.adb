@@ -15,6 +15,7 @@ with Ada.Unchecked_Deallocation;
 package body ADO.Statements is
 
    use System.Storage_Elements;
+   use type ADO.SQL.Query_Access;
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("ADO.Statements");
 
@@ -27,6 +28,9 @@ package body ADO.Statements is
    procedure Add_Parameter (Query : in out Statement;
                             Param : in ADO.Parameters.Parameter) is
    begin
+      if Query.Query = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
       Query.Query.Add_Parameter (Param);
    end Add_Parameter;
 
@@ -34,6 +38,9 @@ package body ADO.Statements is
    procedure Set_Parameters (Query : in out Statement;
                              From  : in ADO.Parameters.Abstract_List'Class) is
    begin
+      if Query.Query = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
       Query.Query.Set_Parameters (From);
    end Set_Parameters;
 
@@ -43,6 +50,9 @@ package body ADO.Statements is
    overriding
    function Length (Query : in Statement) return Natural is
    begin
+      if Query.Query = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
       return Query.Query.Length;
    end Length;
 
@@ -53,6 +63,9 @@ package body ADO.Statements is
    function Element (Query    : in Statement;
                      Position : in Natural) return ADO.Parameters.Parameter is
    begin
+      if Query.Query = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
       return Query.Query.Element (Position);
    end Element;
 
@@ -65,6 +78,9 @@ package body ADO.Statements is
                             Process  : not null access
                               procedure (Element : in ADO.Parameters.Parameter)) is
    begin
+      if Query.Query = null then
+         raise Invalid_Statement with "Query statement is not initialized";
+      end if;
       Query.Query.Query_Element (Position, Process);
    end Query_Element;
 
@@ -74,7 +90,9 @@ package body ADO.Statements is
    overriding
    procedure Clear (Query : in out Statement) is
    begin
-      Query.Query.Clear;
+      if Query.Query /= null then
+         Query.Query.Clear;
+      end if;
    end Clear;
 
    procedure Add_Param (Params : in out Statement;

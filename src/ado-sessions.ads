@@ -149,6 +149,10 @@ package ADO.Sessions is
    procedure Allocate (Database : in out Master_Session;
                        Id       : in out ADO.Objects.Object_Record'Class);
 
+   procedure Allocate (Database : in out Master_Session;
+                       Name     : in String;
+                       Id       : out ADO.Identifier);
+
    --  Flush the objects that were modified.
    procedure Flush (Database : in out Master_Session);
 
@@ -165,6 +169,10 @@ package ADO.Sessions is
    --  Create an insert statement
    function Create_Statement (Database : in Master_Session;
                               Table    : in ADO.Schemas.Class_Mapping_Access)
+                              return Insert_Statement;
+
+   function Create_Statement (Database : in Master_Session;
+                              Query    : in String)
                               return Insert_Statement;
 
    --  Get the audit manager.

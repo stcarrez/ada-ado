@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences-hilo-- HiLo Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -49,14 +49,14 @@ package body ADO.Sequences.Hilo is
    overriding
    procedure Allocate (Gen     : in out Hilo_Generator;
                        Session : in out ADO.Sessions.Master_Session'Class;
-                       Id      : in out Objects.Object_Record'Class) is
+                       Id      : in out Identifier) is
    begin
       --  Get a new sequence range
       if Gen.Next_Id >= Gen.Last_Id then
          Allocate_Sequence (Gen, Session);
       end if;
 
-      Id.Set_Key_Value (Gen.Next_Id);
+      Id := Gen.Next_Id;
       Gen.Next_Id := Gen.Next_Id + 1;
    end Allocate;
 

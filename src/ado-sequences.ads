@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sequences -- Database sequence generator
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -48,7 +48,7 @@ package ADO.Sequences is
    --  Allocate an identifier using the generator.
    procedure Allocate (Gen     : in out Generator;
                        Session : in out ADO.Sessions.Master_Session'Class;
-                       Id      : in out Objects.Object_Record'Class) is abstract;
+                       Id      : in out Identifier) is abstract;
 
    --  Get a session to connect to the database.
    function Get_Session (Gen : in Generator) return ADO.Sessions.Master_Session'Class;
@@ -70,6 +70,11 @@ package ADO.Sequences is
    procedure Allocate (Manager : in out Factory;
                        Session : in out ADO.Sessions.Master_Session'Class;
                        Id      : in out Objects.Object_Record'Class);
+
+   procedure Allocate (Manager : in out Factory;
+                       Session : in out ADO.Sessions.Master_Session'Class;
+                       Name    : in String;
+                       Id      : out Identifier);
 
    --  Set a generator to be used for the given sequence.
    procedure Set_Generator (Manager : in out Factory;
@@ -100,7 +105,7 @@ private
 
       --  Allocate a unique identifier for the given sequence.
       procedure Allocate (Session : in out Sessions.Master_Session'Class;
-                          Id      : in out Objects.Object_Record'Class);
+                          Id      : out Identifier);
 
       procedure Set_Generator (Gen  : in Generator_Access);
 
