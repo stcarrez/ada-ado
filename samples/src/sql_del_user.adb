@@ -9,18 +9,14 @@ with ADO.Drivers;
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Connections;
-with ADO.SQL;
+with ADO.Statements;
 with ADO.Sessions.Factory;
-with Samples.User.Model;
 with Util.Log.Loggers;
 
 with Ada.Text_IO;
 with Ada.Exceptions;
 with Ada.Command_Line;
-procedure Del_User is
-
-   use Samples.User.Model;
-
+procedure Sql_Del_User is
    Factory : ADO.Sessions.Factory.Session_Factory;
 begin
    Util.Log.Loggers.Initialize ("samples.properties", "example.");
@@ -39,21 +35,20 @@ begin
    Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
-      Session : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
-      User    : User_Ref;
-      Found   : Boolean;
+      Session : constant ADO.Sessions.Master_Session := Factory.Get_Master_Session;
+      Query   : constant String := "DELETE FROM user WHERE name=?";
+      Stmt    : ADO.Statements.Delete_Statement;
    begin
+      Stmt := Session.Create_Statement (Query);
       for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare
             User_Name : constant String := Ada.Command_Line.Argument (I);
-            Query     : ADO.SQL.Query;
+            Result    : Integer;
          begin
             Ada.Text_IO.Put_Line ("Searching '" & User_Name & "'...");
-            Query.Bind_Param (1, User_Name);
-            Query.Set_Filter ("name = ?");
-            User.Find (Session => Session, Query => Query, Found => Found);
-            if Found then
-               User.Delete (Session);
+            Stmt.Bind_Param (1, User_Name);
+            Stmt.Execute (Result);
+            if Result > 0 then
                Ada.Text_IO.Put_Line ("  User '" & User_Name & "' deleted");
             else
                Ada.Text_IO.Put_Line ("  User '" & User_Name & "' does not exist");
@@ -66,4 +61,4 @@ exception
    when E : ADO.Connections.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
-end Del_User;
+end Sql_Del_User;

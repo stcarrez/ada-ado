@@ -64,11 +64,11 @@ begin
       Stmt := DB.Create_Statement (Query);
       for I in 1 .. Ada.Command_Line.Argument_Count loop
          declare
-            Email : constant String := Ada.Command_Line.Argument (I);
-            Name  : constant String := Get_Name (Email);
-            Id    : ADO.Identifier := 1;
-            Desc  : constant String := "";
-            Status : Natural := 0;
+            Email  : constant String := Ada.Command_Line.Argument (I);
+            Name   : constant String := Get_Name (Email);
+            Id     : ADO.Identifier := 1;
+            Desc   : constant String := "";
+            Status : constant Natural := 0;
             Result : Integer;
          begin
             DB.Allocate ("user", Id);
