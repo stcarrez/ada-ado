@@ -153,8 +153,10 @@ ado.database=sqlite:samples.db?synchronous=OFF&encoding='UTF-8'&journal_mode=WAL
 |----------------------------------|------------------------------------------------------------------------------|
 | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb) | List users (`SELECT...FROM`) |
 | [sql_add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_add_user.adb) | Insert user (`INSERT INTO...`) |
+| [sql_del_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_del_user.adb) | Delete user (`DELETE FROM...`) |
 | [list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/list_user.adb) | ORM version of list users (`SELECT...FROM`) |
 | [add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/add_user.adb) | ORM version of insert users (`INSERT INTO`) |
+| [del_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/del_user.adb) | ORM version of delete users (`DELETE FROM`) |
 | [print_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/print_user.adb) | ORM version of find user (`SELECT...`) |
 | [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb) | Print database schema |
 
@@ -163,7 +165,7 @@ ado.database=sqlite:samples.db?synchronous=OFF&encoding='UTF-8'&journal_mode=WAL
 | Package              | Example                                                                      |
 |----------------------------------|------------------------------------------------------------------------------|
 | `ADO.Sessions` | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb)|
-| `ADO.Statements` | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb) [sql_add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_add_user.adb)|
+| `ADO.Statements` | [sql_list_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_list_user.adb) [sql_add_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_add_user.adb) [sql_del_user.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/sql_del_user.adb)|
 | `ADO.Schemas` | [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb)|
 | `ADO.Sessions.Load_Schema` | [pschema.adb](https://github.com/stcarrez/ada-ado/tree/master/samples/src/pschema.adb)|
 
