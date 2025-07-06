@@ -1,11 +1,12 @@
 -----------------------------------------------------------------------
 --  ado-configs -- Database connection configuration
---  Copyright (C) 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2022 Stephane Carrez
+--  Copyright (C) 2010 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 
 with Util.Log.Loggers;
+with Util.Strings;
 
 with Ada.IO_Exceptions;
 with Ada.Strings.Fixed;
@@ -69,6 +70,7 @@ package body ADO.Configs is
    --  The driver connection is a string of the form:
    --
    --   driver://[host][:port]/[database][?property1][=value1]...
+   --   driver:path[?property1][=value1]...
    --
    --  If the string is invalid or if the driver cannot be found,
    --  the Connection_Error exception is raised.
@@ -79,38 +81,48 @@ package body ADO.Configs is
       Is_Hidden : Boolean;
    begin
       Config.URI := To_Unbounded_String (URI);
-      Pos := Index (URI, "://");
-      if Pos <= URI'First then
+      Pos := Index (URI, ":");
+      if Pos <= URI'First or else Pos = URI'Last then
          Log.Error ("Invalid connection URI: {0}", URI);
          raise Connection_Error
            with "Invalid URI: '" & URI & "'";
       end if;
       Config.Driver := To_Unbounded_String (URI (URI'First .. Pos - 1));
 
-      Pos := Pos + 3;
-      Slash_Pos := Index (URI, "/", Pos);
-      if Slash_Pos < Pos then
-         Log.Error ("Invalid connection URI: {0}", URI);
-         raise Connection_Error
-           with "Invalid connection URI: '" & URI & "'";
-      end if;
+      Pos := Pos + 1;
 
-      --  Extract the server and port.
-      Pos2 := Index (URI, ":", Pos);
-      if Pos2 >= Pos then
-         Config.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
-         begin
-            Config.Port := Natural'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
+      --  Check if there is an authority section with server and port.
+      if Util.Strings.Starts_With (URI (Pos .. URI'Last), "//") then
+         Pos := Pos + 2;
 
-         exception
-            when Constraint_Error =>
-               Log.Error ("Invalid port in connection URI: {0}", URI);
-               raise Connection_Error
-                 with "Invalid port in connection URI: '" & URI & "'";
-         end;
+         Slash_Pos := Index (URI, "/", Pos);
+         if Slash_Pos < Pos then
+            Log.Error ("Invalid connection URI: {0}", URI);
+            raise Connection_Error
+              with "Invalid connection URI: '" & URI & "'";
+         end if;
+
+         --  Extract the server and port.
+         Pos2 := Index (URI, ":", Pos);
+         if Pos2 >= Pos then
+            Config.Server := To_Unbounded_String (URI (Pos .. Pos2 - 1));
+            begin
+               Config.Port := Natural'Value (URI (Pos2 + 1 .. Slash_Pos - 1));
+
+            exception
+               when Constraint_Error =>
+                  Log.Error ("Invalid port in connection URI: {0}", URI);
+                  raise Connection_Error
+                    with "Invalid port in connection URI: '" & URI & "'";
+            end;
+         else
+            Config.Port := 0;
+            Config.Server := To_Unbounded_String (URI (Pos .. Slash_Pos - 1));
+         end if;
       else
          Config.Port := 0;
-         Config.Server := To_Unbounded_String (URI (Pos .. Slash_Pos - 1));
+         Config.Server := To_Unbounded_String ("");
+         Slash_Pos := Pos - 1;
       end if;
 
       --  Extract the database name.
