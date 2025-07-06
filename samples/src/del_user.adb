@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
---  Print_User -- Example to find an object from the database
+--  Del_User -- Example to find an object from the database
 --  Copyright (C) 2010 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
@@ -17,7 +17,7 @@ with Util.Log.Loggers;
 with Ada.Text_IO;
 with Ada.Exceptions;
 with Ada.Command_Line;
-procedure Print_User is
+procedure Del_User is
 
    use ADO;
    use Samples.User.Model;
@@ -30,8 +30,8 @@ begin
    ADO.Drivers.Initialize ("samples.properties");
 
    if Ada.Command_Line.Argument_Count < 1 then
-      Ada.Text_IO.Put_Line ("Usage: print_user user-name ...");
-      Ada.Text_IO.Put_Line ("Example: print_user joe");
+      Ada.Text_IO.Put_Line ("Usage: del_user user-name ...");
+      Ada.Text_IO.Put_Line ("Example: del_user joe");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
@@ -40,7 +40,7 @@ begin
    Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare
-      Session : ADO.Sessions.Session := Factory.Get_Session;
+      Session : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
       User    : User_Ref;
       Found   : Boolean;
    begin
@@ -54,9 +54,8 @@ begin
             Query.Set_Filter ("name = ?");
             User.Find (Session => Session, Query => Query, Found => Found);
             if Found then
-               Ada.Text_IO.Put_Line ("  Id     :  " & Identifier'Image (User.Get_Id));
-               Ada.Text_IO.Put_Line ("  User   :  " & User.Get_Name);
-               Ada.Text_IO.Put_Line ("  Email  :  " & User.Get_Email);
+               User.Delete (Session);
+               Ada.Text_IO.Put_Line ("  User '" & User_Name & "' deleted");
             else
                Ada.Text_IO.Put_Line ("  User '" & User_Name & "' does not exist");
             end if;
@@ -68,4 +67,4 @@ exception
    when E : ADO.Connections.Database_Error | ADO.Sessions.Connection_Error =>
       Ada.Text_IO.Put_Line ("Cannot connect to database: "
                               & Ada.Exceptions.Exception_Message (E));
-end Print_User;
+end Del_User;

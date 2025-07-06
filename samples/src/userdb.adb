@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  userdb -- Example to find/create an object from the database
---  Copyright (C) 2010, 2011, 2012, 2013, 2018 Stephane Carrez
+--  Copyright (C) 2010 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -112,7 +112,7 @@ procedure Userdb is
 
    procedure Initialize (File : in String) is
    begin
-      Util.Log.Loggers.Initialize (File);
+      Util.Log.Loggers.Initialize (File, "example.");
       ADO.Drivers.Initialize (File);
    end Initialize;
 

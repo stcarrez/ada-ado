@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  select_user - Show usage of query statements
---  Copyright (C) 2018 Stephane Carrez
+--  Copyright (C) 2018 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -27,7 +27,7 @@ begin
       return;
    end if;
 
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    ADO.Drivers.Initialize ("samples.properties");

@@ -37,7 +37,7 @@ procedure Sql_Add_User is
    end Get_Name;
 
 begin
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    ADO.Drivers.Initialize ("samples.properties");

@@ -20,7 +20,7 @@ with Ada.Exceptions;
 procedure Sql_List_User is
    Factory    : ADO.Sessions.Factory.Session_Factory;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    ADO.Drivers.Initialize ("samples.properties");

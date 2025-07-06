@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  List_User -- Example of queries
---  Copyright (C) 2010, 2011, 2018 Stephane Carrez
+--  Copyright (C) 2010 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -27,7 +27,7 @@ procedure List_User is
    Factory    : ADO.Sessions.Factory.Session_Factory;
 
 begin
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    ADO.Drivers.Initialize ("samples.properties");

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  pschema - Print the database schema
---  Copyright (C) 2009 - 2024 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -62,7 +62,7 @@ procedure Pschema is
    Factory    : ADO.Sessions.Factory.Session_Factory;
    Props      : Util.Properties.Manager;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    if Ada.Directories.Exists ("samples.properties") then

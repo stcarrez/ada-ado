@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  Add_User -- Example to add an object in the database
---  Copyright (C) 2010, 2011, 2018 Stephane Carrez
+--  Copyright (C) 2010 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ procedure Add_User is
    end Get_Name;
 
 begin
-   Util.Log.Loggers.Initialize ("samples.properties");
+   Util.Log.Loggers.Initialize ("samples.properties", "example.");
 
    --  Initialize the database drivers.
    ADO.Drivers.Initialize ("samples.properties");
@@ -70,7 +70,7 @@ begin
             User.Set_Status (0);
             User.Save (DB);
 
-            Ada.Text_IO.Put_Line ("User " & Name & " has id "
+            Ada.Text_IO.Put_Line ("User " & Name & " has id"
                                   & ADO.Identifier'Image (User.Get_Id));
          end;
       end loop;
