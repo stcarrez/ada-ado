@@ -14,8 +14,8 @@
 [![GitLab](https://img.shields.io/badge/repo-GitLab-6C488A.svg)](https://gitlab.com/stcarrez/ada-ado)
 [![Commits](https://img.shields.io/github/commits-since/stcarrez/ada-ado/2.4.1.svg)](Commits)
 
-Ada Database Objects is an Ada05 library that provides
-object relational mapping to access a database in Ada05.
+Ada Database Objects is an Ada 2012 library that provides database drivers
+and object relational mapping to access a database in Ada.
 The library supports Postgresql, MySQL/MariaDB, SQLite or SQLCipher as databases.
 Most of the concepts developped for ADO come from the Java Hibernate ORM.
 
@@ -24,18 +24,19 @@ for the implementation.  It provides a database driver for [Postgresql](https://
 [MySQL](https://www.mysql.com/)/[MariaDB](https://www.mariadb.org), [SQLite](https://www.sqlite.org/) or
 [SQLCipher](https://www.zetetic.net/sqlcipher/).  The ORM helps your
 application by providing a mapping of your database tables directly in the target programming
-language: Ada05 in our case.  The development process is the following:
+language: Ada 2012 or Ada 2022 in our case.  The development process is the following:
 
   * You design your database model either using a UML tool or by writing a YAML or XML description,
-  * You generate the Ada05 mapping files by using the [Dynamo](https://gitlab.com/stcarrez/dynamo) code generator,
+  * You generate the Ada mapping files by using the [Dynamo](https://gitlab.com/stcarrez/dynamo) code generator,
   * You generate the SQL database tables by using the same tool,
   * You write your application on top of the generated code that gives you direct and simplified access to your database.
 
 ![ADO Development model](https://github.com/stcarrez/ada-ado/wiki/images/ado-orm.png)
 
-You need at least one of these databases (or all of then).  The configure script will now
-fail if no supported database was found.  Check the [Database Drivers](#database-drivers)
-section to install them and run the configure again after the installation.
+If you don't want to use the ORM layer, you can still use Ada Database Objects and perform traditional
+SQL queries.  You need at least one of these databases (or all of then),
+check the [Database Drivers](#database-drivers)
+section to install them.
 
 ## Version 2.4.2   - Under development
   - Feature #26: Add support for SQLCipher
