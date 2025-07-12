@@ -28,8 +28,6 @@ ado = "^2.4.0"
 libsqlite3 = "any"
 
 [gpr-externals]
-ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
-ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 ADO_USE_SQLCIPHER = ["yes", "no"]
 
 [configuration]

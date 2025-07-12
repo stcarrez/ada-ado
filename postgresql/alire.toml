@@ -23,10 +23,6 @@ This is the PostgreSQL driver for the Ada Database Objects library.
 ado = "^2.4.0"
 libpq = "*"
 
-[gpr-externals]
-ADO_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
-ADO_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
-
 [configuration]
 disabled = true
 
