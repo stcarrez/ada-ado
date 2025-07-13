@@ -180,8 +180,8 @@ ifneq ($(HAVE_ALIRE),yes)
 ifeq ($(HAVE_MYSQL),yes)
 	cd mysql && sh ./alire-setup.sh
 endif
-	cd drivers && sh ./alire-setup.sh sqlite=$(HAVE_SQLITE) mysql=$(HAVE_MYSQL) postgresql=$(HAVE_POSTGRESQL)
 endif
+	cd drivers && sh ./alire-setup.sh sqlite=$(HAVE_SQLITE) mysql=$(HAVE_MYSQL) postgresql=$(HAVE_POSTGRESQL)
 
 $(eval $(call ada_library,$(NAME),.))
 ifeq ($(HAVE_SQLITE),yes)
