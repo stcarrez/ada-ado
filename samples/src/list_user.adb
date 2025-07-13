@@ -4,33 +4,31 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
-with Samples.User.Model;
+with Ada.Text_IO;
+with Ada.Exceptions;
+with Ada.Strings.Unbounded;
 
 with ADO;
-with ADO.Drivers;
 with ADO.Configs;
 with ADO.Queries;
 with ADO.Sessions;
 with ADO.Connections;
 with ADO.Sessions.Factory;
 
-with Util.Log.Loggers;
+with Util.Properties;
 
-with Ada.Text_IO;
-with Ada.Exceptions;
-with Ada.Strings.Unbounded;
+with DB_Initialize;
+with Samples.User.Model;
 procedure List_User is
 
    use Ada.Strings.Unbounded;
    use Samples.User.Model;
 
-   Factory    : ADO.Sessions.Factory.Session_Factory;
-
+   Props   : Util.Properties.Manager;
+   Factory : ADO.Sessions.Factory.Session_Factory;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
    --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
+   DB_Initialize (Props);
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.

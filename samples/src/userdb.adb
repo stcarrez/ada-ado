@@ -4,26 +4,26 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
+with Ada.Text_IO;
+with Ada.Strings.Unbounded;
+with Ada.Exceptions;
+
 with ADO;
-with ADO.Drivers;
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Objects;
 with ADO.SQL;
 with ADO.Sessions.Factory;
-with Samples.User.Model;
-with Ada.Text_IO;
-with Ada.Strings.Unbounded;
-with Ada.Exceptions;
 
 with ADO.Statements;
 with ADO.Queries;
 with ADO.Connections;
 
-with Util.Log.Loggers;
+with Util.Properties;
 
 with GNAT.Command_Line;
-
+with DB_Initialize;
+with Samples.User.Model;
 procedure Userdb is
 
    use ADO;
@@ -33,6 +33,7 @@ procedure Userdb is
    use ADO.Statements;
    use GNAT.Command_Line;
 
+   Props      : Util.Properties.Manager;
    Factory    : ADO.Sessions.Factory.Session_Factory;
 
    User  : User_Ref;
@@ -40,7 +41,6 @@ procedure Userdb is
 
    procedure List_Users (Filter : in String);
    procedure List_User_Info;
-   procedure Initialize (File : in String);
 
    --  ------------------------------
    --  List users
@@ -110,14 +110,12 @@ procedure Userdb is
       end if;
    end List_User_Info;
 
-   procedure Initialize (File : in String) is
-   begin
-      Util.Log.Loggers.Initialize (File, "example.");
-      ADO.Drivers.Initialize (File);
-   end Initialize;
-
 begin
-   Initialize ("samples.properties");
+   --  Initialize the database drivers.
+   DB_Initialize (Props);
+
+   --  Initialize the session factory to connect to the
+   --  database defined by 'ado.database' property.
    Factory.Create (ADO.Configs.Get_Config ("ado.database"));
 
    declare

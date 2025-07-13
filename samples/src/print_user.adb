@@ -4,37 +4,38 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
+with Ada.Text_IO;
+with Ada.Exceptions;
+with Ada.Command_Line;
+
 with ADO;
-with ADO.Drivers;
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Connections;
 with ADO.SQL;
 with ADO.Sessions.Factory;
-with Samples.User.Model;
-with Util.Log.Loggers;
 
-with Ada.Text_IO;
-with Ada.Exceptions;
-with Ada.Command_Line;
+with Util.Properties;
+
+with DB_Initialize;
+with Samples.User.Model;
 procedure Print_User is
 
    use ADO;
    use Samples.User.Model;
 
+   Props : Util.Properties.Manager;
    Factory : ADO.Sessions.Factory.Session_Factory;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
-   --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
-
    if Ada.Command_Line.Argument_Count < 1 then
       Ada.Text_IO.Put_Line ("Usage: print_user user-name ...");
       Ada.Text_IO.Put_Line ("Example: print_user joe");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
+
+   --  Initialize the database drivers.
+   DB_Initialize (Props);
 
    --  Create and configure the connection pool
    Factory.Create (ADO.Configs.Get_Config ("ado.database"));

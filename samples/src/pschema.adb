@@ -6,7 +6,6 @@
 -----------------------------------------------------------------------
 
 with ADO;
-with ADO.Drivers;
 with ADO.Sessions;
 with ADO.Sessions.Factory;
 with ADO.Schemas;
@@ -15,12 +14,10 @@ with ADO.Configs;
 with Ada.Text_IO;
 with Ada.Exceptions;
 with Ada.Command_Line;
-with Ada.Directories;
 
 with Util.Strings.Transforms;
-with Util.Log.Loggers;
 with Util.Properties;
-
+with DB_Initialize;
 procedure Pschema is
 
    use ADO;
@@ -62,24 +59,19 @@ procedure Pschema is
    Factory    : ADO.Sessions.Factory.Session_Factory;
    Props      : Util.Properties.Manager;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
-   --  Initialize the database drivers.
-   if Ada.Directories.Exists ("samples.properties") then
-      Props.Load_Properties ("samples.properties");
-   end if;
-
-   Props.Set (ADO.Configs.NO_ENTITY_LOAD, "true");
-   ADO.Drivers.Initialize (Props);
-
-   --  Initialize the session factory to connect to the
-   --  database defined by 'ado.database' property.
    if Ada.Command_Line.Argument_Count < 1 then
       Ada.Text_IO.Put_Line ("Usage: pschema connection");
       Ada.Text_IO.Put_Line ("Example: pschema mysql://localhost:3306/test");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
+
+   --  Initialize the database drivers.
+   Props.Set (ADO.Configs.NO_ENTITY_LOAD, "true");
+   DB_Initialize (Props);
+
+   --  Initialize the session factory to connect to the
+   --  database defined from command line.
    Factory.Create (Ada.Command_Line.Argument (1));
 
    declare

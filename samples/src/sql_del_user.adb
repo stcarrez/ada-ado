@@ -4,32 +4,33 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
+with Ada.Text_IO;
+with Ada.Exceptions;
+with Ada.Command_Line;
+
 with ADO;
-with ADO.Drivers;
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Connections;
 with ADO.Statements;
 with ADO.Sessions.Factory;
-with Util.Log.Loggers;
 
-with Ada.Text_IO;
-with Ada.Exceptions;
-with Ada.Command_Line;
+with Util.Properties;
+
+with DB_Initialize;
 procedure Sql_Del_User is
+   Props   : Util.Properties.Manager;
    Factory : ADO.Sessions.Factory.Session_Factory;
 begin
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
-   --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
-
    if Ada.Command_Line.Argument_Count < 1 then
       Ada.Text_IO.Put_Line ("Usage: del_user user-name ...");
       Ada.Text_IO.Put_Line ("Example: del_user joe");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
+
+   --  Initialize the database drivers.
+   DB_Initialize (Props);
 
    --  Create and configure the connection pool
    Factory.Create (ADO.Configs.Get_Config ("ado.database"));

@@ -4,20 +4,21 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
-with ADO.Drivers;
+with Ada.Text_IO;
+with Ada.Command_Line;
+with Ada.Exceptions;
+
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Connections;
 with ADO.Sessions.Factory;
 with ADO.Statements;
 
-with Ada.Text_IO;
-with Ada.Command_Line;
-with Ada.Exceptions;
+with Util.Properties;
 
-with Util.Log.Loggers;
-
+with DB_Initialize;
 procedure Select_User is
+   Props   : Util.Properties.Manager;
    Factory : ADO.Sessions.Factory.Session_Factory;
 begin
    if Ada.Command_Line.Argument_Count < 1 then
@@ -27,10 +28,8 @@ begin
       return;
    end if;
 
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
    --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
+   DB_Initialize (Props);
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.

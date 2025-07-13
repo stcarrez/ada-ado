@@ -4,9 +4,12 @@
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
+with Ada.Text_IO;
+with Ada.Exceptions;
+with Ada.Command_Line;
+with Ada.Calendar;
 
 with ADO;
-with ADO.Drivers;
 with ADO.Configs;
 with ADO.Sessions;
 with ADO.Connections;
@@ -14,17 +17,15 @@ with ADO.Statements;
 with ADO.Sessions.Factory;
 
 with Util.Strings;
-with Util.Log.Loggers;
+with Util.Properties;
 
-with Ada.Text_IO;
-with Ada.Exceptions;
-with Ada.Command_Line;
-with Ada.Calendar;
+with DB_Initialize;
 procedure Sql_Add_User is
 
    function Get_Name (Email : in String) return String;
 
-   Factory    : ADO.Sessions.Factory.Session_Factory;
+   Props   : Util.Properties.Manager;
+   Factory : ADO.Sessions.Factory.Session_Factory;
 
    function Get_Name (Email : in String) return String is
       Pos : constant Natural := Util.Strings.Index (Email, '@');
@@ -37,17 +38,15 @@ procedure Sql_Add_User is
    end Get_Name;
 
 begin
-   Util.Log.Loggers.Initialize ("samples.properties", "example.");
-
-   --  Initialize the database drivers.
-   ADO.Drivers.Initialize ("samples.properties");
-
    if Ada.Command_Line.Argument_Count < 1 then
       Ada.Text_IO.Put_Line ("Usage: add_user user-email ...");
       Ada.Text_IO.Put_Line ("Example: add_user joe.potter@gmail.com");
       Ada.Command_Line.Set_Exit_Status (2);
       return;
    end if;
+
+   --  Initialize the database drivers.
+   DB_Initialize (Props);
 
    --  Initialize the session factory to connect to the
    --  database defined by 'ado.database' property.
