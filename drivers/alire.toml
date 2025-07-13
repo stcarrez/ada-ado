@@ -35,6 +35,6 @@ command = ["sh", "./alire-setup.sh"]
 
 [[pins]]
 ado = { path='..' }
-ado_sqlite = { path = '../sqlite' }
-ado_mysql = { path = '../mysql' }
-ado_postgresql = { path = '../postgresql' }
+#ado_sqlite = { path = '../sqlite' }
+#ado_mysql = { path = '../mysql' }
+#ado_postgresql = { path = '../postgresql' }
