@@ -15,8 +15,11 @@ ado_sqlite = "*"
 ado_mysql = "*"
 ado_postgresql = "*"
 ado_all = "*"
-utilada = "^2.6.0"
-utilada_xml = "^2.6.0"
+utilada = "^2.8.0"
+utilada_xml = "^2.8.0"
+
+[gpr-externals]
+DRIVER = ["sqlite", "mysql", "postgresql", "drivers"]
 
 [configuration]
 disabled = true
