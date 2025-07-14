@@ -2,164 +2,22 @@
 
 This small tutorial explains how an application can access
 a database (PostgreSQL, MySQL or SQLite) to store its data by using the
-Ada Database Objects framework.  The framework has several similarities
-with the excellent [Hibernate](http://www.hibernate.org/) Java framework.
+SQL support provided by Ada Database Objects.
 
-The ADO framework is composed of:
-
-   * A code generator provided by [Dynamo](https://github.com/stcarrez/dynamo),
-   * A core runtime,
-   * A set of database drivers (PostgreSQL, MySQL, SQLite).
-
-The tutorial application is a simple user management database which has only one table.
-
-## Defining the data model
-
-The first step is to design the data model.  You have the choice with:
-
-   * Using an UML modeling tool such as [ArgoUML](https://github.com/argouml-tigris-org/argouml),
-   * Writing an XML file following the [Hibernate](https://www.hibernate.org/) description,
-   * Writing a YAML description according to the [Doctrine](https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/yaml-mapping.html) mapping.
-
-In all cases, the model describes the data table as well as how the different
-columns are mapped to an Ada type.  The model can also describe the relations between
-tables.  XML and YAML data model files should be stored in the `db` directory.
-
-Let's define a mapping for a simple `user` table and save it in `db/user.hbm.xml`:
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<hibernate-mapping default-cascade="none">
-    <class name="Samples.User.Model.User"
-           table="user" dynamic-insert="true" dynamic-update="true">
-        <comment>Record representing a user</comment>
-        <id name="id" type="ADO.Identifier" unsaved-value="0">
-            <comment>the user identifier</comment>
-            <column name="id" not-null="true" unique="true" sql-type="BIGINT"/>
-            <generator class="sequence"/>
-        </id>
-        <version name="version" type="int" column="object_version" not-null="true"/>
-        <property name="name" type="String">
-            <comment>the user name</comment>
-            <column name="name" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
-        </property>
-        <property name="email" type="String" unique='true'>
-            <comment>the user email</comment>
-            <column name="email" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
-        </property>
-        <property name="date" type="String">
-            <comment>the user registration date</comment>
-            <column name="date" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
-        </property>
-        <property name="description" type="String">
-            <comment>the user description</comment>
-            <column name="description" not-null="true" unique="false" sql-type="VARCHAR(256)"/>
-        </property>
-        <property name="status" type="Integer">
-            <comment>the user status</comment>
-            <column name="status" not-null="true" unique="false" sql-type="Integer"/>
-        </property>
-    </class>
-</hibernate-mapping>
-```
-
-The YAML description is sometimes easier to understand and write
-and the content could be saved in the `db/users.yaml` file.
-```
-Samples.User.Model.User:
-  type: entity
-  table: user
-  description: Record representing a user
-  hasList: true
-  indexes: 
-  id: 
-    id:
-      type: identifier
-      column: id
-      not-null: true
-      unique: true
-      description: the user identifier
-  fields: 
-    version:
-      type: integer
-      column: object_version
-      not-null: true
-      version: true
-      unique: false
-      description: 
-    name:
-      type: string
-      length: 255
-      column: name
-      not-null: true
-      unique: false
-      description: the user name
-    email:
-      type: string
-      length: 255
-      column: email
-      not-null: true
-      unique: false
-      description: the user email
-    date:
-      type: string
-      length: 255
-      column: date
-      not-null: true
-      unique: false
-      description: the user registration date
-    description:
-      type: string
-      length: 255
-      column: description
-      not-null: true
-      unique: false
-      description: the user description
-    status:
-      type: integer
-      column: status
-      not-null: true
-      unique: false
-      description: the user status
-```
-
-These XML and YAML mapping indicate that the database table `user` is represented by the `User`
-tagged record declared in the `Samples.User.Model` package.  The table contains a `name`,
-`description`, `email` and a `date` column members
-which are a string.  It also has a `status` column which is an integer.
-The table primary key is represented by the `id` column.  The `version` column is
-a special column used by the optimistic locking.
-
-## Generating the Ada model and SQL schema
-
-The [Dynamo](https://github.com/stcarrez/dynamo) code generator is then used
-to generate the package and Ada records that represent our data model.
-The generator also generates the database SQL schema so that tables can be
-created easily in the database.
+The tutorial application is a simple user management database which has only one table:
 
 ```
-dynamo generate db
+CREATE TABLE IF NOT EXISTS user (
+  `id` BIGINT UNIQUE NOT NULL,
+  `object_version` INTEGER NOT NULL,
+  `name` VARCHAR(256) NOT NULL,
+  `email` VARCHAR(256) UNIQUE NOT NULL,
+  `date` VARCHAR(256) NOT NULL,
+  `description` VARCHAR(256) NOT NULL,
+  `status` INTEGER NOT NULL,
+  PRIMARY KEY (`id`)
+);
 ```
-
-The generator will build the package specification and body for
-`Samples.User.Model` package.  The files are created in `src/model` to make it
-clear that these files are model files that are generated.  The database table `user` is represented
-by the Ada tagged record `User_Ref`.  The record members are not visible and to access the attributes
-it is necessary to use getter or setter operations.
-
-The SQL files are generated for every supported database in the `db/mysql`,
-`db/sqlite` and `db/postgresql` directories.  The generator generates two SQL files
-in each directory:
-
-* A first SQL file that allows to create the tables in the database.
-  The file name uses the pattern `create-`*name*-*driver*.
-* A second SQL file that contains `DROP` statements to erase the database tables.
-  The file name uses the pattern `drop-`*name*-*driver*.
-
-When you modify the UML, XML or YAML model files, you should generate again
-the Ada and SQL files.  Even though these files can be generated, it is
-recommended to store these generated files in a versioning systems such
-as `git` because this helps significantly in tracking changes in the data model.
-
 
 ## Getting a Database Connection
 

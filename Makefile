@@ -96,6 +96,8 @@ ADO_DOC= \
   pagebreak.tex \
   Tutorial.md \
   pagebreak.tex \
+  ORM_Tutorial.md \
+  pagebreak.tex \
   ADO_Sessions.md \
   pagebreak.tex \
   ADO_Statements.md \
