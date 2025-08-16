@@ -5,7 +5,7 @@ nav:
   - Installation: Installation.md
   - Tutorial: Tutorial.md
   - ORM Tutorial: ORM_Tutorial.md
-  - Session: ADO_Sessions.md
+  - Session: Sessions.md
   - Database Statement: ADO_Statements.md
   - Model Mapping: ADO_Model.md
   - Database schema migration: Migration.md

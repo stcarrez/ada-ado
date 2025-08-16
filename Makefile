@@ -98,8 +98,7 @@ ADO_DOC= \
   pagebreak.tex \
   ORM_Tutorial.md \
   pagebreak.tex \
-  ADO_Sessions.md \
-  ADO_Sequences.md \
+  Sessions.md \
   pagebreak.tex \
   ADO_Statements.md \
   pagebreak.tex \
@@ -114,7 +113,9 @@ HTML_OPTIONS=-f markdown --listings --number-sections --toc --css pandoc.css
 
 $(eval $(call pandoc_build,ado-book,$(ADO_DOC),\
 	rm -f docs/user-list.md docs/alloc-sequence.md docs/user_hbm.md docs/version.md; \
-	cat docs/Model.md docs/ADO_Objects.md > docs/ADO_Model.md))
+	cat docs/Model.md docs/ADO_Objects.md > docs/ADO_Model.md; \
+	cat docs/ADO_Sessions.md docs/ADO_Sequences.md > docs/Sessions.md; \
+	rm -f docs/ADO_Sessions.md docs/ADO_Sequences.md))
 
 generate:
 	$(DYNAMO) generate db/regtests

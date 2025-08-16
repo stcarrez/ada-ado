@@ -5,9 +5,9 @@ It provides operation to create a database statement that can be executed.
 The `Session` type is used to represent read-only database sessions.  It provides
 operations to query the database but it does not allow to update or delete content.
 The `Master_Session` type extends the `Session` type to provide write
-access and it provides operations to get update or delete statements.  The differentiation
-between the two sessions is provided for the support of database replications with
-databases such as MySQL.
+access and it provides operations to get insert, update or delete statements.
+The differentiation between the two sessions is provided for the support of database
+replications with databases such as MySQL or PostgreSQL.
 
 ## Connection string
 The database connection string is an URI that specifies the database driver to use as well
@@ -221,4 +221,75 @@ they will declare their cache as follows:
 A cache group is identified by a unique name and is represented by the <tt>Cache_Type</tt>
 base class.  The cache group instance is registered in the cache manager by using the
 <tt>Add_Cache</tt> operation.
+
+## Sequence Generators
+The sequence generator is responsible for creating unique ID's
+across all database objects.  Each table can be associated with a sequence generator
+which is configured on the session factory.  The sequence generators are shared by
+several database sessions and the implementation is thread-safe.  The sequence generator
+provides an efficient alternative to the `AUTO INCREMENT` support provided by SQL databases.
+
+The `HiLo_Generator` implements a simple High Low sequence generator
+by using sequences that avoid to access the database.
+The `Snowflake_Generator` implements an efficient algorithm that can be used in
+distributed environments.
+
+For example, to allocate a new database identifier for a table `user`, you could write:
+
+```Ada
+DB : ADO.Sessions.Master_Session := ...;
+Id : ADO.Identifier;
+...
+  DB.Allocate (Name => "user", Id => Id);
+```
+
+### HiLo Sequence Generator
+The HiLo sequence generator.  This sequence generator uses a database table
+`ado_sequence` to allocate blocks of identifiers for a given sequence name.
+The sequence table contains one row for each sequence.  It keeps track of
+the next available sequence identifier (in the `value` column).
+
+To allocate a sequence block, the HiLo generator obtains the next available
+sequence identified and updates it by adding the sequence block size.  The
+HiLo sequence generator will allocate the identifiers until the block is
+full after which a new block will be allocated.
+
+### Snowflake ID Generator
+The snowflake generator is a form of unique ID generator that can be used
+in distributed environment.  It generates a 64-bit number decomposed in a
+first 42 bits representing a timestamp since a given epoch in milliseconds.
+The next N bits represent the machine ID and the last P bits a sequence
+number.  Some snowflake generators are using 10 bits for the machine ID and
+12 bits for the sequence number.  Some others are using 13 bits for a shard ID
+and 10 bits for the sequence number.  To give some flexibility, the snowflake
+generator is provided as a generic package that must be instantiated with
+two constants:
+
+- a Node_Bits representing the number of bits for the machine ID, shard ID or node ID,
+- a Sequence_Bits representing the number of bits for the sequence.
+
+The timestamp will use `64 - Node_Bits - Sequence_Bits` bits.
+
+For example, the package is first instantiated with the desired configuration:
+
+```Ada
+ package My_Snowflake is
+    new ADO.Sequences.Snowflake (Node_Bits => 12,
+                                 Sequence_Bits => 10);
+```
+
+An instance of the generator must be created and registered in the session factory.
+The generator is assigned a name (in most cases a database table name) which will be used
+to identify it by the `Allocate` procedure.  The Snowflake generator needs an epoch
+timestamp representing the start of epoch for the sequence generation and a machine ID or
+node ID which should be unique and specific to each server instance that will create and
+use such generator.
+
+```Ada
+ S : ADO.Sequences.Generator_Access
+     := My_Snowflake.Create_Snowflake_Generator
+           (Sess_Factory'Unchecked_Access, "user", Epoch, 10);
+ begin
+    Sess_Factory.Set_Generator (S);
+```
 
