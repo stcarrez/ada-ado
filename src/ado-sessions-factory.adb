@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions-factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2017, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -70,6 +70,32 @@ package body ADO.Sessions.Factory is
                              Factory'Unchecked_Access,
                              not Factory.Source.Has_Limited_Transactions);
    end Initialize_Sequences;
+
+   --  ------------------------------
+   --  Set a generator to be used for the given sequence.
+   --  ------------------------------
+   procedure Set_Generator (Factory : in out Session_Factory;
+                            Gen     : in ADO.Sequences.Generator_Access) is
+   begin
+      ADO.Sequences.Set_Generator (Factory.Seq_Factory, Gen);
+   end Set_Generator;
+
+   procedure Set_Generator (Factory : in out Session_Factory;
+                            Name    : in String;
+                            Gen     : in String) is
+   begin
+      ADO.Sequences.Set_Generator (Factory.Seq_Factory, Name, Gen);
+   end Set_Generator;
+
+   --  ------------------------------
+   --  Set the name of a sequence generator to be used by default when a generator is
+   --  not found or was not configured by using `Set_Generator`.
+   --  ------------------------------
+   procedure Set_Default_Generator (Factory : in out Session_Factory;
+                                    Name    : in String) is
+   begin
+      ADO.Sequences.Set_Default_Generator (Factory.Seq_Factory, Name);
+   end Set_Default_Generator;
 
    --  ------------------------------
    --  Create the session factory to connect to the database represented

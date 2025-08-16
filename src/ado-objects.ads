@@ -140,7 +140,6 @@ limited with ADO.Sessions;
 --    User.Set_Id (42);
 --    User.Delete (Session);
 --
---  @include ado-sequences.ads
 package ADO.Objects is
 
    --  The object was modified by a another transaction.

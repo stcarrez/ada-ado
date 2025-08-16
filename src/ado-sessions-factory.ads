@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-sessions-factory -- Session Factory
---  Copyright (C) 2009, 2010, 2011, 2012, 2015, 2017, 2018 Stephane Carrez
+--  Copyright (C) 2009 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -77,6 +77,18 @@ package ADO.Sessions.Factory is
    --  Set a static query loader to load SQL queries.
    procedure Set_Query_Loader (Factory  : in out Session_Factory;
                                Loader   : in ADO.Queries.Static_Loader_Access);
+
+   --  Set a generator to be used for the given sequence.
+   procedure Set_Generator (Factory : in out Session_Factory;
+                            Gen     : in ADO.Sequences.Generator_Access);
+   procedure Set_Generator (Factory : in out Session_Factory;
+                            Name    : in String;
+                            Gen     : in String);
+
+   --  Set the name of a sequence generator to be used by default when a generator is
+   --  not found or was not configured by using `Set_Generator`.
+   procedure Set_Default_Generator (Factory : in out Session_Factory;
+                                    Name    : in String);
 
 private
 

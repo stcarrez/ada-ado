@@ -10,27 +10,31 @@ with Ada.Strings.Hash;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with ADO.Sessions;
 with ADO.Objects;
+with Util.Strings.Maps;
+with Ada.Strings.Unbounded;
 limited with ADO.Sessions.Factory;
 
 --  == Sequence Generators ==
 --  The sequence generator is responsible for creating unique ID's
---  across all database objects.
+--  across all database objects.  Each table can be associated with a sequence generator
+--  which is configured on the session factory.  The sequence generators are shared by
+--  several database sessions and the implementation is thread-safe.  The sequence generator
+--  provides an efficient alternative to the `AUTO INCREMENT` support provided by SQL databases.
 --
---  Each table can be associated with a sequence generator.
---  The sequence factory is shared by several sessions and the
---  implementation is thread-safe.
---
---  The `HiLoGenerator` implements a simple High Low sequence generator
+--  The `HiLo_Generator` implements a simple High Low sequence generator
 --  by using sequences that avoid to access the database.
+--  The `Snowflake_Generator` implements an efficient algorithm that can be used in
+--  distributed environments.
 --
---  Example:
+--  For example, to allocate a new database identifier for a table `user`, you could write:
 --
---    F  : Factory;
---    Id : Identifier;
+--    DB : ADO.Sessions.Master_Session := ...;
+--    Id : ADO.Identifier;
 --    ...
---      Allocate (Manager => F, Name => "user", Id => Id);
+--      DB.Allocate (Name => "user", Id => Id);
 --
 --  @include ado-sequences-hilo.ads
+--  @include ado-sequences-snowflake.ads
 package ADO.Sequences is
 
    --  Exception raised when the sequence generator fails to allocate an id.
@@ -80,15 +84,25 @@ package ADO.Sequences is
    procedure Set_Generator (Manager : in out Factory;
                             Gen     : in Generator_Access);
 
+   procedure Set_Generator (Manager : in out Factory;
+                            Name    : in String;
+                            Gen     : in String);
+
    --  Set the default factory for creating generators.
    --  The default factory is the HiLo generator.
-   procedure Set_Default_Generator
-     (Manager      : in out Factory;
-      Factory      : in Generator_Factory;
-      Sess_Factory : in Session_Factory_Access;
-      Use_New_Session : in Boolean);
+   procedure Set_Default_Generator (Manager      : in out Factory;
+                                    Factory      : in Generator_Factory;
+                                    Sess_Factory : in Session_Factory_Access;
+                                    Use_New_Session : in Boolean);
+
+   --  Set the name of a sequence generator to be used by default when a generator is
+   --  not found or was not configured by using `Set_Generator`.
+   procedure Set_Default_Generator (Manager : in out Factory;
+                                    Name    : in String);
 
 private
+
+   subtype UString is Ada.Strings.Unbounded.Unbounded_String;
 
    type Generator (Name_Length : Natural) is
      abstract new Ada.Finalization.Limited_Controlled with
@@ -128,24 +142,30 @@ private
       --  If there is no such generator, an entry is created by using
       --  the default generator.
       procedure Get_Generator (Name : in String;
+                               Check_Alias : in Boolean;
                                Seq  : out Sequence_Generator_Access);
 
       --  Set the sequence generator associated with the name.
       procedure Set_Generator (Gen  : in Generator_Access);
 
+      procedure Set_Generator (Name : in String;
+                               Gen  : in String);
+
       --  Set the default sequence generator.
-      procedure Set_Default_Generator
-        (Gen : in Generator_Factory;
-         Factory : in Session_Factory_Access;
-         Gen_Use_New_Session : in Boolean);
+      procedure Set_Default_Generator (Gen : in Generator_Factory;
+                                       Factory : in Session_Factory_Access;
+                                       Gen_Use_New_Session : in Boolean);
+      procedure Set_Default_Generator (Name : in String);
 
       --  Clear the factory map.
       procedure Clear;
    private
-      Map              : Sequence_Maps.Map;
-      Create_Generator : Generator_Factory;
-      Sess_Factory     : Session_Factory_Access;
-      Use_New_Session  : Boolean := True;
+      Map               : Sequence_Maps.Map;
+      Alias             : Util.Strings.Maps.Map;
+      Create_Generator  : Generator_Factory;
+      Default_Generator : UString;
+      Sess_Factory      : Session_Factory_Access;
+      Use_New_Session   : Boolean := True;
    end Factory_Map;
 
    type Factory is new Ada.Finalization.Limited_Controlled with record

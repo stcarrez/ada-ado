@@ -29,12 +29,12 @@ limited with ADO.Audits;
 --  The `Session` type is used to represent read-only database sessions.  It provides
 --  operations to query the database but it does not allow to update or delete content.
 --  The `Master_Session` type extends the `Session` type to provide write
---  access and it provides operations to get update or delete statements.  The differentiation
---  between the two sessions is provided for the support of database replications with
---  databases such as MySQL.
+--  access and it provides operations to get insert, update or delete statements.
+--  The differentiation between the two sessions is provided for the support of database
+--  replications with databases such as MySQL or PostgreSQL.
 --
---  @include ado-drivers.ads
 --  @include ado-sessions-sources.ads
+--  @include ado-drivers.ads
 --  @include ado-sessions-factory.ads
 --  @include ado-caches.ads
 package ADO.Sessions is
@@ -244,7 +244,6 @@ private
    end record;
 
    procedure Check_Session (Database : in Session'Class;
-                            Message  : in String := "");
-   pragma Inline (Check_Session);
+                            Message  : in String := "") with Inline;
 
 end ADO.Sessions;
