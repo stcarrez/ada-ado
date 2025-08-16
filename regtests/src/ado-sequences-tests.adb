@@ -1,10 +1,11 @@
 -----------------------------------------------------------------------
 --  ado-sequences-tests -- Test sequences factories
---  Copyright (C) 2011, 2012, 2015, 2017, 2018, 2022 Stephane Carrez
+--  Copyright (C) 2011 - 2025 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 
+with ADO.Sequences.Snowflake;
 with Util.Test_Caller;
 
 with ADO.Configs;
@@ -60,6 +61,8 @@ package body ADO.Sequences.Tests is
    begin
       Caller.Add_Test (Suite, "Test ADO.Sequences.Create",
                        Test_Create_Factory'Access);
+      Caller.Add_Test (Suite, "Test ADO.Sequences.Snowflake.Create",
+                       Test_Snowflake_Factory'Access);
    end Add_Tests;
 
    SEQUENCE_NAME : aliased constant String := "ado_sequence";
@@ -128,6 +131,54 @@ package body ADO.Sequences.Tests is
          end loop;
       end;
    end Test_Create_Factory;
+
+   package Test_Snowflake is new ADO.Sequences.Snowflake (Node_Bits => 10, Sequence_Bits => 12);
+
+   procedure Test_Snowflake_Factory (T : in out Test) is
+
+      Factory     : aliased ADO.Sessions.Factory.Session_Factory;
+      Controller  : aliased ADO.Sessions.Sources.Data_Source;
+      S1          : ADO.Sequences.Generator_Access;
+      S2          : ADO.Sequences.Generator_Access;
+      Epoch       : constant Ada.Calendar.Time := Ada.Calendar.Clock;
+   begin
+      S1 := Test_Snowflake.Create_Snowflake_Generator
+        (Factory'Unchecked_Access, "user", Epoch, 10);
+      S2 := Test_Snowflake.Create_Snowflake_Generator
+        (Factory'Unchecked_Access, "post", Epoch, 11);
+
+      --  Make a real connection.
+      Controller.Set_Connection (ADO.Configs.Get_Config ("test.database"));
+      Factory.Create (Controller);
+      Factory.Set_Generator (S1);
+      Factory.Set_Generator (S2);
+      Factory.Set_Generator ("session", S1.Name);
+      Factory.Set_Generator ("auth", S1.Name);
+      Factory.Set_Default_Generator (S2.Name);
+      declare
+         S       : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
+         Id      : ADO.Identifier;
+         Prev_Id : ADO.Identifier;
+      begin
+         S.Allocate ("user", Prev_Id);
+         for I in 1 .. 1_000 loop
+            S.Allocate ("user", Id);
+            T.Assert (Id /= Prev_Id, "Invalid id was allocated");
+            T.Assert (Id > Prev_Id, "Snowflake ID is not increasing");
+            Prev_Id := Id;
+         end loop;
+         for I in 1 .. 1_000 loop
+            declare
+               Post_Id : ADO.Identifier;
+               User_Id : ADO.Identifier;
+            begin
+               S.Allocate ("post", Post_Id);
+               S.Allocate ("user", User_Id);
+               T.Assert (Post_Id /= User_Id, "Invalid id allocation");
+            end;
+         end loop;
+      end;
+   end Test_Snowflake_Factory;
 
    overriding
    procedure Destroy (Object : access Test_Impl) is
