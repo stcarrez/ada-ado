@@ -9,6 +9,18 @@ access and it provides operations to get update or delete statements.  The diffe
 between the two sessions is provided for the support of database replications with
 databases such as MySQL.
 
+## Connection string
+The database connection string is an URI that specifies the database driver to use as well
+as the information for the database driver to connect to the database.
+The driver connection is a string of the form:
+
+```Ada
+driver://[host][:port]/[database][?property1][=value1]...
+```
+
+The database connection string is passed to the session factory that maintains connections
+to the database (see ADO.Sessions.Factory).
+
 ## Database Drivers
 Database drivers provide operations to access the database.  These operations are
 specific to the database type and the `ADO.Drivers` package among others provide
@@ -109,7 +121,7 @@ The set of configuration properties can be set programatically and passed to the
 ```Ada
 Config : Util.Properties.Manager;
 ...
-  Config.Set ("ado.database", "sqlite:///regtests.db?synchronous=OFF&encoding=UTF-8");
+  Config.Set ("ado.database", "sqlite:regtests.db?synchronous=OFF&encoding=UTF-8");
   Config.Set ("ado.queries.path", ".;db");
   ADO.Sqlite.Initialize (Config);
 ```
@@ -123,7 +135,7 @@ example:
 
 ```Ada
   Config.Set ("ado.database",
-              "sqlite:///regtests.cipher?key='db-password'");
+              "sqlite:regtests.cipher?key='db-password'");
 ```
 
 ### PostgreSQL Database Driver
@@ -151,18 +163,6 @@ The PostgreSQL database driver supports the following properties:
 | ----------- | ---------      |
 | user        | The user name to connect to the server |
 | password    | The user password to connect to the server |
-
-## Connection string
-The database connection string is an URI that specifies the database driver to use as well
-as the information for the database driver to connect to the database.
-The driver connection is a string of the form:
-
-```Ada
-driver://[host][:port]/[database][?property1][=value1]...
-```
-
-The database connection string is passed to the session factory that maintains connections
-to the database (see ADO.Sessions.Factory).
 
 ## Session Factory
 The session factory is the entry point to obtain a database session.

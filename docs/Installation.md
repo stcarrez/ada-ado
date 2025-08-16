@@ -12,7 +12,7 @@ alr index --update-all
 alr with ado
 ```
 
-The database drivers for SQLite, MySQL/MariaDB and SQLite are provided as separate crates. Choose the 
+The database drivers for SQLite/SQLCipher, MySQL/MariaDB and PostgreSQL are provided as separate crates. Choose the 
 database drivers you want to use and run one or some of the commands below. For MariaDB use ado_mysql. 
 
 ```
@@ -126,6 +126,9 @@ make setup BUILD=debug PREFIX=/build/install \
   HAVE_SQLITE=yes HAVE_SQLCIPHER=yes HAVE_POSTGRESQL=yes \
   HAVE_MYSQL=no HAVE_ALIRE=no
 ```
+
+Note: if you plan to use both SQLite and SQLCipher databases, use the `HAVE_SQLCIPHER=yes` configuration since
+SQLCipher supports non-encrypted databases.
 
 ### Build
 

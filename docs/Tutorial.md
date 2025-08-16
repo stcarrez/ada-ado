@@ -1,7 +1,7 @@
 # Tutorial
 
 This small tutorial explains how an application can access
-a database (PostgreSQL, MySQL or SQLite) to store its data by using the
+a database (PostgreSQL, MySQL, SQLite or SQLCipher) to store its data by using the
 SQL support provided by Ada Database Objects.
 
 The tutorial application is a simple user management database which has only one table:
@@ -37,24 +37,16 @@ with ADO.Sessions.Factory;
 The factory can be initialized by giving a URI string that identifies the
 driver and the information to connect to the database.  Once created,
 the factory returns a session object to connect to that database.  To connect
-to another database, another factory is necessary.
+to another database, another factory is necessary.  For SQLite and SQLCipher,
+the URI string must indicate the path of the database file.  For MySQL and
+PostgreSQL, the URI string should contain the host name and port to connect
+to the database server.
 
-To get access to a MySQL database, the factory could be initialized as follows:
-
-```
-   ADO.Sessions.Factory.Create (Factory, "mysql://localhost:3306/ado_test?user=test");
-```
-
-And to use an SQLite database, you could use:
+To get access to a SQLite database, the factory could be initialized as follows:
 
 ```
-   ADO.Sessions.Factory.Create (Factory, "sqlite:tests.db");
-```
-
-For a PostgreSQL database, the factory would look like:
-
-```
-   ADO.Sessions.Factory.Create (Factory, "postgresql://localhost:5432/ado_test?user=test");
+   ADO.Connections.Sqlite.Initialize;
+   ADO.Sessions.Factory.Create (Factory, "sqlite:samples.db?synchronous=OFF&encoding='UTF-8'");
 ```
 
 Factory initialization is done once when an application starts.  The same
@@ -69,9 +61,9 @@ a `Session` object which is intended to provide read-only access to the
 database.  The `Get_Master_session` returns a `Master_Session` object
 which provides a read-write access to the database.
 
-In a typical MySQL Master/Slave replication, the `Master_Session` will refer
-to a connection to the MySQL master while the `Session` will refer to a slave.
-With an SQLite database, both sessions will in fact share the same SQLite internal
+In a typical MySQL or PostgreSQL Master/Slave replication, the `Master_Session` will refer
+to a connection to the MySQL or PostgreSQL master while the `Session` could refer to a slave.
+With an SQLite or SQLCipher database, both sessions will in fact share the same SQLite internal
 connection.
 
 To load or save the user object in the database, we need a `Master_Session`  database connection:
@@ -82,23 +74,33 @@ with ADO.Sessions;
   Session : ADO.Sessions.Master_Session := Factory.Get_Master_Session;
 ```
 
-
-## Creating a database record
+## Inserting a database record
 
 To create our first database record, we will declare a variable that will represent the new database record.
 The `User_Ref` represents a reference to such record.
 
 ```
-with Samples.User.Model;
-  ...
-  User : Samples.User.Model.User_Ref
+Query : constant String := "INSERT INTO user (`id`, `object_version`,"
+   & " `name`, `email`, `date`, `description`, `status`) VALUES(?, ?, "
+   & "?, ?, ?, ?, ?);";
+Stmt  : ADO.Statements.Insert_Statement;
 ```
 
 After this declaration, the variable does not refer to any database record but we can still set some fields:
 
 ```
-  User.Set_Name ("Harry");
-  User.Set_Age (17);
+  DB.Begin_Transaction;
+  Stmt := DB.Create_Statement (Query);
+  DB.Allocate ("user", Id);
+  Stmt.Bind_Param ("id", Id);
+  Stmt.Bind_Param ("version", Natural (1));
+  Stmt.Bind_Param ("name", Name);
+  Stmt.Bind_Param ("email", Email);
+  Stmt.Bind_Param ("date", Ada.Calendar.Clock);
+  Stmt.Bind_Param ("description", Desc);
+  Stmt.Bind_Param ("status", Status);
+  Stmt.Execute (Result);
+  DB.Commit;
 ```
 
 To save the object in the database, we just need to call the `Save` operation.  To save the object, we need
@@ -116,13 +118,29 @@ The primary key can be obtained after the first `Save` with the following operat
   Id : ADO.Identifier := User.Get_Id;
 ```
 
-## Loading a database record
+## Executing SQL queries
 
 Loading a database record is quite easy and the ADO framework proposes two mechanisms.
 First, let's declare our user variable:
 
 ```
-  Harry : User_Ref;
+Stmt    : ADO.Statements.Query_Statement;
+Query   : constant String := "SELECT u.id, u.name, u.email FROM user AS u"
+        & " ORDER BY u.name ASC";
+begin
+   Stmt := DB.Create_Statement (Query);
+   Stmt.Execute;
+```
+
+```
+while Stmt.Has_Elements loop
+   Ada.Text_IO.Put (ADO.Identifier'Image (Stmt.Get_Identifier (0)));
+   Ada.Text_IO.Set_Col (10);
+   Ada.Text_IO.Put (Stmt.Get_String (1));
+   Ada.Text_IO.Set_Col (60);
+   Ada.Text_IO.Put_Line (Stmt.Get_String (2));
+   Stmt.Next;
+end loop;
 ```
 
 Then we can load the user record from the primary key identifier (assuming the identifier is ''23''):

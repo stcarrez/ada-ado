@@ -17,7 +17,8 @@
 Ada Database Objects is an Ada 2012 library that provides database drivers
 and object relational mapping to access a database in Ada.
 The library supports Postgresql, MySQL/MariaDB, SQLite or SQLCipher as databases.
-Most of the concepts developped for ADO come from the Java Hibernate ORM.
+Although not mandatory, it allows to map database objects into Ada records and access database content easily.
+Most of the concepts developed for ADO come from the Java Hibernate ORM.
 
 The ORM uses an YAML, XML mapping file or an UML model, a code generator and a runtime library
 for the implementation.  It provides a database driver for [Postgresql](https://www.postgresql.org/),
@@ -38,10 +39,11 @@ SQL queries.  You need at least one of these databases (or all of then),
 check the [Database Drivers](#database-drivers)
 section to install them.
 
-## Version 2.4.2   - Under development
+## Version 2.5.0   - Under development
   - Feature #26: Add support for SQLCipher
   - Feature #27: Simplify data source connection string for SQLite
   - Feature #29: Improve direct SQL query capabilities (Non-ORM)
+  - Feature #30: Add snowflake ID generator
   - Fix #25: Schema column 'text' not recognized by SQLite driver
 
 ## Version 2.4.1   - Sep 2024
