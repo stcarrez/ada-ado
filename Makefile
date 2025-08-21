@@ -157,23 +157,6 @@ ifneq (, ${PSQL})
 	$(PSQL) -q "postgresql://localhost:5432/ado_test?user=ado&password=ado" --file=db/regtests/postgresql/create-ado-postgresql.sql
 endif
 
-install:: install-data
-
-install-data::
-	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db
-	${CP} db/*.xml $(DESTDIR)${dynamodir}/ado/db/
-	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/mysql
-	${CP} db/mysql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/mysql
-	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/postgresql
-	${CP} db/postgresql/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/postgresql
-	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/sqlite
-	${CP} db/sqlite/ado-*.sql $(DESTDIR)${dynamodir}/ado/db/sqlite
-	${CP} dynamo.xml $(DESTDIR)${dynamodir}/ado/
-	${CP} NOTICE.txt $(DESTDIR)${dynamodir}/ado/
-	${CP} LICENSE.txt $(DESTDIR)${dynamodir}/ado/
-	${MKDIR} -p $(DESTDIR)${dynamodir}/ado/db/migrate
-	(cd db/migrate && tar --exclude='*~' -cf - . ) | (cd $(DESTDIR)${dynamodir}/ado/db/migrate && tar xf -)
-
 uninstall::
 	rm -rf $(DESTDIR)${dynamodir}/ado
 
