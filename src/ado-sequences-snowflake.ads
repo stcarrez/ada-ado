@@ -79,7 +79,7 @@ private
 
    type Snowflake_Generator (Name_Length : Natural) is new Generator (Name_Length) with record
       Node          : Identifier := 0;
-      Epoch         : Ada.Calendar.Time;
+      Epoch         : Interfaces.Unsigned_64;
       Cur_Tms       : Timestamp_Type := 0;
       Cur_Timestamp : Identifier := 0;
       Sequence      : Sequence_Type := 0;

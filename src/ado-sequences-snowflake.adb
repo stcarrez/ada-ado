@@ -5,7 +5,6 @@
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 
-with Interfaces.C;
 with Ada.Calendar.Conversions;
 with Util.Log.Loggers;
 with ADO.Sessions;
@@ -28,16 +27,20 @@ package body ADO.Sequences.Snowflake is
       Epoch        : in Ada.Calendar.Time;
       Node         : in Node_Id)
       return Generator_Access is
-      Result : constant Snowflake_Generator_Access
-        := new Snowflake_Generator '(Ada.Finalization.Limited_Controlled with
-                                     Name_Length => Name'Length,
-                                     Factory => Sess_Factory,
-                                     Name => Name,
-                                     Cur_Tms => 0,
-                                     Cur_Timestamp => 0,
-                                     Epoch => Epoch,
-                                     Node => Identifier (Shift_Left (Unsigned_64 (Node), Sequence_Bits)),
-                                     others => <>);
+      Node_Id  : constant Identifier :=
+        Identifier (Shift_Left (Unsigned_64 (Node), Sequence_Bits));
+      Epoch_Ns : constant Unsigned_64 :=
+        Unsigned_64 (Ada.Calendar.Conversions.To_Unix_Nano_Time (Epoch));
+      Result : constant Snowflake_Generator_Access :=
+        new Snowflake_Generator '(Ada.Finalization.Limited_Controlled with
+                                  Name_Length => Name'Length,
+                                  Factory => Sess_Factory,
+                                  Name => Name,
+                                  Cur_Tms => 0,
+                                  Cur_Timestamp => 0,
+                                  Epoch => Epoch_Ns,
+                                  Node => Node_Id,
+                                  others => <>);
    begin
       return Result.all'Access;
    end Create_Snowflake_Generator;
@@ -52,16 +55,12 @@ package body ADO.Sequences.Snowflake is
    procedure Allocate (Gen     : in out Snowflake_Generator;
                        Session : in out ADO.Sessions.Master_Session'Class;
                        Id      : in out Identifier) is
-      use type Ada.Calendar.Time;
-
       Now   : constant Ada.Calendar.Time := Ada.Calendar.Clock;
-      D     : constant Duration := Now - Gen.Epoch;
-      T_s   : Interfaces.C.long;
-      T_ns  : Interfaces.C.long;
-      T_ms  : Timestamp_Type;
+      T_ns  : constant Unsigned_64 :=
+        Unsigned_64 (Ada.Calendar.Conversions.To_Unix_Nano_Time (Now));
+      T_ms  : constant Timestamp_Type :=
+        Timestamp_Type ((T_ns - Gen.Epoch) / 1_000_000);
    begin
-      Ada.Calendar.Conversions.To_Struct_Timespec (D, T_s, T_ns);
-      T_ms := Timestamp_Type (Unsigned_64 (T_s) * 1_000 + Unsigned_64 (T_ns) / 1_000_000);
       if Gen.Cur_Tms /= T_ms then
          Gen.Cur_Tms := T_ms;
          Gen.Sequence := 0;
