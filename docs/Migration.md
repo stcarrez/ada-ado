@@ -131,3 +131,11 @@ This is useful when there are incremental development steps but also when some
 migration becomes too complex.  By spliting the complex migration in simpler
 and small incremental steps, this will help when the migration must be executed
 because it will be possible to execute one simple step at a time.
+
+To update the model version of the project, you can use the `dynamo propset`
+command.  The first migration version will start at 2, so you could execute
+for a first migration model:
+
+```
+dynamo propset model_version 2
+```
