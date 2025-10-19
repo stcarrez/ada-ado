@@ -1,4 +1,4 @@
-Version 2.5.0   - Under development
+Version 2.5.0   - Oct 2025
   - Feature #26: Add support for SQLCipher
   - Feature #27: Simplify data source connection string for SQLite
   - Feature #29: Improve direct SQL query capabilities (Non-ORM)
