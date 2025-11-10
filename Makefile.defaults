@@ -89,7 +89,7 @@ endif
 
 # Clean the root project of all build products.
 clean::
-	-rm -rf lib obj bin $(CLEAN_FILES)
+	-rm -rf lib obj bin alire $(CLEAN_FILES)
 	-rm -rf regtests/result
 
 dist-clean:: clean
