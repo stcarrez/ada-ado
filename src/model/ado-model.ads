@@ -99,12 +99,12 @@ private
    SEQUENCE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 4,
       Table => SEQUENCE_NAME'Access,
-      Members => (
+      Members => [
                   COL_0_1_NAME'Access,
                   COL_1_1_NAME'Access,
                   COL_2_1_NAME'Access,
                   COL_3_1_NAME'Access
-                 )
+                 ]
      );
 
    ENTITY_TYPE_NAME : aliased constant String := "ado_entity_type";
@@ -113,10 +113,10 @@ private
    ENTITY_TYPE_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 2,
       Table => ENTITY_TYPE_NAME'Access,
-      Members => (
+      Members => [
                   COL_0_2_NAME'Access,
                   COL_1_2_NAME'Access
-                 )
+                 ]
      );
 
    --  Load the object from current iterator position
@@ -130,10 +130,10 @@ private
    VERSION_TABLE : aliased constant ADO.Schemas.Class_Mapping :=
      (Count => 2,
       Table => VERSION_NAME'Access,
-      Members => (
+      Members => [
                   COL_0_3_NAME'Access,
                   COL_1_3_NAME'Access
-                 )
+                 ]
      );
 
 end ADO.Model;

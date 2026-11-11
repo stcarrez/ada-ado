@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  ado-schemas-databases -- Database creation and upgrade
---  Copyright (C) 2018, 2019, 2022, 2023 Stephane Carrez
+--  Copyright (C) 2018, 2019, 2022, 2023, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -200,9 +200,9 @@ package body ADO.Schemas.Databases is
       procedure Module_Migration (Path : in String;
                                   Name : in String) is
          Current_Version : constant Natural := Get_Module_Version (Name);
-         Filter  : constant Filter_Type := (Ordinary_File => False,
+         Filter  : constant Filter_Type := [Ordinary_File => False,
                                             Directory     => True,
-                                            others        => False);
+                                            others        => False];
          Search  : Search_Type;
          Ent     : Ada.Directories.Directory_Entry_Type;
       begin
@@ -226,9 +226,9 @@ package body ADO.Schemas.Databases is
       end Module_Migration;
 
       --  Look only at directories, each directory name indicates a database module.
-      Filter  : constant Filter_Type := (Ordinary_File => False,
+      Filter  : constant Filter_Type := [Ordinary_File => False,
                                          Directory     => True,
-                                         others        => False);
+                                         others        => False];
       Search  : Search_Type;
       Ent     : Ada.Directories.Directory_Entry_Type;
    begin
@@ -364,9 +364,9 @@ package body ADO.Schemas.Databases is
       package Sort is
          new Util.Strings.Vectors.Generic_Sorting ("<");
 
-      Filter  : constant Filter_Type := (Ordinary_File => True,
+      Filter  : constant Filter_Type := [Ordinary_File => True,
                                          Directory     => False,
-                                         others        => False);
+                                         others        => False];
       Path    : constant String := To_String (Upgrade.Path);
       Driver  : constant String := Session.Get_Driver.Get_Driver_Name & "-";
       Search  : Search_Type;

@@ -468,7 +468,7 @@ package body ADO.Objects is
    begin
       Ref.Is_Created := True;
       Ref.Is_Loaded  := True;
-      Ref.Modified := (others => False);
+      Ref.Modified := [others => False];
    end Set_Created;
 
    --  ------------------------------

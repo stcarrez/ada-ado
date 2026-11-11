@@ -586,7 +586,7 @@ private
       Key        : Object_Key (Of_Type => Key_Type, Of_Class => Of_Class);
       Is_Created : Boolean      := False;
       Is_Loaded  : Boolean      := False;
-      Modified   : Modified_Map := (others => False);
+      Modified   : Modified_Map := [others => False];
    end record;
 
 end ADO.Objects;

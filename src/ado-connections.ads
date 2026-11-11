@@ -32,7 +32,7 @@ package ADO.Connections is
    --  ------------------------------
    --
    type Database_Connection is abstract new Util.Refs.Ref_Entity with record
-      Ident : String (1 .. 8) := (others => ' ');
+      Ident : String (1 .. 8) := [others => ' '];
    end record;
    type Database_Connection_Access is access all Database_Connection'Class;
 

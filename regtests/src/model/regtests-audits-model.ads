@@ -405,13 +405,13 @@ private
    AUDIT_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count   => 6,
       Table   => AUDIT_NAME'Access,
-      Members => (
+      Members => [
          1 => COL_0_1_NAME'Access,
          2 => COL_1_1_NAME'Access,
          3 => COL_2_1_NAME'Access,
          4 => COL_3_1_NAME'Access,
          5 => COL_4_1_NAME'Access,
-         6 => COL_5_1_NAME'Access)
+         6 => COL_5_1_NAME'Access]
      );
    AUDIT_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := AUDIT_DEF'Access;
@@ -474,13 +474,13 @@ private
    EMAIL_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count   => 6,
       Table   => EMAIL_NAME'Access,
-      Members => (
+      Members => [
          1 => COL_0_2_NAME'Access,
          2 => COL_1_2_NAME'Access,
          3 => COL_2_2_NAME'Access,
          4 => COL_3_2_NAME'Access,
          5 => COL_4_2_NAME'Access,
-         6 => COL_5_2_NAME'Access)
+         6 => COL_5_2_NAME'Access]
      );
    EMAIL_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := EMAIL_DEF'Access;
@@ -488,12 +488,12 @@ private
    EMAIL_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
      (Count    => 5,
       Of_Class => EMAIL_DEF'Access,
-      Members  => (
+      Members  => [
          1 => 1,
          2 => 2,
          3 => 3,
          4 => 4,
-         5 => 5)
+         5 => 5]
      );
    EMAIL_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
       := EMAIL_AUDIT_DEF'Access;
@@ -557,14 +557,14 @@ private
    PROPERTY_DEF : aliased constant ADO.Schemas.Class_Mapping :=
      (Count   => 7,
       Table   => PROPERTY_NAME'Access,
-      Members => (
+      Members => [
          1 => COL_0_3_NAME'Access,
          2 => COL_1_3_NAME'Access,
          3 => COL_2_3_NAME'Access,
          4 => COL_3_3_NAME'Access,
          5 => COL_4_3_NAME'Access,
          6 => COL_5_3_NAME'Access,
-         7 => COL_6_3_NAME'Access)
+         7 => COL_6_3_NAME'Access]
      );
    PROPERTY_TABLE : constant ADO.Schemas.Class_Mapping_Access
       := PROPERTY_DEF'Access;
@@ -572,13 +572,13 @@ private
    PROPERTY_AUDIT_DEF : aliased constant ADO.Audits.Auditable_Mapping :=
      (Count    => 6,
       Of_Class => PROPERTY_DEF'Access,
-      Members  => (
+      Members  => [
          1 => 1,
          2 => 2,
          3 => 3,
          4 => 4,
          5 => 5,
-         6 => 6)
+         6 => 6]
      );
    PROPERTY_AUDIT_TABLE : constant ADO.Audits.Auditable_Mapping_Access
       := PROPERTY_AUDIT_DEF'Access;
